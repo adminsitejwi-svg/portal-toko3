@@ -317,6 +317,7 @@
                             <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
                             <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
                             <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                            <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
 
 
                         </ul>
@@ -538,7 +539,7 @@
                     <a href="<?= site_url('Pelanggan') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
                         <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
                             <div class="card-header !border-b-0 ">
-                                <h5>Total Pelanggan</h5>
+                                <h5>Total Kategori Pelanggan</h5>
                             </div>
                             <div class="card-body">
                                 <div class="flex items-center justify-between flex-wrap gap-3">
@@ -608,6 +609,21 @@
                                 <h3 class="text-2xl font-light flex items-center">
                                     <i class="ti ti-router text-success-500 text-2xl mr-2"></i>
                                     <?= $totalSIMCARD ?>
+                                </h3>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="<?= site_url('VPN') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
+                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div class="card-header !border-b-0">
+                                <h5>Total VPN</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <h3 class="text-2xl font-light flex items-center">
+                                    <i class="ti ti-shield-lock text-success-500 text-2xl mr-2"></i>
+                                    <?= $totalVPN ?? 0 ?>
                                 </h3>
                             </div>
                         </div>

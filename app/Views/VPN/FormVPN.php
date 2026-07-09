@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Pemilik Projek</title>
+    <title>VPN</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -532,6 +532,13 @@
         .brand-text {
             font-size: 18px;
         }
+
+        .swal2-title {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            letter-spacing: normal !important;
+            text-transform: none !important;
+        }
     </style>
 </head>
 
@@ -727,66 +734,50 @@
 
         <div class="p-6">
             <div class="form-container">
-                <h2>Form Pendaftaran Pemilik Projek</h2>
-                <form action="<?= site_url('PemilikProject/save') ?>" method="POST" id="FormPJ">
+                <h2>Form Pendaftaran VPN</h2>
+                <form action="<?= site_url('VPN/save') ?>" method="POST" id="vpnForm">
                     <?= csrf_field() ?>
+
                     <div class="form-group mt-5">
-                        <label>Kode Pemilik Projek <span style="color:red">*</span></label>
-                        <input type="text" name="kode_pemilik_projek" id="kode_pemilik_projek" required>
-                    </div>
-                    <div class="form-group mt-5">
-                        <label>Nama Pemilik Project <span style="color:red">*</span></label>
-                        <input type="text"
-                            name="nama_pemilik"
-                            id="nama_pemilik"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label>Alamat Lengkap <span style="color:red">*</span></label>
-                        <input type="text"
-                            name="alamat_lengkap"
-                            id="alamat_lengkap"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label>PIC Project <span style="color:red">*</span></label>
-                        <input type="text"
-                            name="pic_projek"
-                            id="pic_projek"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label>Nomor HP PIC <span style="color:red">*</span></label>
-                        <input type="text"
-                            name="nomor_hp_pic"
-                            id="nomor_hp_pic"
-                            required>
+                        <label>Kode Tujuan Koneksi <span style="color:red">*</span></label>
+                        <input type="text" name="kode_tujuan_koneksi" id="kode_tujuan_koneksi" required>
                     </div>
 
+                    <div class="form-group">
+                        <label>Tujuan Koneksi <span style="color:red">*</span></label>
+                        <input type="text" name="tujuan_koneksi" id="tujuan_koneksi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>IP Address Tujuan <span style="color:red">*</span></label>
+                        <input type="text"
+                            name="ip_address_tujuan"
+                            id="ip_address_tujuan"
+                            inputmode="numeric"
+                            placeholder="contoh: 192.168.1.1"
+                            required>
+                    </div>
 
                     <div class="form-group">
                         <label>Status <span style="color:red">*</span></label>
-
-                        <select name="status"
-                            id="status"
-                            required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-
+                        <select name="status" id="status" required
+                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             <option value="">Pilih Status</option>
                             <option value="0">Aktif</option>
                             <option value="1">Non Aktif</option>
-
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Keterangan <span style="color:red">*</span></label>
-
-                        <textarea name="keterangan"
-                            id="keterangan"
-                            rows="4"
-                            required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                        <textarea name="keterangan" id="keterangan" rows="4" required
+                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
-                    <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('PemilikProject') ?>'"> Kembali </button> </div>
+
+                    <div class="d-flex">
+                        <button type="submit"> Simpan </button>
+                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('VPN') ?>'"> Kembali </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -873,21 +864,25 @@
     </script>
 
     <script>
-        document.getElementById('mkForm').addEventListener('submit', function(e) {
-            const kode_pemilik_projek = document.getElementById('kode_pemilik_projek').value.trim();
-            const nama_pemilik = document.getElementById('nama_pemilik').value.trim();
-            const alamat_lengkap = document.getElementById('alamat_lengkap').value.trim();
-            const pic_projek = document.getElementById('pic_projek').value.trim(); // ← perbaiki jadi pic_projek
-            const nomor_hp_pic = document.getElementById('nomor_hp_pic').value.trim();
+        // Batasi input IP: hanya angka dan titik
+        const ipInput = document.getElementById('ip_address_tujuan');
+
+        ipInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+
+        document.getElementById('vpnForm').addEventListener('submit', function(e) {
+
+            const kode_tujuan_koneksi = document.getElementById('kode_tujuan_koneksi').value.trim();
+            const tujuan_koneksi = document.getElementById('tujuan_koneksi').value.trim();
+            const ip_address_tujuan = document.getElementById('ip_address_tujuan').value.trim();
             const status = document.getElementById('status').value.trim();
             const keterangan = document.getElementById('keterangan').value.trim();
 
             if (
-                kode_pemilik_projek === '' ||
-                nama_pemilik === '' ||
-                alamat_lengkap === '' ||
-                pic_projek === '' ||
-                nomor_hp_pic === '' ||
+                kode_tujuan_koneksi === '' ||
+                tujuan_koneksi === '' ||
+                ip_address_tujuan === '' ||
                 status === '' ||
                 keterangan === ''
             ) {
@@ -896,6 +891,20 @@
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
                     text: 'Semua field wajib diisi.',
+                    confirmButtonColor: '#185a82'
+                });
+                return false;
+            }
+
+            // Validasi format IP (contoh: 192.168.1.1, tiap oktet 0-255)
+            const ipRegex = /^(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])){3}$/;
+
+            if (!ipRegex.test(ip_address_tujuan)) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'IP Tidak Valid',
+                    text: 'Format IP Address harus seperti 192.168.1.1',
                     confirmButtonColor: '#185a82'
                 });
                 return false;

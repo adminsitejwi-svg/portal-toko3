@@ -26,7 +26,7 @@ use App\Controllers\DataSI;
 use App\Controllers\NMRInet;
 use App\Controllers\Logs;
 use App\Controllers\VendorCelulllar;
-use App\Controllers\genkey;
+use App\Controllers\VPN;
 
 
 
@@ -57,7 +57,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('settings', 'SettingsController::index');
     $routes->get('settings/delete/(:num)', 'SettingsController::delete/$1');
 
-    $routes->get('genkey', 'genkey::index');
+
     // DC
     $routes->get('DCAdmin', [DCAdmin::class, 'index']);
     $routes->get('DCAdmin/create', 'DCAdmin::create');
@@ -183,4 +183,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('NMRInet/update', 'NMRInet::update');
     $routes->get('NMRInet/delete/(:num)', 'NMRInet::delete/$1');
     $routes->get('NMRInet/edit/(:num)', 'NMRInet::edit/$1');
+
+    $routes->get('VPN', [VPN::class, 'index']);
+    $routes->get('VPN/create', 'VPN::create');
+    $routes->post('VPN/save', 'VPN::save');
+    $routes->post('VPN/update', 'VPN::update');
+    $routes->get('VPN/delete/(:num)', 'VPN::delete/$1');
+    $routes->get('VPN/show/(:num)', 'VPN::show/$1');
 });

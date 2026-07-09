@@ -68,6 +68,10 @@ class DashboardManager extends BaseController
         $quotaModel        = new QuotaSIMCARDModel();
         $dataSIModel       = new DataSIModel();
         $nmrInetModel      = new NMRInetModel();
+        $vpnModel = new \App\Models\VPNModel();
+
+
+        $data['totalVPN'] = $vpnModel->countAllResults();
 
         $data['vendorCellular'] = $vendorCellularModel
             ->orderBy('created_at', 'DESC')
@@ -126,5 +130,6 @@ class DashboardManager extends BaseController
 
         $data['totalPenggunaanInet'] = $nmrInetModel->countAllResults();
         return view('manager/dashboard', $data);
+        $data['totalVPN'] = $db->table('md_vpn')->countAllResults();
     }
 }
