@@ -499,11 +499,29 @@
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
     <!-- ============ SIDEBAR ============ -->
     <nav id="sidebar" class="pc-sidebar fixed top-0 left-0 h-screen w-sidebar bg-sidebar text-[#a9b7c6] z-[1030] flex flex-col">
+        <!-- brand -->
         <div class="flex items-center h-header px-6 shrink-0">
             <a href="#" class="flex items-center gap-2 text-white text-2xl font-semibold">
+                <span class="text-primary-500"></span>
                 <span class="brand-text">Sistem Operasional <br> JWI Group</span>
             </a>
         </div>
+        <?php if (session()->getFlashdata('success')) : ?>
+            <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+                <div class="bg-green-500 text-white rounded-xl shadow-xl overflow-hidden">
+                    <div class="flex items-center gap-3 px-5 py-4">
+                        <i class="ti ti-circle-check text-3xl"></i>
+                        <div>
+                            <h4 class="font-bold">Berhasil</h4>
+                            <p class="text-sm"><?= session()->getFlashdata('success') ?></p>
+                        </div>
+                    </div>
+                    <div class="h-1 bg-green-400">
+                        <div id="progressBar" class="h-full bg-white w-full"></div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
         <?php if (session()->getFlashdata('error')) : ?>
             <div id="errorAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
                 <div class="bg-red-500 text-white rounded-xl shadow-xl overflow-hidden">
@@ -526,17 +544,22 @@
                     if (!box) return;
                     if (bar) {
                         bar.style.transition = 'width 4s linear';
-                        setTimeout(() => bar.style.width = '0%', 100);
+                        setTimeout(function() {
+                            bar.style.width = '0%';
+                        }, 100);
                     }
-                    setTimeout(() => {
+                    setTimeout(function() {
                         box.style.transition = 'all .5s ease';
                         box.style.opacity = '0';
                         box.style.transform = 'translate(-50%, -20px)';
-                        setTimeout(() => box.remove(), 500);
+                        setTimeout(function() {
+                            box.remove();
+                        }, 500);
                     }, 4000);
                 });
             </script>
         <?php endif; ?>
+        <!-- menu -->
         <div class="flex-1 overflow-y-auto overflow-x-hidden py-2.5">
             <ul class="px-0">
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Halaman Utama</li>
@@ -546,13 +569,14 @@
                         <span class="pc-mtext">Beranda</span>
                     </a>
                 </li>
+
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-building-store fs-1"></i></span>
                         <span class="flex-1">Data Toko</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
-                    <ul class="submenu bg-black/20 open">
+                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('Alfamidi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">ALFAMIDI</a></li>
                         <li><a href="<?= site_url('Lawson') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">LAWSON</a></li>
                         <li><a href="<?= site_url('Alfamart') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">ALFAMART</a></li>
@@ -585,27 +609,45 @@
                         <li><a href="<?= site_url('DCAdmin') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">DC</a></li>
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
-                        <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
+                        <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
+                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
+
                     </ul>
+
                 </li>
+
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Pengaturan</li>
                 <li>
-                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
+                <li>
+                    <a href="<?= site_url('settings') ?>"
+                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+
+                        <span class="pc-micon w-5">
+                            <i class="ti ti-settings"></i>
+                        </span>
+
                         <span>Pengguna</span>
+
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
-                        <span>Case Lock</span>
+                    <a href="<?= site_url('Logs') ?>"
+                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+
+                        <span class="pc-micon w-5">
+                            <i class="ti ti-report-search"></i>
+                        </span>
+
+                        <span>Change Log</span>
+
                     </a>
                 </li>
+
             </ul>
         </div>
     </nav>
@@ -835,7 +877,7 @@
                         </div>
 
                         <!-- ═══ C. DATA TEKNIS ═══ -->
-                        <div class="section-title">C. Data Teknis</div>
+                        <div class="section-title">Data Teknis</div>
                         <div class="grid-3">
                             <div class="form-group">
                                 <label>Jenis Perangkat <span class="req">*</span></label>
