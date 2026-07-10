@@ -874,7 +874,7 @@
                                         <input type="text" id="disp_harga_quota" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     </div>
                                     <div class="form-group">
-                                        <label>Isi Quota Internet SimCard <span class="auto">(auto)</span></label>
+                                        <label>Isi Quota Internet Sim Card ( Gbps / Mbps / Kbps )<span class="auto">(auto)</span></label>
                                         <input type="text" id="disp_quota_internet" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     </div>
                                 </div>
