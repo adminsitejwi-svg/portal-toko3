@@ -86,4 +86,22 @@ class MediaKoneksi extends BaseController
         return redirect()->to('/MediaKoneksi')
             ->with('success', 'Data berhasil diperbarui.');
     }
+    public function show($id)
+    {
+        $model = new \App\Models\MediaKoneksiModel();
+
+        $data = $model->find($id);
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
 }

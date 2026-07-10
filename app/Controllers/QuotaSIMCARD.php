@@ -21,7 +21,27 @@ class QuotaSIMCARD extends BaseController
 
         return view('QuotaSIMCARD/index', $data);
     }
+    public function show($id)
+    {
+        $model = new \App\Models\QuotaSIMCARDModel();
 
+        $data = $model->select('md_quota_simcard.*, md_vendor_cellular.nama_vendor AS nama_vendor_cellular')
+            ->join('md_vendor_cellular', 'md_vendor_cellular.id = md_quota_simcard.vendor_cellular_id', 'left')
+            ->where('md_quota_simcard.id', $id)
+            ->first();
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function create()
     {
         $db = \Config\Database::connect();

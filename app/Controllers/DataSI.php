@@ -28,7 +28,39 @@ class DataSI extends BaseController
 
         return view('DataSI/index', $data);
     }
+    public function show($id)
+    {
+        $db = \Config\Database::connect();
 
+        $data = $db->table('d_simcard s')
+            ->select('
+            s.*,
+            qs.kode_quota_simcard,
+            qs.nama_paket_data,
+            qs.quota_internet AS isi_quota_internet,
+            qs.harga_quota AS harga_quota_internet,
+            v.nama_vendor,
+            p.kategori_pelanggan
+        ')
+            ->join('md_quota_simcard qs', 'qs.id = s.quota_simcard_id', 'left')
+            ->join('md_vendor_cellular v', 'v.id = qs.vendor_cellular_id', 'left')
+            ->join('md_pelanggan p', 'p.id = s.kategori_pelanggan_id', 'left')
+            ->where('s.id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function create()
     {
         $db = \Config\Database::connect();

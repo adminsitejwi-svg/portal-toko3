@@ -53,6 +53,24 @@ class Vendor extends BaseController
         return redirect()->to('/Vendor')
             ->with('success', 'Data Vendor berhasil disimpan');
     }
+    public function show($id)
+    {
+        $model = new \App\Models\VendorModel();
+
+        $data = $model->find($id);
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function delete($id)
     {
         $model = new \App\Models\VendorModel();

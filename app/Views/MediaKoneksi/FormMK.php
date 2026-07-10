@@ -731,7 +731,7 @@
                     <?= csrf_field() ?>
                     <div class="form-group mt-5">
                         <label>Kode Media Koneksi <span style="color:red">*</span></label>
-                        <input type="text" name="kode_media_koneksi" id="kode_media_koneksi" required>
+                        <input type="text" name="kode_media_koneksi" id="kode_media_koneksi" required placeholder="Masukkan Kode Media Koneksi">
                     </div>
 
                     <div class="form-group">
@@ -748,7 +748,8 @@
                         <input type="text"
                             name="media_koneksi"
                             id="media_koneksi"
-                            required>
+                            required
+                            placeholder="Masukkan Nama Media Koneksi">
                     </div>
 
                     <div class="form-group">
@@ -771,7 +772,9 @@
                         <textarea name="keterangan"
                             id="keterangan"
                             rows="4"
-                            required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                            required
+                            placeholder="Masukkan Keterangan"
+                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('MediaKoneksi') ?>'"> Kembali </button> </div>
                 </form>

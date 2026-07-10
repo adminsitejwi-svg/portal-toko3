@@ -910,7 +910,7 @@
                                     <span class="hint">(Personal / Perusahaan / Sekolah)</span>
                                 </label>
                                 <input type="text" name="id_pelanggan" id="id_pelanggan"
-                                    value="<?= esc($inet['id_pelanggan']) ?>" placeholder="Isi manual">
+                                    value="<?= esc($inet['id_pelanggan']) ?>" placeholder="Masukan ID Pelanggan" disabled>
                             </div>
 
                             <div class="form-group">
@@ -918,14 +918,14 @@
                                     <span class="hint">(Alfamidi / Alfamart / Lawson)</span>
                                 </label>
                                 <input type="text" name="kode_toko" id="kode_toko"
-                                    value="<?= esc($inet['kode_toko']) ?>" placeholder="Isi manual">
+                                    value="<?= esc($inet['kode_toko']) ?>" placeholder="Masukan Kode Toko" disabled>
                             </div>
                         </div>
 
                         <!-- ═══ KETERANGAN ═══ -->
                         <div class="section-title">Keterangan</div>
                         <div class="form-group">
-                            <textarea name="keterangan" id="keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($inet['keterangan']) ?></textarea>
+                            <textarea name="keterangan" id="keterangan" placeholder="Masukan Keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($inet['keterangan']) ?></textarea>
                         </div>
 
                         <div class="action-bar">

@@ -725,6 +725,13 @@
                                                         <i class="ti ti-trash"></i>
 
                                                     </button>
+
+                                                    <br>
+                                                    <button type="button"
+                                                        onclick="openDetailModal(<?= $row['id'] ?>)"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="ti ti-eye"></i>
+                                                    </button>
                                                 </td>
                                                 <td><?= esc($row['kode_layanan_vendor']); ?></td>
                                                 <td><?= esc($row['nama_vendor']); ?></td>
@@ -812,7 +819,7 @@
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Harga Layanan</label>
-                                                <input type="text" id="edit_harga_layanan_display" inputmode="numeric" placeholder="Rp 0" autocomplete="off"
+                                                <input type="text" id="edit_harga_layanan_display" inputmode="numeric" autocomplete="off" placeholder="Masukan Angka Rupiah"
                                                     class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition">
                                                 <input type="hidden" name="harga_layanan" id="edit_harga_layanan">
                                             </div>
@@ -821,13 +828,14 @@
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Nomor INET / ID Pelanggan</label>
                                                 <input type="text" id="edit_nomor_inet" name="nomor_inet"
-                                                    placeholder="Kosongkan jika tidak diubah" autocomplete="new-password"
+                                                    placeholder="Masukan Nomor INET/ID Pelanggan" autocomplete="new-password"
                                                     class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition">
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Password INET / ID Pelanggan</label>
                                                 <div class="relative">
                                                     <input type="password" id="edit_password_inet" name="password_inet"
+                                                        placeholder="Masukan Password INET/ID Pelanggan"
                                                         autocomplete="new-password"
                                                         class="w-full px-3.5 py-2.5 pr-11 text-sm border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition">
                                                     <button type="button" id="edit_toggle_password"
@@ -848,7 +856,7 @@
                                             <!-- Keterangan (full) -->
                                             <div class="md:col-span-2">
                                                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Keterangan</label>
-                                                <textarea id="edit_keterangan" name="keterangan" rows="2"
+                                                <textarea id="edit_keterangan" name="keterangan" rows="2" placeholder="Masukan Keterangan"
                                                     class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition resize-none"></textarea>
                                             </div>
 
@@ -863,13 +871,167 @@
                                     </form>
                                 </div>
                             </div>
+
+                            <div id="detailModal"
+                                class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+
+                                <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden">
+
+                                    <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
+                                        <h3 class="font-semibold flex items-center gap-2">
+                                            Detail Data Nomor INET
+                                        </h3>
+                                        <button onclick="closeDetailModal()">
+                                            <i class="ti ti-x text-xl"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="p-6">
+
+                                        <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
+                                            <p class="text-xs text-gray-500 mb-1">Keterangan</p>
+                                            <p class="text-sm font-medium" id="detail_ringkas">-</p>
+                                        </div>
+
+                                        <div class="border rounded-lg divide-y">
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Kode Layanan Vendor</span>
+                                                <span class="font-medium text-right" id="detail_kode">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Nama Vendor</span>
+                                                <span class="font-medium text-right" id="detail_vendor">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Nama Layanan</span>
+                                                <span class="font-medium text-right" id="detail_layanan">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Kecepatan Bandwidth</span>
+                                                <span class="font-medium text-right" id="detail_bandwidth">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Harga Layanan</span>
+                                                <span class="font-medium text-right" id="detail_harga">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Nomor INET / ID Pelanggan</span>
+                                                <span class="font-medium text-right" id="detail_nomor">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                                                <span class="text-gray-500">Password INET</span>
+                                                <span class="flex items-center gap-2">
+                                                    <span class="font-medium" id="detail_password">••••••••</span>
+                                                    <button type="button" id="detail_toggle_password"
+                                                        class="text-gray-400 hover:text-primary-500">
+                                                        <i class="ti ti-eye text-lg"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                                                <span class="text-gray-500">Status</span>
+                                                <span id="detail_status">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Keterangan</span>
+                                                <span class="font-medium text-right" id="detail_keterangan">-</span>
+                                            </div>
+                                            <div class="flex justify-between px-4 py-2.5 text-sm">
+                                                <span class="text-gray-500">Created At</span>
+                                                <span class="font-medium text-right" id="detail_created">-</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
         </div>
+        <script>
+            let detailPasswordValue = '';
+            let detailPasswordVisible = false;
 
+            function openDetailModal(id) {
+                fetch("<?= site_url('NomorInet/show/') ?>" + id)
+                    .then(res => {
+                        if (!res.ok) throw new Error('not found');
+                        return res.json();
+                    })
+                    .then(json => {
+                        const d = json.data;
+
+                        document.getElementById('detail_ringkas').textContent =
+                            'Data Nomor INET ( ID: ' + d.id + ' ) ';
+
+                        document.getElementById('detail_kode').textContent = d.kode_layanan_vendor ?? '-';
+                        document.getElementById('detail_vendor').textContent = d.nama_vendor ?? '-';
+                        document.getElementById('detail_layanan').textContent = d.nama_layanan ?? '-';
+                        document.getElementById('detail_bandwidth').textContent = d.kecepatan_bandwidth;
+                        document.getElementById('detail_nomor').textContent = d.nomor_inet;
+                        document.getElementById('detail_keterangan').textContent = d.keterangan;
+                        document.getElementById('detail_created').textContent = d.created_at;
+
+                        // harga
+                        if (d.harga_layanan !== null && d.harga_layanan !== '') {
+                            const raw = String(d.harga_layanan).split('.')[0].replace(/\D/g, '');
+                            document.getElementById('detail_harga').textContent = formatRupiah(raw);
+                        } else {
+                            document.getElementById('detail_harga').textContent = '-';
+                        }
+
+                        // password: simpan, tampilkan tersembunyi dulu
+                        detailPasswordValue = d.password_inet || '';
+                        detailPasswordVisible = false;
+                        renderDetailPassword();
+
+                        // badge status
+                        const statusEl = document.getElementById('detail_status');
+                        if (d.status == 0) {
+                            statusEl.innerHTML = '<span class="badge badge-paid">Aktif</span>';
+                        } else {
+                            statusEl.innerHTML = '<span class="badge badge-due">Non Aktif</span>';
+                        }
+
+                        document.getElementById('detailModal').classList.remove('hidden');
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Data tidak ditemukan di database.',
+                            confirmButtonColor: '#04a9f5'
+                        });
+                    });
+            }
+
+            function renderDetailPassword() {
+                const el = document.getElementById('detail_password');
+                const icon = document.querySelector('#detail_toggle_password i');
+                if (detailPasswordVisible) {
+                    el.textContent = detailPasswordValue !== '' ? detailPasswordValue : '-';
+                    icon.classList.replace('ti-eye', 'ti-eye-off');
+                } else {
+                    el.textContent = '••••••••';
+                    icon.classList.replace('ti-eye-off', 'ti-eye');
+                }
+            }
+
+            document.getElementById('detail_toggle_password').addEventListener('click', function() {
+                detailPasswordVisible = !detailPasswordVisible;
+                renderDetailPassword();
+            });
+
+            function closeDetailModal() {
+                // reset supaya password selalu tersembunyi saat dibuka lagi
+                detailPasswordVisible = false;
+                renderDetailPassword();
+                document.getElementById('detailModal').classList.add('hidden');
+            }
+        </script>
         <script>
             // ---- Sidebar ----
             let collapsed = false;

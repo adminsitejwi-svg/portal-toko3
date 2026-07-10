@@ -683,6 +683,7 @@
                                                     class="btn btn-sm btn-danger">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
+                                                <br>
                                                 <button type="button"
                                                     onclick="openDetailModal(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-info">
@@ -736,7 +737,7 @@
                                             <input type="text"
                                                 id="edit_kode_tujuan_koneksi"
                                                 name="kode_tujuan_koneksi"
-                                                class="w-full border rounded-lg p-3">
+                                                class="w-full border rounded-lg p-3" placeholder="Masukkan Kode Tujuan Koneksi">
                                         </div>
 
                                         <div class="md:col-span-2">
@@ -744,7 +745,7 @@
                                             <input type="text"
                                                 id="edit_tujuan_koneksi"
                                                 name="tujuan_koneksi"
-                                                class="w-full border rounded-lg p-3">
+                                                class="w-full border rounded-lg p-3" placeholder="Masukkan Tujuan Koneksi">
                                         </div>
 
                                         <div class="md:col-span-2">
@@ -753,7 +754,7 @@
                                                 id="edit_ip_address_tujuan"
                                                 name="ip_address_tujuan"
                                                 inputmode="numeric"
-                                                placeholder="contoh: 192.168.1.1"
+                                                placeholder="Masukkan IP Address Tujuan"
                                                 class="w-full border rounded-lg p-3">
                                         </div>
 
@@ -770,7 +771,7 @@
                                         <div class="md:col-span-2">
                                             <label>Keterangan</label>
                                             <textarea id="edit_keterangan"
-                                                name="keterangan"
+                                                name="keterangan" placeholder="Masukkan Keterangan"
                                                 rows="3"
                                                 class="w-full border rounded-lg p-3"></textarea>
                                         </div>
@@ -1118,7 +1119,7 @@
                     const d = json.data;
 
                     document.getElementById('detail_ringkas').textContent =
-                        'Data VPN ( ID: ' + d.id + ' ) — ' + d.tujuan_koneksi;
+                        'Data VPN ( ID: ' + d.id + ' ) ';
 
                     document.getElementById('detail_kode').textContent = d.kode_tujuan_koneksi;
                     document.getElementById('detail_tujuan').textContent = d.tujuan_koneksi;

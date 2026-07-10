@@ -64,6 +64,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DCAdmin/save', 'DCAdmin::save');
     $routes->get('DCAdmin/delete/(:num)', 'DCAdmin::delete/$1');
     $routes->post('DCAdmin/update', 'DCAdmin::update');
+    $routes->get('DCAdmin/show/(:num)', 'DCAdmin::show/$1');
 
     // Media Koneksi
     $routes->get('MediaKoneksi', [MediaKoneksi::class, 'index']);
@@ -71,6 +72,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('MediaKoneksi/save', 'MediaKoneksi::save');
     $routes->get('MediaKoneksi/delete/(:num)', 'MediaKoneksi::delete/$1');
     $routes->post('MediaKoneksi/update', 'MediaKoneksi::update');
+    $routes->get('MediaKoneksi/show/(:num)', 'MediaKoneksi::show/$1');
 
     // Layanan JWI
 
@@ -81,6 +83,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('PemilikProject/save', 'PemilikProject::save');
     $routes->get('PemilikProject/delete/(:num)', 'PemilikProject::delete/$1');
     $routes->post('PemilikProject/update', 'PemilikProject::update');
+    $routes->get('PemilikProject/show/(:num)', 'PemilikProject::show/$1');
 
     // Vendor
     $routes->get('Vendor', [Vendor::class, 'index']);
@@ -88,12 +91,14 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('vendor/save', 'Vendor::save');
     $routes->post('vendor/update', 'Vendor::update');
     $routes->get('Vendor/delete/(:num)', 'Vendor::delete/$1');
+    $routes->get('Vendor/show/(:num)', 'Vendor::show/$1');
 
     $routes->get('VendorCelulllar', [VendorCelulllar::class, 'index']);
     $routes->get('VendorCelulllar/create', 'VendorCelulllar::create');
     $routes->post('VendorCelulllar/save', 'VendorCelulllar::save');
     $routes->post('VendorCelulllar/update', 'VendorCelulllar::update');
     $routes->get('VendorCelulllar/delete/(:num)', 'VendorCelulllar::delete/$1');
+    $routes->get('VendorCelulllar/show/(:num)', 'VendorCelulllar::show/$1');
 
     // Layanan Vendor
     $routes->get('LayananVendor', [LayananVendor::class, 'index']);
@@ -101,6 +106,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('LayananVendor/save', 'LayananVendor::save');
     $routes->post('LayananVendor/update', 'LayananVendor::update');
     $routes->get('LayananVendor/delete/(:num)', 'LayananVendor::delete/$1');
+    $routes->get('LayananVendor/show/(:num)', 'LayananVendor::show/$1');
 
     // Perangkat
     $routes->get('Perangkat', [Perangkat::class, 'index']);
@@ -108,18 +114,22 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Perangkat/save', 'Perangkat::save');
     $routes->post('Perangkat/update', 'Perangkat::update');
     $routes->get('Perangkat/delete/(:num)', 'Perangkat::delete/$1');
+    $routes->get('Perangkat/show/(:num)', 'Perangkat::show/$1');
 
     $routes->get('Jns_perangkat', [Jns_perangkat::class, 'index']);
     $routes->get('Jns_perangkat/create', 'Jns_perangkat::create');
     $routes->post('Jns_perangkat/save', 'Jns_perangkat::save');
     $routes->post('Jns_perangkat/update', 'Jns_perangkat::update');
     $routes->get('Jns_perangkat/delete/(:num)', 'Jns_perangkat::delete/$1');
+    $routes->get('Jns_perangkat/show/(:num)', 'Jns_perangkat::show/$1');
 
     $routes->get('Alfamidi', [Alfamidi::class, 'index']);
     $routes->get('Alfamidi/create', 'Alfamidi::create');
     $routes->post('Alfamidi/save', 'Alfamidi::save');
     $routes->get('Alfamidi/delete/(:num)', 'Alfamidi::delete/$1');
     $routes->get('Alfamidi/edit/(:num)', 'Alfamidi::edit/$1');
+    $routes->get('Alfamidi/view/(:num)', 'Alfamidi::view/$1');
+
     $routes->post('Alfamidi/update', 'Alfamidi::update');
     $routes->get('Alfamidi/file/(:segment)', 'Alfamidi::serveFile/$1');
     $routes->get('Alfamidi/getMapData', 'Alfamidi::getMapData');
@@ -149,13 +159,14 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('TypePerangkat/save', 'TypePerangkat::save');
     $routes->post('TypePerangkat/update', 'TypePerangkat::update');
     $routes->get('TypePerangkat/delete/(:num)', 'TypePerangkat::delete/$1');
+    $routes->get('TypePerangkat/show/(:num)', 'TypePerangkat::show/$1');
 
     $routes->get('Pelanggan', [Pelanggan::class, 'index']);
     $routes->get('Pelanggan/create', 'Pelanggan::create');
     $routes->post('Pelanggan/save', 'Pelanggan::save');
     $routes->post('Pelanggan/update', 'Pelanggan::update');
     $routes->get('Pelanggan/delete/(:num)', 'Pelanggan::delete/$1');
-
+    $routes->get('Pelanggan/show/(:num)', 'Pelanggan::show/$1');
 
 
     $routes->get('NomorInet', [NomorInet::class, 'index']);
@@ -163,12 +174,14 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('NomorInet/save', 'NomorInet::save');
     $routes->post('NomorInet/update', 'NomorInet::update');
     $routes->get('NomorInet/delete/(:num)', 'NomorInet::delete/$1');
+    $routes->get('NomorInet/show/(:num)', 'NomorInet::show/$1');
 
     $routes->get('QuotaSIMCARD', [QuotaSIMCARD::class, 'index']);
     $routes->get('QuotaSIMCARD/create', 'QuotaSIMCARD::create');
     $routes->post('QuotaSIMCARD/save', 'QuotaSIMCARD::save');
     $routes->post('QuotaSIMCARD/update', 'QuotaSIMCARD::update');
     $routes->get('QuotaSIMCARD/delete/(:num)', 'QuotaSIMCARD::delete/$1');
+    $routes->get('QuotaSIMCARD/show/(:num)', 'QuotaSIMCARD::show/$1');
 
     $routes->get('DataSI', [DataSI::class, 'index']);
     $routes->get('DataSI/create', 'DataSI::create');
@@ -176,6 +189,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataSI/update', 'DataSI::update');
     $routes->get('DataSI/delete/(:num)', 'DataSI::delete/$1');
     $routes->get('DataSI/edit/(:num)', 'DataSI::edit/$1');
+    $routes->get('DataSI/show/(:num)', 'DataSI::show/$1');
 
     $routes->get('NMRInet', [NMRInet::class, 'index']);
     $routes->get('NMRInet/create', 'NMRInet::create');
@@ -183,6 +197,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('NMRInet/update', 'NMRInet::update');
     $routes->get('NMRInet/delete/(:num)', 'NMRInet::delete/$1');
     $routes->get('NMRInet/edit/(:num)', 'NMRInet::edit/$1');
+    $routes->get('NMRInet/show/(:num)', 'NMRInet::show/$1');
 
     $routes->get('VPN', [VPN::class, 'index']);
     $routes->get('VPN/create', 'VPN::create');

@@ -734,7 +734,7 @@
                         <input type="text"
                             name="kategori_pelanggan"
                             id="kategori_pelanggan"
-                            required>
+                            required placeholder="Masukkan Kategori Pelanggan">
                     </div>
 
 
@@ -757,7 +757,7 @@
 
                         <textarea name="keterangan"
                             id="keterangan"
-                            rows="4"
+                            rows="4" placeholder="Masukkan Keterangan"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('Pelanggan') ?>'"> Kembali </button> </div>

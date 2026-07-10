@@ -690,6 +690,13 @@
                                                     <i class="ti ti-trash"></i>
 
                                                 </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    onclick="openDetailModal(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td><?= esc($row['kode_dc']); ?></td>
                                             <td><?= esc($row['nama_dc']); ?></td>
@@ -735,7 +742,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div class="md:col-span-2">
                                             <label>Kode DC</label>
-                                            <input type="text" id="edit_kode_dc" name="kode_dc"
+                                            <input type="text" id="edit_kode_dc" name="kode_dc" placeholder="Masukkan Kode DC"
                                                 class="w-full border rounded-lg p-3">
                                         </div>
                                         <div>
@@ -743,7 +750,7 @@
                                             <input
                                                 type="text"
                                                 id="edit_nama_dc"
-                                                name="nama_dc"
+                                                name="nama_dc" placeholder="Masukkan Nama DC"
                                                 class="w-full border rounded-lg p-3">
                                         </div>
                                         <div>
@@ -751,7 +758,7 @@
                                             <input
                                                 type="text"
                                                 id="edit_alamat_dc"
-                                                name="alamat_dc"
+                                                name="alamat_dc" placeholder="Masukkan Alamat DC"
                                                 class="w-full border rounded-lg p-3">
                                         </div>
 
@@ -774,7 +781,7 @@
                                             <textarea
                                                 id="edit_keterangan"
                                                 name="keterangan"
-                                                rows="3"
+                                                rows="3" placeholder="Masukan Keterangan"
                                                 class="w-full border rounded-lg p-3"></textarea>
                                         </div>
 
@@ -807,13 +814,110 @@
                             </div>
 
                         </div>
+
+                        <div id="detailModal"
+                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+
+                            <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden">
+
+                                <!-- Header biru -->
+                                <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
+                                    <h3 class="font-semibold flex items-center gap-2">
+                                        Detail Data DC
+                                    </h3>
+                                    <button onclick="closeDetailModal()">
+                                        <i class="ti ti-x text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <div class="p-6">
+
+                                    <!-- Keterangan ringkas -->
+                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
+                                        <p class="text-xs text-gray-500 mb-1">Keterangan</p>
+                                        <p class="text-sm font-medium" id="detail_ringkas">-</p>
+                                    </div>
+
+                                    <!-- Detail data -->
+                                    <div class="border rounded-lg divide-y">
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Kode DC</span>
+                                            <span class="font-medium text-right" id="detail_kode">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Nama DC</span>
+                                            <span class="font-medium text-right" id="detail_nama">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Alamat DC</span>
+                                            <span class="font-medium text-right" id="detail_alamat">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                                            <span class="text-gray-500">Status</span>
+                                            <span id="detail_status">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Keterangan</span>
+                                            <span class="font-medium text-right" id="detail_keterangan">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Created At</span>
+                                            <span class="font-medium text-right" id="detail_created">-</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function openDetailModal(id) {
+            fetch("<?= site_url('DCAdmin/show/') ?>" + id)
+                .then(res => {
+                    if (!res.ok) throw new Error('not found');
+                    return res.json();
+                })
+                .then(json => {
+                    const d = json.data;
 
+                    document.getElementById('detail_ringkas').textContent =
+                        'Data DC ( ID: ' + d.id + ' ) ';
+
+                    document.getElementById('detail_kode').textContent = d.kode_dc;
+                    document.getElementById('detail_nama').textContent = d.nama_dc;
+                    document.getElementById('detail_alamat').textContent = d.alamat_dc;
+                    document.getElementById('detail_keterangan').textContent = d.keterangan;
+                    document.getElementById('detail_created').textContent = d.created_at;
+
+                    // badge status
+                    const statusEl = document.getElementById('detail_status');
+                    if (d.status == 0) {
+                        statusEl.innerHTML = '<span class="badge badge-paid">Aktif</span>';
+                    } else {
+                        statusEl.innerHTML = '<span class="badge badge-due">Non Aktif</span>';
+                    }
+
+                    document.getElementById('detailModal').classList.remove('hidden');
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Data tidak ditemukan di database.',
+                        confirmButtonColor: '#04a9f5'
+                    });
+                });
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+    </script>
     <script>
         // ---- Sidebar ----
         let collapsed = false;

@@ -19,7 +19,24 @@ class Perangkat extends BaseController
     {
         return view('Perangkat/FormPrgkt');
     }
+    public function show($id)
+    {
+        $model = new \App\Models\PerangkatModel();
 
+        $data = $model->find($id);
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function save()
     {
         date_default_timezone_set('Asia/Jakarta');

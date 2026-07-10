@@ -651,15 +651,14 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Aksi</th>
                                     <th>Kode Toko</th>
                                     <th>Nama Alfamidi</th>
                                     <th>Alamat Alfamidi</th>
                                     <th>Tikor Toko</th>
                                     <th>Status</th>
-                                    <th>Kapasitas Bandwidth</th>
                                     <th>Keterangan</th>
                                     <th>Created At</th>
-                                    <th>Aksi</th>
                                 </tr>
                             </thead>
 
@@ -671,35 +670,9 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
 
-                                            <td><?= esc($row['kode_toko']); ?></td>
-
-                                            <td><?= esc($row['nama_alfamidi']); ?></td>
-
-                                            <td><?= esc($row['alamat_alfamidi']); ?></td>
-
-                                            <td><?= esc($row['titik_koor_toko']); ?></td>
-
                                             <td>
-                                                <?php if ($row['status'] == 0) : ?>
-                                                    <span class="badge badge-paid">Aktif</span>
-                                                <?php else : ?>
-                                                    <span class="badge badge-due">Non Aktif</span>
-                                                <?php endif; ?>
-                                            </td>
-
-                                            <td><?= esc($row['kapasitas_bandwidth']); ?></td>
 
 
-
-                                            <td><?= esc($row['keterangan']); ?></td>
-
-                                            <td>
-                                                <?= !empty($row['created_at'])
-                                                    ? date('d-m-Y H:i', strtotime($row['created_at']))
-                                                    : '-'; ?>
-                                            </td>
-
-                                            <td>
                                                 <a href="<?= site_url('Alfamidi/edit/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-primary">
                                                     <i class="ti ti-edit"></i>
@@ -721,7 +694,34 @@
                                                         <i class="ti ti-photo"></i>
                                                     </button>
                                                 <?php endif; ?>
+                                                <a href="<?= site_url('Alfamidi/view/' . $row['id']) ?>"
+                                                    class="btn btn-sm"
+                                                    title="Lihat Detail">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
+                                            </td>
 
+                                            <td><?= esc($row['kode_toko']); ?></td>
+
+                                            <td><?= esc($row['nama_alfamidi']); ?></td>
+
+                                            <td><?= esc($row['alamat_alfamidi']); ?></td>
+
+                                            <td><?= esc($row['titik_koor_toko']); ?></td>
+
+                                            <td>
+                                                <?php if ($row['status'] == 0) : ?>
+                                                    <span class="badge badge-paid">Aktif</span>
+                                                <?php else : ?>
+                                                    <span class="badge badge-due">Non Aktif</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= esc($row['keterangan']); ?></td>
+
+                                            <td>
+                                                <?= !empty($row['created_at'])
+                                                    ? date('d-m-Y H:i', strtotime($row['created_at']))
+                                                    : '-'; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -946,10 +946,10 @@
                     [10, 15, 25, 50, "Semua"]
                 ],
                 order: [
-                    [1, 'asc']
+                    [2, 'asc']
                 ],
                 columnDefs: [{
-                    targets: 0, // kolom No
+                    targets: [0, 1], // kolom No & Aksi
                     orderable: false, // tidak bisa di-sort
                     searchable: false // tidak ikut pencarian
                 }],
@@ -1016,7 +1016,7 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 10;
-                                doc.content[1].table.widths = ['4%', '9%', '13%', '16%', '14%', '7%', '10%', '13%', '10%', '4%'];
+                                doc.content[1].table.widths = ['4%', '10%', '10%', '15%', '18%', '15%', '8%', '10%', '10%'];
                                 doc.content[1].layout = {
                                     hLineWidth: () => 0.5,
                                     vLineWidth: () => 0.5,
@@ -1113,15 +1113,7 @@
             window.location.href = "<?= base_url('/login') ?>";
         </script>
     <?php endif; ?>
-    <script>
-        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
-            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
-        });
-    </script>
+
 </body>
 
 </html>

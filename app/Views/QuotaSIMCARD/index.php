@@ -710,6 +710,12 @@
                                                     class="btn btn-sm btn-primary"><i class="ti ti-edit"></i></button>
                                                 <button type="button" onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger"><i class="ti ti-trash"></i></button>
+                                                <br>
+                                                <button type="button"
+                                                    onclick="openDetailModal(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td><?= esc($row['kode_quota_simcard']); ?></td>
                                             <td><?= esc($row['nama_vendor_cellular']); ?></td>
@@ -751,7 +757,7 @@
 
                                         <div class="md:col-span-2">
                                             <label>Kode Quota Simcard</label>
-                                            <input type="text" id="edit_kode_quota_simcard" name="kode_quota_simcard" class="w-full border rounded-lg p-3">
+                                            <input type="text" id="edit_kode_quota_simcard" name="kode_quota_simcard" class="w-full border rounded-lg p-3" placeholder="Masukkan Kode Quota Simcard">
                                         </div>
 
                                         <div class="md:col-span-2">
@@ -766,17 +772,17 @@
 
                                         <div class="md:col-span-2">
                                             <label>Nama Paket Data</label>
-                                            <input type="text" id="edit_nama_paket_data" name="nama_paket_data" class="w-full border rounded-lg p-3">
+                                            <input type="text" id="edit_nama_paket_data" name="nama_paket_data" class="w-full border rounded-lg p-3" placeholder="Masukkan Nama Paket Data">
                                         </div>
 
                                         <div class="md:col-span-2">
                                             <label>Isi Quota Internet</label>
-                                            <input type="text" id="edit_quota_internet" name="quota_internet" placeholder="Cth: 50 GB" class="w-full border rounded-lg p-3">
+                                            <input type="text" id="edit_quota_internet" name="quota_internet" placeholder="Cth: 50 GB" class="w-full border rounded-lg p-3" placeholder="Masukkan Isi Quota Internet">
                                         </div>
 
                                         <div class="md:col-span-2">
                                             <label>Harga Quota</label>
-                                            <input type="text" id="edit_harga_quota_display" inputmode="numeric" placeholder="Rp 0" autocomplete="off" class="w-full border rounded-lg p-3">
+                                            <input type="text" id="edit_harga_quota_display" inputmode="numeric" placeholder="Masukkan Harga Quota" autocomplete="off" class="w-full border rounded-lg p-3">
                                             <input type="hidden" name="harga_quota" id="edit_harga_quota">
                                         </div>
 
@@ -790,7 +796,7 @@
 
                                         <div class="md:col-span-2">
                                             <label>Keterangan</label>
-                                            <textarea id="edit_keterangan" name="keterangan" rows="3" class="w-full border rounded-lg p-3"></textarea>
+                                            <textarea id="edit_keterangan" name="keterangan" rows="3" class="w-full border rounded-lg p-3" placeholder="Masukkan Keterangan"></textarea>
                                         </div>
                                     </div>
 
@@ -801,13 +807,127 @@
                                 </form>
                             </div>
                         </div>
+
+                        <div id="detailModal"
+                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+
+                            <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden">
+
+                                <!-- Header biru -->
+                                <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
+                                    <h3 class="font-semibold flex items-center gap-2">
+                                        Detail Data Kuota Simcard
+                                    </h3>
+                                    <button onclick="closeDetailModal()">
+                                        <i class="ti ti-x text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <div class="p-6">
+
+                                    <!-- Keterangan ringkas -->
+                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
+                                        <p class="text-xs text-gray-500 mb-1">Keterangan</p>
+                                        <p class="text-sm font-medium" id="detail_ringkas">-</p>
+                                    </div>
+
+                                    <!-- Detail data -->
+                                    <div class="border rounded-lg divide-y">
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Kode Quota Simcard</span>
+                                            <span class="font-medium text-right" id="detail_kode">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Nama Vendor</span>
+                                            <span class="font-medium text-right" id="detail_vendor">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Nama Paket Data</span>
+                                            <span class="font-medium text-right" id="detail_paket">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Quota Internet</span>
+                                            <span class="font-medium text-right" id="detail_quota">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Harga Quota</span>
+                                            <span class="font-medium text-right" id="detail_harga">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                                            <span class="text-gray-500">Status</span>
+                                            <span id="detail_status">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Keterangan</span>
+                                            <span class="font-medium text-right" id="detail_keterangan">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Created At</span>
+                                            <span class="font-medium text-right" id="detail_created">-</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function openDetailModal(id) {
+            fetch("<?= site_url('QuotaSIMCARD/show/') ?>" + id)
+                .then(res => {
+                    if (!res.ok) throw new Error('not found');
+                    return res.json();
+                })
+                .then(json => {
+                    const d = json.data;
 
+                    document.getElementById('detail_ringkas').textContent =
+                        'Data Kuota Simcard ( ID: ' + d.id + ' ) ';
+
+                    document.getElementById('detail_kode').textContent = d.kode_quota_simcard;
+                    document.getElementById('detail_vendor').textContent = d.nama_vendor_cellular ?? '-';
+                    document.getElementById('detail_paket').textContent = d.nama_paket_data;
+                    document.getElementById('detail_quota').textContent = d.quota_internet;
+                    document.getElementById('detail_keterangan').textContent = d.keterangan;
+                    document.getElementById('detail_created').textContent = d.created_at;
+
+                    // harga dengan format Rupiah (pakai formatRupiah yang sudah ada)
+                    if (d.harga_quota !== null && d.harga_quota !== '') {
+                        const raw = String(d.harga_quota).split('.')[0].replace(/\D/g, '');
+                        document.getElementById('detail_harga').textContent = formatRupiah(raw);
+                    } else {
+                        document.getElementById('detail_harga').textContent = '-';
+                    }
+
+                    // badge status
+                    const statusEl = document.getElementById('detail_status');
+                    if (d.status == 0) {
+                        statusEl.innerHTML = '<span class="badge badge-paid">Aktif</span>';
+                    } else {
+                        statusEl.innerHTML = '<span class="badge badge-due">Non Aktif</span>';
+                    }
+
+                    document.getElementById('detailModal').classList.remove('hidden');
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Data tidak ditemukan di database.',
+                        confirmButtonColor: '#04a9f5'
+                    });
+                });
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+    </script>
     <script>
         // ---- Sidebar ----
         let collapsed = false;

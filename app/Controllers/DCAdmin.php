@@ -19,7 +19,24 @@ class DCAdmin extends BaseController
     {
         return view('DCAdmin/FormDC');
     }
+    public function show($id)
+    {
+        $model = new \App\Models\DCModel();
 
+        $data = $model->find($id);
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function save()
     {
         $rules = [

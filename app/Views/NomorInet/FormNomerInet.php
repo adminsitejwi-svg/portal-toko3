@@ -818,7 +818,7 @@
                         <input type="text"
                             id="harga_layanan_display"
                             inputmode="numeric"
-                            placeholder="Rp 0"
+                            placeholder="Masukan Angka Rupiah"
                             autocomplete="off"
                             required>
                         <!-- nilai mentah (angka polos) yang dikirim ke server -->
@@ -830,7 +830,7 @@
                         <input type="text"
                             name="nomor_inet"
                             id="nomor_inet"
-                            required>
+                            required placeholder="Masukan Nomor INET/ID Pelanggan">
                     </div>
                     <div class="form-group mt-5">
                         <label>Password INET/ID Pelanggan <span style="color:red">*</span></label>
@@ -838,7 +838,9 @@
                             <input type="password"
                                 name="password_inet"
                                 id="password_inet"
-                                required class="w-full min-h-[46px] px-4 py-3 pr-12 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+
+                                required placeholder="Masukan Password INET/ID Pelanggan"
+                                class="w-full min-h-[46px] px-4 py-3 pr-12 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             <button type="button" id="btn_toggle_password"
                                 style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;width:auto;height:auto;padding:4px;cursor:pointer;color:#8a95a1">
                                 <i class="ti ti-eye" style="font-size:18px"></i>
@@ -865,6 +867,7 @@
                         <textarea name="keterangan"
                             id="keterangan"
                             rows="4"
+                            placeholder="Masukan Keterangan"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('NomorInet') ?>'"> Kembali </button> </div>

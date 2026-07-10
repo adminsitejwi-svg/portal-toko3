@@ -773,7 +773,7 @@
                     <?= csrf_field() ?>
                     <div class="form-group mt-5">
                         <label>Kode Quota Simcard <span style="color:red">*</span></label>
-                        <input type="text" name="kode_quota_simcard" id="kode_quota_simcard" required
+                        <input type="text" name="kode_quota_simcard" id="kode_quota_simcard" required placeholder="Kode Quota Simcard"
                             class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                     </div>
 
@@ -789,7 +789,7 @@
                     </div>
                     <div class="form-group mt-5">
                         <label>Nama Paket Data <span style="color:red">*</span></label>
-                        <input type="text" name="nama_paket_data" id="nama_paket_data" required
+                        <input type="text" name="nama_paket_data" id="nama_paket_data" required placeholder="Masukkan Nama Paket Data"
                             placeholder="Cth: Paket Bulanan 50GB"
                             class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                     </div>
@@ -798,13 +798,13 @@
 
                     <div class="form-group mt-5">
                         <label>Isi Quota Internet <span style="color:red">*</span></label>
-                        <input type="text" name="quota_internet" id="quota_internet" placeholder="Cth: 50 GB" required ...
+                        <input type="text" name="quota_internet" id="quota_internet" placeholder="Masukkan Isi Quota Internet" required
                             class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                     </div>
 
                     <div class="form-group mt-5">
                         <label>Harga Quota Internet <span style="color:red">*</span></label>
-                        <input type="text" id="harga_quota_display" inputmode="numeric" placeholder="Rp 0" autocomplete="off" required ...>
+                        <input type="text" id="harga_quota_display" inputmode="numeric" placeholder="Masukkan Harga Quota" autocomplete="off" required>
                         <input type="hidden" name="harga_quota" id="harga_quota">
                     </div>
 
@@ -820,7 +820,7 @@
 
                     <div class="form-group mt-5">
                         <label>Keterangan</label>
-                        <textarea name="keterangan" id="keterangan" rows="4"
+                        <textarea name="keterangan" id="keterangan" rows="4" placeholder="Masukkan Keterangan"
                             class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
 

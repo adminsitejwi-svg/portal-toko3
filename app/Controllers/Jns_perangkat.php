@@ -60,6 +60,24 @@ class Jns_perangkat extends BaseController
         return redirect()->to('/Jns_perangkat')
             ->with('success', 'Data berhasil dihapus.');
     }
+    public function show($id)
+    {
+        $model = new \App\Models\JenisPerangkatModel();
+
+        $data = $model->find($id);
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function update()
     {
         $id = $this->request->getPost('id');

@@ -735,14 +735,14 @@
                         <input type="text"
                             name="nama_vendor"
                             id="nama_vendor"
-                            required>
+                            required placeholder="Masukkan Nama Vendor">
                     </div>
                     <div class="form-group">
                         <label>Alamat Vendor <span style="color:red">*</span></label>
                         <input type="text"
                             name="alamat_vendor"
                             id="alamat_vendor"
-                            required>
+                            required placeholder="Masukkan Alamat Vendor">
                     </div>
 
 
@@ -766,7 +766,7 @@
                         <textarea name="keterangan"
                             id="keterangan"
                             rows="4"
-                            required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                            required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none" placeholder="Masukkan Keterangan"></textarea>
                     </div>
                     <div class="d-flex">
                         <button type="submit">

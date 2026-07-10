@@ -22,6 +22,27 @@ class LayananVendor extends BaseController
 
         return view('Vendor/LayananVendor', $data);
     }
+    public function show($id)
+    {
+        $model = new \App\Models\LayananVendorModel();
+
+        $data = $model->select('md_layanan_vendor.*, md_vendor.nama_vendor')
+            ->join('md_vendor', 'md_vendor.id = md_layanan_vendor.vendor_id', 'left')
+            ->where('md_layanan_vendor.id', $id)
+            ->first();
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function create()
     {
         // daftar vendor untuk dropdown di form tambah

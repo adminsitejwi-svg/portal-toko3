@@ -861,12 +861,12 @@
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Nomor MSISDN <span class="req">*</span></label>
-                                <input type="text" name="nomor_msisdn" id="nomor_msisdn" required placeholder="Isi angka saja" inputmode="numeric" autocomplete="off">
+                                <input type="text" name="nomor_msisdn" id="nomor_msisdn" required placeholder="Masukan Nomor MSISDN" inputmode="numeric" autocomplete="off">
 
                             </div>
                             <div class="form-group">
                                 <label>Nomor ISSID / IME <span class="req">*</span></label>
-                                <input type="text" name="nomor_imei" id="nomor_issid_imei" required placeholder="Isi angka saja" inputmode="numeric" autocomplete="off">
+                                <input type="text" name="nomor_imei" id="nomor_issid_imei" required placeholder="Masukan Nomor ISSID / IME" inputmode="numeric" autocomplete="off">
                             </div>
                         </div>
 
@@ -901,21 +901,21 @@
                                 <label>ID Pelanggan
                                     <span class="hint">(Personal / Perusahaan / Sekolah)</span>
                                 </label>
-                                <input type="text" name="pelanggan_id" id="pelanggan_id" placeholder="Isi manual" disabled>
+                                <input type="text" name="pelanggan_id" id="pelanggan_id" placeholder="Masukan ID Pelanggan" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label>Kode Toko
                                     <span class="hint">(Alfamidi / Alfamart / Lawson)</span>
                                 </label>
-                                <input type="text" name="toko_id" id="toko_id" placeholder="Isi manual" disabled>
+                                <input type="text" name="toko_id" id="toko_id" placeholder="Masukan Kode Toko" disabled>
                             </div>
                         </div>
 
                         <!-- ═══ KETERANGAN ═══ -->
                         <div class="section-title">Keterangan</div>
                         <div class="form-group">
-                            <textarea name="keterangan" id="keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                            <textarea name="keterangan" id="keterangan" placeholder="Masukan Keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                         </div>
 
                         <div class="action-bar">

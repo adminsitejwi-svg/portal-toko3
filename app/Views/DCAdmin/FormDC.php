@@ -730,13 +730,13 @@
                 <form action="<?= site_url('DCAdmin/save') ?>" method="POST" id="dcForm">
                     <div class="form-group mt-5">
                         <label>Kode DC <span style="color:red">*</span></label>
-                        <input type="text" name="kode_dc" id="kode_dc" required>
+                        <input type="text" name="kode_dc" id="kode_dc" required placeholder="Masukan kode DC">
                     </div>
                     <div class="form-group mt-5">
                         <label>Nama DC <span style="color:red">*</span></label>
                         <input type="text"
                             name="nama_dc"
-                            id="nama_dc"
+                            id="nama_dc" placeholder="Masukan nama DC"
                             required>
                     </div>
 
@@ -744,7 +744,7 @@
                         <label>Alamat DC <span style="color:red">*</span></label>
                         <textarea name="alamat_dc"
                             id="alamat_dc"
-                            rows="3"
+                            rows="3" placeholder="Masukan Alamat DC"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
 
@@ -767,7 +767,7 @@
 
                         <textarea name="keterangan"
                             id="keterangan"
-                            rows="4"
+                            rows="4" placeholder="Masukan keterangan"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('DCAdmin') ?>'"> Kembali </button> </div>

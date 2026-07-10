@@ -878,11 +878,11 @@
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Nomor MSISDN <span class="req">*</span></label>
-                                <input type="text" name="nomor_msisdn" id="nomor_msisdn" value="<?= esc($simcard['nomor_msisdn']) ?>" placeholder="Isi angka Saja" required inputmode="numeric" autocomplete="off" class="...">
+                                <input type="text" name="nomor_msisdn" id="nomor_msisdn" value="<?= esc($simcard['nomor_msisdn']) ?>" placeholder="Masukan Nomor MSISDN" required inputmode="numeric" autocomplete="off" class="...">
                             </div>
                             <div class="form-group">
                                 <label>Nomor ISSID / IME <span class="req">*</span></label>
-                                <input type="text" name="nomor_imei" id="nomor_imei" value="<?= esc($simcard['nomor_imei']) ?>" placeholder="Isi angka saja" required inputmode="numeric" autocomplete="off" class="...">
+                                <input type="text" name="nomor_imei" id="nomor_imei" value="<?= esc($simcard['nomor_imei']) ?>" placeholder="Masukan Nomor ISSID / IME" required inputmode="numeric" autocomplete="off" class="...">
                             </div>
                         </div>
 
@@ -918,21 +918,21 @@
                                 <label>ID Pelanggan
                                     <span class="hint">(Personal / Perusahaan / Sekolah)</span>
                                 </label>
-                                <input type="text" name="id_pelanggan" id="id_pelanggan" value="<?= esc($simcard['pelanggan_id']) ?>" placeholder="Isi manual" disabled>
+                                <input type="text" name="id_pelanggan" id="id_pelanggan" value="<?= esc($simcard['pelanggan_id']) ?>" placeholder="Masukan ID Pelanggan" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label>Kode Toko
                                     <span class="hint">(Alfamidi / Alfamart / Lawson)</span>
                                 </label>
-                                <input type="text" name="kode_toko" id="kode_toko" value="<?= esc($simcard['toko_id']) ?>" placeholder="Isi manual" disabled>
+                                <input type="text" name="kode_toko" id="kode_toko" value="<?= esc($simcard['toko_id']) ?>" placeholder="Masukan Kode Toko" disabled>
                             </div>
                         </div>
 
                         <!-- ═══ KETERANGAN ═══ -->
                         <div class="section-title">Keterangan</div>
                         <div class="form-group">
-                            <textarea name="keterangan" id="keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($simcard['keterangan']) ?></textarea>
+                            <textarea name="keterangan" id="keterangan" placeholder="Masukan Keterangan" rows="3" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($simcard['keterangan']) ?></textarea>
                         </div>
 
                         <div class="action-bar">

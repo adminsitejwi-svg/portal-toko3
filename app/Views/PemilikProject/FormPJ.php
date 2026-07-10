@@ -732,35 +732,35 @@
                     <?= csrf_field() ?>
                     <div class="form-group mt-5">
                         <label>Kode Pemilik Projek <span style="color:red">*</span></label>
-                        <input type="text" name="kode_pemilik_projek" id="kode_pemilik_projek" required>
+                        <input type="text" name="kode_pemilik_projek" id="kode_pemilik_projek" required placeholder="Masukkan Kode Pemilik Projek">
                     </div>
                     <div class="form-group mt-5">
                         <label>Nama Pemilik Project <span style="color:red">*</span></label>
                         <input type="text"
                             name="nama_pemilik"
                             id="nama_pemilik"
-                            required>
+                            required placeholder="Masukkan Nama Pemilik Projek">
                     </div>
                     <div class="form-group">
                         <label>Alamat Lengkap <span style="color:red">*</span></label>
                         <input type="text"
                             name="alamat_lengkap"
                             id="alamat_lengkap"
-                            required>
+                            required placeholder="Masukkan Alamat Lengkap">
                     </div>
                     <div class="form-group">
                         <label>PIC Project <span style="color:red">*</span></label>
                         <input type="text"
                             name="pic_projek"
                             id="pic_projek"
-                            required>
+                            required placeholder="Masukkan PIC Project">
                     </div>
                     <div class="form-group">
                         <label>Nomor HP PIC <span style="color:red">*</span></label>
                         <input type="text"
                             name="nomor_hp_pic"
                             id="nomor_hp_pic"
-                            required>
+                            required placeholder="Masukkan Nomor HP PIC">
                     </div>
 
 
@@ -783,7 +783,7 @@
 
                         <textarea name="keterangan"
                             id="keterangan"
-                            rows="4"
+                            rows="4" placeholder="Masukkan Keterangan"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('PemilikProject') ?>'"> Kembali </button> </div>

@@ -26,6 +26,30 @@ class TypePerangkat extends BaseController
 
         return view('Perangkat/TypePerangkat', $data);
     }
+    public function show($id)
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('md_type_perangkat tp')
+            ->select('tp.*, jp.jenis_perangkat, mp.merk_perangkat')
+            ->join('md_jenis_perangkat jp', 'jp.id = tp.jenis_perangkat_id', 'left')
+            ->join('md_merek_perangkat mp', 'mp.id = tp.merek_perangkat_id', 'left')
+            ->where('tp.id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
     public function create()
     {
         $jenisModel = new \App\Models\JenisPerangkatModel();

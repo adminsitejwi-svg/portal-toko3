@@ -740,12 +740,12 @@
 
                     <div class="form-group mt-5">
                         <label>Kode Tujuan Koneksi <span style="color:red">*</span></label>
-                        <input type="text" name="kode_tujuan_koneksi" id="kode_tujuan_koneksi" required>
+                        <input type="text" name="kode_tujuan_koneksi" id="kode_tujuan_koneksi" required placeholder="Masukkan Kode Tujuan Koneksi">
                     </div>
 
                     <div class="form-group">
                         <label>Tujuan Koneksi <span style="color:red">*</span></label>
-                        <input type="text" name="tujuan_koneksi" id="tujuan_koneksi" required>
+                        <input type="text" name="tujuan_koneksi" id="tujuan_koneksi" required placeholder="Masukkan Tujuan Koneksi">
                     </div>
 
                     <div class="form-group">
@@ -754,7 +754,7 @@
                             name="ip_address_tujuan"
                             id="ip_address_tujuan"
                             inputmode="numeric"
-                            placeholder="contoh: 192.168.1.1"
+                            placeholder="Masukkan IP Address Tujuan"
                             required>
                     </div>
 
@@ -770,7 +770,7 @@
 
                     <div class="form-group">
                         <label>Keterangan <span style="color:red">*</span></label>
-                        <textarea name="keterangan" id="keterangan" rows="4" required
+                        <textarea name="keterangan" id="keterangan" rows="4" required placeholder="Masukkan Keterangan"
                             class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
 

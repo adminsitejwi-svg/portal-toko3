@@ -686,6 +686,12 @@
                                                     <i class="ti ti-trash"></i>
 
                                                 </button>
+                                                <br>
+                                                <button type="button"
+                                                    onclick="openDetailModal(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td><?= esc($row['kategori_pelanggan']); ?></td>
 
@@ -722,7 +728,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                                         <div class="md:col-span-2 relative">
-                                            <input type="text" id="edit_kategori_pelanggan" name="kategori_pelanggan" placeholder=" "
+                                            <input type="text" id="edit_kategori_pelanggan" name="kategori_pelanggan" placeholder="Masukan Kategori Pelanggan"
                                                 class="peer w-full border rounded-lg px-3 pt-5 pb-2 outline-none focus:border-blue-500" />
                                             <label for="edit_kategori_pelanggan"
                                                 class="absolute left-3 top-3.5 text-gray-500 text-sm transition-all
@@ -747,7 +753,7 @@
                                         </div>
 
                                         <div class="md:col-span-2 relative">
-                                            <textarea id="edit_keterangan" name="keterangan" rows="3" placeholder=" "
+                                            <textarea id="edit_keterangan" name="keterangan" rows="3" placeholder="Masukan Keterangan"
                                                 class="peer w-full border rounded-lg px-3 pt-5 pb-2 outline-none focus:border-blue-500"></textarea>
                                             <label for="edit_keterangan"
                                                 class="absolute left-3 top-3.5 text-gray-500 text-sm transition-all
@@ -766,13 +772,100 @@
                                 </form>
                             </div>
                         </div>
+
+                        <div id="detailModal"
+                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+
+                            <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden">
+
+                                <!-- Header biru -->
+                                <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
+                                    <h3 class="font-semibold flex items-center gap-2">
+                                        Detail Data Kategori Pelanggan
+                                    </h3>
+                                    <button onclick="closeDetailModal()">
+                                        <i class="ti ti-x text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <div class="p-6">
+
+                                    <!-- Keterangan ringkas -->
+                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
+                                        <p class="text-xs text-gray-500 mb-1">Keterangan</p>
+                                        <p class="text-sm font-medium" id="detail_ringkas">-</p>
+                                    </div>
+
+                                    <!-- Detail data -->
+                                    <div class="border rounded-lg divide-y">
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Kategori Pelanggan</span>
+                                            <span class="font-medium text-right" id="detail_kategori">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                                            <span class="text-gray-500">Status</span>
+                                            <span id="detail_status">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Keterangan</span>
+                                            <span class="font-medium text-right" id="detail_keterangan">-</span>
+                                        </div>
+                                        <div class="flex justify-between px-4 py-2.5 text-sm">
+                                            <span class="text-gray-500">Created At</span>
+                                            <span class="font-medium text-right" id="detail_created">-</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function openDetailModal(id) {
+            fetch("<?= site_url('Pelanggan/show/') ?>" + id)
+                .then(res => {
+                    if (!res.ok) throw new Error('not found');
+                    return res.json();
+                })
+                .then(json => {
+                    const d = json.data;
 
+                    document.getElementById('detail_ringkas').textContent =
+                        'Data Kategori Pelanggan ( ID: ' + d.id + ' )  ';
+
+                    document.getElementById('detail_kategori').textContent = d.kategori_pelanggan;
+                    document.getElementById('detail_keterangan').textContent = d.keterangan;
+                    document.getElementById('detail_created').textContent = d.created_at;
+
+                    // badge status
+                    const statusEl = document.getElementById('detail_status');
+                    if (d.status == 0) {
+                        statusEl.innerHTML = '<span class="badge badge-paid">Aktif</span>';
+                    } else {
+                        statusEl.innerHTML = '<span class="badge badge-due">Non Aktif</span>';
+                    }
+
+                    document.getElementById('detailModal').classList.remove('hidden');
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Data tidak ditemukan di database.',
+                        confirmButtonColor: '#04a9f5'
+                    });
+                });
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+    </script>
     <script>
         // ---- Sidebar ----
         let collapsed = false;

@@ -735,7 +735,7 @@
                         <input type="text"
                             name="merk_perangkat"
                             id="merk_perangkat"
-                            required>
+                            required placeholder="Masukan Merek Perangkat">
                     </div>
 
                     <div class="form-group">
@@ -757,7 +757,7 @@
 
                         <textarea name="keterangan"
                             id="keterangan"
-                            rows="4"
+                            rows="4" placeholder="Masukan Keterangan"
                             required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                     </div>
                     <div class="d-flex"> <button type="submit"> Simpan </button> <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('Perangkat') ?>'"> Kembali </button> </div>

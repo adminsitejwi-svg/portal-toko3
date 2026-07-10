@@ -38,6 +38,40 @@ class NomorInet extends BaseController
 
         return view('NomorInet/index', $data);
     }
+    public function show($id)
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('md_nomer_inet ni')
+            ->select('ni.*, lv.kode_layanan_vendor, lv.nama_layanan, v.nama_vendor')
+            ->join('md_layanan_vendor lv', 'lv.id = ni.layanan_vendor_id', 'left')
+            ->join('md_vendor v', 'v.id = lv.vendor_id', 'left')
+            ->where('ni.id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$data) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Data tidak ditemukan.'
+            ]);
+        }
+
+        // dekripsi password (fallback kosong utk data legacy)
+        $encrypter = \Config\Services::encrypter();
+        try {
+            $data['password_inet'] = $data['password_inet'] !== null && $data['password_inet'] !== ''
+                ? $encrypter->decrypt(base64_decode($data['password_inet']))
+                : '';
+        } catch (\Throwable $e) {
+            $data['password_inet'] = '';
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
 
     public function create()
     {
