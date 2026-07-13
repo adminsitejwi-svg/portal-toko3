@@ -959,6 +959,14 @@
                 }
             }
 
+            // Konversi media koneksi: 1 = Cellular, 0 = Non Cellular (nilai lain diteruskan apa adanya)
+            // Didefinisikan global (window) karena dipakai di 3 blok script terpisah: Lawson, Alfamart, Midi
+            window.mediaLabel = function(v) {
+                if (String(v) === '1') return 'Cellular';
+                if (String(v) === '0') return 'Non Cellular';
+                return v;
+            };
+
             function lawsonRow(k, v) {
                 if (!v && v !== 0) return '';
                 return `
@@ -987,7 +995,7 @@
                 ${lawsonRow('No HP', d.nomor_hp_pic)}
                 ${lawsonRow('DC', d.nama_dc)}
                 ${lawsonRow('Vendor', d.nama_vendor)}
-                ${lawsonRow('Media', d.media_koneksi)}
+                ${lawsonRow('Media', mediaLabel(d.media_koneksi))}
                 ${lawsonRow('Bandwidth', d.kapasitas_bandwidth)}
                 ${lawsonRow('IP Address', d.ip_address)}
                 ${lawsonRow('Perangkat', d.jenis_perangkat)}
@@ -1121,7 +1129,7 @@
                 ${alfamartRow('No HP', d.nomor_hp_pic)}
                 ${alfamartRow('DC', d.nama_dc)}
                 ${alfamartRow('Vendor', d.nama_vendor)}
-                ${alfamartRow('Media', d.media_koneksi)}
+                ${alfamartRow('Media', mediaLabel(d.media_koneksi))}
                 ${alfamartRow('Bandwidth', d.kapasitas_bandwidth)}
                 ${alfamartRow('IP Address', d.ip_address)}
                 ${alfamartRow('Perangkat', d.jenis_perangkat)}
@@ -1224,7 +1232,7 @@
                 ${row('No. HP',d.nomor_hp_pic)}
                 ${row('DC',d.nama_dc)}
                 ${row('Vendor',d.nama_vendor)}
-                ${row('Media',d.media_koneksi)}
+                ${row('Media', mediaLabel(d.media_koneksi))}
                 ${row('Bandwidth',d.kapasitas_bandwidth)}
                 ${row('IP Address',d.ip_address)}
                 ${row('Perangkat',d.jenis_perangkat)}
