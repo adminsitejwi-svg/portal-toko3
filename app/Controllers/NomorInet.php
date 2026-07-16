@@ -119,6 +119,12 @@ class NomorInet extends BaseController
 
         return redirect()->to('/NomorInet')
             ->with('success', 'Data Nomor INET berhasil disimpan');
+        $nomorInet = trim((string) $this->request->getPost('nomor_inet'));
+
+        if (!ctype_digit($nomorInet)) {
+            return redirect()->back()->withInput()
+                ->with('error', 'Nomor INET hanya boleh berisi angka.');
+        }
     }
 
     public function delete($id)
@@ -176,5 +182,12 @@ class NomorInet extends BaseController
 
         return redirect()->to('/NomorInet')
             ->with('success', 'Data Nomor INET berhasil diperbarui.');
+
+        $nomorInet = trim((string) $this->request->getPost('nomor_inet'));
+
+        if (!ctype_digit($nomorInet)) {
+            return redirect()->back()->withInput()
+                ->with('error', 'Nomor INET hanya boleh berisi angka.');
+        }
     }
 }

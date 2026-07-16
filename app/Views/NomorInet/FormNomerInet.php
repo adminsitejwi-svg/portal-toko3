@@ -830,6 +830,9 @@
                         <input type="text"
                             name="nomor_inet"
                             id="nomor_inet"
+                            inputmode="numeric"
+                            pattern="[0-9]+"
+                            title="Hanya boleh diisi angka"
                             required placeholder="Masukan Nomor INET/ID Pelanggan">
                     </div>
                     <div class="form-group mt-5">
@@ -877,6 +880,9 @@
     </div>
     <script>
         (function() {
+            document.getElementById('nomor_inet').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, ''); // hapus semua selain angka
+            });
             const display = document.getElementById('harga_layanan_display');
             const hidden = document.getElementById('harga_layanan');
 
@@ -1046,7 +1052,7 @@
             }).then(result => {
                 if (result.isConfirmed) {
                     const newVal = result.value;
-                    const sel = document.getElementById('kapasitas_bandwidth');
+                    const sel = document.getElementById('kecepatan_bandwidth');
                     // Cek duplikat
                     const exists = Array.from(sel.options).some(o => o.value === newVal);
                     if (exists) {

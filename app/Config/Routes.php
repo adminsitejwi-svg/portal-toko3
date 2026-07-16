@@ -129,7 +129,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Alfamidi/delete/(:num)', 'Alfamidi::delete/$1');
     $routes->get('Alfamidi/edit/(:num)', 'Alfamidi::edit/$1');
     $routes->get('Alfamidi/view/(:num)', 'Alfamidi::view/$1');
-
     $routes->post('Alfamidi/update', 'Alfamidi::update');
     $routes->get('Alfamidi/file/(:segment)', 'Alfamidi::serveFile/$1');
     $routes->get('Alfamidi/getMapData', 'Alfamidi::getMapData');
@@ -139,6 +138,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Lawson/save', 'Lawson::save');
     $routes->get('Lawson/delete/(:num)', 'Lawson::delete/$1');
     $routes->get('Lawson/edit/(:num)', 'Lawson::edit/$1');
+    $routes->get('Lawson/view/(:num)', 'Lawson::view/$1');
     $routes->post('Lawson/update', 'Lawson::update');
     $routes->get('Lawson/file/(:segment)', 'Lawson::serveFile/$1');
     $routes->get('Lawson/getMapData', 'Lawson::getMapData');
@@ -148,6 +148,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Alfamart/save', 'Alfamart::save');
     $routes->get('Alfamart/delete/(:num)', 'Alfamart::delete/$1');
     $routes->get('Alfamart/edit/(:num)', 'Alfamart::edit/$1');
+    $routes->get('Alfamart/view/(:num)', 'Alfamart::view/$1');
     $routes->post('Alfamart/update', 'Alfamart::update');
     $routes->get('Alfamart/file/(:segment)', 'Alfamart::serveFile/$1');
     $routes->get('Alfamart/getMapData', 'Alfamart::getMapData');

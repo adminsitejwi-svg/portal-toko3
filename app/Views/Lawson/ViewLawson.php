@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var array $lawson         Data toko yang sedang dilihat (read-only)
  * @var array $pemilik_projek
  * @var array $dc
  * @var array $jenis
@@ -494,6 +495,43 @@
             font-size: 18px;
         }
     </style>
+    <style>
+        .existing-file {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #1d4ed8;
+        }
+
+        .swal-image-popup {
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+        }
+
+        .swal-image-close {
+            color: #fff !important;
+            background: rgba(0, 0, 0, .5) !important;
+            border-radius: 50% !important;
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 18px !important;
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            z-index: 10 !important;
+        }
+
+        .swal-image-close:hover {
+            background: rgba(0, 0, 0, .8) !important;
+        }
+    </style>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -684,13 +722,15 @@
             <div class="page-wrapper">
                 <div class="page-header">
                     <div>
-                        <h2>Form Pendaftaran Toko Lawson</h2>
+                        <h2>Detail Data Toko Lawson</h2>
+                        <div style="font-size:13px;opacity:.75">ID: <?= $lawson['id'] ?> &bull; <?= esc($lawson['nama_lawson']) ?></div>
                     </div>
                 </div>
 
                 <div class="form-card">
-                    <form action="<?= site_url('Lawson/save') ?>" method="POST" id="FormMidi" enctype="multipart/form-data">
+                    <form action="javascript:void(0)" id="FormMidi" enctype="multipart/form-data">
                         <?= csrf_field() ?>
+                        <input type="hidden" name="id" value="<?= $lawson['id'] ?>">
 
                         <!-- ═══ A. INFORMASI TOKO ═══ -->
                         <div class="section-title">DATA TOKO</div>
@@ -700,38 +740,38 @@
                                 <select name="pemilik_projek_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($pemilik_projek as $row): ?>
-                                        <option value="<?= $row['id'] ?>"><?= esc($row['nama_pemilik']) ?></option>
+                                        <option value="<?= $row['id'] ?>" <?= $lawson['pemilik_projek_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['nama_pemilik']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Nama Lawson <span class="req">*</span></label>
-                                <input type="text" name="nama_lawson" placeholder="Masukan Nama Lawson" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="text" name="nama_lawson" value="<?= esc($lawson['nama_lawson']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Kode Toko <span class="req">*</span></label>
-                                <input type="text" name="kode_toko" placeholder="Masukan Kode Toko" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="text" name="kode_toko" value="<?= esc($lawson['kode_toko']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Alamat Toko <span class="req">*</span></label>
-                                <input type="text" name="alamat_lawson" placeholder="Masukan Alamat Toko" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="text" name="alamat_lawson" value="<?= esc($lawson['alamat_lawson']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>DC <span class="req">*</span></label>
                                 <select name="nama_dc_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($dc as $row): ?>
-                                        <option value="<?= $row['id'] ?>"><?= esc($row['nama_dc']) ?></option>
+                                        <option value="<?= $row['id'] ?>" <?= $lawson['nama_dc_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['nama_dc']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>PIC Toko <span class="req">*</span></label>
-                                <input type="text" name="pic_toko" placeholder="Masukan Nama PIC Toko" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="text" name="pic_toko" value="<?= esc($lawson['pic_toko']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Nomor HP PIC <span class="req">*</span></label>
-                                <input type="text" name="nomor_hp_pic" id="nomor_hp_pic"
+                                <input type="text" name="nomor_hp_pic" id="nomor_hp_pic" value="<?= esc($lawson['nomor_hp_pic']) ?>"
                                     placeholder="Masukan Nomor HP PIC"
                                     inputmode="numeric" pattern="[0-9]*" maxlength="15"
                                     required
@@ -739,11 +779,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Tanggal Instalasi <span class="req">*</span></label>
-                                <input type="date" name="tanggal_installasi" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="date" name="tanggal_installasi" value="<?= esc($lawson['tanggal_installasi']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Tanggal Aktivasi <span class="req">*</span></label>
-                                <input type="date" name="tanggal_aktivasi" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="date" name="tanggal_aktivasi" value="<?= esc($lawson['tanggal_aktivasi']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
 
 
@@ -751,16 +791,23 @@
                         <div class="section-title">Titik Koordinat & Peta</div>
                         <div class="map-section">
                             <div class="map-inputs">
+                                <?php
+                                $lat = '';
+                                $lng = '';
+                                if (!empty($lawson['titik_koor_toko']) && strpos($lawson['titik_koor_toko'], ',') !== false) {
+                                    [$lat, $lng] = array_map('trim', explode(',', $lawson['titik_koor_toko'], 2));
+                                }
+                                ?>
                                 <div class="form-group">
                                     <label>Latitude <span class="req">*</span></label>
-                                    <input type="text" id="latitude_input" placeholder="-6.200000" autocomplete="off">
+                                    <input type="text" id="latitude_input" value="<?= esc($lat) ?>" placeholder="-6.200000" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label>Longitude <span class="req">*</span></label>
-                                    <input type="text" id="longitude_input" placeholder="106.816666" autocomplete="off">
+                                    <input type="text" id="longitude_input" value="<?= esc($lng) ?>" placeholder="106.816666" autocomplete="off">
                                 </div>
-                                <input type="hidden" name="titik_koor_toko" id="titik_koor_toko">
-                                <input type="hidden" name="map_toko" id="map_toko">
+                                <input type="hidden" name="titik_koor_toko" id="titik_koor_toko" value="<?= esc($lawson['titik_koor_toko']) ?>">
+                                <input type="hidden" name="map_toko" id="map_toko" value="<?= esc($lawson['map_toko']) ?>">
                             </div>
                             <div class="map-status" id="map_status">
                                 <span class="dot"></span>
@@ -776,8 +823,8 @@
                                 <label>Media Koneksi <span class="req">*</span></label>
                                 <select name="media_koneksi" id="media_koneksi_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
-                                    <option value="0">Non Cellular</option>
-                                    <option value="1">Cellular</option>
+                                    <option value="0" <?= (string)($lawson['media_koneksi'] ?? '') === '0' ? 'selected' : '' ?>>Non Cellular</option>
+                                    <option value="1" <?= (string)($lawson['media_koneksi'] ?? '') === '1' ? 'selected' : '' ?>>Cellular</option>
                                 </select>
                             </div>
                         </div>
@@ -794,7 +841,7 @@
                                         <select id="kode_layanan_select" name="nomor_inet_id" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                             <option value="">— Pilih —</option>
                                             <?php foreach ($nomor_inet as $row): ?>
-                                                <option value="<?= $row['usage_id'] ?>"><?= esc($row['kode_layanan_vendor']) ?></option>
+                                                <option value="<?= $row['usage_id'] ?>" <?= $lawson['nomor_inet_id'] == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_layanan_vendor']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -844,7 +891,7 @@
                                         <select id="kode_quota_select" name="simcard_id" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                             <option value="">— Pilih —</option>
                                             <?php foreach ($simcard as $row): ?>
-                                                <option value="<?= $row['usage_id'] ?>"><?= esc($row['kode_quota_simcard']) ?></option>
+                                                <option value="<?= $row['usage_id'] ?>" <?= $lawson['simcard_id'] == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_quota_simcard']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -884,7 +931,7 @@
                                 <select name="jenis_perangkat_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($jenis as $row): ?>
-                                        <option value="<?= $row['id'] ?>"><?= esc($row['jenis_perangkat']) ?></option>
+                                        <option value="<?= $row['id'] ?>" <?= $lawson['jenis_perangkat_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['jenis_perangkat']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -893,7 +940,7 @@
                                 <select name="merk_perangkat_id" id="merk_perangkat_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($perangkat as $row): ?>
-                                        <option value="<?= $row['id'] ?>"><?= esc($row['merk_perangkat']) ?></option>
+                                        <option value="<?= $row['id'] ?>" <?= $lawson['merk_perangkat_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['merk_perangkat']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -907,21 +954,21 @@
                                 <label>Kategori IP Address <span class="req">*</span></label>
                                 <select name="kategori_ip_address" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
-                                    <option value="Static">Static</option>
-                                    <option value="Dynamic">Dynamic</option>
+                                    <option value="Static" <?= $lawson['kategori_ip_address'] == 'Static' ? 'selected' : '' ?>>Static</option>
+                                    <option value="Dynamic" <?= $lawson['kategori_ip_address'] == 'Dynamic' ? 'selected' : '' ?>>Dynamic</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Jenis IP Address <span class="req">*</span></label>
                                 <select name="jenis_ip_address" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
-                                    <option value="Public">Public</option>
-                                    <option value="Private">Private</option>
+                                    <option value="Public" <?= $lawson['jenis_ip_address'] == 'Public' ? 'selected' : '' ?>>Public</option>
+                                    <option value="Private" <?= $lawson['jenis_ip_address'] == 'Private' ? 'selected' : '' ?>>Private</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>IP Address Toko <span class="req">*</span></label>
-                                <input type="text" name="ip_address_toko" id="ip_address_toko"
+                                <input type="text" name="ip_address_toko" id="ip_address_toko" value="<?= esc($lawson['ip_address_toko']) ?>"
                                     placeholder="Masukan IP Address Toko"
                                     inputmode="numeric" pattern="[0-9.]*" maxlength="15"
                                     required
@@ -931,9 +978,9 @@
                                 <label>Type Koneksi <span class="req">*</span></label>
                                 <select name="type_koneksi" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
-                                    <option value="IPSEC">IPSEC</option>
-                                    <option value="L2TP">L2TP</option>
-                                    <option value="PPTP">PPTP</option>
+                                    <option value="IPSEC" <?= $lawson['type_koneksi'] == 'IPSEC' ? 'selected' : '' ?>>IPSEC</option>
+                                    <option value="L2TP" <?= $lawson['type_koneksi'] == 'L2TP' ? 'selected' : '' ?>>L2TP</option>
+                                    <option value="PPTP" <?= $lawson['type_koneksi'] == 'PPTP' ? 'selected' : '' ?>>PPTP</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -941,7 +988,7 @@
                                 <select name="vpn_id" id="vpn_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($vpn as $row): ?>
-                                        <option value="<?= $row['id'] ?>"><?= esc($row['kode_tujuan_koneksi']) ?></option>
+                                        <option value="<?= $row['id'] ?>" <?= $lawson['vpn_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['kode_tujuan_koneksi']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -955,14 +1002,14 @@
                             </div>
                             <div class="form-group">
                                 <label>Serial Number Perangkat <span class="req">*</span></label>
-                                <input type="text" name="serial_number_perangkat" placeholder="Masukan SN Perangkat" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <input type="text" name="serial_number_perangkat" value="<?= esc($lawson['serial_number_perangkat']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Status <span class="req">*</span></label>
                                 <select name="status" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih Status —</option>
-                                    <option value="0">Aktif</option>
-                                    <option value="1">Non Aktif</option>
+                                    <option value="0" <?= (string)$lawson['status'] === '0' ? 'selected' : '' ?>>Aktif</option>
+                                    <option value="1" <?= (string)$lawson['status'] === '1' ? 'selected' : '' ?>>Non Aktif</option>
                                 </select>
                             </div>
                         </div>
@@ -971,32 +1018,17 @@
 
 
                         <!-- ═══ KETERANGAN & LAMPIRAN ═══ -->
-                        <div class="section-title">Keterangan & Lampiran</div>
+                        <div class="section-title">Keterangan</div>
                         <div class="grid-2">
-                            <div class="form-group">
+                            <div class="form-group col-full">
                                 <label>Keterangan <span class="req">*</span></label>
-                                <textarea name="keterangan" rows="4" placeholder="Masukan Keterangan" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                                <textarea name="keterangan" rows="4" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($lawson['keterangan']) ?></textarea>
                             </div>
-                            <div class="form-group">
-                                <label>
-                                    Upload Lampiran
-                                    <small style="font-weight:400;color:#6b7280">(JPG / PNG / PDF • Maks. 10 file • 5 MB/file)</small>
-                                </label>
-                                <div class="upload-zone" id="upload_zone">
-                                    <input type="file" name="file_input[]" id="file_input" accept=".jpg,.jpeg,.png,.pdf" multiple>
-                                    <div class="upload-icon">📂</div>
-                                    <div class="upload-text">Klik atau seret file ke sini</div>
-                                    <div class="upload-hint">Format: JPG, PNG, PDF • Maks. 10 file • 5 MB per file</div>
-                                </div>
-                                <div id="file_counter" style="font-size:12px;color:#6b7280;margin-top:4px;display:none">
-                                    <span id="file_count">0</span>/10 file dipilih
-                                </div>
-                                <div id="upload_preview"></div>
-                            </div>
+
                         </div>
 
                         <div class="action-bar">
-                            <button type="submit" class="btn-save">Simpan Data</button>
+                            <button type="button" class="btn-save" onclick="window.location.href='<?= site_url('Lawson/edit/' . $lawson['id']) ?>'"><i class="ti ti-edit"></i> Edit Data</button>
                             <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('Lawson') ?>'">Kembali</button>
                         </div>
                     </form>
@@ -1249,7 +1281,7 @@
                 });
             }
             merkSel.addEventListener('change', () => refreshTypes());
-            refreshTypes();
+            refreshTypes(<?= (int) ($lawson['type_perangkat_id'] ?? 0) ?>);
         })();
 
         /* ════════════════════════════════════════════════
@@ -1323,157 +1355,98 @@
             updateMap();
         });
 
-        /* ════════════════════════════════════════════════
-           7. UPLOAD LAMPIRAN – multi file, maks 10
-           ════════════════════════════════════════════════ */
-        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
-        const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.pdf'];
-        const MAX_SIZE_BYTES = 5 * 1024 * 1024;
-        const MAX_FILES = 10;
-
-        const fileInput = document.getElementById('file_input');
-        const uploadZone = document.getElementById('upload_zone');
-        const previewDiv = document.getElementById('upload_preview');
-        const counterDiv = document.getElementById('file_counter');
-        const countSpan = document.getElementById('file_count');
-        let selectedFiles = [];
-
-        uploadZone.addEventListener('dragover', e => {
-            e.preventDefault();
-            uploadZone.classList.add('drag-over');
-        });
-        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-        uploadZone.addEventListener('drop', e => {
-            e.preventDefault();
-            uploadZone.classList.remove('drag-over');
-            if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-        });
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length) handleFiles(fileInput.files);
-            fileInput.value = '';
-        });
-
-        function generateRandomName(ext) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let name = '';
-            for (let i = 0; i < 20; i++) name += chars.charAt(Math.floor(Math.random() * chars.length));
-            return name + ext;
-        }
-
-        function formatSize(bytes) {
-            return bytes < 1024 * 1024 ? (bytes / 1024).toFixed(1) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB';
-        }
-
-        function handleFiles(fileList) {
-            const incoming = Array.from(fileList);
-            const errors = [];
-            const valid = [];
-            for (const file of incoming) {
-                const ext = '.' + file.name.split('.').pop().toLowerCase();
-                if (!ALLOWED_TYPES.includes(file.type) && !ALLOWED_EXTS.includes(ext)) {
-                    errors.push(`<b>${file.name}</b> — format tidak didukung`);
-                    continue;
-                }
-                if (file.size > MAX_SIZE_BYTES) {
-                    errors.push(`<b>${file.name}</b> — ukuran ${formatSize(file.size)} melebihi 5 MB`);
-                    continue;
-                }
-                if (selectedFiles.some(f => f.file.name === file.name && f.file.size === file.size)) {
-                    errors.push(`<b>${file.name}</b> — sudah ditambahkan`);
-                    continue;
-                }
-                valid.push({
-                    file,
-                    ext
-                });
-            }
-            const available = MAX_FILES - selectedFiles.length;
-            if (valid.length > available) {
-                const rejected = valid.splice(available);
-                rejected.forEach(f => errors.push(`<b>${f.file.name}</b> — batas 10 file tercapai`));
-            }
-            if (errors.length) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Beberapa File Ditolak',
-                    html: errors.map(e => `• ${e}`).join('<br>'),
-                    confirmButtonColor: '#185a82'
-                });
-            }
-            for (const {
-                    file,
-                    ext
-                }
-                of valid) {
-                selectedFiles.push({
-                    file,
-                    randomName: generateRandomName(ext)
-                });
-            }
-            renderPreview();
-        }
-
-        function renderPreview() {
-            previewDiv.innerHTML = '';
-            if (selectedFiles.length === 0) {
-                counterDiv.style.display = 'none';
-                return;
-            }
-            counterDiv.style.display = 'block';
-            countSpan.textContent = selectedFiles.length;
-            countSpan.style.color = selectedFiles.length >= MAX_FILES ? '#dc2626' : '#6b7280';
-            selectedFiles.forEach((item, index) => {
-                const ext = '.' + item.file.name.split('.').pop().toLowerCase();
-                const icon = ext === '.pdf' ? '📄' : '🖼️';
-                const div = document.createElement('div');
-                div.className = 'upload-preview';
-                div.style.marginTop = '6px';
-                div.innerHTML = `
-                    <span class="file-icon">${icon}</span>
-                    <span class="file-name">${item.randomName} <small style="color:#6b7280">(${item.file.name})</small></span>
-                    <span class="file-size">${formatSize(item.file.size)}</span>
-                    <span class="remove-file" data-index="${index}" title="Hapus file">✕</span>
-                `;
-                previewDiv.appendChild(div);
-            });
-            previewDiv.querySelectorAll('.remove-file').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    selectedFiles.splice(parseInt(btn.dataset.index), 1);
-                    renderPreview();
-                });
-            });
-        }
-
-        /* ════════════════════════════════════════════════
-           8. FORM SUBMIT – validasi final
-           ════════════════════════════════════════════════ */
-        document.getElementById('FormMidi').addEventListener('submit', function(e) {
-            const latVal = document.getElementById('latitude_input').value.trim();
-            const lngVal = document.getElementById('longitude_input').value.trim();
-            if (latVal || lngVal) {
-                const lat = parseFloat(latVal),
-                    lng = parseFloat(lngVal);
-                if (!isValidCoord(lat, lng)) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Koordinat Tidak Valid',
-                        text: 'Periksa kembali nilai Latitude dan Longitude.',
-                        confirmButtonColor: '#185a82'
-                    });
-                    return;
-                }
-            }
-            if (selectedFiles.length > 0) {
-                const dt = new DataTransfer();
-                selectedFiles.forEach(item => dt.items.add(item.file));
-                fileInput.files = dt.files;
-            }
-        }, true);
-
         <?php if (!session()->get('logged_in')) : ?>
             window.location.href = "<?= base_url('/login') ?>";
         <?php endif; ?>
+    </script>
+    <script>
+        /* ════════════════════════════════════════════════
+           INIT EDIT — tampilkan blok & auto-fill sesuai data tersimpan
+           ════════════════════════════════════════════════ */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tampilkan blok Non-Cellular / Cellular sesuai data
+            const mediaSel = document.getElementById('media_koneksi_select');
+            if (mediaSel && mediaSel.value !== '') {
+                mediaSel.dispatchEvent(new Event('change'));
+            }
+
+            // Set ulang pilihan tersimpan lalu auto-fill (dispatch change di atas
+            // TIDAK mengosongkan select yang sesuai jalurnya, hanya lawannya)
+            const inetSel = document.getElementById('kode_layanan_select');
+            if (inetSel && inetSel.value) fillNomorInet(inetSel.value);
+
+            const simSel = document.getElementById('kode_quota_select');
+            if (simSel && simSel.value) fillSimcard(simSel.value);
+
+            const vpnSel = document.getElementById('vpn_select');
+            if (vpnSel && vpnSel.value) fillVpn(vpnSel.value);
+
+            // Tampilkan peta jika koordinat sudah ada
+            const latEl = document.getElementById('latitude_input');
+            const lngEl = document.getElementById('longitude_input');
+            if (latEl && lngEl && latEl.value.trim() && lngEl.value.trim()) {
+                updateMap();
+            }
+        });
+
+        /* ════════════════════════════════════════════════
+           FILE LAMA — Preview & Hapus (fitur lama dipertahankan)
+           ════════════════════════════════════════════════ */
+        let existingFilesList = <?php
+                                if (!empty($lawson['upload_lampiran'])) {
+                                    $dec = json_decode($lawson['upload_lampiran'], true);
+                                    echo json_encode(is_array($dec) ? $dec : [$lawson['upload_lampiran']]);
+                                } else {
+                                    echo '[]';
+                                }
+                                ?>;
+
+        function previewFile(filename, ext) {
+            const fileUrl = '<?= site_url('Lawson/file/') ?>' + filename;
+
+            if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                Swal.fire({
+                    imageUrl: fileUrl,
+                    imageAlt: filename,
+                    width: '90vw',
+                    padding: '0',
+                    background: '#000',
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal-image-popup',
+                        closeButton: 'swal-image-close',
+                    },
+                    didOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const img = document.querySelector('.swal2-image');
+                        if (title) title.remove();
+                        if (img) {
+                            img.style.cssText = 'width:100%;max-height:90vh;object-fit:contain;margin:0;display:block;border-radius:0';
+                        }
+                    }
+                });
+            } else if (ext === 'pdf') {
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                a.download = filename;
+                a.click();
+            }
+        }
+    </script>
+    <script>
+        /* ════════════════════════════════════════════════
+           VIEW MODE — semua field hanya-baca
+           ════════════════════════════════════════════════ */
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#FormMidi input, #FormMidi select, #FormMidi textarea').forEach(function(el) {
+                if (el.type === 'hidden') return;
+                el.setAttribute('disabled', 'disabled');
+                el.removeAttribute('required');
+            });
+            // peta hanya untuk dilihat — nonaktifkan klik pindah titik
+            if (typeof map !== 'undefined') map.off('click');
+        });
     </script>
 </body>
 

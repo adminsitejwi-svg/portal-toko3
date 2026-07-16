@@ -13,13 +13,12 @@ class AlfamartModel extends BaseModel
         // relasi (Diambil Dari Master Data) -> simpan id
         'pemilik_projek_id',
         'nama_dc_id',
-        'media_koneksi_id',
-        'vendor_id',
-        'layanan_vendor_id',
+        'nomor_inet_id',
+        'simcard_id',
         'jenis_perangkat_id',
         'merk_perangkat_id',
-        'backup_media_koneksi',
-
+        'type_perangkat_id',
+        'vpn_id',
         // isi manual
         'nama_alfamart',
         'kode_toko',
@@ -30,11 +29,13 @@ class AlfamartModel extends BaseModel
         'nomor_hp_pic',
         'tanggal_installasi',
         'tanggal_aktivasi',
-        'kapasitas_bandwidth',
-        'ip_address',
-        'type_perangkat',
+        'media_koneksi',          // tinyint(1), default 1
+        'kategori_ip_address',    // enum: Static / Dynamic
+        'jenis_ip_address',       // enum: Public / Private
+        'ip_address_toko',
+        'type_koneksi',           // enum: IPSEC / L2TP / PPTP
         'serial_number_perangkat',
-        'status',
+        'status',                 // tinyint(1), default 0
         'keterangan',
         'upload_lampiran',
         'created_at',

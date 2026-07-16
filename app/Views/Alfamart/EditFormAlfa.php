@@ -1,14 +1,15 @@
 <?php
 
 /**
- * @var array $midi
+ * @var array $alfamart         Data toko yang sedang diedit
  * @var array $pemilik_projek
  * @var array $dc
- * @var array $media
- * @var array $vendor
- * @var array $layanan
  * @var array $jenis
  * @var array $perangkat
+ * @var array $type_perangkat
+ * @var array $nomor_inet   Data Penggunaan Nomor INET (sudah di-join sampai nama vendor)
+ * @var array $simcard      Data Penggunaan Simcard (sudah di-join sampai nama vendor)
+ * @var array $vpn          Master tujuan koneksi VPN
  */
 ?>
 <!doctype html>
@@ -25,388 +26,9 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- DataTables core + Buttons -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-
-
-        .page-wrapper {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        .page-header {
-            background: linear-gradient(135deg, #185a82 0%, #0f3d5c 100%);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .page-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .page-header .subtitle {
-            font-size: 13px;
-            opacity: .75;
-        }
-
-        .form-card {
-            background: #fff;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-            padding: 30px;
-        }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            color: #185a82;
-            border-left: 3px solid #185a82;
-            padding-left: 10px;
-            margin: 28px 0 16px;
-        }
-
-        .section-title:first-child {
-            margin-top: 0;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        label .req {
-            color: #e53e3e;
-            margin-left: 2px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 9px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #1f2937;
-            background: #fff;
-            transition: border-color .2s, box-shadow .2s;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #185a82;
-            box-shadow: 0 0 0 3px rgba(24, 90, 130, .12);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        /* Map */
-        .map-section {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .map-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 14px;
-            background: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .map-status {
-            padding: 6px 14px;
-            background: #f0f9ff;
-            border-bottom: 1px solid #bae6fd;
-            font-size: 12px;
-            color: #0369a1;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-height: 30px;
-        }
-
-        .map-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #94a3b8;
-            flex-shrink: 0;
-            transition: background .3s;
-        }
-
-        .map-status.found .dot {
-            background: #22c55e;
-        }
-
-        .map-status.error .dot {
-            background: #ef4444;
-        }
-
-        #map {
-            height: 340px;
-            width: 100%;
-        }
-
-        /* Bandwidth */
-        .bandwidth-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-
-        .bandwidth-row select {
-            flex: 1;
-        }
-
-        .btn-add-bw {
-            white-space: nowrap;
-            padding: 9px 14px;
-            background: #185a82;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            height: 38px;
-        }
-
-        .btn-add-bw:hover {
-            background: #0f3d5c;
-        }
-
-        /* Upload */
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color .2s, background .2s;
-            position: relative;
-        }
-
-        .upload-zone:hover,
-        .upload-zone.drag-over {
-            border-color: #185a82;
-            background: #f0f8ff;
-        }
-
-        .upload-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-
-        .upload-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .upload-text {
-            font-size: 14px;
-            color: #374151;
-            font-weight: 600;
-        }
-
-        .upload-hint {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-top: 4px;
-        }
-
-        .upload-preview {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 6px;
-            margin-top: 6px;
-        }
-
-        .upload-preview .file-icon {
-            font-size: 20px;
-        }
-
-        .upload-preview .file-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: #166534;
-            flex: 1;
-            word-break: break-all;
-        }
-
-        .upload-preview .file-size {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .upload-preview .remove-file {
-            cursor: pointer;
-            color: #dc2626;
-            font-size: 16px;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .upload-preview .remove-file:hover {
-            background: #fee2e2;
-        }
-
-        .existing-file {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 6px;
-            margin-bottom: 4px;
-            font-size: 12px;
-            color: #1d4ed8;
-        }
-
-        /* Action bar */
-        .action-bar {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .btn-save {
-            flex: 1;
-            padding: 12px;
-            background: linear-gradient(135deg, #185a82, #0f3d5c);
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-save:hover {
-            opacity: .9;
-        }
-
-        .btn-back {
-            padding: 12px 24px;
-            background: #6b7280;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-back:hover {
-            background: #4b5563;
-        }
-
-        @media (max-width: 900px) {
-            .grid-3 {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 640px) {
-
-            .grid-2,
-            .grid-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .map-inputs {
-                grid-template-columns: 1fr;
-            }
-
-            .form-card {
-                padding: 18px;
-            }
-        }
-
-        /* SweetAlert image fullscreen */
-        .swal-image-popup {
-            border-radius: 10px !important;
-            overflow: hidden !important;
-            padding: 0 !important;
-        }
-
-        .swal-image-close {
-            color: #fff !important;
-            background: rgba(0, 0, 0, .5) !important;
-            border-radius: 50% !important;
-            width: 32px !important;
-            height: 32px !important;
-            font-size: 18px !important;
-            position: absolute !important;
-            top: 10px !important;
-            right: 10px !important;
-            z-index: 10 !important;
-        }
-
-        .swal-image-close:hover {
-            background: rgba(0, 0, 0, .8) !important;
-        }
-    </style>
 
     <script>
         tailwind.config = {
@@ -464,23 +86,6 @@
             background: #3a4658
         }
 
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 20px 0 rgba(69, 90, 100, .08);
-            margin-bottom: 24px;
-        }
-
-        .dark .card {
-            background: #263240;
-            color: #bfc8d6;
-            box-shadow: none
-        }
-
-        .card-body {
-            padding: 25px
-        }
-
         .pc-sidebar {
             transition: transform .25s ease, width .25s ease
         }
@@ -528,286 +133,403 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        #mediaKoneksiTable {
-            width: 100% !important;
-            border-collapse: collapse;
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        #mediaKoneksiTable thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
+        .page-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
         }
 
-        .dark #mediaKoneksiTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        #mediaKoneksiTable tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark #mediaKoneksiTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        #mediaKoneksiTable tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark #mediaKoneksiTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        #mediaKoneksiTable tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark #mediaKoneksiTable tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        /* sembunyikan search bawaan, pakai custom */
-        .dataTables_filter {
-            display: none;
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
+        .page-header {
+            background: linear-gradient(135deg, #185a82 0%, #0f3d5c 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px 10px 0 0;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 12px;
+        }
+
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        .form-card {
+            background: #fff;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: #185a82;
+            border-left: 3px solid #185a82;
+            padding-left: 10px;
+            margin: 28px 0 16px;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .section-note {
             font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
+            color: #6b7280;
+            margin: -10px 0 16px 13px;
+            font-style: italic;
         }
 
-        .custom-search .go-btn:hover {
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .col-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        label .req {
+            color: #e53e3e;
+            margin-left: 2px;
+        }
+
+        label .auto {
             color: #04a9f5;
+            font-weight: 500;
+            font-size: 11px;
+            margin-left: 4px;
         }
 
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1f2937;
+            background: #fff;
+            transition: border-color .2s, box-shadow .2s;
         }
 
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #185a82;
+            box-shadow: 0 0 0 3px rgba(24, 90, 130, .12);
         }
 
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
+        input[readonly],
+        input:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
         }
 
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
+        .vendor-box {
+            border: 1px solid #dbeafe;
+            background: #f8fbff;
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 4px;
         }
 
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
+        .vendor-box .grid-3 {
+            margin-top: 0;
         }
 
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
+        .vendor-box-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #185a82;
+            margin-bottom: 12px;
+            display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        .empty-hint {
+            font-size: 13px;
+            color: #9ca3af;
+            padding: 10px 4px;
+        }
+
+        .map-section {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .map-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 14px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .map-status {
+            padding: 6px 14px;
+            background: #f0f9ff;
+            border-bottom: 1px solid #bae6fd;
+            font-size: 12px;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 30px;
+        }
+
+        .map-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            flex-shrink: 0;
+            transition: background .3s;
+        }
+
+        .map-status.found .dot {
+            background: #22c55e;
+        }
+
+        .map-status.error .dot {
+            background: #ef4444;
+        }
+
+        #map {
+            height: 340px;
+            width: 100%;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
             cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
+            transition: border-color .2s, background .2s;
+            position: relative;
         }
 
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: #185a82;
+            background: #f0f8ff;
         }
 
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
         }
 
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
         }
 
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
+        .upload-text {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 600;
         }
 
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
+        .upload-hint {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .upload-preview {
+            display: flex;
             align-items: center;
             gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
+            padding: 10px 14px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            margin-top: 10px;
         }
 
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
+        .upload-preview .file-icon {
+            font-size: 20px;
         }
 
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
+        .upload-preview .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #166534;
+            flex: 1;
+            word-break: break-all;
         }
 
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
+        .upload-preview .file-size {
+            font-size: 12px;
+            color: #6b7280;
         }
 
-        /* ===== SCROLL HORIZONTAL DI MOBILE ===== */
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+        .upload-preview .remove-file {
+            cursor: pointer;
+            color: #dc2626;
+            font-size: 16px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background .2s;
         }
 
-        .table-scroll table {
-            min-width: 760px;
+        .upload-preview .remove-file:hover {
+            background: #fee2e2;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #185a82, #0f3d5c);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: .3px;
+            transition: opacity .2s, transform .1s;
+        }
+
+        .btn-save:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+        }
+
+        .btn-back {
+            padding: 12px 24px;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+        }
+
+        @media (max-width: 900px) {
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .map-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 18px;
+            }
         }
 
         .brand-text {
             font-size: 18px;
+        }
+    </style>
+    <style>
+        .existing-file {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #1d4ed8;
+        }
+
+        .swal-image-popup {
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+        }
+
+        .swal-image-close {
+            color: #fff !important;
+            background: rgba(0, 0, 0, .5) !important;
+            border-radius: 50% !important;
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 18px !important;
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            z-index: 10 !important;
+        }
+
+        .swal-image-close:hover {
+            background: rgba(0, 0, 0, .8) !important;
         }
     </style>
 </head>
@@ -925,7 +647,7 @@
                         <li><a href="<?= site_url('DCAdmin') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">DC</a></li>
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
-                        <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pelanggan</a></li>
+                        <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
                         <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
                         <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
                         <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
@@ -959,7 +681,7 @@
                             <i class="ti ti-report-search"></i>
                         </span>
 
-                        <span>Case Lock</span>
+                        <span>Change Log</span>
 
                     </a>
                 </li>
@@ -970,17 +692,11 @@
 
     <!-- ============ MAIN ============ -->
     <div id="container" class="pc-container ml-sidebar min-h-screen transition-[margin] duration-200">
-
-        <!-- HEADER -->
         <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
             <ul class="flex items-center gap-1">
                 <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
             </ul>
-
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
@@ -1004,246 +720,94 @@
 
         <div class="p-6">
             <div class="page-wrapper">
-
                 <div class="page-header">
                     <div>
                         <h2>Edit Data Toko Alfamart</h2>
-                        <div class="subtitle">ID: <?= $midi['id'] ?> • <?= esc($midi['nama_alfamart']) ?></div>
+                        <div style="font-size:13px;opacity:.75">ID: <?= $alfamart['id'] ?> &bull; <?= esc($alfamart['nama_alfamart']) ?></div>
                     </div>
                 </div>
 
                 <div class="form-card">
-                    <form action="<?= site_url('Alfamart/update') ?>" method="POST" id="FormEditMidi" enctype="multipart/form-data">
+                    <form action="<?= site_url('Alfamart/update') ?>" method="POST" id="FormMidi" enctype="multipart/form-data">
                         <?= csrf_field() ?>
-                        <input type="hidden" name="id" value="<?= $midi['id'] ?>">
+                        <input type="hidden" name="id" value="<?= $alfamart['id'] ?>">
 
-                        <!-- ═══ INFORMASI TOKO ═══ -->
-                        <div class="section-title">Informasi Toko</div>
-                        <div class="grid-3">
-                            <div class="form-group">
-                                <label>Nama Alfamart <span class="req">*</span></label>
-                                <input type="text" name="nama_alfamart"
-                                    value="<?= esc($midi['nama_alfamart']) ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Kode Toko <span class="req">*</span></label>
-                                <input type="text" name="kode_toko"
-                                    value="<?= esc($midi['kode_toko']) ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Alamat Toko <span class="req">*</span></label>
-                                <input type="text" name="alamat_alfamart"
-                                    value="<?= esc($midi['alamat_alfamart']) ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label>PIC Toko <span class="req">*</span></label>
-                                <input type="text" name="pic_toko"
-                                    value="<?= esc($midi['pic_toko']) ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Nomor HP PIC <span class="req">*</span></label>
-                                <input type="text" name="nomor_hp_pic"
-                                    value="<?= esc($midi['nomor_hp_pic']) ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Status <span class="req">*</span></label>
-                                <select name="status" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih Status —</option>
-                                    <option value="0" <?= $midi['status'] == '0'     ? 'selected' : '' ?>>Aktif</option>
-                                    <option value="1" <?= $midi['status'] == '1' ? 'selected' : '' ?>>Non Aktif</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- ═══ RELASI MASTER DATA ═══ -->
-                        <div class="section-title">Data Vendor</div>
-                        <div class="grid-2">
-
-                            <div class="form-group">
-                                <label>Vendor <span class="req">*</span></label>
-                                <select name="vendor_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih —</option>
-                                    <?php foreach ($vendor as $row): ?>
-                                        <option value="<?= $row['id'] ?>"
-                                            <?= $midi['vendor_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['nama_vendor']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Layanan Vendor <span class="req">*</span></label>
-                                <select name="layanan_vendor_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih —</option>
-                                    <?php foreach ($layanan as $row): ?>
-                                        <option value="<?= $row['id'] ?>"
-                                            <?= $midi['layanan_vendor_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['nama_layanan']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                        </div>
-                        <div class="section-title">Data Perangkat</div>
+                        <!-- ═══ A. INFORMASI TOKO ═══ -->
+                        <div class="section-title">DATA TOKO</div>
                         <div class="grid-3">
                             <div class="form-group">
                                 <label>Pemilik Project <span class="req">*</span></label>
                                 <select name="pemilik_projek_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($pemilik_projek as $row): ?>
-                                        <option value="<?= $row['id'] ?>"
-                                            <?= $midi['pemilik_projek_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['nama_pemilik']) ?>
-                                        </option>
+                                        <option value="<?= $row['id'] ?>" <?= $alfamart['pemilik_projek_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['nama_pemilik']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Alfamart <span class="req">*</span></label>
+                                <input type="text" name="nama_alfamart" value="<?= esc($alfamart['nama_alfamart']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Kode Toko <span class="req">*</span></label>
+                                <input type="text" name="kode_toko" value="<?= esc($alfamart['kode_toko']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat Toko <span class="req">*</span></label>
+                                <input type="text" name="alamat_alfamart" value="<?= esc($alfamart['alamat_alfamart']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>DC <span class="req">*</span></label>
                                 <select name="nama_dc_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     <option value="">— Pilih —</option>
                                     <?php foreach ($dc as $row): ?>
-                                        <option value="<?= $row['id'] ?>"
-                                            <?= $midi['nama_dc_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['nama_dc']) ?>
-                                        </option>
+                                        <option value="<?= $row['id'] ?>" <?= $alfamart['nama_dc_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['nama_dc']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Jenis Perangkat <span class="req">*</span></label>
-                                <select name="jenis_perangkat_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih —</option>
-                                    <?php foreach ($jenis as $row): ?>
-                                        <option value="<?= $row['id'] ?>"
-                                            <?= $midi['jenis_perangkat_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['jenis_perangkat']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <label>PIC Toko <span class="req">*</span></label>
+                                <input type="text" name="pic_toko" value="<?= esc($alfamart['pic_toko']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
-                                <label>Merk Perangkat <span class="req">*</span></label>
-                                <select name="merk_perangkat_id" id="merk_perangkat_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih —</option>
-                                    <?php foreach ($perangkat as $row): ?>
-                                        <option value="<?= $row['id'] ?>" <?= $midi['merk_perangkat_id'] == $row['id'] ? 'selected' : '' ?>>
-                                            <?= esc($row['merk_perangkat']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <label>Nomor HP PIC <span class="req">*</span></label>
+                                <input type="text" name="nomor_hp_pic" id="nomor_hp_pic" value="<?= esc($alfamart['nomor_hp_pic']) ?>"
+                                    placeholder="Masukan Nomor HP PIC"
+                                    inputmode="numeric" pattern="[0-9]*" maxlength="15"
+                                    required
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
-                                <label>Type Perangkat <span class="req">*</span></label>
-                                <select name="type_perangkat" id="type_perangkat_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    <option value="">— Pilih —</option>
-                                </select>
+                                <label>Tanggal Instalasi <span class="req">*</span></label>
+                                <input type="date" name="tanggal_installasi" value="<?= esc($alfamart['tanggal_installasi']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
-                                <label>Media Koneksi <span class="req">*</span></label>
-                                <?php $hasBackup = !empty($midi['backup_media_koneksi']); ?>
-                                <div style="display:flex; gap:10px; align-items:flex-end;">
-                                    <!-- Media koneksi utama -->
-                                    <select name="media_koneksi_id" id="media_koneksi_select" required
-                                        class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                        style="flex:1;">
-                                        <option value="">— Pilih —</option>
-                                        <?php foreach ($media as $row): ?>
-                                            <option value="<?= $row['id'] ?>"
-                                                <?= $midi['media_koneksi_id'] == $row['id'] ? 'selected' : '' ?>>
-                                                <?= esc($row['media_koneksi']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                <label>Tanggal Aktivasi <span class="req">*</span></label>
+                                <input type="date" name="tanggal_aktivasi" value="<?= esc($alfamart['tanggal_aktivasi']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
 
-                                    <!-- Backup koneksi: text input, otomatis tampil kalau sudah ada datanya -->
-                                    <div id="backup_wrapper"
-                                        style="flex:1; <?= $hasBackup ? 'display:flex' : 'display:none' ?>; flex-direction:column; gap:5px;">
-                                        <input type="text" name="backup_media_koneksi" id="backup_media_koneksi_input"
-                                            value="<?= esc($midi['backup_media_koneksi'] ?? '') ?>"
-                                            placeholder="Masukan Backup"
-                                            <?= $hasBackup ? 'required' : '' ?>
-                                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
-
-                        <!-- ═══ DETAIL PERANGKAT & JARINGAN ═══ -->
-                        <div class="section-title">Detail Perangkat & Jaringan</div>
-                        <div class="grid-3">
-                            <div class="form-group">
-                                <label>IP Address</label>
-                                <input type="text" name="ip_address"
-                                    value="<?= esc($midi['ip_address']) ?>" placeholder="192.168.x.x">
-                            </div>
-
-                            <div class="form-group" style="grid-column: span 2">
-                                <label>Serial Number Perangkat</label>
-                                <input type="text" name="serial_number_perangkat"
-                                    value="<?= esc($midi['serial_number_perangkat']) ?>" placeholder="S/N perangkat">
-                            </div>
-                            <div class="form-group">
-                                <label>Tanggal Instalasi</label>
-                                <input type="date" name="tanggal_installasi"
-                                    value="<?= esc($midi['tanggal_installasi']) ?>">
-                            </div>
-                            <div class="form-group">
-                                <label>Tanggal Aktivasi</label>
-                                <input type="date" name="tanggal_aktivasi"
-                                    value="<?= esc($midi['tanggal_aktivasi']) ?>">
-                            </div>
-                            <div class="form-group">
-                                <label>Kapasitas Bandwidth <span class="req">*</span></label>
-                                <div class="bandwidth-row">
-                                    <select name="kapasitas_bandwidth" id="kapasitas_bandwidth" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        <option value="">— Pilih —</option>
-                                        <?php
-                                        $bwOptions = ['1 Mbps', '2 Mbps', '5 Mbps', '10 Mbps', '20 Mbps', '50 Mbps', '100 Mbps'];
-                                        // Tambahkan nilai dari DB jika tidak ada di daftar
-                                        if (!empty($midi['kapasitas_bandwidth']) && !in_array($midi['kapasitas_bandwidth'], $bwOptions)) {
-                                            $bwOptions[] = $midi['kapasitas_bandwidth'];
-                                        }
-                                        foreach ($bwOptions as $bw):
-                                        ?>
-                                            <option value="<?= $bw ?>"
-                                                <?= $midi['kapasitas_bandwidth'] == $bw ? 'selected' : '' ?>>
-                                                <?= $bw ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <button type="button" class="btn-add-bw" id="btn_add_bw">+ Baru</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ═══ MAP / TITIK KOOR ═══ -->
                         <div class="section-title">Titik Koordinat & Peta</div>
                         <div class="map-section">
                             <div class="map-inputs">
                                 <?php
                                 $lat = '';
                                 $lng = '';
-                                if (!empty($midi['titik_koor_toko'])) {
-                                    [$lat, $lng] = array_map('trim', explode(',', $midi['titik_koor_toko']));
+                                if (!empty($alfamart['titik_koor_toko']) && strpos($alfamart['titik_koor_toko'], ',') !== false) {
+                                    [$lat, $lng] = array_map('trim', explode(',', $alfamart['titik_koor_toko'], 2));
                                 }
                                 ?>
                                 <div class="form-group">
-                                    <label>Latitude</label>
-                                    <input type="text" id="latitude_input" value="<?= esc($lat) ?>"
-                                        placeholder="Cth: -6.200000" autocomplete="off">
+                                    <label>Latitude <span class="req">*</span></label>
+                                    <input type="text" id="latitude_input" value="<?= esc($lat) ?>" placeholder="-6.200000" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label>Longitude</label>
-                                    <input type="text" id="longitude_input" value="<?= esc($lng) ?>"
-                                        placeholder="Cth: 106.816666" autocomplete="off">
+                                    <label>Longitude <span class="req">*</span></label>
+                                    <input type="text" id="longitude_input" value="<?= esc($lng) ?>" placeholder="106.816666" autocomplete="off">
                                 </div>
-                                <input type="hidden" name="titik_koor_toko" id="titik_koor_toko"
-                                    value="<?= esc($midi['titik_koor_toko']) ?>">
-                                <input type="hidden" name="map_toko" id="map_toko"
-                                    value="<?= esc($midi['map_toko']) ?>">
+                                <input type="hidden" name="titik_koor_toko" id="titik_koor_toko" value="<?= esc($alfamart['titik_koor_toko']) ?>">
+                                <input type="hidden" name="map_toko" id="map_toko" value="<?= esc($alfamart['map_toko']) ?>">
                             </div>
                             <div class="map-status" id="map_status">
                                 <span class="dot"></span>
@@ -1252,24 +816,223 @@
                             <div id="map"></div>
                         </div>
 
+                        <!-- ═══ B. DATA VENDOR ═══ -->
+                        <div class="section-title">Data Vendor</div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Media Koneksi <span class="req">*</span></label>
+                                <select name="media_koneksi" id="media_koneksi_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <option value="0" <?= (string)($alfamart['media_koneksi'] ?? '') === '0' ? 'selected' : '' ?>>Non Cellular</option>
+                                    <option value="1" <?= (string)($alfamart['media_koneksi'] ?? '') === '1' ? 'selected' : '' ?>>Cellular</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ── Blok Non-Cellular ── -->
+                        <div class="vendor-box mt-4" id="box_non_cellular" style="display:none">
+                            <div class="vendor-box-title"><i class="ti ti-wifi"></i> Data Penggunaan Nomor INET</div>
+                            <?php if (empty($nomor_inet)): ?>
+                                <div class="empty-hint">Belum ada data penggunaan Nomor INET yang aktif. Tambahkan dulu lewat menu <b>Nomor Inet</b>.</div>
+                            <?php else: ?>
+                                <div class="grid-3">
+                                    <div class="form-group">
+                                        <label>Kode Layanan Vendor <span class="req">*</span></label>
+                                        <select id="kode_layanan_select" name="nomor_inet_id" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <option value="">— Pilih —</option>
+                                            <?php foreach ($nomor_inet as $row): ?>
+                                                <option value="<?= $row['usage_id'] ?>" <?= $alfamart['nomor_inet_id'] == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_layanan_vendor']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ID Pelanggan / No.INET <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_id_pelanggan" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password INET <span class="auto">(auto)</span></label>
+                                        <div style="position:relative">
+                                            <input type="password" id="disp_password_inet" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none" style="padding-right:44px">
+                                            <button type="button" id="toggle_password_inet" title="Lihat / sembunyikan password"
+                                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#6b7280;font-size:17px;padding:0;line-height:1">
+                                                <i class="ti ti-eye" id="toggle_password_icon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_vendor_inet" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Layanan Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_layanan" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Harga Layanan <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_harga_layanan" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kecepatan / Bandwidth <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_kecepatan_bandwidth" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- ── Blok Cellular ── -->
+                        <div class="vendor-box mt-4" id="box_cellular" style="display:none">
+                            <div class="vendor-box-title"><i class="ti ti-antenna"></i> Data Penggunaan Simcard</div>
+                            <?php if (empty($simcard)): ?>
+                                <div class="empty-hint">Belum ada data penggunaan Simcard yang aktif. Tambahkan dulu lewat menu <b>Simcard</b>.</div>
+                            <?php else: ?>
+                                <div class="grid-3">
+                                    <div class="form-group">
+                                        <label>Kode Quota SimCard <span class="req">*</span></label>
+                                        <select id="kode_quota_select" name="simcard_id" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <option value="">— Pilih —</option>
+                                            <?php foreach ($simcard as $row): ?>
+                                                <option value="<?= $row['usage_id'] ?>" <?= $alfamart['simcard_id'] == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_quota_simcard']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nomor MSISDN <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nomor_msisdn" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nomor ISSID / IMEI <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nomor_imei" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_vendor_simcard" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Paket Data <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_paket_data" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Harga Paket Quota <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_harga_quota" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Isi Quota Internet Sim Card ( Gbps / Mbps / Kbps ) <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_quota_internet" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- ═══ C. DATA TEKNIS ═══ -->
+                        <div class="section-title">Data Teknis</div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Jenis Perangkat <span class="req">*</span></label>
+                                <select name="jenis_perangkat_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <?php foreach ($jenis as $row): ?>
+                                        <option value="<?= $row['id'] ?>" <?= $alfamart['jenis_perangkat_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['jenis_perangkat']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Merk Perangkat <span class="req">*</span></label>
+                                <select name="merk_perangkat_id" id="merk_perangkat_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <?php foreach ($perangkat as $row): ?>
+                                        <option value="<?= $row['id'] ?>" <?= $alfamart['merk_perangkat_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['merk_perangkat']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Type Perangkat <span class="req">*</span></label>
+                                <select name="type_perangkat_id" id="type_perangkat_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih Merk dulu —</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kategori IP Address <span class="req">*</span></label>
+                                <select name="kategori_ip_address" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <option value="Static" <?= $alfamart['kategori_ip_address'] == 'Static' ? 'selected' : '' ?>>Static</option>
+                                    <option value="Dynamic" <?= $alfamart['kategori_ip_address'] == 'Dynamic' ? 'selected' : '' ?>>Dynamic</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis IP Address <span class="req">*</span></label>
+                                <select name="jenis_ip_address" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <option value="Public" <?= $alfamart['jenis_ip_address'] == 'Public' ? 'selected' : '' ?>>Public</option>
+                                    <option value="Private" <?= $alfamart['jenis_ip_address'] == 'Private' ? 'selected' : '' ?>>Private</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>IP Address Toko <span class="req">*</span></label>
+                                <input type="text" name="ip_address_toko" id="ip_address_toko" value="<?= esc($alfamart['ip_address_toko']) ?>"
+                                    placeholder="Masukan IP Address Toko"
+                                    inputmode="numeric" pattern="[0-9.]*" maxlength="15"
+                                    required
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Type Koneksi <span class="req">*</span></label>
+                                <select name="type_koneksi" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <option value="IPSEC" <?= $alfamart['type_koneksi'] == 'IPSEC' ? 'selected' : '' ?>>IPSEC</option>
+                                    <option value="L2TP" <?= $alfamart['type_koneksi'] == 'L2TP' ? 'selected' : '' ?>>L2TP</option>
+                                    <option value="PPTP" <?= $alfamart['type_koneksi'] == 'PPTP' ? 'selected' : '' ?>>PPTP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kode Tujuan Koneksi (VPN) <span class="req">*</span></label>
+                                <select name="vpn_id" id="vpn_select" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih —</option>
+                                    <?php foreach ($vpn as $row): ?>
+                                        <option value="<?= $row['id'] ?>" <?= $alfamart['vpn_id'] == $row['id'] ? 'selected' : '' ?>><?= esc($row['kode_tujuan_koneksi']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Tujuan Koneksi <span class="auto">(auto)</span></label>
+                                <input type="text" id="disp_tujuan_koneksi" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>IP Address Tujuan <span class="auto">(auto)</span></label>
+                                <input type="text" id="disp_ip_address_tujuan" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Serial Number Perangkat <span class="req">*</span></label>
+                                <input type="text" name="serial_number_perangkat" value="<?= esc($alfamart['serial_number_perangkat']) ?>" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Status <span class="req">*</span></label>
+                                <select name="status" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Pilih Status —</option>
+                                    <option value="0" <?= (string)$alfamart['status'] === '0' ? 'selected' : '' ?>>Aktif</option>
+                                    <option value="1" <?= (string)$alfamart['status'] === '1' ? 'selected' : '' ?>>Non Aktif</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ═══ MAP / TITIK KOOR ═══ -->
+
+
                         <!-- ═══ KETERANGAN & LAMPIRAN ═══ -->
                         <div class="section-title">Keterangan & Lampiran</div>
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Keterangan <span class="req">*</span></label>
-                                <textarea name="keterangan" rows="4" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($midi['keterangan']) ?></textarea>
+                                <textarea name="keterangan" rows="4" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($alfamart['keterangan']) ?></textarea>
                             </div>
                             <div class="form-group">
-                                <label>Upload Lampiran
-                                    <small style="font-weight:400;color:#6b7280">(JPG/PNG/PDF • Maks. 10 file • 5MB/file)</small>
+                                <label>
+                                    Upload Lampiran
+                                    <small style="font-weight:400;color:#6b7280">(JPG / PNG / PDF • Maks. 10 file • 5 MB/file)</small>
                                 </label>
-
-                                <!-- File lama -->
-                                <!-- File lama -->
-                                <?php if (!empty($midi['upload_lampiran'])): ?>
+                                <?php if (!empty($alfamart['upload_lampiran'])): ?>
                                     <?php
-                                    $decoded = json_decode($midi['upload_lampiran'], true);
-                                    $existingFiles = is_array($decoded) ? $decoded : [$midi['upload_lampiran']];
+                                    $decoded = json_decode($alfamart['upload_lampiran'], true);
+                                    $existingFiles = is_array($decoded) ? $decoded : [$alfamart['upload_lampiran']];
                                     ?>
                                     <div id="existing_files_wrap">
                                         <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:6px">
@@ -1296,21 +1059,18 @@
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
-                                    <!-- Hidden: kirim daftar file lama yang masih dipertahankan -->
                                     <input type="hidden" name="existing_files" id="existing_files_input"
-                                        value="<?= esc($midi['upload_lampiran']) ?>">
+                                        value="<?= esc($alfamart['upload_lampiran']) ?>">
                                 <?php endif; ?>
 
-                                <!-- Upload baru -->
                                 <div class="upload-zone" id="upload_zone">
-                                    <input type="file" name="file_input[]" id="file_input"
-                                        accept=".jpg,.jpeg,.png,.pdf" multiple>
+                                    <input type="file" name="file_input[]" id="file_input" accept=".jpg,.jpeg,.png,.pdf" multiple>
                                     <div class="upload-icon">📂</div>
                                     <div class="upload-text">Klik atau seret file ke sini</div>
                                     <div class="upload-hint">Format: JPG, PNG, PDF • Maks. 10 file • 5 MB per file</div>
                                 </div>
                                 <div id="file_counter" style="font-size:12px;color:#6b7280;margin-top:4px;display:none">
-                                    <span id="file_count">0</span>/10 file baru dipilih
+                                    <span id="file_count">0</span>/10 file dipilih
                                 </div>
                                 <div id="upload_preview"></div>
                             </div>
@@ -1318,76 +1078,271 @@
 
                         <div class="action-bar">
                             <button type="submit" class="btn-save">Simpan Perubahan</button>
-                            <button type="button" class="btn-back"
-                                onclick="window.location.href='<?= site_url('Alfamart') ?>'">
-                                Kembali
-                            </button>
+                            <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('Alfamart') ?>'">Kembali</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
+        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+        });
+        /* ════════════════════════════════════════════════
+   0. HELPER — Format angka ke ribuan (10000 -> 10.000)
+   ════════════════════════════════════════════════ */
+        function formatRibuan(angka) {
+            if (angka === null || angka === undefined || angka === '') return '';
+            // ubah ke angka dulu (menangani "100000.00", "100000", 100000, dll)
+            const floatVal = parseFloat(angka);
+            if (isNaN(floatVal)) return '';
+            // bulatkan ke integer (buang desimal), lalu format ribuan
+            const intVal = Math.round(floatVal);
+            return intVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        /* ════════════════════════════════════════════════
+   9. RESTRICT INPUT — Nomor HP PIC & IP Address Toko
+   ════════════════════════════════════════════════ */
+        (function() {
+            const hpInput = document.getElementById('nomor_hp_pic');
+            const ipInput = document.getElementById('ip_address_toko');
+
+            if (hpInput) {
+                hpInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+
+            if (ipInput) {
+                ipInput.addEventListener('input', function() {
+                    // izinkan angka dan titik saja (format IP)
+                    this.value = this.value.replace(/[^0-9.]/g, '');
+                });
+            }
+        })();
+        // ---- Sidebar ----
+        let collapsed = false;
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar'),
+                c = document.getElementById('container');
+            if (window.innerWidth < 1024) {
+                sb.classList.toggle('mobile-open');
+            } else {
+                collapsed = !collapsed;
+                if (collapsed) {
+                    sb.style.transform = 'translateX(-100%)';
+                    c.classList.remove('ml-sidebar');
+                    c.style.marginLeft = '0';
+                } else {
+                    sb.style.transform = 'translateX(0)';
+                    c.style.marginLeft = '';
+                    c.classList.add('ml-sidebar');
+                }
+            }
+        }
+
+        function toggleDrop(e, el) {
+            e.preventDefault();
+            e.stopPropagation();
+            const menu = el.parentElement.querySelector('.dropdown-menu');
+            const isOpen = menu.classList.contains('show');
+            document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+            if (!isOpen) menu.classList.add('show');
+        }
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 1024) {
+                const sb = document.getElementById('sidebar');
+                const menuBtn = e.target.closest('[onclick*="toggleSidebar"]');
+                if (sb.classList.contains('mobile-open') && !sb.contains(e.target) && !menuBtn) sb.classList.remove('mobile-open');
+            }
+            document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+        });
+
+        function toggleSub(el) {
+            const parent = el.closest('.hasmenu');
+            const sub = parent.querySelector('.submenu');
+            const arrow = parent.querySelector('.arrow');
+            sub.classList.toggle('open');
+            if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+        feather.replace();
+    </script>
+
+    <script>
+        /* ════════════════════════════════════════════════
+           1. MEDIA KONEKSI — toggle blok Non-Cellular / Cellular
+           ════════════════════════════════════════════════ */
         (function() {
             const mediaSel = document.getElementById('media_koneksi_select');
-            const backupWrap = document.getElementById('backup_wrapper');
-            const backupInp = document.getElementById('backup_media_koneksi_input');
-            if (!mediaSel) return;
+            const boxNonCell = document.getElementById('box_non_cellular');
+            const boxCell = document.getElementById('box_cellular');
+            const nomorInetSel = document.getElementById('kode_layanan_select');
+            const simcardSel = document.getElementById('kode_quota_select');
 
-            function hideBackup() {
-                backupWrap.style.display = 'none';
-                backupInp.value = '';
-                backupInp.removeAttribute('required');
+            function setRequired(select, isRequired) {
+                if (!select) return;
+                if (isRequired) select.setAttribute('required', 'required');
+                else select.removeAttribute('required');
             }
 
-            function showBackup() {
-                backupWrap.style.display = 'flex';
-                backupInp.setAttribute('required', 'required');
-                backupInp.value = ''; // kosong / polos
-                backupInp.focus();
+            function showNonCellular() {
+                boxNonCell.style.display = 'block';
+                boxCell.style.display = 'none';
+                setRequired(nomorInetSel, true);
+                setRequired(simcardSel, false);
+                if (simcardSel) simcardSel.value = '';
+                fillSimcard('');
             }
 
-            // hanya jalan saat user MENGUBAH dropdown, bukan saat halaman dibuka
-            mediaSel.addEventListener('change', function() {
-                if (!mediaSel.value) {
-                    hideBackup();
+            function showCellular() {
+                boxCell.style.display = 'block';
+                boxNonCell.style.display = 'none';
+                setRequired(simcardSel, true);
+                setRequired(nomorInetSel, false);
+                if (nomorInetSel) nomorInetSel.value = '';
+                fillNomorInet('');
+            }
+
+            function hideAll() {
+                boxNonCell.style.display = 'none';
+                boxCell.style.display = 'none';
+                setRequired(nomorInetSel, false);
+                setRequired(simcardSel, false);
+            }
+
+            if (mediaSel) {
+                mediaSel.addEventListener('change', function() {
+                    if (mediaSel.value === '0') showNonCellular();
+                    else if (mediaSel.value === '1') showCellular();
+                    else hideAll();
+                });
+            }
+        })();
+
+        /* ════════════════════════════════════════════════
+           2. AUTO-FILL — Data Penggunaan Nomor INET
+           ════════════════════════════════════════════════ */
+        const ALL_NOMOR_INET = <?= json_encode($nomor_inet ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+        function fillNomorInet(usageId) {
+            const item = ALL_NOMOR_INET.find(x => String(x.usage_id) === String(usageId));
+            // sinkronkan dropdown Kode Layanan (untuk init edit) + isi ID Pelanggan/No.INET otomatis
+            const kodeLayananSelEl = document.getElementById('kode_layanan_select');
+            if (kodeLayananSelEl && String(kodeLayananSelEl.value) !== String(usageId)) {
+                kodeLayananSelEl.value = item ? String(usageId) : '';
+            }
+            document.getElementById('disp_id_pelanggan').value = item ? (item.id_pelanggan || item.nomor_inet || '') : '';
+            document.getElementById('disp_password_inet').value = item ? (item.password_inet || '') : '';
+            document.getElementById('disp_nama_vendor_inet').value = item ? (item.nama_vendor || '') : '';
+            document.getElementById('disp_nama_layanan').value = item ? (item.nama_layanan || '') : '';
+            document.getElementById('disp_harga_layanan').value = item ? formatRibuan(item.harga_layanan) : '';
+            document.getElementById('disp_kecepatan_bandwidth').value = item ? (item.kecepatan_bandwidth || '') : '';
+        }
+        const kodeLayananSelectEl = document.getElementById('kode_layanan_select');
+        if (kodeLayananSelectEl) kodeLayananSelectEl.addEventListener('change', e => fillNomorInet(e.target.value));
+        // Eye toggle — lihat/sembunyikan Password INET
+        const togglePwBtn = document.getElementById('toggle_password_inet');
+        if (togglePwBtn) togglePwBtn.addEventListener('click', function() {
+            const pw = document.getElementById('disp_password_inet');
+            const icon = document.getElementById('toggle_password_icon');
+            const show = pw.type === 'password';
+            pw.type = show ? 'text' : 'password';
+            icon.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+        });
+
+        /* ════════════════════════════════════════════════
+           3. AUTO-FILL — Data Penggunaan Simcard
+           ════════════════════════════════════════════════ */
+        const ALL_SIMCARD = <?= json_encode($simcard ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+        function fillSimcard(usageId) {
+            const item = ALL_SIMCARD.find(x => String(x.usage_id) === String(usageId));
+            // sinkronkan dropdown Kode Quota (untuk init edit) + isi MSISDN otomatis
+            const kodeQuotaSelEl = document.getElementById('kode_quota_select');
+            if (kodeQuotaSelEl && String(kodeQuotaSelEl.value) !== String(usageId)) {
+                kodeQuotaSelEl.value = item ? String(usageId) : '';
+            }
+            document.getElementById('disp_nomor_msisdn').value = item ? (item.nomor_msisdn || '') : '';
+            document.getElementById('disp_nomor_imei').value = item ? (item.nomor_imei || '') : '';
+            document.getElementById('disp_nama_vendor_simcard').value = item ? (item.nama_vendor || '') : '';
+            document.getElementById('disp_nama_paket_data').value = item ? (item.nama_paket_data || '') : '';
+            document.getElementById('disp_harga_quota').value = item ? formatRibuan(item.harga_quota) : '';
+            document.getElementById('disp_quota_internet').value = item ? (item.quota_internet || '') : '';
+        }
+        const kodeQuotaSelectEl = document.getElementById('kode_quota_select');
+        if (kodeQuotaSelectEl) kodeQuotaSelectEl.addEventListener('change', e => fillSimcard(e.target.value));
+
+        /* ════════════════════════════════════════════════
+           4. AUTO-FILL — VPN (Tujuan Koneksi)
+           ════════════════════════════════════════════════ */
+        const ALL_VPN = <?= json_encode($vpn ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+        function fillVpn(vpnId) {
+            const item = ALL_VPN.find(x => String(x.id) === String(vpnId));
+            document.getElementById('disp_tujuan_koneksi').value = item ? (item.tujuan_koneksi || '') : '';
+            document.getElementById('disp_ip_address_tujuan').value = item ? (item.ip_address_tujuan || '') : '';
+        }
+        const vpnSelectEl = document.getElementById('vpn_select');
+        if (vpnSelectEl) vpnSelectEl.addEventListener('change', e => fillVpn(e.target.value));
+
+        /* ════════════════════════════════════════════════
+           5. Merk Perangkat → Type Perangkat (cascading)
+           ════════════════════════════════════════════════ */
+        const ALL_TYPES = <?= json_encode(array_map(function ($t) {
+                                return [
+                                    'id'                 => $t['id'],
+                                    'merek_perangkat_id' => $t['merek_perangkat_id'],
+                                    'type_perangkat'     => $t['type_perangkat'],
+                                ];
+                            }, $type_perangkat ?? []), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+        (function() {
+            const merkSel = document.getElementById('merk_perangkat_select');
+            const typeSel = document.getElementById('type_perangkat_select');
+            if (!merkSel || !typeSel) return;
+
+            function refreshTypes(selectedTypeId) {
+                const merkId = merkSel.value;
+                typeSel.innerHTML = '';
+                if (!merkId) {
+                    typeSel.add(new Option('— Pilih Merk dulu —', ''));
                     return;
                 }
-                Swal.fire({
-                    title: 'Apakah Toko Ini, <br> Menggunakan Backup',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya',
-                    cancelButtonText: 'Tidak',
-                    confirmButtonColor: '#185a82',
-                    cancelButtonColor: '#6b7280'
-                }).then(res => {
-                    res.isConfirmed ? showBackup() : hideBackup();
-                });
-            });
-        })();
-    </script>
-    <script>
-        /* ══ MAP ══════════════════════════════════════════════ */
-        const initLat = <?= !empty($lat) ? (float)$lat : -6.200000 ?>;
-        const initLng = <?= !empty($lng) ? (float)$lng : 106.816666 ?>;
 
-        const map = L.map('map').setView([initLat, initLng], <?= !empty($lat) ? 17 : 12 ?>);
+                const matched = ALL_TYPES.filter(t => String(t.merek_perangkat_id) === String(merkId));
+                if (matched.length === 0) {
+                    typeSel.add(new Option('— Tidak ada type untuk merk ini —', ''));
+                    return;
+                }
+
+                typeSel.add(new Option('— Pilih —', ''));
+                matched.forEach(t => {
+                    const o = new Option(t.type_perangkat, t.id);
+                    if (selectedTypeId && String(selectedTypeId) === String(t.id)) o.selected = true;
+                    typeSel.add(o);
+                });
+            }
+            merkSel.addEventListener('change', () => refreshTypes());
+            refreshTypes(<?= (int) ($alfamart['type_perangkat_id'] ?? 0) ?>);
+        })();
+
+        /* ════════════════════════════════════════════════
+           6. MAP – Auto-update ketika user ketik lat/lng
+           ════════════════════════════════════════════════ */
+        const map = L.map('map').setView([-6.200000, 106.816666], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap'
+            attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
         }).addTo(map);
 
         let marker = null;
-
-        <?php if (!empty($lat) && !empty($lng)): ?>
-            marker = L.marker([<?= (float)$lat ?>, <?= (float)$lng ?>])
-                .addTo(map)
-                .bindPopup('<b>Titik Koordinat Toko</b><br>Lat: <?= $lat ?><br>Lng: <?= $lng ?>')
-                .openPopup();
-            setMapStatus('found', `📍 Titik ditemukan → Lat: <?= $lat ?>, Long: <?= $lng ?>`);
-        <?php endif; ?>
 
         function setMapStatus(state, text) {
             const el = document.getElementById('map_status');
@@ -1396,41 +1351,46 @@
         }
 
         function isValidCoord(lat, lng) {
-            return !isNaN(lat) && !isNaN(lng) &&
-                lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+            return !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
         }
 
         function updateMap() {
-            const lat = parseFloat(document.getElementById('latitude_input').value.trim());
-            const lng = parseFloat(document.getElementById('longitude_input').value.trim());
-
-            if (isNaN(lat) || isNaN(lng)) {
+            const latVal = document.getElementById('latitude_input').value.trim();
+            const lngVal = document.getElementById('longitude_input').value.trim();
+            if (!latVal || !lngVal) {
                 setMapStatus('', 'Masukkan Latitude & Longitude untuk menampilkan peta');
                 return;
             }
+
+            const lat = parseFloat(latVal),
+                lng = parseFloat(lngVal);
             if (!isValidCoord(lat, lng)) {
-                setMapStatus('error', 'Koordinat tidak valid.');
+                setMapStatus('error', 'Koordinat tidak valid. Periksa kembali format Latitude & Longitude.');
                 return;
             }
-
             map.flyTo([lat, lng], 17, {
                 animate: true,
                 duration: 1.2
             });
-
             if (marker) {
                 marker.setLatLng([lat, lng]);
             } else {
-                marker = L.marker([lat, lng]).addTo(map)
+                marker = L.marker([lat, lng], {
+                        icon: L.icon({
+                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34]
+                        })
+                    }).addTo(map)
                     .bindPopup(`<b>Titik Koordinat Toko</b><br>Lat: ${lat}<br>Lng: ${lng}`)
                     .openPopup();
             }
-
             document.getElementById('titik_koor_toko').value = `${lat},${lng}`;
             document.getElementById('map_toko').value = `https://www.google.com/maps?q=${lat},${lng}`;
             setMapStatus('found', `📍 Titik ditemukan → Lat: ${lat}, Long: ${lng}`);
         }
-
         let mapDebounce;
         ['latitude_input', 'longitude_input'].forEach(id => {
             document.getElementById(id).addEventListener('input', () => {
@@ -1438,50 +1398,15 @@
                 mapDebounce = setTimeout(updateMap, 500);
             });
         });
-
         map.on('click', function(e) {
             document.getElementById('latitude_input').value = e.latlng.lat.toFixed(6);
             document.getElementById('longitude_input').value = e.latlng.lng.toFixed(6);
             updateMap();
         });
 
-        /* ══ BANDWIDTH ════════════════════════════════════════ */
-        document.getElementById('btn_add_bw').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Tambah Kapasitas Bandwidth',
-                html: `<div style="display:flex;gap:8px;align-items:center">
-            <input type="number" id="swal_bw_val" class="swal2-input" placeholder="Cth: 25" min="1" style="flex:1;margin:0">
-            <select id="swal_bw_unit" class="swal2-input" style="flex:1;margin:0">
-                <option value="Mbps">Mbps</option>
-                <option value="Gbps">Gbps</option>
-                <option value="Kbps">Kbps</option>
-            </select></div>`,
-                showCancelButton: true,
-                confirmButtonText: 'Tambahkan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#185a82',
-                preConfirm: () => {
-                    const v = document.getElementById('swal_bw_val').value.trim();
-                    const u = document.getElementById('swal_bw_unit').value;
-                    if (!v || isNaN(v) || parseFloat(v) <= 0) {
-                        Swal.showValidationMessage('Masukkan nilai bandwidth yang valid');
-                        return false;
-                    }
-                    return `${v} ${u}`;
-                }
-            }).then(r => {
-                if (r.isConfirmed) {
-                    const sel = document.getElementById('kapasitas_bandwidth');
-                    if (Array.from(sel.options).some(o => o.value === r.value)) {
-                        sel.value = r.value;
-                        return;
-                    }
-                    sel.add(new Option(r.value, r.value, true, true));
-                }
-            });
-        });
-
-        /* ══ UPLOAD MULTI-FILE ════════════════════════════════ */
+        /* ════════════════════════════════════════════════
+           7. UPLOAD LAMPIRAN – multi file, maks 10
+           ════════════════════════════════════════════════ */
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
         const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.pdf'];
         const MAX_SIZE_BYTES = 5 * 1024 * 1024;
@@ -1510,89 +1435,135 @@
         });
 
         function generateRandomName(ext) {
-            const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let n = '';
-            for (let i = 0; i < 20; i++) n += c[Math.floor(Math.random() * c.length)];
-            return n + ext;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let name = '';
+            for (let i = 0; i < 20; i++) name += chars.charAt(Math.floor(Math.random() * chars.length));
+            return name + ext;
         }
 
-        function formatSize(b) {
-            return b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+        function formatSize(bytes) {
+            return bytes < 1024 * 1024 ? (bytes / 1024).toFixed(1) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB';
         }
 
         function handleFiles(fileList) {
-            const errors = [],
-                valid = [];
-            Array.from(fileList).forEach(file => {
+            const incoming = Array.from(fileList);
+            const errors = [];
+            const valid = [];
+            for (const file of incoming) {
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
-                if (!ALLOWED_TYPES.includes(file.type) && !ALLOWED_EXTS.includes(ext))
-                    return errors.push(`<b>${file.name}</b> — format tidak didukung`);
-                if (file.size > MAX_SIZE_BYTES)
-                    return errors.push(`<b>${file.name}</b> — melebihi 5 MB`);
-                if (selectedFiles.some(f => f.file.name === file.name && f.file.size === file.size))
-                    return errors.push(`<b>${file.name}</b> — sudah ditambahkan`);
+                if (!ALLOWED_TYPES.includes(file.type) && !ALLOWED_EXTS.includes(ext)) {
+                    errors.push(`<b>${file.name}</b> — format tidak didukung`);
+                    continue;
+                }
+                if (file.size > MAX_SIZE_BYTES) {
+                    errors.push(`<b>${file.name}</b> — ukuran ${formatSize(file.size)} melebihi 5 MB`);
+                    continue;
+                }
+                if (selectedFiles.some(f => f.file.name === file.name && f.file.size === file.size)) {
+                    errors.push(`<b>${file.name}</b> — sudah ditambahkan`);
+                    continue;
+                }
                 valid.push({
                     file,
                     ext
                 });
-            });
-
-            const avail = MAX_FILES - selectedFiles.length;
-            if (valid.length > avail)
-                valid.splice(avail).forEach(f => errors.push(`<b>${f.file.name}</b> — batas 10 file tercapai`));
-
-            if (errors.length)
+            }
+            const available = MAX_FILES - selectedFiles.length;
+            if (valid.length > available) {
+                const rejected = valid.splice(available);
+                rejected.forEach(f => errors.push(`<b>${f.file.name}</b> — batas 10 file tercapai`));
+            }
+            if (errors.length) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Beberapa File Ditolak',
                     html: errors.map(e => `• ${e}`).join('<br>'),
                     confirmButtonColor: '#185a82'
                 });
-
-            valid.forEach(({
-                file,
-                ext
-            }) => selectedFiles.push({
-                file,
-                randomName: generateRandomName(ext)
-            }));
+            }
+            for (const {
+                    file,
+                    ext
+                }
+                of valid) {
+                selectedFiles.push({
+                    file,
+                    randomName: generateRandomName(ext)
+                });
+            }
             renderPreview();
         }
 
         function renderPreview() {
             previewDiv.innerHTML = '';
-            if (!selectedFiles.length) {
+            if (selectedFiles.length === 0) {
                 counterDiv.style.display = 'none';
                 return;
             }
             counterDiv.style.display = 'block';
             countSpan.textContent = selectedFiles.length;
             countSpan.style.color = selectedFiles.length >= MAX_FILES ? '#dc2626' : '#6b7280';
-
-            selectedFiles.forEach((item, i) => {
+            selectedFiles.forEach((item, index) => {
                 const ext = '.' + item.file.name.split('.').pop().toLowerCase();
                 const icon = ext === '.pdf' ? '📄' : '🖼️';
                 const div = document.createElement('div');
                 div.className = 'upload-preview';
+                div.style.marginTop = '6px';
                 div.innerHTML = `
-            <span class="file-icon">${icon}</span>
-            <span class="file-name">${item.randomName}
-                <small style="color:#6b7280">(${item.file.name})</small>
-            </span>
-            <span class="file-size">${formatSize(item.file.size)}</span>
-            <span class="remove-file" data-i="${i}">✕</span>`;
+                    <span class="file-icon">${icon}</span>
+                    <span class="file-name">${item.randomName} <small style="color:#6b7280">(${item.file.name})</small></span>
+                    <span class="file-size">${formatSize(item.file.size)}</span>
+                    <span class="remove-file" data-index="${index}" title="Hapus file">✕</span>
+                `;
                 previewDiv.appendChild(div);
             });
-
             previewDiv.querySelectorAll('.remove-file').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    selectedFiles.splice(parseInt(btn.dataset.i), 1);
+                    selectedFiles.splice(parseInt(btn.dataset.index), 1);
                     renderPreview();
                 });
             });
         }
 
-        document.getElementById('FormEditMidi').addEventListener('submit', function() {
+        /* ════════════════════════════════════════════════
+           8. FORM SUBMIT – validasi final
+           ════════════════════════════════════════════════ */
+        document.getElementById('FormMidi').addEventListener('submit', function(e) {
+            // ── Tidak ada perubahan? Tampilkan pesan & jangan kirim (tidak masuk history) ──
+            if (window.__editSnapshot != null) {
+                const efNow = document.getElementById('existing_files_input');
+                const fileLamaSekarang = efNow ? efNow.value : '';
+                const tidakBerubah = window.__serializeFormAlfa() === window.__editSnapshot &&
+                    selectedFiles.length === 0 &&
+                    fileLamaSekarang === window.__editExistingFiles;
+                if (tidakBerubah) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Tidak Ada Perubahan',
+                        text: 'Data belum diubah, jadi tidak ada yang perlu disimpan.',
+                        confirmButtonColor: '#185a82'
+                    });
+                    return;
+                }
+            }
+            const latVal = document.getElementById('latitude_input').value.trim();
+            const lngVal = document.getElementById('longitude_input').value.trim();
+            if (latVal || lngVal) {
+                const lat = parseFloat(latVal),
+                    lng = parseFloat(lngVal);
+                if (!isValidCoord(lat, lng)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Koordinat Tidak Valid',
+                        text: 'Periksa kembali nilai Latitude dan Longitude.',
+                        confirmButtonColor: '#185a82'
+                    });
+                    return;
+                }
+            }
             if (selectedFiles.length > 0) {
                 const dt = new DataTransfer();
                 selectedFiles.forEach(item => dt.items.add(item.file));
@@ -1600,12 +1571,68 @@
             }
         }, true);
 
-        /* ══ FILE LAMA — Preview & Hapus ═════════════════════ */
-        // Simpan daftar file lama yang masih ada
+        <?php if (!session()->get('logged_in')) : ?>
+            window.location.href = "<?= base_url('/login') ?>";
+        <?php endif; ?>
+    </script>
+    <script>
+        /* ════════════════════════════════════════════════
+           INIT EDIT — tampilkan blok & auto-fill sesuai data tersimpan
+           ════════════════════════════════════════════════ */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tampilkan blok Non-Cellular / Cellular sesuai data
+            const mediaSel = document.getElementById('media_koneksi_select');
+            if (mediaSel && mediaSel.value !== '') {
+                mediaSel.dispatchEvent(new Event('change'));
+            }
+
+            // Set ulang pilihan tersimpan lalu auto-fill (dispatch change di atas
+            // TIDAK mengosongkan select yang sesuai jalurnya, hanya lawannya)
+            const inetSel = document.getElementById('kode_layanan_select');
+            if (inetSel && inetSel.value) fillNomorInet(inetSel.value);
+
+            const simSel = document.getElementById('kode_quota_select');
+            if (simSel && simSel.value) fillSimcard(simSel.value);
+
+            const vpnSel = document.getElementById('vpn_select');
+            if (vpnSel && vpnSel.value) fillVpn(vpnSel.value);
+
+            // Tampilkan peta jika koordinat sudah ada
+            const latEl = document.getElementById('latitude_input');
+            const lngEl = document.getElementById('longitude_input');
+            if (latEl && lngEl && latEl.value.trim() && lngEl.value.trim()) {
+                updateMap();
+            }
+        });
+
+        /* ════════════════════════════════════════════════
+           DETEKSI "TIDAK ADA PERUBAHAN"
+           ════════════════════════════════════════════════ */
+        window.__serializeFormAlfa = function() {
+            const fd = new FormData(document.getElementById('FormAlfa'));
+            fd.delete('file_input[]');
+            const parts = [];
+            for (const pair of fd.entries()) {
+                if (typeof pair[1] === 'string') parts.push(pair[0] + '=' + pair[1]);
+            }
+            return parts.join('&');
+        };
+        window.__editSnapshot = null;
+        window.__editExistingFiles = '';
+        document.addEventListener('DOMContentLoaded', function() {
+            // Snapshot diambil setelah INIT EDIT di atas selesai (urutan listener terjaga)
+            window.__editSnapshot = window.__serializeFormAlfa();
+            const efInit = document.getElementById('existing_files_input');
+            window.__editExistingFiles = efInit ? efInit.value : '';
+        });
+
+        /* ════════════════════════════════════════════════
+           FILE LAMA — Preview & Hapus (fitur lama dipertahankan)
+           ════════════════════════════════════════════════ */
         let existingFilesList = <?php
-                                if (!empty($midi['upload_lampiran'])) {
-                                    $dec = json_decode($midi['upload_lampiran'], true);
-                                    echo json_encode(is_array($dec) ? $dec : [$midi['upload_lampiran']]);
+                                if (!empty($alfamart['upload_lampiran'])) {
+                                    $dec = json_decode($alfamart['upload_lampiran'], true);
+                                    echo json_encode(is_array($dec) ? $dec : [$alfamart['upload_lampiran']]);
                                 } else {
                                     echo '[]';
                                 }
@@ -1628,19 +1655,11 @@
                         closeButton: 'swal-image-close',
                     },
                     didOpen: () => {
-                        // Hapus title & content wrapper agar hanya gambar
                         const title = document.querySelector('.swal2-title');
                         const img = document.querySelector('.swal2-image');
                         if (title) title.remove();
                         if (img) {
-                            img.style.cssText = `
-                        width: 100%;
-                        max-height: 90vh;
-                        object-fit: contain;
-                        margin: 0;
-                        display: block;
-                        border-radius: 0;
-                    `;
+                            img.style.cssText = 'width:100%;max-height:90vh;object-fit:contain;margin:0;display:block;border-radius:0';
                         }
                     }
                 });
@@ -1664,7 +1683,6 @@
                 cancelButtonText: 'Batal'
             }).then(result => {
                 if (result.isConfirmed) {
-                    // Sembunyikan elemen di UI
                     const el = document.getElementById('existing_file_' + index);
                     if (el) {
                         el.style.transition = 'all .3s ease';
@@ -1676,25 +1694,18 @@
                         setTimeout(() => el.remove(), 300);
                     }
 
-                    // Hapus dari array
                     existingFilesList = existingFilesList.filter(f => f !== filename);
 
-                    // Update hidden input
                     const hiddenInput = document.getElementById('existing_files_input');
                     if (hiddenInput) {
                         hiddenInput.value = existingFilesList.length > 0 ?
-                            JSON.stringify(existingFilesList) :
-                            '';
+                            JSON.stringify(existingFilesList) : '';
                     }
 
-                    // Update counter
                     const wrap = document.getElementById('existing_files_wrap');
                     if (wrap) {
-                        const counter = wrap.querySelector('div[style*="File Tersimpan"]');
-                        if (counter) {
-                            counter.textContent = `File Tersimpan (${existingFilesList.length} file):`;
-                        }
-                        // Jika semua dihapus, sembunyikan wrap
+                        const counter = wrap.querySelector('div');
+                        if (counter) counter.textContent = `File Tersimpan (${existingFilesList.length} file):`;
                         if (existingFilesList.length === 0) {
                             wrap.innerHTML = '<div style="font-size:12px;color:#6b7280;font-style:italic">Semua file lama dihapus.</div>';
                         }
@@ -1710,144 +1721,6 @@
                 }
             });
         }
-    </script>
-    <script>
-        // ---- Sidebar ----
-        let collapsed = false;
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar'),
-                c = document.getElementById('container');
-            if (window.innerWidth < 1024) {
-                sb.classList.toggle('mobile-open');
-            } else {
-                collapsed = !collapsed;
-                if (collapsed) {
-                    sb.style.transform = 'translateX(-100%)';
-                    c.classList.remove('ml-sidebar');
-                    c.style.marginLeft = '0';
-                } else {
-                    sb.style.transform = 'translateX(0)';
-                    c.style.marginLeft = '';
-                    c.classList.add('ml-sidebar');
-                }
-            }
-        }
-
-        // ---- Dropdowns ----
-        function toggleDrop(e, el) {
-            e.preventDefault();
-            e.stopPropagation();
-            const menu = el.parentElement.querySelector('.dropdown-menu');
-            const isOpen = menu.classList.contains('show');
-            document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
-            if (!isOpen) menu.classList.add('show');
-        }
-        document.addEventListener('click', function(e) {
-            if (window.innerWidth < 1024) {
-                const sb = document.getElementById('sidebar');
-                const menuBtn = e.target.closest('[onclick*="toggleSidebar"]');
-                if (sb.classList.contains('mobile-open') && !sb.contains(e.target) && !menuBtn) {
-                    sb.classList.remove('mobile-open');
-                }
-            }
-            document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
-        });
-
-        // ---- Submenu ----
-        function toggleSub(el) {
-            const parent = el.closest('.hasmenu');
-            const sub = parent.querySelector('.submenu');
-            const arrow = parent.querySelector('.arrow');
-            sub.classList.toggle('open');
-            if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
-        }
-
-
-
-        feather.replace();
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const alertBox = document.getElementById('successAlert');
-            const progressBar = document.getElementById('progressBar');
-            if (alertBox) {
-                if (progressBar) {
-                    progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
-                }
-                setTimeout(() => {
-                    alertBox.style.transition = "all .5s ease";
-                    alertBox.style.opacity = "0";
-                    alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
-                }, 3000);
-            }
-        });
-    </script>
-
-
-    <?php if (!session()->get('logged_in')) : ?>
-        <script>
-            window.location.href = "<?= base_url('/login') ?>";
-        </script>
-    <?php endif; ?>
-    <script>
-        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
-            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
-        });
-    </script>
-    <script>
-        const ALL_TYPES = <?= json_encode(array_map(function ($t) {
-                                return [
-                                    'id'                 => $t['id'],
-                                    'merek_perangkat_id' => $t['merek_perangkat_id'],
-                                    'type_perangkat'     => $t['type_perangkat'],
-                                ];
-                            }, $type_perangkat ?? []), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-
-        (function() {
-            const merkSel = document.getElementById('merk_perangkat_select');
-            const typeSel = document.getElementById('type_perangkat_select');
-            if (!merkSel || !typeSel) return;
-
-            function refreshTypes(selectedTypeId) {
-                const merkId = merkSel.value;
-                typeSel.innerHTML = '';
-
-                if (!merkId) {
-                    typeSel.add(new Option('— Pilih Merk dulu —', ''));
-                    return;
-                }
-
-                const matched = ALL_TYPES.filter(t => String(t.merek_perangkat_id) === String(merkId));
-                if (matched.length === 0) {
-                    typeSel.add(new Option('— Tidak ada type untuk merk ini —', ''));
-                    return;
-                }
-
-                typeSel.add(new Option('— Pilih —', ''));
-                matched.forEach(t => {
-                    const o = new Option(t.type_perangkat, t.id);
-                    if (selectedTypeId && String(selectedTypeId) === String(t.id)) o.selected = true;
-                    typeSel.add(o);
-                });
-            }
-
-            merkSel.addEventListener('change', () => refreshTypes());
-
-            // saat halaman dibuka: merk sudah ter-set (selected), langsung filter + pilih type tersimpan
-            refreshTypes(<?= (int) ($midi['type_perangkat'] ?? 0) ?>);
-        })();
     </script>
 </body>
 

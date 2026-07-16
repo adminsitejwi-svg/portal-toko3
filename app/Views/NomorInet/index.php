@@ -828,6 +828,9 @@
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Nomor INET / ID Pelanggan</label>
                                                 <input type="text" id="edit_nomor_inet" name="nomor_inet"
+                                                    inputmode="numeric"
+                                                    pattern="[0-9]+"
+                                                    title="Hanya boleh diisi angka"
                                                     placeholder="Masukan Nomor INET/ID Pelanggan" autocomplete="new-password"
                                                     class="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition">
                                             </div>
@@ -952,6 +955,9 @@
             </div>
         </div>
         <script>
+            document.getElementById('edit_nomor_inet').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, ''); // hapus semua selain angka
+            });
             let detailPasswordValue = '';
             let detailPasswordVisible = false;
 
