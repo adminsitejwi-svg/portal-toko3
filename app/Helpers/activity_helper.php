@@ -107,7 +107,8 @@ if (! function_exists('activity_label_action')) {
                 'd_midi'               => 'Alfamidi',
                 'd_lawson'             => 'Lawson',
                 'd_alfamart'           => 'Alfamart',
-                'md_vendor'            => 'Vendor',
+                'md_vendor'            => 'Vendor Non Celullar',
+                'md_vendor_cellular'   => 'Vendor Celulllar',
                 'md_layanan_vendor'    => 'Layanan Vendor',
                 'md_dc'                => 'DC',
                 'md_media_koneksi'     => 'Media Koneksi',
@@ -144,18 +145,32 @@ if (! function_exists('activity_format_description')) {
     /**
      * Ubah keterangan lama "... tabel md_xxx ..." menjadi "... Halaman Nama ..."
      */
-    function activity_format_description(?string $desc): string
+    function activity_format_description(?string $desc, ?string $tableName = null): string
     {
         if (empty($desc)) return '-';
 
         // ganti pola "tabel <nama_tabel>" -> "Halaman <Nama Halaman>"
-        return preg_replace_callback(
+        $desc = preg_replace_callback(
             '/\btabel\s+([a-z0-9_]+)/i',
             function ($m) {
                 return 'Halaman ' . activity_page_name($m[1]);
             },
             $desc
         );
+
+        // Normalisasi deskripsi lama untuk vendor:
+        // "halaman Vendor" (md_vendor)          -> "halaman Vendor Non Celullar"
+        // "halaman Vendor Cellular" (variasi)   -> "halaman Vendor Celulllar"
+        $key = strtolower(trim((string) $tableName));
+        if (in_array($key, ['md_vendor', 'md_vendor_cellular'], true)) {
+            $desc = preg_replace(
+                '/\b(halaman)\s+Vendor(\s+Cell?ull?l?ar)?\b(?!\s+Non)/i',
+                '$1 ' . activity_page_name($key),
+                $desc
+            );
+        }
+
+        return $desc;
     }
 }
 if (! function_exists('activity_redact')) {
