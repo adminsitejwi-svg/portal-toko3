@@ -2,10 +2,14 @@
 <html lang="en" class="light">
 
 <head>
+    <meta name="csrf-token-name" content="<?= csrf_token() ?>">
+    <meta name="csrf-token-value" content="<?= csrf_hash() ?>">
     <meta charset="utf-8" />
-    <title>Toko Lawson</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+
+    <title>Aktivasi Retail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -15,8 +19,7 @@
     <!-- DataTables core + Buttons -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -58,6 +61,105 @@
             }
         }
     </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fa;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+            width: 100%;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #185a82;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #185a82;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #185a82;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            height: 55px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .d-flex {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .d-flex button {
+            flex: 1;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #185a82, #2196f3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(24, 90, 130, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            box-shadow: 0 8px 25px rgba(24, 90, 130, 0.4);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+        }
+
+        .btn-back:hover {
+            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
+        }
+    </style>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -199,31 +301,6 @@
 
         .dark #mediaKoneksiTable tbody td.col-bold {
             color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
         }
 
         /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
@@ -427,6 +504,31 @@
         .brand-text {
             font-size: 18px;
         }
+
+        #btnKirimEmail {
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            color: #5b6b7f;
+            border-radius: 8px;
+            padding: 9px 16px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            justify-content: center;
+            transition: all .2s ease;
+        }
+
+        #btnKirimEmail:hover {
+            border-color: #04a9f5;
+            color: #04a9f5;
+        }
+
+        #btnKirimEmail:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -505,7 +607,7 @@
                 </li>
 
                 <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-building-store fs-1"></i></span>
                         <span class="flex-1">Data Toko</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -547,6 +649,23 @@
                         <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
                         <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
                         <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
+
+                    </ul>
+
+                </li>
+
+
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
+                        <span class="flex-1">Report NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task Down</a></li>
+                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task On Progress</a></li>
+                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
+
 
                     </ul>
 
@@ -596,8 +715,6 @@
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
                 <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
@@ -621,227 +738,69 @@
         </header>
 
         <div class="p-6">
-            <!-- breadcrumb -->
-            <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Toko Lawson</h5>
+            <div class="form-container">
+                <h2>Edit Form Aktivasi Retail</h2>
+                <form action="<?= site_url('RipotActive/update') ?>" method="POST" id="aktivasiForm">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= esc($aktivasi['id']) ?>">
 
-                <a href="<?= site_url('Lawson/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
-                    <i class="ti ti-plus"></i> Tambah
-                </a>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-
-                    <!-- TOOLBAR: dropdown Show (kiri) + Search & Export (kanan) -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                        <div id="lengthArea"></div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <div class="custom-search">
-                                <input type="text" id="customSearch" placeholder="search..." />
-                                <button class="go-btn" type="button"></button>
-                            </div>
-                            <div id="exportArea"></div>
-                        </div>
+                    <div class="form-group">
+                        <label>ID Pelanggan <span style="color:red">*</span></label>
+                        <input type="text" name="id_pelanggan" id="id_pelanggan" required
+                            inputmode="numeric" pattern="[0-9]*" maxlength="20"
+                            value="<?= esc($aktivasi['id_pelanggan']) ?>" placeholder="Cth: 21700250">
                     </div>
 
-                    <!-- TABLE (bisa digeser kiri-kanan saat layar sempit) -->
-                    <div class="table-scroll">
-                        <table id="mediaKoneksiTable" class="display nowrap" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Aksi</th>
-                                    <th>Kode Toko</th>
-                                    <th>Nama Lawson</th>
-                                    <th>Alamat Lawson</th>
-                                    <th>Tikor Toko</th>
-                                    <th>Status</th>
-                                    <th>Keterangan</th>
-                                    <th>Created At</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <?php if (!empty($lawson)) : ?>
-                                    <?php $no = 1; ?>
-
-                                    <?php foreach ($lawson as $row) : ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-
-                                            <td>
-
-
-                                                <a href="<?= site_url('Lawson/edit/' . $row['id']) ?>"
-                                                    class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                                <br>
-                                                <?php if (!empty($row['upload_lampiran'])): ?>
-                                                    <button type="button"
-                                                        onclick="previewLampiran('<?= esc($row['upload_lampiran'], 'js') ?>')"
-                                                        class="btn btn-sm"
-                                                        title="Lihat Lampiran">
-                                                        <i class="ti ti-photo"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                                <a href="<?= site_url('Lawson/view/' . $row['id']) ?>"
-                                                    class="btn btn-sm"
-                                                    title="Lihat Detail">
-                                                    <i class="ti ti-eye"></i>
-                                                </a>
-                                            </td>
-
-                                            <td><?= esc($row['kode_toko']); ?></td>
-
-                                            <td><?= esc($row['nama_lawson']); ?></td>
-
-                                            <td><?= esc($row['alamat_lawson']); ?></td>
-
-                                            <td><?= esc($row['titik_koor_toko']); ?></td>
-
-                                            <td>
-                                                <?php if ($row['status'] == 0) : ?>
-                                                    <span class="badge badge-paid">Aktif</span>
-                                                <?php else : ?>
-                                                    <span class="badge badge-due">Non Aktif</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= esc($row['keterangan']); ?></td>
-
-                                            <td>
-                                                <?= !empty($row['created_at'])
-                                                    ? date('d-m-Y H:i', strtotime($row['created_at']))
-                                                    : '-'; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                        <div id="lampiranModal"
-                            style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center">
-
-                            <!-- Tombol tutup -->
-                            <button onclick="closeLampiranModal()"
-                                style="position:fixed;top:16px;right:20px;background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;z-index:10000;display:flex;align-items:center;justify-content:center;line-height:1">
-                                ✕
-                            </button>
-
-                            <!-- Counter file -->
-                            <div id="lampiran_counter"
-                                style="position:fixed;top:18px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.7);font-size:13px;z-index:10000;font-family:sans-serif">
-                            </div>
-
-                            <!-- Area scroll file -->
-                            <div id="lampiran_body"
-                                style="width:100%;height:100vh;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:24px;padding:60px 16px 40px;scroll-snap-type:y mandatory">
-                            </div>
-                        </div>
-
-
+                    <div class="form-group">
+                        <label>Layanan</label>
+                        <input type="text" name="layanan" id="layanan"
+                            value="<?= esc($aktivasi['layanan']) ?>" placeholder="Cth: 100 Mbps">
                     </div>
 
-                </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <input type="text" name="status" id="status"
+                            value="<?= esc($aktivasi['status']) ?>" placeholder="Cth: Done Aktivasi">
+                    </div>
+
+                    <div class="d-flex">
+                        <button type="submit">Update</button>
+                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('RipotActive') ?>'">Kembali</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
     <script>
-        function previewLampiran(rawJson) {
-            let files = [];
-            try {
-                const parsed = JSON.parse(rawJson);
-                files = Array.isArray(parsed) ? parsed : [parsed];
-            } catch (e) {
-                files = [rawJson];
-            }
-
-            const body = document.getElementById('lampiran_body');
-            const counter = document.getElementById('lampiran_counter');
-            const modal = document.getElementById('lampiranModal');
-            body.innerHTML = '';
-
-            files.forEach((filename, i) => {
-                const ext = filename.split('.').pop().toLowerCase();
-                const fileUrl = '<?= site_url('Lawson/file/') ?>' + filename;
-                const wrapper = document.createElement('div');
-
-                wrapper.style.cssText = `
-            width: 100%;
-            max-width: 900px;
-            flex-shrink: 0;
-            scroll-snap-align: start;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        `;
-                wrapper.setAttribute('data-index', i);
-
-                if (['jpg', 'jpeg', 'png'].includes(ext)) {
-                    wrapper.innerHTML = `
-                <img src="${fileUrl}"
-                    style="max-width:100%;max-height:85vh;object-fit:contain;border-radius:6px;display:block"
-                    onerror="this.outerHTML='<div style=color:#f87171;font-family:sans-serif;padding:20px>Gagal memuat gambar.</div>'">`;
-                } else if (ext === 'pdf') {
-                    wrapper.innerHTML = `
-                <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px">
-                    <div style="font-size:64px">📄</div>
-                    <div style="color:white;font-family:sans-serif;font-size:15px;opacity:.8;word-break:break-all;text-align:center">
-                        ${filename}
-                    </div>
-                    <a href="${fileUrl}" download="${filename}"
-                        style="background:#185a82;color:white;padding:10px 28px;border-radius:8px;text-decoration:none;font-family:sans-serif;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px">
-                        ⬇ Download PDF
-                    </a>
-                </div>`;
-                }
-
-                body.appendChild(wrapper);
-            });
-
-            // Update counter saat scroll
-            if (files.length > 1) {
-                counter.textContent = `1 / ${files.length}`;
-                body.addEventListener('scroll', function onScroll() {
-                    const items = body.querySelectorAll('[data-index]');
-                    let current = 0;
-                    items.forEach((el, i) => {
-                        const rect = el.getBoundingClientRect();
-                        if (rect.top <= window.innerHeight / 2) current = i;
-                    });
-                    counter.textContent = `${current + 1} / ${files.length}`;
-                });
-            } else {
-                counter.textContent = '';
-            }
-
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLampiranModal() {
-            document.getElementById('lampiranModal').style.display = 'none';
-            document.getElementById('lampiran_body').innerHTML = '';
-            document.body.style.overflow = '';
-        }
-
-        // Tutup dengan klik background atau tekan Escape
-        document.getElementById('lampiranModal').addEventListener('click', function(e) {
-            if (e.target === this) closeLampiranModal();
+        document.getElementById('id_pelanggan').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeLampiranModal();
+    </script>
+    <script>
+        document.getElementById('aktivasiForm').addEventListener('submit', function(e) {
+            const idPelanggan = document.getElementById('id_pelanggan').value.trim();
+
+            if (idPelanggan === '') {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Belum Lengkap',
+                    text: 'ID Pelanggan wajib diisi.',
+                    confirmButtonColor: '#185a82'
+                });
+                return false;
+            }
+
+            if (!/^\d+$/.test(idPelanggan)) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Format Salah',
+                    text: 'ID Pelanggan hanya boleh berisi angka.',
+                    confirmButtonColor: '#185a82'
+                });
+                return false;
+            }
         });
     </script>
     <script>
@@ -896,8 +855,6 @@
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
 
-
-
         feather.replace();
     </script>
 
@@ -946,12 +903,12 @@
                     [10, 15, 25, 50, "Semua"]
                 ],
                 order: [
-                    [2, 'asc']
+                    [0, 'asc']
                 ],
                 columnDefs: [{
-                    targets: [0, 1], // kolom No & Aksi
-                    orderable: false, // tidak bisa di-sort
-                    searchable: false // tidak ikut pencarian
+                    targets: 0, // kolom No
+                    orderable: false,
+                    searchable: false
                 }],
                 dom: "lBfrtip",
                 buttons: [{
@@ -961,7 +918,7 @@
                     buttons: [{
                             extend: 'copyHtml5',
                             text: '<i class="ti ti-copy"></i> Copy',
-                            title: 'Data Lawson',
+                            title: 'Data Aktivasi Retail',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -971,7 +928,7 @@
                         {
                             extend: 'csvHtml5',
                             text: '<i class="ti ti-file-text"></i> Export CSV',
-                            title: 'Data Lawson',
+                            title: 'Data Aktivasi Retail',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -981,7 +938,7 @@
                         {
                             extend: 'excelHtml5',
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
-                            title: 'Data Lawson',
+                            title: 'Data Aktivasi Retail',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -991,7 +948,7 @@
                         {
                             extend: 'pdfHtml5',
                             text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
-                            title: 'Data Lawson',
+                            title: 'Data Aktivasi Retail',
                             orientation: 'landscape',
                             pageSize: 'A4',
                             ...exportConfig,
@@ -1016,7 +973,7 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 10;
-                                doc.content[1].table.widths = ['4%', '10%', '10%', '15%', '18%', '15%', '8%', '10%', '10%'];
+                                doc.content[1].table.widths = ['8%', '30%', '31%', '31%'];
                                 doc.content[1].layout = {
                                     hLineWidth: () => 0.5,
                                     vLineWidth: () => 0.5,
@@ -1033,7 +990,7 @@
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
                     infoEmpty: "Showing 0 to 0 of 0 entries",
                     infoFiltered: "(filtered from _MAX_ total entries)",
-                    emptyTable: "Data Toko Lawson belum tersedia",
+                    emptyTable: "Data Aktivasi Retail belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
                         previous: "Previous",
@@ -1085,7 +1042,7 @@
 
                 if (result.isConfirmed) {
                     window.location.href =
-                        "<?= site_url('Lawson/delete/') ?>" + id;
+                        "<?= site_url('RipotActive/delete/') ?>" + id;
                 }
 
             });
@@ -1108,12 +1065,20 @@
         }
     </script>
 
+    <script>
+        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+        });
+    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";
         </script>
     <?php endif; ?>
-
 </body>
 
 </html>

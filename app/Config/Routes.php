@@ -27,6 +27,10 @@ use App\Controllers\NMRInet;
 use App\Controllers\Logs;
 use App\Controllers\VendorCelulllar;
 use App\Controllers\VPN;
+use App\Controllers\RipotRetail;
+use App\Controllers\RipotActive;
+
+
 
 
 
@@ -206,4 +210,23 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('VPN/update', 'VPN::update');
     $routes->get('VPN/delete/(:num)', 'VPN::delete/$1');
     $routes->get('VPN/show/(:num)', 'VPN::show/$1');
+
+    $routes->get('RipotRetail', 'RipotRetail::index');
+    $routes->get('RipotRetail/create', 'RipotRetail::create');
+    $routes->post('RipotRetail/save', 'RipotRetail::save');
+    $routes->post('RipotRetail/update', 'RipotRetail::update');
+    $routes->get('RipotRetail/delete/(:num)', 'RipotRetail::delete/$1');
+    $routes->get('RipotRetail/show/(:num)', 'RipotRetail::show/$1');
+    $routes->get('RipotRetail/edit/(:num)', 'RipotRetail::edit/$1');
+    $routes->post('RipotRetail/sendEmail', 'RipotRetail::sendEmail');
+
+    $routes->get('RipotActive', 'RipotActive::index');
+    $routes->get('RipotActive/create', 'RipotActive::create');
+    $routes->post('RipotActive/save', 'RipotActive::save');
+    $routes->post('RipotActive/update', 'RipotActive::update');
+    $routes->get('RipotActive/delete/(:num)', 'RipotActive::delete/$1');
+    $routes->get('RipotActive/edit/(:num)', 'RipotActive::edit/$1');
+    $routes->get('RipotActive/show/(:num)', 'RipotActive::show/$1');
+    $routes->post('RipotActive/sendEmail', 'RipotActive::sendEmail');
+    $routes->get('RipotRetail/progress', 'RipotRetail::progress');
 });
