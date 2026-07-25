@@ -981,13 +981,40 @@
                 return v;
             };
 
+            function fmtRpL(v) {
+                if (v === null || v === undefined || v === '') return '';
+                const n = parseFloat(v);
+                if (isNaN(n)) return v;
+                return 'Rp ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+
             function lawsonRow(k, v) {
                 if (!v && v !== 0) return '';
-                return `
-        <div style="display:flex;gap:8px;margin:3px 0;font-size:12px">
-            <span style="color:#6b7280;min-width:78px;font-size:11px;text-transform:uppercase">${k}</span>
-            <span style="color:#1f2937;flex:1">${v}</span>
-        </div>`;
+                return `<div style="display:flex;gap:8px;margin:3px 0;font-size:12px;align-items:flex-start">
+        <span style="color:#6b7280;min-width:96px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px">${k}</span>
+        <span style="color:#1f2937;flex:1;word-break:break-word">${v}</span></div>`;
+            }
+
+            function secL(title) {
+                return `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#166534;border-left:3px solid #166534;padding-left:8px;margin:12px 0 6px">${title}</div>`;
+            }
+
+            function vendorRowsL(d) {
+                if (String(d.media_koneksi) === '1') {
+                    return lawsonRow('Kode Quota', d.kode_quota_simcard) +
+                        lawsonRow('MSISDN', d.nomor_msisdn) +
+                        lawsonRow('ISSID/IMEI', d.nomor_imei) +
+                        lawsonRow('Vendor', d.nama_vendor_simcard || d.nama_vendor) +
+                        lawsonRow('Paket Data', d.nama_paket_data) +
+                        lawsonRow('Harga Paket', fmtRpL(d.harga_quota)) +
+                        lawsonRow('Quota Internet', d.quota_internet);
+                }
+                return lawsonRow('Kode Layanan', d.kode_layanan_vendor) +
+                    lawsonRow('ID Plgn / No.INET', d.id_pelanggan || d.nomor_inet) +
+                    lawsonRow('Vendor', d.nama_vendor_inet || d.nama_vendor) +
+                    lawsonRow('Nama Layanan', d.nama_layanan) +
+                    lawsonRow('Harga Layanan', fmtRpL(d.harga_layanan)) +
+                    lawsonRow('Bandwidth', d.kecepatan_bandwidth);
             }
 
             function lawsonPopup(d) {
@@ -998,33 +1025,45 @@
                 const coord = d.titik_koor_toko || '';
                 const mapUrl = d.map_toko ? d.map_toko : (coord ? 'https://www.google.com/maps?q=' + coord : '');
                 return `
-        <div>
-            <div style="background:#166534;padding:10px 14px">
-                <div style="color:#fff;font-size:13px;font-weight:600">${d.nama_lawson || '—'}</div>
-                <div style="color:#bbf7d0;font-size:11px">${d.kode_toko || ''}</div>
-            </div>
-            <div style="padding:10px 14px;background:#fff">
-                ${lawsonRow('Alamat', d.alamat_lawson)}
-                ${lawsonRow('PIC', d.pic_toko)}
-                ${lawsonRow('No HP', d.nomor_hp_pic)}
-                ${lawsonRow('DC', d.nama_dc)}
-                ${lawsonRow('Vendor', d.nama_vendor)}
-                ${lawsonRow('Media', mediaLabel(d.media_koneksi))}
-                ${lawsonRow('Bandwidth', d.kapasitas_bandwidth)}
-                ${lawsonRow('IP Address', d.ip_address)}
-                ${lawsonRow('Perangkat', d.jenis_perangkat)}
-                ${lawsonRow('Merk', d.merk_perangkat)}
-                ${lawsonRow('Type',d.type_perangkat_nama)}
-                ${lawsonRow('Serial', d.serial_number_perangkat)}
-                ${lawsonRow('Instalasi', d.tanggal_installasi)}
-                ${lawsonRow('Aktivasi', d.tanggal_aktivasi)}
-                ${lawsonRow('Keterangan', d.keterangan)}
-            </div>
-            <div style="padding:8px 14px;border-top:1px solid #f3f4f6;background:#fff;display:flex;justify-content:space-between;align-items:center">
-                <span style="${statusColor};padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">${label}</span>
-                ${mapUrl ? `<a href="${mapUrl}" target="_blank" style="font-size:11px;color:#166534;text-decoration:none">↗ Buka Maps</a>` : ''}
-            </div>
-        </div>`;
+    <div>
+        <div style="background:#166534;padding:10px 14px">
+            <div style="color:#fff;font-size:13px;font-weight:600">${d.nama_lawson || '—'}</div>
+            <div style="color:#bbf7d0;font-size:11px">${d.kode_toko || ''}</div>
+        </div>
+        <div style="padding:6px 14px 10px;background:#fff;max-height:320px;overflow-y:auto">
+            ${secL('Data Toko')}
+            ${lawsonRow('Pemilik', d.nama_pemilik)}
+            ${lawsonRow('Alamat', d.alamat_lawson)}
+            ${lawsonRow('DC', d.nama_dc)}
+            ${lawsonRow('PIC', d.pic_toko)}
+            ${lawsonRow('No. HP', d.nomor_hp_pic)}
+            ${lawsonRow('Instalasi', d.tanggal_installasi)}
+            ${lawsonRow('Aktivasi', d.tanggal_aktivasi)}
+
+            ${secL('Data Vendor')}
+            ${lawsonRow('Media', mediaLabel(d.media_koneksi))}
+            ${vendorRowsL(d)}
+
+            ${secL('Data Teknis')}
+            ${lawsonRow('Jenis', d.jenis_perangkat)}
+            ${lawsonRow('Merk', d.merk_perangkat)}
+            ${lawsonRow('Type', d.type_perangkat_nama)}
+            ${lawsonRow('Kategori IP', d.kategori_ip_address)}
+            ${lawsonRow('Jenis IP', d.jenis_ip_address)}
+            ${lawsonRow('IP Address', d.ip_address_toko)}
+            ${lawsonRow('Type Koneksi', d.type_koneksi)}
+            ${lawsonRow('VPN', d.kode_tujuan_koneksi)}
+            ${lawsonRow('Tujuan Koneksi', d.tujuan_koneksi)}
+            ${lawsonRow('IP Tujuan', d.ip_address_tujuan)}
+            ${lawsonRow('Serial No.', d.serial_number_perangkat)}
+
+            ${d.keterangan ? secL('Keterangan') + `<div style="font-size:12px;color:#1f2937;line-height:1.5">${d.keterangan}</div>` : ''}
+        </div>
+        <div style="padding:8px 14px;border-top:1px solid #f3f4f6;background:#fff;display:flex;justify-content:space-between;align-items:center">
+            <span style="${statusColor};padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">${label}</span>
+            ${mapUrl ? `<a href="${mapUrl}" target="_blank" style="font-size:11px;color:#166534;text-decoration:none">↗ Buka Maps</a>` : ''}
+        </div>
+    </div>`;
             }
 
             fetch('<?= site_url('Lawson/getMapData') ?>')
@@ -1096,86 +1135,89 @@
                 }
             }
 
+            function fmtRpA(v) {
+                if (v === null || v === undefined || v === '') return '';
+                const n = parseFloat(v);
+                if (isNaN(n)) return v;
+                return 'Rp ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+
             function alfamartRow(k, v) {
                 if (!v && v !== 0) return '';
+                return `<div style="display:flex;gap:8px;margin:3px 0;font-size:12px;align-items:flex-start">
+        <span style="color:#6b7280;min-width:96px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px">${k}</span>
+        <span style="color:#1f2937;flex:1;word-break:break-word">${v}</span></div>`;
+            }
 
-                return `
-        <div style="display:flex;gap:8px;margin:3px 0;font-size:12px">
-            <span style="color:#6b7280;min-width:78px;font-size:11px;text-transform:uppercase">
-                ${k}
-            </span>
-            <span style="color:#1f2937;flex:1">
-                ${v}
-            </span>
-        </div>
-    `;
+            function secA(title) {
+                return `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#dc2626;border-left:3px solid #dc2626;padding-left:8px;margin:12px 0 6px">${title}</div>`;
+            }
+
+            function vendorRowsA(d) {
+                if (String(d.media_koneksi) === '1') {
+                    return alfamartRow('Kode Quota', d.kode_quota_simcard) +
+                        alfamartRow('MSISDN', d.nomor_msisdn) +
+                        alfamartRow('ISSID/IMEI', d.nomor_imei) +
+                        alfamartRow('Vendor', d.nama_vendor_simcard || d.nama_vendor) +
+                        alfamartRow('Paket Data', d.nama_paket_data) +
+                        alfamartRow('Harga Paket', fmtRpA(d.harga_quota)) +
+                        alfamartRow('Quota Internet', d.quota_internet);
+                }
+                return alfamartRow('Kode Layanan', d.kode_layanan_vendor) +
+                    alfamartRow('ID Plgn / No.INET', d.id_pelanggan || d.nomor_inet) +
+                    alfamartRow('Vendor', d.nama_vendor_inet || d.nama_vendor) +
+                    alfamartRow('Nama Layanan', d.nama_layanan) +
+                    alfamartRow('Harga Layanan', fmtRpA(d.harga_layanan)) +
+                    alfamartRow('Bandwidth', d.kecepatan_bandwidth);
             }
 
             function alfamartPopup(d) {
-
                 const label = statusLabel(d);
-
-                const statusColor =
-                    label === 'Aktif' ?
+                const statusColor = label === 'Aktif' ?
                     'background:#dcfce7;color:#166534' :
                     'background:#fee2e2;color:#991b1b';
-
                 const coord = d.titik_koor_toko || '';
-
-                const mapUrl = d.map_toko ?
-                    d.map_toko :
-                    (coord ? 'https://www.google.com/maps?q=' + coord : '');
-
+                const mapUrl = d.map_toko ? d.map_toko : (coord ? 'https://www.google.com/maps?q=' + coord : '');
                 return `
-        <div>
-            <div style="background:#dc2626;padding:10px 14px">
-                <div style="color:#fff;font-size:13px;font-weight:600">
-                    ${d.nama_alfamart || '—'}
-                </div>
-                <div style="color:#fecaca;font-size:11px">
-                    ${d.kode_toko || ''}
-                </div>
-            </div>
-
-            <div style="padding:10px 14px;background:#fff">
-                ${alfamartRow('Alamat', d.alamat_alfamart)}
-                ${alfamartRow('PIC', d.pic_toko)}
-                ${alfamartRow('No HP', d.nomor_hp_pic)}
-                ${alfamartRow('DC', d.nama_dc)}
-                ${alfamartRow('Vendor', d.nama_vendor)}
-                ${alfamartRow('Media', mediaLabel(d.media_koneksi))}
-                ${alfamartRow('Bandwidth', d.kapasitas_bandwidth)}
-                ${alfamartRow('IP Address', d.ip_address)}
-                ${alfamartRow('Perangkat', d.jenis_perangkat)}
-                ${alfamartRow('Merk', d.merk_perangkat)}
-                ${alfamartRow('Type',d.type_perangkat_nama)}
-                ${alfamartRow('Serial', d.serial_number_perangkat)}
-                ${alfamartRow('Instalasi', d.tanggal_installasi)}
-                ${alfamartRow('Aktivasi', d.tanggal_aktivasi)}
-                ${alfamartRow('Keterangan', d.keterangan)}
-            </div>
-
-            <div style="padding:8px 14px;border-top:1px solid #f3f4f6;background:#fff;
-                        display:flex;justify-content:space-between;align-items:center">
-                <span style="${statusColor};
-                             padding:2px 10px;
-                             border-radius:20px;
-                             font-size:11px;
-                             font-weight:600">
-                    ${label}
-                </span>
-
-                ${
-                    mapUrl
-                    ? `<a href="${mapUrl}" target="_blank"
-                        style="font-size:11px;color:#dc2626;text-decoration:none">
-                        ↗ Buka Maps
-                       </a>`
-                    : ''
-                }
-            </div>
+    <div>
+        <div style="background:#dc2626;padding:10px 14px">
+            <div style="color:#fff;font-size:13px;font-weight:600">${d.nama_alfamart || '—'}</div>
+            <div style="color:#fecaca;font-size:11px">${d.kode_toko || ''}</div>
         </div>
-    `;
+        <div style="padding:6px 14px 10px;background:#fff;max-height:320px;overflow-y:auto">
+            ${secA('Data Toko')}
+            ${alfamartRow('Pemilik', d.nama_pemilik)}
+            ${alfamartRow('Alamat', d.alamat_alfamart)}
+            ${alfamartRow('DC', d.nama_dc)}
+            ${alfamartRow('PIC', d.pic_toko)}
+            ${alfamartRow('No. HP', d.nomor_hp_pic)}
+            ${alfamartRow('Instalasi', d.tanggal_installasi)}
+            ${alfamartRow('Aktivasi', d.tanggal_aktivasi)}
+
+            ${secA('Data Vendor')}
+            ${alfamartRow('Media', mediaLabel(d.media_koneksi))}
+            ${vendorRowsA(d)}
+
+            ${secA('Data Teknis')}
+            ${alfamartRow('Jenis', d.jenis_perangkat)}
+            ${alfamartRow('Merk', d.merk_perangkat)}
+            ${alfamartRow('Type', d.type_perangkat_nama)}
+            ${alfamartRow('Kategori IP', d.kategori_ip_address)}
+            ${alfamartRow('Jenis IP', d.jenis_ip_address)}
+            ${alfamartRow('IP Address', d.ip_address_toko)}
+            ${alfamartRow('Type Koneksi', d.type_koneksi)}
+            ${alfamartRow('VPN', d.kode_tujuan_koneksi)}
+            ${alfamartRow('Tujuan Koneksi', d.tujuan_koneksi)}
+            ${alfamartRow('IP Tujuan', d.ip_address_tujuan)}
+            ${alfamartRow('Serial No.', d.serial_number_perangkat)}
+
+            ${d.keterangan ? secA('Keterangan') + `<div style="font-size:12px;color:#1f2937;line-height:1.5">${d.keterangan}</div>` : ''}
+        </div>
+        <div style="padding:8px 14px;border-top:1px solid #f3f4f6;background:#fff;display:flex;justify-content:space-between;align-items:center">
+            <span style="${statusColor};padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">${label}</span>
+            ${mapUrl ? `<a href="${mapUrl}" target="_blank" style="font-size:11px;color:#dc2626;text-decoration:none">↗ Buka Maps</a>` : ''}
+        </div>
+    </div>`;
             }
             fetch('<?= site_url('Alfamart/getMapData') ?>')
                 .then(r => r.json())
@@ -1223,11 +1265,42 @@
             let allData = [],
                 grp = L.layerGroup().addTo(midiMap);
 
+            function fmtRp(v) {
+                if (v === null || v === undefined || v === '') return '';
+                const n = parseFloat(v);
+                if (isNaN(n)) return v;
+                return 'Rp ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+
             function row(k, v) {
                 if (!v && v !== 0) return '';
                 return `<div style="display:flex;gap:8px;margin:3px 0;font-size:12px;align-items:flex-start">
-            <span style="color:#6b7280;min-width:78px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px">${k}</span>
-            <span style="color:#1f2937;flex:1;word-break:break-word">${v}</span></div>`;
+        <span style="color:#6b7280;min-width:96px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px">${k}</span>
+        <span style="color:#1f2937;flex:1;word-break:break-word">${v}</span></div>`;
+            }
+
+            // judul section — gaya sama seperti .section-title di FormMidi
+            function sec(title) {
+                return `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#185a82;border-left:3px solid #185a82;padding-left:8px;margin:12px 0 6px">${title}</div>`;
+            }
+
+            // baris vendor mengikuti media koneksi: 1 = Cellular, 0 = Non Cellular
+            function vendorRows(d) {
+                if (String(d.media_koneksi) === '1') {
+                    return row('Kode Quota', d.kode_quota_simcard) +
+                        row('MSISDN', d.nomor_msisdn) +
+                        row('ISSID/IMEI', d.nomor_imei) +
+                        row('Vendor', d.nama_vendor_simcard || d.nama_vendor) +
+                        row('Paket Data', d.nama_paket_data) +
+                        row('Harga Paket', fmtRp(d.harga_quota)) +
+                        row('Quota Internet', d.quota_internet);
+                }
+                return row('Kode Layanan', d.kode_layanan_vendor) +
+                    row('ID Plgn / No.INET', d.id_pelanggan || d.nomor_inet) +
+                    row('Vendor', d.nama_vendor_inet || d.nama_vendor) +
+                    row('Nama Layanan', d.nama_layanan) +
+                    row('Harga Layanan', fmtRp(d.harga_layanan)) +
+                    row('Bandwidth', d.kecepatan_bandwidth);
             }
 
             function popup(d) {
@@ -1236,32 +1309,45 @@
                 const coord = d.titik_koor_toko || '';
                 const mUrl = d.map_toko || (coord ? 'https://www.google.com/maps?q=' + coord : '');
                 return `<div>
-            <div style="background:#0f3d5c;padding:10px 14px">
-                <div style="color:#fff;font-size:13px;font-weight:600">${d.nama_alfamidi||'—'}</div>
-                <div style="color:#93c5fd;font-size:11px;margin-top:2px">${d.kode_toko||''}</div>
-            </div>
-            <div style="padding:10px 14px;background:#fff">
-                ${row('Alamat',d.alamat_alfamidi)}
-                ${row('PIC',d.pic_toko)}
-                ${row('No. HP',d.nomor_hp_pic)}
-                ${row('DC',d.nama_dc)}
-                ${row('Vendor',d.nama_vendor)}
-                ${row('Media', mediaLabel(d.media_koneksi))}
-                ${row('Bandwidth',d.kapasitas_bandwidth)}
-                ${row('IP Address',d.ip_address)}
-                ${row('Perangkat',d.jenis_perangkat)}
-                ${row('Merk',d.merk_perangkat)}
-                ${row('Type',d.type_perangkat_nama)}
-                ${row('Serial No.',d.serial_number_perangkat)}
-                ${row('Instalasi',d.tanggal_installasi)}
-                ${row('Aktivasi',d.tanggal_aktivasi)}
-                ${d.keterangan ? row('Keterangan',d.keterangan) : ''}
-            </div>
-            <div style="padding:8px 14px 10px;border-top:1px solid #f3f4f6;background:#fff;display:flex;align-items:center;justify-content:space-between">
-                <span style="${sc};padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600">${label}</span>
-                ${mUrl ? `<a href="${mUrl}" target="_blank" style="font-size:11px;color:#185a82;text-decoration:none">&#8599; Buka Maps</a>` : ''}
-            </div>
-        </div>`;
+        <div style="background:#0f3d5c;padding:10px 14px">
+            <div style="color:#fff;font-size:13px;font-weight:600">${d.nama_alfamidi || '—'}</div>
+            <div style="color:#93c5fd;font-size:11px;margin-top:2px">${d.kode_toko || ''}</div>
+        </div>
+        <div style="padding:6px 14px 10px;background:#fff;max-height:320px;overflow-y:auto">
+
+            ${sec('Data Toko')}
+            ${row('Pemilik', d.nama_pemilik)}
+            ${row('Alamat', d.alamat_alfamidi)}
+            ${row('DC', d.nama_dc)}
+            ${row('PIC', d.pic_toko)}
+            ${row('No. HP', d.nomor_hp_pic)}
+            ${row('Instalasi', d.tanggal_installasi)}
+            ${row('Aktivasi', d.tanggal_aktivasi)}
+
+            ${sec('Data Vendor')}
+            ${row('Media', mediaLabel(d.media_koneksi))}
+            ${vendorRows(d)}
+
+            ${sec('Data Teknis')}
+            ${row('Jenis', d.jenis_perangkat)}
+            ${row('Merk', d.merk_perangkat)}
+            ${row('Type', d.type_perangkat_nama)}
+            ${row('Kategori IP', d.kategori_ip_address)}
+            ${row('Jenis IP', d.jenis_ip_address)}
+            ${row('IP Address', d.ip_address_toko)}
+            ${row('Type Koneksi', d.type_koneksi)}
+            ${row('VPN', d.kode_tujuan_koneksi)}
+            ${row('Tujuan Koneksi', d.tujuan_koneksi)}
+            ${row('IP Tujuan', d.ip_address_tujuan)}
+            ${row('Serial No.', d.serial_number_perangkat)}
+
+            ${d.keterangan ? sec('Keterangan') + `<div style="font-size:12px;color:#1f2937;line-height:1.5">${d.keterangan}</div>` : ''}
+        </div>
+        <div style="padding:8px 14px 10px;border-top:1px solid #f3f4f6;background:#fff;display:flex;align-items:center;justify-content:space-between">
+            <span style="${sc};padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600">${label}</span>
+            ${mUrl ? `<a href="${mUrl}" target="_blank" style="font-size:11px;color:#185a82;text-decoration:none">&#8599; Buka Maps</a>` : ''}
+        </div>
+    </div>`;
             }
 
             function render(data) {

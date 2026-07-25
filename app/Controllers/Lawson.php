@@ -540,17 +540,73 @@ class Lawson extends BaseController
         $data = $db->table('d_lawson a')
             ->select('
             a.*,
+
             dc.nama_dc,
             jp.jenis_perangkat,
             mp.merk_perangkat,
-            tp.type_perangkat AS type_perangkat_nama
+            tp.type_perangkat AS type_perangkat_nama,
+
+            -- Jalur Non-Cellular (Nomor INET)
+            dni.id_pelanggan,
+            mni.nomor_inet,
+            mni.kecepatan_bandwidth,
+            mni.harga_layanan,
+            lv.kode_layanan_vendor,
+            lv.nama_layanan,
+            v.nama_vendor  AS nama_vendor_inet,
+
+            -- Jalur Cellular (Simcard)
+            ds.nomor_msisdn,
+            ds.nomor_imei,
+            qs.kode_quota_simcard,
+            qs.nama_paket_data,
+            qs.quota_internet,
+            qs.harga_quota,
+            vc.nama_vendor AS nama_vendor_simcard,
+
+            COALESCE(mni.kecepatan_bandwidth, qs.quota_internet) AS kapasitas_bandwidth,
+            COALESCE(v.nama_vendor, vc.nama_vendor)              AS nama_vendor
         ')
             ->join('md_dc dc', 'dc.id = a.nama_dc_id', 'left')
             ->join('md_jenis_perangkat jp', 'jp.id = a.jenis_perangkat_id', 'left')
             ->join('md_merek_perangkat mp', 'mp.id = a.merk_perangkat_id', 'left')
             ->join('md_type_perangkat tp', 'tp.id = a.type_perangkat_id', 'left')
+
+            // Non-Cellular
+            ->join('d_nomor_inet dni', 'dni.id = a.nomor_inet_id', 'left')
+            ->join('md_nomer_inet mni', 'mni.id = dni.nomer_inet_id', 'left')
+            ->join('md_layanan_vendor lv', 'lv.id = mni.layanan_vendor_id', 'left')
+            ->join('md_vendor v', 'v.id = lv.vendor_id', 'left')
+
+            // Cellular
+            ->join('d_simcard ds', 'ds.id = a.simcard_id', 'left')
+            ->join('md_quota_simcard qs', 'qs.id = ds.quota_simcard_id', 'left')
+            ->join('md_vendor_cellular vc', 'vc.id = qs.vendor_cellular_id', 'left')
+
+            ->orderBy('a.id', 'DESC')
             ->get()
             ->getResultArray();
+
+        // ── Pemilik Project & VPN lewat Model (aman dari salah nama tabel) ──
+        $pemilikMap = [];
+        foreach ((new \App\Models\PemilikProjectModel())->findAll() as $p) {
+            $pemilikMap[$p['id']] = $p['nama_pemilik'] ?? '';
+        }
+
+        $vpnMap = [];
+        foreach ((new \App\Models\VPNModel())->findAll() as $vpnRow) {
+            $vpnMap[$vpnRow['id']] = $vpnRow;
+        }
+
+        foreach ($data as &$r) {
+            $r['nama_pemilik'] = $pemilikMap[$r['pemilik_projek_id']] ?? '';
+
+            $vpn = $vpnMap[$r['vpn_id']] ?? null;
+            $r['kode_tujuan_koneksi'] = $vpn['kode_tujuan_koneksi'] ?? '';
+            $r['tujuan_koneksi']      = $vpn['tujuan_koneksi'] ?? '';
+            $r['ip_address_tujuan']   = $vpn['ip_address_tujuan'] ?? '';
+        }
+        unset($r);
 
         return $this->response->setJSON($data);
     }
