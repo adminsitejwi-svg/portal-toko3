@@ -29,6 +29,7 @@ use App\Controllers\VendorCelulllar;
 use App\Controllers\VPN;
 use App\Controllers\RipotRetail;
 use App\Controllers\RipotActive;
+use App\Controllers\Profile;
 
 
 
@@ -44,18 +45,22 @@ $routes->get('/login', [Login::class, 'index']);
 $routes->post('/login/auth', [Login::class, 'auth']);
 $routes->get('logout', [Login::class, 'logout']);
 
-$routes->get('/register', [Register::class, 'index']);
-$routes->post('/register/save', [Register::class, 'save']);
 
-$routes->get('forgot-password', 'Auth\Login::forgotPassword');
-$routes->post('forgot-password/update', 'Auth\Login::resetPassword');
 
 /* =========================================================
  |  AREA TERPROTEKSI  (hanya perlu login)
  ========================================================= */
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
+
+    $routes->get('/register', [Register::class, 'index']);
+    $routes->post('/register/save', [Register::class, 'save']);
+
+    $routes->get('forgot-password', 'Auth\Login::forgotPassword');
+    $routes->post('forgot-password/update', 'Auth\Login::resetPassword');
+
     $routes->get('dashboard-manager', [DashboardManager::class, 'index']);
     $routes->get('Logs', [Logs::class, 'index']);
+
 
     // halaman settings
     $routes->get('settings', 'SettingsController::index');
@@ -229,4 +234,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('RipotActive/show/(:num)', 'RipotActive::show/$1');
     $routes->post('RipotActive/sendEmail', 'RipotActive::sendEmail');
     $routes->get('RipotRetail/progress', 'RipotRetail::progress');
+
+    $routes->get('Profile', 'Profile::index');
+    $routes->post('profile/delete', 'Profile::deleteAccount');
 });

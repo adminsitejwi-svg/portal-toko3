@@ -86,7 +86,10 @@ class Login extends BaseController
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ]);
 
-        return redirect()->to('/login')
-            ->with('success', 'Password berhasil diperbarui. Silakan login dengan password baru.');
+
+
+        return redirect()->to('/Profile')
+            ->with('success', 'Password berhasil diperbarui.')
+            ->with('pw_just_changed', true);   //
     }
 }
