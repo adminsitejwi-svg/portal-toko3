@@ -500,7 +500,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         function konfirmasiHapusAkun() {
             Swal.fire({
                 title: 'Hapus Akun?',
-                text: 'Data akun Anda akan dihapus secara permanen. tidak bisa login kembali',
+                text: 'Data akun Anda akan dihapus secara permanen, Dan tidak bisa login kembali.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',
