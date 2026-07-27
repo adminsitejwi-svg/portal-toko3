@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
 
-    <title><?= esc($pageTitle ?? 'Report NOC') ?></title>
+    <title>Report NOC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1299,7 +1299,13 @@
     </script>
 
     <script>
-
+        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+        });
     </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>

@@ -14,6 +14,7 @@
         <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
         <!-- Font Awesome (for brand & solid icons) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
         <script>
@@ -345,6 +346,7 @@
 
                     <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                     <li>
+
                     <li>
                         <a href="<?= site_url('Profile') ?>"
                             class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -354,6 +356,18 @@
                             </span>
 
                             <span>Profile</span>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= site_url('Calendar') ?>"
+                            class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+
+                            <span class="pc-micon w-5">
+                                <i class="ti ti-calendar-week"></i>
+                            </span>
+
+                            <span>Jadwal NOC</span>
 
                         </a>
                     </li>

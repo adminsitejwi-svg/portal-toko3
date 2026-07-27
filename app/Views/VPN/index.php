@@ -1251,6 +1251,15 @@
             }
         });
     </script>
+    <script>
+        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+        });
+    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";

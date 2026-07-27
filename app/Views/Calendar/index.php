@@ -1,24 +1,26 @@
 <?php
 
-/** @var array $user */
-$tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['created_at'])) : '-';
+/** @var string|null $username */
 ?>
 <!doctype html>
-<html lang="en" class="light">
+<html lang="id" class="light">
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <?= csrf_meta() ?>
+    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <title>Jadwal NOC</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- FullCalendar 6 -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -53,6 +55,67 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
     </script>
 
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fa;
+        }
+
+        .dark body,
+        body.darkbody {
+            background: #1d2630;
+        }
+
+        .pc-sidebar {
+            transition: transform .25s ease, width .25s ease
+        }
+
+        .brand-text {
+            font-size: 18px;
+        }
+
+        .pc-link.active {
+            color: #fff !important;
+        }
+
+        .pc-link.active .pc-micon {
+            color: #04a9f5
+        }
+
+        .dropdown-menu {
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: all .3s ease;
+        }
+
+        .submenu.open {
+            max-height: 1000px;
+            overflow: visible;
+        }
+
+        @media (max-width:1024px) {
+            .pc-sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1050;
+            }
+
+            .pc-sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .pc-container {
+                margin-left: 0 !important;
+            }
+        }
+
         /* ===== form & tombol (Tailwind-friendly, warna brand) ===== */
         .f-label {
             display: block;
@@ -164,196 +227,36 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             }
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f4f7fa;
+        /* swatch warna custom: bulat, mengikuti ukuran input */
+        input[type="color"].clr-round {
+            -webkit-appearance: none;
+            appearance: none;
+            border: none;
+            padding: 0;
+            background: none;
+            cursor: pointer;
         }
 
-        .dark body,
-        body.darkbody {
-            background: #1d2630;
-        }
-
-        /* scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #b9c1c9;
-            border-radius: 3px
-        }
-
-        .dark ::-webkit-scrollbar-thumb {
-            background: #3a4658
-        }
-
-        /* card */
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 20px 0 rgba(69, 90, 100, .08);
-            margin-bottom: 24px;
-        }
-
-        .dark .card {
-            background: #263240;
-            color: #bfc8d6;
-            box-shadow: none
-        }
-
-        .card-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid #f1f1f1;
-        }
-
-        .dark .card-header {
-            border-color: #37404c
-        }
-
-        .card-header h5 {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0;
-            color: #37474f
-        }
-
-        .dark .card-header h5 {
-            color: #e7eaf0
-        }
-
-        .card-body {
-            padding: 25px
-        }
-
-        /* sidebar transition */
-        .pc-sidebar {
-            transition: transform .25s ease, width .25s ease
-        }
-
-        .pc-link.active {
-            color: #fff !important;
-        }
-
-        .pc-link.active .pc-micon {
-            color: #04a9f5
-        }
-
-        /* dropdown */
-        .dropdown-menu {
-            display: none;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .submenu {
-            max-height: 0;
+        input[type="color"].clr-round::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 9999px;
             overflow: hidden;
-            transition: all .3s ease;
         }
 
-        .submenu.open {
-            max-height: 1000px;
-            overflow: visible;
-        }
-
-        @media (max-width:1024px) {
-            .pc-sidebar {
-                transform: translateX(-100%);
-                position: fixed;
-                z-index: 1050;
-            }
-
-            .pc-sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .pc-container {
-                margin-left: 0 !important;
-            }
-        }
-
-        .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .custom-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+        input[type="color"].clr-round::-webkit-color-swatch {
+            border: 2px solid #e3e8ee;
             border-radius: 9999px;
         }
 
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        .dark .custom-scroll::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
-
-        .dark .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-
-        .brand-text {
-            font-size: 18px;
-        }
-
-        .vendor-card table td,
-        .vendor-card table th {
-            white-space: nowrap;
-        }
-
-        .vendor-card .custom-scroll {
-            scrollbar-width: thin;
-        }
-
-        .col-full {
-            grid-column: 1 / -1;
+        input[type="color"].clr-round::-moz-color-swatch {
+            border: 2px solid #e3e8ee;
+            border-radius: 9999px;
         }
     </style>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
-    <?php if (session()->getFlashdata('success')) : ?>
-        <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] w-full max-w-md px-4">
-            <div class="bg-green-500 text-white rounded-xl shadow-xl overflow-hidden">
-                <div class="flex items-center gap-3 px-5 py-4">
-                    <i class="ti ti-circle-check text-3xl"></i>
-                    <div>
-                        <h4 class="font-bold">Berhasil</h4>
-                        <p class="text-sm"><?= esc(session()->getFlashdata('success')) ?></p>
-                    </div>
-                </div>
-                <div class="h-1 bg-green-400">
-                    <div id="progressBar" class="h-full bg-white w-full"></div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
 
-    <?php if (session()->getFlashdata('error')) : ?>
-        <div id="errorAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] w-full max-w-md px-4">
-            <div class="bg-red-500 text-white rounded-xl shadow-xl overflow-hidden">
-                <div class="flex items-center gap-3 px-5 py-4">
-                    <i class="ti ti-alert-circle text-3xl"></i>
-                    <div>
-                        <h4 class="font-bold">Gagal</h4>
-                        <p class="text-sm"><?= esc(session()->getFlashdata('error')) ?></p>
-                    </div>
-                </div>
-                <div class="h-1 bg-red-400">
-                    <div id="progressBarError" class="h-full bg-white w-full"></div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
     <!-- ============ SIDEBAR ============ -->
     <nav id="sidebar" class="pc-sidebar fixed top-0 left-0 h-screen w-sidebar bg-sidebar text-[#a9b7c6] z-[1030] flex flex-col">
         <div class="flex items-center h-header px-6 shrink-0">
@@ -368,8 +271,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Halaman Utama</li>
                 <li>
                     <a href="<?= site_url('dashboard-manager') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white relative">
-                        <span class="pc-micon w-5"><i class="ti ti-home fs-5"></i></span>
-                        <span class="pc-mtext">Beranda</span>
+                        <span class="pc-micon w-5"><i class="ti ti-home fs-5"></i></span><span class="pc-mtext">Beranda</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -412,9 +314,9 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
                         <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
+                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -429,27 +331,18 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                         <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
                     </ul>
                 </li>
+
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li><a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span><span>Profile</span></a></li>
                 <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
+                    <a href="<?= site_url('Calendar') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span><span>Jadwal NOC</span>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
-                        <span>Pengguna</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
-                        <span>Change Log</span>
-                    </a>
-                </li>
+                <li><a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-settings"></i></span><span>Pengguna</span></a></li>
+                <li><a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-report-search"></i></span><span>Change Log</span></a></li>
             </ul>
         </div>
     </nav>
@@ -459,35 +352,20 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
             <ul class="flex items-center gap-1">
                 <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
-
             </ul>
-
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- settings -->
-
-                <!-- notifications -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
                         <div class="flex items-center gap-3 px-5 py-4 bg-primary-500 text-white">
-                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                <i data-feather="user" class="w-5 h-5 text-gray-500"></i>
-                            </div>
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i data-feather="user" class="w-5 h-5 text-gray-500"></i></div>
                             <div>
                                 <h6 class="font-medium leading-tight"><?= session('username') ?></h6>
                             </div>
                         </div>
                         <div class="py-3 px-3">
-                            <button onclick="window.location.href='<?= site_url('logout') ?>'"
-                                class="w-full mt-3 bg-primary-500 hover:bg-red-600 text-white py-2 rounded flex items-center justify-center gap-2 text-sm">
-
-                                <i class="fas fa-sign-out-alt"></i>
-                                Logout
-
+                            <button onclick="window.location.href='<?= site_url('logout') ?>'" class="w-full mt-3 bg-primary-500 hover:bg-red-600 text-white py-2 rounded flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-sign-out-alt"></i> Logout
                             </button>
                         </div>
                     </div>
@@ -495,87 +373,104 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             </ul>
         </header>
 
-        <div class="p-6 max-w-[980px] mx-auto">
-            <!-- ===== FOTO PROFIL (ikon) ===== -->
-            <div>
-                <div class="flex items-center justify-between mb-4 gap-3">
-                    <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white">Jadwal NOC</h4>
-                    <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+        <!-- ===== KONTEN: KALENDER ===== -->
+        <div class="p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4 gap-3">
+                <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white">Jadwal NOC</h4>
+                <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+            </div>
+
+            <div class="flex flex-col xl:flex-row gap-4 items-start">
+                <!-- KIRI: kalender -->
+                <div class="w-full xl:flex-1 min-w-0 bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-4">
+                    <div class="flex items-center justify-center gap-4 mb-3">
+                        <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnPrev" title="Bulan sebelumnya">&lsaquo;</button>
+                        <span class="text-[1.05rem] font-bold min-w-[120px] text-center text-[#202124] dark:text-white" id="calTitle">&mdash;</span>
+                        <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnNext" title="Bulan berikutnya">&rsaquo;</button>
+                    </div>
+
+                    <div id="Calendar"></div>
+
+                    <div class="flex justify-center mt-4">
+                        <div class="inline-flex rounded-lg overflow-hidden border border-gray-200 text-[13px]">
+                            <button class="px-4 py-2 hover:bg-gray-50" id="btnKemarin">&lsaquo; Kemarin</button>
+                            <button class="px-4 py-2 border-x border-gray-200 text-primary-600 font-semibold hover:bg-gray-50" id="btnHariIni">Hari ini</button>
+                            <button class="px-4 py-2 hover:bg-gray-50" id="btnBesok">Besok &rsaquo;</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex flex-col xl:flex-row gap-4 items-start">
-                    <!-- KIRI: kalender -->
-                    <div class="w-full xl:flex-1 min-w-0 bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-4">
-                        <div class="flex items-center justify-center gap-4 mb-3">
-                            <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnPrev" title="Bulan sebelumnya">&lsaquo;</button>
-                            <span class="text-[1.05rem] font-bold min-w-[120px] text-center text-[#202124] dark:text-white" id="calTitle">&mdash;</span>
-                            <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnNext" title="Bulan berikutnya">&rsaquo;</button>
-                        </div>
+                <!-- KANAN: panel detail -->
+                <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
 
-                        <div id="Calendar"></div>
-
-                        <div class="flex justify-center mt-4">
-                            <div class="inline-flex rounded-lg overflow-hidden border border-gray-200 text-[13px]">
-                                <button class="px-4 py-2 hover:bg-gray-50" id="btnKemarin">&lsaquo; Kemarin</button>
-                                <button class="px-4 py-2 border-x border-gray-200 text-primary-600 font-semibold hover:bg-gray-50" id="btnHariIni">Hari ini</button>
-                                <button class="px-4 py-2 hover:bg-gray-50" id="btnBesok">Besok &rsaquo;</button>
+                    <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
+                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Jadwal Shift</div>
+                    <div id="panelList">
+                        <div class="text-gray-400 text-sm py-2">Memuat&hellip;</div>
+                    </div>
+                    <div id="noteWrap">
+                        <!-- ================= NOTE WARNA ================= -->
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <h6 class="font-semibold text-sm">Berikan Tanda</h6>
+                                <button id="btnTambahNote" class="text-xs px-3 py-1 rounded bg-primary-500 text-white hover:bg-primary-600">
+                                    + Tambah
+                                </button>
                             </div>
+                            <div id="noteContainer" class="space-y-3"></div>
                         </div>
                     </div>
+                </aside>
 
-                    <!-- KANAN: panel detail -->
-                    <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
-                        <div class="text-[.72rem] tracking-wide uppercase text-gray-400 font-semibold">Tanggal terpilih</div>
-                        <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
-                        <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Jadwal Shift</div>
-                        <div id="panelList">
-                            <div class="text-gray-400 text-sm py-2">Memuat&hellip;</div>
-                        </div>
-                    </aside>
-                </div>
+
             </div>
-            <div id="modalForm" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
-                <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
-                    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
-                        <h5 class="font-semibold text-[#2b3540] dark:text-white" id="modalTitle">Tambah Jadwal</h5>
-                        <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideModal()">&times;</button>
-                    </div>
-                    <div class="px-5 py-4 space-y-4">
-                        <input type="hidden" id="id">
-                        <div>
-                            <label class="f-label">Tanggal</label>
-                            <input type="date" class="f-input" id="tanggal" required>
-                        </div>
-                        <div>
-                            <label class="f-label">Shift</label>
-                            <select class="f-input" id="shift" required>
-                                <option value="1">Shift 1</option>
-                                <option value="2">Shift 2</option>
-                                <option value="3">Shift 3</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="f-label">Nama Petugas</label>
-                            <input type="text" class="f-input" id="nama" placeholder="cth: Rifi" required>
-                        </div>
-                        <div>
-                            <label class="f-label">Warna</label>
-                            <input type="color" class="f-input h-11 p-1" id="warna" value="#04a9f5">
-                        </div>
-                        <div>
-                            <label class="f-label">Keterangan <span class="text-gray-400 font-normal">(opsional)</span></label>
-                            <textarea class="f-input" id="keterangan" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 px-5 py-4 border-t border-gray-100 dark:border-white/10">
-                        <button type="button" class="btn2 bg-red-600 hover:bg-red-700 text-white mr-auto hidden" id="btnHapus">Hapus</button>
-                        <button type="button" class="btn2 bg-gray-100 hover:bg-gray-200 text-gray-700" onclick="hideModal()">Batal</button>
-                        <button type="button" class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnSimpan">Simpan</button>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
+
+    <!-- ================= MODAL FORM (Tailwind) ================= -->
+    <div id="modalForm" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
+        <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
+                <h5 class="font-semibold text-[#2b3540] dark:text-white" id="modalTitle">Tambah Jadwal</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideModal()">&times;</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <input type="hidden" id="id">
+                <div>
+                    <label class="f-label">Tanggal</label>
+                    <input type="date" class="f-input" id="tanggal" required>
+                </div>
+                <div>
+                    <label class="f-label">Shift</label>
+                    <select class="f-input" id="shift" required>
+                        <option value="1">Shift 1</option>
+                        <option value="2">Shift 2</option>
+                        <option value="3">Shift 3</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="f-label">Masukan Nama</label>
+                    <input type="text" class="f-input" id="nama" placeholder="Masukan Nama" required>
+                </div>
+                <div>
+                    <label class="f-label">Warna</label>
+                    <input type="color" class="f-input h-11 p-1" id="warna" value="#04a9f5">
+                </div>
+                <div>
+                    <label class="f-label">Keterangan <span class="text-gray-400 font-normal">(opsional)</span></label>
+                    <textarea class="f-input" id="keterangan" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 px-5 py-4 border-t border-gray-100 dark:border-white/10">
+                <button type="button" class="btn2 bg-red-600 hover:bg-red-700 text-white mr-auto hidden" id="btnHapus">Hapus</button>
+                <button type="button" class="btn2 bg-gray-100 hover:bg-gray-200 text-gray-700" onclick="hideModal()">Batal</button>
+                <button type="button" class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnSimpan">Simpan</button>
+            </div>
+        </div>
+
+    </div>
+
     <script>
         const BASE = "<?= site_url('Calendar') ?>";
 
@@ -607,6 +502,36 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                 key: el.name,
                 val: el.content
             } : null;
+        }
+        // Banner sukses/gagal di tengah-atas — sama seperti halaman lain
+        function showFlash(type, message) {
+            const ok = type === 'success';
+            const wrap = document.createElement('div');
+            wrap.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-[3000] w-full max-w-md px-4';
+            wrap.innerHTML =
+                '<div class="' + (ok ? 'bg-green-500' : 'bg-red-500') + ' text-white rounded-xl shadow-xl overflow-hidden">' +
+                '<div class="flex items-center gap-3 px-5 py-4">' +
+                '<i class="ti ' + (ok ? 'ti-circle-check' : 'ti-alert-circle') + ' text-3xl"></i>' +
+                '<div><h4 class="font-bold">' + (ok ? 'Berhasil' : 'Gagal') + '</h4>' +
+                '<p class="text-sm">' + message + '</p></div>' +
+                '</div>' +
+                '<div class="h-1 ' + (ok ? 'bg-green-400' : 'bg-red-400') + '">' +
+                '<div class="bar h-full bg-white w-full"></div>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(wrap);
+
+            const bar = wrap.querySelector('.bar');
+            if (bar) {
+                bar.style.transition = 'width 3s linear';
+                setTimeout(() => bar.style.width = '0%', 100);
+            }
+            setTimeout(() => {
+                wrap.style.transition = 'all .5s ease';
+                wrap.style.opacity = '0';
+                wrap.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => wrap.remove(), 500);
+            }, 3000);
         }
 
         let Calendar;
@@ -654,6 +579,11 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                     });
                 }
             });
+            renderNotes();
+
+            document
+                .getElementById("btnTambahNote")
+                .addEventListener("click", addNote);
             Calendar.render();
             feather.replace();
         });
@@ -719,9 +649,8 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             const box = document.getElementById('panelList');
             if (!items.length) {
                 box.innerHTML =
-                    '<div class="text-gray-400 text-sm py-2">Belum ada jadwal untuk tanggal ini.</div>' +
-                    '<button class="btn2 mt-1 border border-primary-500 text-primary-600 hover:bg-primary-50" ' +
-                    'onclick="openForm({tanggal:\'' + dateStr + '\'})">+ Tambah untuk tanggal ini</button>';
+                    '<div class="text-gray-400 text-sm py-2">Belum ada jadwal untuk Hari ini.</div>' +
+                    '<button class="btn2 mt-1 border border-primary-500 text-primary-600 hover:bg-primary-50" ';
                 return;
             }
             box.innerHTML = items.map(function(it) {
@@ -742,7 +671,93 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         function escapeHtml(s) {
             return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
+        const NOTE_KEY = "calendar_note_warna";
 
+        // state note di memori — diedit dulu, baru dipersist saat tombol "Simpan" ditekan
+        let notesState = loadNotes();
+
+        function loadNotes() {
+            try {
+                return JSON.parse(localStorage.getItem(NOTE_KEY) || "[]");
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function persistNotes() {
+            localStorage.setItem(NOTE_KEY, JSON.stringify(notesState));
+        }
+
+        function renderNotes() {
+            const box = document.getElementById("noteContainer");
+
+            if (!notesState.length) {
+                box.innerHTML = `<div class="text-gray-400 text-sm">Belum ada tanda.</div>`;
+                return;
+            }
+
+            box.innerHTML = notesState.map((item, index) => `
+        <div class="rounded-lg border border-gray-100 p-3 space-y-2">
+            <div class="flex items-center gap-2">
+                <input
+                    type="color"
+                    value="${item.color || '#04a9f5'}"
+                    onchange="updateNoteField(${index}, 'color', this.value)"
+                    class="clr-round w-9 h-9 shrink-0">
+
+                <input
+                    class="f-input flex-1"
+                    placeholder="Keterangan"
+                    value="${escapeHtml(item.text || '')}"
+                    onchange="updateNoteField(${index}, 'text', this.value)">
+            </div>
+
+            <button
+                onclick="deleteNote(${index})"
+                class="btn2 w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-1">
+                <i class="fa fa-trash"></i> Hapus
+            </button>
+
+            <button
+                onclick="saveNoteRow(${index}, this)"
+                class="btn2 w-full bg-primary-500 hover:bg-primary-600 text-white text-xs flex items-center justify-center gap-1">
+                <i class="fa fa-save"></i> Simpan
+            </button>
+        </div>
+    `).join("");
+        }
+
+        function addNote() {
+            notesState.push({
+
+                color: "#04a9f5"
+            });
+            persistNotes();
+            renderNotes();
+        }
+
+        function updateNoteField(index, field, val) {
+            notesState[index][field] = val;
+            // belum dipersist ke localStorage — menunggu tombol "Simpan" ditekan
+        }
+
+        function saveNoteRow(index) {
+            persistNotes();
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Tersimpan',
+                showConfirmButton: false,
+                timer: 1200
+            });
+        }
+
+        function deleteNote(index) {
+            notesState.splice(index, 1);
+            persistNotes();
+            renderNotes();
+        }
         // ---- modal ----
         function showModal() {
             const m = document.getElementById('modalForm');
@@ -779,6 +794,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         }
 
         document.getElementById('btnSimpan').addEventListener('click', async function() {
+            const isNew = !document.getElementById('id').value;
             const body = new FormData();
             body.append('id', document.getElementById('id').value);
             body.append('tanggal', document.getElementById('tanggal').value);
@@ -797,8 +813,9 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                 selectedDate = document.getElementById('tanggal').value;
                 hideModal();
                 Calendar.refetchEvents();
+                showFlash('success', isNew ? 'Jadwal berhasil ditambahkan' : 'Jadwal berhasil diperbarui'); // << tambah
             } else {
-                Swal.fire('Gagal', 'Pastikan tanggal, shift, dan nama terisi.', 'error');
+                showFlash('error', 'Pastikan tanggal, shift, dan nama terisi.'); // << ganti Swal (opsional)
             }
         });
 
@@ -825,13 +842,16 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                 if (res.ok) {
                     hideModal();
                     Calendar.refetchEvents();
+                    showFlash('success', 'Jadwal berhasil dihapus'); // << tambah
                 } else {
-                    Swal.fire('Gagal', 'Tidak bisa menghapus.', 'error');
+                    showFlash('error', 'Tidak bisa menghapus.');
                 }
             });
         });
-    </script>
-    <script>
+
+        // ---- shell dashboard ----
+        let collapsed = false;
+
         function toggleSidebar() {
             const sb = document.getElementById('sidebar'),
                 c = document.getElementById('container');
@@ -875,9 +895,16 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             sub.classList.toggle('open');
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
-        feather.replace();
     </script>
-
+    <script>
+        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+        });
+    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";

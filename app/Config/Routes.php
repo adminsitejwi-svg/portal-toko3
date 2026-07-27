@@ -237,4 +237,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     $routes->get('Profile', 'Profile::index');
     $routes->post('profile/delete', 'Profile::deleteAccount');
+
+    $routes->get('Calendar',           'Calendar::index');
+    $routes->get('Calendar/events',    'Calendar::events');
+    $routes->post('Calendar/save',     'Calendar::save');
+    $routes->post('Calendar/delete/(:num)', 'Calendar::delete/$1');
 });
