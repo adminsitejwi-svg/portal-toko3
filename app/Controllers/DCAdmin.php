@@ -84,17 +84,31 @@ class DCAdmin extends BaseController
     {
         $model = new \App\Models\DCModel();
 
-        $data = $model->find($id);
+        try {
 
-        if (!$data) {
-            return redirect()->back()
-                ->with('error', 'Data tidak ditemukan.');
+            $data = $model->find($id);
+
+            if (!$data) {
+                return redirect()->to('/DCAdmin')
+                    ->with('error', 'Data tidak ditemukan.');
+            }
+
+            $model->delete($id);
+
+            return redirect()->to('/DCAdmin')
+                ->with('success', 'Data DC berhasil dihapus.');
+        } catch (\Throwable $e) {
+
+            // Tulis error ke log agar bisa dicek jika diperlukan
+            log_message('error', 'Vendor Delete Error : ' . $e->getMessage());
+
+            // Jangan tampilkan Whoops
+            return redirect()->to('/DCAdmin')
+                ->with(
+                    'error',
+                    'Data tidak dapat dihapus karena masih digunakan pada data lain.'
+                );
         }
-
-        $model->delete($id);
-
-        return redirect()->to('/DCAdmin')
-            ->with('success', 'Data berhasil dihapus.');
     }
     public function update()
     {

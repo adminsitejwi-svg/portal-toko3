@@ -48,17 +48,31 @@ class VPN extends BaseController
     {
         $model = new \App\Models\VPNModel();
 
-        $data = $model->find($id);
+        try {
 
-        if (!$data) {
-            return redirect()->back()
-                ->with('error', 'Data tidak ditemukan.');
+            $data = $model->find($id);
+
+            if (!$data) {
+                return redirect()->to('/VPN')
+                    ->with('error', 'Data tidak ditemukan.');
+            }
+
+            $model->delete($id);
+
+            return redirect()->to('/VPN')
+                ->with('success', 'Data VPN berhasil dihapus.');
+        } catch (\Throwable $e) {
+
+            // Tulis error ke log agar bisa dicek jika diperlukan
+            log_message('error', 'VPN Delete Error : ' . $e->getMessage());
+
+            // Jangan tampilkan Whoops
+            return redirect()->to('/VPN')
+                ->with(
+                    'error',
+                    'Data tidak dapat dihapus karena masih digunakan pada data lain.'
+                );
         }
-
-        $model->delete($id);
-
-        return redirect()->to('/VPN')
-            ->with('success', 'Data berhasil dihapus.');
     }
     public function update()
     {

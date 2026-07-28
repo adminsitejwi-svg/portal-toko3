@@ -173,10 +173,31 @@ class DataSI extends BaseController
     public function delete($id)
     {
         $model = new \App\Models\DataSIModel();
-        if (!$model->find($id)) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+
+        try {
+
+            $data = $model->find($id);
+
+            if (!$data) {
+                return redirect()->to('/DataSI')
+                    ->with('error', 'Data tidak ditemukan.');
+            }
+
+            $model->delete($id);
+
+            return redirect()->to('/DataSI')
+                ->with('success', 'Data Simcard berhasil dihapus.');
+        } catch (\Throwable $e) {
+
+            // Tulis error ke log agar bisa dicek jika diperlukan
+            log_message('error', 'Simcard Delete Error : ' . $e->getMessage());
+
+            // Jangan tampilkan Whoops
+            return redirect()->to('/DataSI')
+                ->with(
+                    'error',
+                    'Data tidak dapat dihapus karena masih digunakan pada data lain.'
+                );
         }
-        $model->delete($id);
-        return redirect()->to('/DataSI')->with('success', 'Data berhasil dihapus.');
     }
 }
