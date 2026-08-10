@@ -30,7 +30,7 @@ class Calendar extends BaseController
         $end   = substr($end, 0, 10);
 
         $rows      = $this->model->getByRange($start, $end);
-        $labelShift = [1 => 'Shift 1', 2 => 'Shift 2', 3 => 'Shift 3'];
+        $labelShift = [1 => 'Shift 1', 2 => 'Shift 2', 3 => 'Shift 3', 4 => 'Off'];
 
         $events = [];
         foreach ($rows as $r) {
@@ -86,5 +86,29 @@ class Calendar extends BaseController
             $this->model->delete($id);
         }
         return $this->response->setJSON(['status' => 'ok']);
+    }
+
+    public function notes()
+    {
+        $file = WRITEPATH . 'calendar_notes.json';
+
+        // POST -> simpan
+        if (strtolower($this->request->getMethod()) === 'post') {
+            $raw = $this->request->getPost('data') ?? '[]';
+            $arr = json_decode($raw, true);
+            if (! is_array($arr)) {
+                $arr = [];
+            }
+            file_put_contents($file, json_encode(array_values($arr), JSON_UNESCAPED_UNICODE));
+            return $this->response->setJSON(['status' => 'ok']);
+        }
+
+        // GET -> ambil
+        $json = is_file($file) ? file_get_contents($file) : '[]';
+        $data = json_decode($json, true);
+        if (! is_array($data)) {
+            $data = [];
+        }
+        return $this->response->setJSON($data);
     }
 }

@@ -361,6 +361,8 @@
                             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i data-feather="user" class="w-5 h-5 text-gray-500"></i></div>
                             <div>
                                 <h6 class="font-medium leading-tight"><?= session('username') ?></h6>
+                                
+
                             </div>
                         </div>
                         <div class="py-3 px-3">
@@ -447,6 +449,7 @@
                         <option value="1">Shift 1</option>
                         <option value="2">Shift 2</option>
                         <option value="3">Shift 3</option>
+                        <option value="4">Off</option>
                     </select>
                 </div>
                 <div>
@@ -472,6 +475,9 @@
     </div>
 
     <script>
+                document.getElementById('shift').addEventListener('change', function() {
+            document.getElementById('warna').value = SHIFT_WARNA[this.value] || '#04a9f5';
+        });
         const BASE = "<?= site_url('Calendar') ?>";
 
         const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -479,7 +485,14 @@
         const SHIFT_LABEL = {
             1: 'Shift 1',
             2: 'Shift 2',
-            3: 'Shift 3'
+            3: 'Shift 3',
+            4: 'Off'
+        };
+        const SHIFT_WARNA = {
+            1: '#92D050',   // Shift 1 - hijau
+            2: '#FFFF00',   // Shift 2 - kuning
+            3: '#00B0F0',   // Shift 3 - biru
+            4: '#FF0000'    // Off      - merah
         };
 
         function ymd(d) {
@@ -549,12 +562,11 @@
                 eventContent: function(arg) {
                     const box = document.createElement('div');
                     box.className = 'ev-box';
+                    const s = arg.event.extendedProps.shift;
                     box.style.background = arg.event.extendedProps.warna || '#04a9f5';
-                    box.textContent = arg.event.extendedProps.shift;
-                    box.title = SHIFT_LABEL[arg.event.extendedProps.shift] + ' - ' + arg.event.extendedProps.nama;
-                    return {
-                        domNodes: [box]
-                    };
+                    box.textContent = (s == 4 ? '0' : s);
+                    box.title = SHIFT_LABEL[s] + ' - ' + arg.event.extendedProps.nama;
+                    return { domNodes: [box] };
                 },
                 datesSet: function(info) {
                     const d = info.view.currentStart;
@@ -579,7 +591,7 @@
                     });
                 }
             });
-            renderNotes();
+            loadNotes();
 
             document
                 .getElementById("btnTambahNote")
@@ -674,19 +686,29 @@
         const NOTE_KEY = "calendar_note_warna";
 
         // state note di memori — diedit dulu, baru dipersist saat tombol "Simpan" ditekan
-        let notesState = loadNotes();
+        // state note di memori — diambil dari server, dipersist saat "Simpan"/tambah/hapus
+let notesState = [];
 
-        function loadNotes() {
-            try {
-                return JSON.parse(localStorage.getItem(NOTE_KEY) || "[]");
-            } catch (e) {
-                return [];
-            }
-        }
+async function loadNotes() {
+    try {
+        const res = await fetch(BASE + '/notes');
+        const data = await res.json();
+        notesState = Array.isArray(data) ? data : [];
+    } catch (e) {
+        notesState = [];
+    }
+    renderNotes();
+}
 
-        function persistNotes() {
-            localStorage.setItem(NOTE_KEY, JSON.stringify(notesState));
-        }
+async function persistNotes() {
+    const body = new FormData();
+    body.append('data', JSON.stringify(notesState));
+    const c = getCsrf();
+    if (c) body.append(c.key, c.val);
+    try {
+        await fetch(BASE + '/notes', { method: 'POST', body: body });
+    } catch (e) {}
+}
 
         function renderNotes() {
             const box = document.getElementById("noteContainer");
@@ -727,36 +749,27 @@
     `).join("");
         }
 
-        function addNote() {
-            notesState.push({
-
-                color: "#04a9f5"
-            });
-            persistNotes();
-            renderNotes();
-        }
+        async function addNote() {
+    notesState.push({ color: "#04a9f5", text: "" });
+    await persistNotes();
+    renderNotes();
+}
 
         function updateNoteField(index, field, val) {
             notesState[index][field] = val;
             // belum dipersist ke localStorage — menunggu tombol "Simpan" ditekan
         }
 
-        function saveNoteRow(index) {
-            persistNotes();
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Tersimpan',
-                showConfirmButton: false,
-                timer: 1200
-            });
-        }
+        async function saveNoteRow(index) {
+    await persistNotes();
+    showFlash('success', 'Tanda tersimpan');
+}
 
-        function deleteNote(index) {
+        async function deleteNote(index) {
             notesState.splice(index, 1);
-            persistNotes();
+            await persistNotes();   // tunggu server selesai simpan
             renderNotes();
+            showFlash('success', 'Tanda berhasil dihapus');
         }
         // ---- modal ----
         function showModal() {
@@ -786,7 +799,7 @@
             document.getElementById('tanggal').value = d.tanggal || selectedDate;
             document.getElementById('shift').value = d.shift || '1';
             document.getElementById('nama').value = d.nama || '';
-            document.getElementById('warna').value = d.warna || '#04a9f5';
+            document.getElementById('warna').value = d.warna || SHIFT_WARNA[d.shift || '1'];
             document.getElementById('keterangan').value = d.keterangan || '';
             document.getElementById('modalTitle').textContent = d.id ? 'Edit Jadwal' : 'Tambah Jadwal';
             document.getElementById('btnHapus').classList.toggle('hidden', !d.id);

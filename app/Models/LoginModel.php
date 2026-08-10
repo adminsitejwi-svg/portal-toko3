@@ -13,6 +13,7 @@ class LoginModel extends Model
     protected $allowedFields = [
         'username',
         'password',
+        'role',
     ];
 
     protected $returnType = 'array';

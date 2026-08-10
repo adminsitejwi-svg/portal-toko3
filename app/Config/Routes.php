@@ -242,4 +242,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Calendar/events',    'Calendar::events');
     $routes->post('Calendar/save',     'Calendar::save');
     $routes->post('Calendar/delete/(:num)', 'Calendar::delete/$1');
+    $routes->get('Calendar/notes',  'Calendar::notes');
+    $routes->post('Calendar/notes', 'Calendar::notes');
 });
