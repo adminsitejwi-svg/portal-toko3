@@ -30,6 +30,7 @@ use App\Controllers\VPN;
 use App\Controllers\RipotRetail;
 use App\Controllers\RipotActive;
 use App\Controllers\Profile;
+use App\Models\InventoryKantor;
 
 
 
@@ -244,4 +245,12 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Calendar/delete/(:num)', 'Calendar::delete/$1');
     $routes->get('Calendar/notes',  'Calendar::notes');
     $routes->post('Calendar/notes', 'Calendar::notes');
+
+
+    $routes->get('InventoryKantor', 'InventoryKantor::index');
+    $routes->get('InventoryKantor/create', 'InventoryKantor::create');
+    $routes->post('InventoryKantor/save', 'InventoryKantor::save');
+    $routes->post('InventoryKantor/update', 'InventoryKantor::update');
+    $routes->get('InventoryKantor/delete/(:num)', 'InventoryKantor::delete/$1');
+    $routes->get('InventoryKantor/show/(:num)', 'InventoryKantor::show/$1');
 });

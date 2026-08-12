@@ -125,6 +125,7 @@ if (! function_exists('activity_label_action')) {
                 'md_simcard'           => 'Simcard',
                 'd_simcard'            => 'Simcard',
                 'd_nomor_inet'         => 'Nomor Inet',
+                'md_barang'            => 'Inventory Kantor',
                 'repot_noc'            => 'Report NOC',
                 'aktivasi_ripot'       => 'Aktivasi Report',
                 'login'                => 'Pengguna',

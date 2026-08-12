@@ -372,6 +372,18 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?= site_url('InventoryKantor') ?>"
+                            class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+
+                            <span class="pc-micon w-5">
+                                <i class="ti ti-basket-down"></i>
+                            </span>
+
+                            <span>Inventory Kantor</span>
+
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= site_url('settings') ?>"
                             class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
 
