@@ -63,6 +63,17 @@ Vagrantfile
 /writable/debugbar/*
 !/writable/debugbar/index.html
 
+# Google OAuth refresh token — sensitif, jangan pernah commit
+/writable/google/*
+!/writable/google/.htaccess
+
+/writable/backups/*
+!/writable/backups/index.html
+!/writable/backups/.htaccess
+!/writable/backups/tmp
+/writable/backups/tmp/*
+!/writable/backups/tmp/index.html
+
 php_errors.log
 
 #-------------------------

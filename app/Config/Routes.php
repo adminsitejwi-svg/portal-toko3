@@ -46,6 +46,13 @@ $routes->get('/login', [Login::class, 'index']);
 $routes->post('/login/auth', [Login::class, 'auth']);
 $routes->get('logout', [Login::class, 'logout']);
 
+// Webhook Telegram (hosting) — token rahasia ada di URL, lihat App\Controllers\TelegramWebhook
+$routes->post('telegram-webhook/(:segment)', 'TelegramWebhook::handle/$1');
+
+// Setup webhook lewat browser (tanpa SSH) — setara "php spark telegram:webhook set".
+// Boleh dihapus lagi setelah dipakai sekali.
+$routes->get('telegram-webhook-setup/(:segment)', 'TelegramWebhook::setup/$1');
+
 
 
 /* =========================================================
