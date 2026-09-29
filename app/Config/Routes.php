@@ -253,6 +253,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Calendar/notes',  'Calendar::notes');
     $routes->post('Calendar/notes', 'Calendar::notes');
 
+    $routes->get('Piket',                'Piket::index');
+    $routes->get('Piket/events',         'Piket::events');
+    $routes->post('Piket/save',          'Piket::save');
+    $routes->post('Piket/delete/(:num)', 'Piket::delete/$1');
+
 
     $routes->get('InventoryKantor', 'InventoryKantor::index');
     $routes->get('InventoryKantor/create', 'InventoryKantor::create');

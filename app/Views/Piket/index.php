@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?= csrf_meta() ?>
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Jadwal Shift</title>
+    <title>Jadwal Piket</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -343,8 +343,8 @@
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform" style="transform: rotate(90deg)"></i>
                     </a>
                     <ul class="submenu open bg-black/20">
-                        <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white text-white font-semibold">Shift</a></li>
-                        <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
+                        <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
+                        <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white text-white font-semibold">Piket</a></li>
                     </ul>
                 </li>
                 <li><a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-settings"></i></span><span>Pengguna</span></a></li>
@@ -381,11 +381,21 @@
             </ul>
         </header>
 
-        <!-- ===== KONTEN: KALENDER ===== -->
+        <!-- ===== KONTEN: KALENDER PIKET ===== -->
         <div class="p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4 gap-3">
-                <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white">Jadwal Shift</h4>
-                <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+                <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white flex items-center gap-2">
+                    Jadwal Piket
+                    <button type="button" id="btnInfoPiket" title="Info piket" class="text-orange-500 hover:text-orange-600 leading-none">
+                        <i class="ti ti-alert-circle text-[22px]"></i>
+                    </button>
+                </h4>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btnNotePiket" title="Aturan piket" class="text-orange-500 hover:text-orange-600 leading-none">
+                        <i class="ti ti-alert-circle text-[22px]"></i>
+                    </button>
+                    <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Piket</button>
+                </div>
             </div>
 
             <div class="flex flex-col xl:flex-row gap-4 items-start">
@@ -410,29 +420,13 @@
 
                 <!-- KANAN: panel detail -->
                 <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
-
                     <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
-                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Jadwal Shift</div>
+                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Petugas Piket</div>
                     <div id="panelList">
                         <div class="text-gray-400 text-sm py-2">Memuat&hellip;</div>
                     </div>
-                    <div id="noteWrap">
-                        <!-- ================= NOTE WARNA ================= -->
-                        <div class="mt-6 pt-4 border-t border-gray-200">
-                            <div class="flex items-center justify-between mb-3">
-                                <h6 class="font-semibold text-sm">Berikan Tanda</h6>
-                                <button id="btnTambahNote" class="text-xs px-3 py-1 rounded bg-primary-500 text-white hover:bg-primary-600">
-                                    + Tambah
-                                </button>
-                            </div>
-                            <div id="noteContainer" class="space-y-3"></div>
-                        </div>
-                    </div>
                 </aside>
-
-
             </div>
-
         </div>
     </div>
 
@@ -440,7 +434,7 @@
     <div id="modalForm" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
         <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
-                <h5 class="font-semibold text-[#2b3540] dark:text-white" id="modalTitle">Tambah Jadwal</h5>
+                <h5 class="font-semibold text-[#2b3540] dark:text-white" id="modalTitle">Tambah Piket</h5>
                 <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideModal()">&times;</button>
             </div>
             <div class="px-5 py-4 space-y-4">
@@ -450,21 +444,31 @@
                     <input type="date" class="f-input" id="tanggal" required>
                 </div>
                 <div>
-                    <label class="f-label">Shift</label>
-                    <select class="f-input" id="shift" required>
-                        <option value="1">Shift 1</option>
-                        <option value="2">Shift 2</option>
-                        <option value="3">Shift 3</option>
-                        <option value="4">Off</option>
+                    <label class="f-label">Nama</label>
+                    <!-- nama diambil dari data shift (jadwal_noc) -->
+                    <select class="f-input" id="nama" required>
+                        <option value="">-- Pilih Nama --</option>
+                        <?php foreach ($names as $n) : ?>
+                            <option value="<?= esc($n, 'attr') ?>"><?= esc($n) ?></option>
+                        <?php endforeach; ?>
+                        <option value="__manual__">Isi Manual...</option>
                     </select>
+                    <!-- muncul saat "Isi Manual" dipilih -->
+                    <input type="text" class="f-input mt-2 hidden" id="namaManual" placeholder="Masukan Nama">
+                    <?php if (empty($names)) : ?>
+                        <p class="text-[12px] text-gray-500 mt-1">Belum ada nama di data Shift, pilih "Isi Manual" untuk mengetik nama.</p>
+                    <?php endif; ?>
                 </div>
                 <div>
-                    <label class="f-label">Masukan Nama</label>
-                    <input type="text" class="f-input" id="nama" placeholder="Masukan Nama" required>
-                </div>
-                <div>
-                    <label class="f-label">Warna</label>
-                    <input type="color" class="f-input h-11 p-1" id="warna" value="#04a9f5">
+                    <label class="f-label">Piket</label>
+                    <div class="flex items-center gap-2">
+                        <span id="piketSwatch" class="w-9 h-9 rounded-full shrink-0 border-2 border-[#e3e8ee]"></span>
+                        <select class="f-input flex-1" id="piket" required>
+                            <?php foreach ($label as $k => $v) : ?>
+                                <option value="<?= $k ?>"><?= esc($v) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="f-label">Keterangan <span class="text-gray-400 font-normal">(opsional)</span></label>
@@ -477,29 +481,64 @@
                 <button type="button" class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnSimpan">Simpan</button>
             </div>
         </div>
-
     </div>
 
     <script>
-                document.getElementById('shift').addEventListener('change', function() {
-            document.getElementById('warna').value = SHIFT_WARNA[this.value] || '#04a9f5';
+        const BASE = "<?= site_url('Piket') ?>";
+        const PIKET_LABEL = <?= json_encode($label) ?>;
+        const PIKET_WARNA = <?= json_encode($warna) ?>; // 1 oranye, 2 kuning, 3 hijau
+
+        function setSwatch() {
+            document.getElementById('piketSwatch').style.background = PIKET_WARNA[document.getElementById('piket').value] || '#04a9f5';
+        }
+        document.getElementById('piket').addEventListener('change', setSwatch);
+
+        // Nama: pilih dari data shift, atau "Isi Manual" -> tampilkan input teks
+        function toggleNamaManual() {
+            const manual = document.getElementById('nama').value === '__manual__';
+            const inp = document.getElementById('namaManual');
+            inp.classList.toggle('hidden', !manual);
+            if (manual) inp.focus();
+        }
+        document.getElementById('nama').addEventListener('change', toggleNamaManual);
+
+        // Ikon "!" di judul -> popup info piket
+        document.getElementById('btnInfoPiket').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian',
+                text: 'SIAPAPUN YANG JAGA JIKA SISA GALON HANYA YG TERPASANG, DIBANTU UNTUK MEMBELI HARI ITU JUGA',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#04a9f5'
+            });
         });
-        const BASE = "<?= site_url('Calendar') ?>";
+
+        // Ikon "!" di dekat tombol Tambah Piket -> popup aturan piket
+        document.getElementById('btnNotePiket').addEventListener('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Note',
+                html: '<ul class="text-left text-[14px] leading-relaxed list-disc pl-5 space-y-1.5">' +
+                    '<li>Setiap karyawan wajib melaksanakan piket sesuai dengan jadwal yang sudah ditentukan</li>' +
+                    '<li>Bagi karyawan yang piket harap datang 10 menit sebelum jam masuk kerja (khusus piket 1 &amp; 2)</li>' +
+                    '<li>Bagi yang tidak melaksanakan Piket akan dikenai <b>SANKSI</b>' +
+                    '<div class="mt-1">Cowo Pushup 10x<br>Cewe Squat jump 10x</div></li>' +
+                    '<li>Piring dan gelas harap cuci kembali setelah digunakan (Self Service)</li>' +
+                    '<li>Setiap karyawan wajib memelihara dan menjaga kebersihan area kerja</li>' +
+                    '<li>Kebersihan Meja menjadi tanggung jawab karyawan masing-masing</li>' +
+                    '</ul>',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#04a9f5'
+            });
+        });
+
+        function getNama() {
+            const v = document.getElementById('nama').value;
+            return v === '__manual__' ? document.getElementById('namaManual').value.trim() : v;
+        }
 
         const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const SHIFT_LABEL = {
-            1: 'Shift 1',
-            2: 'Shift 2',
-            3: 'Shift 3',
-            4: 'Off'
-        };
-        const SHIFT_WARNA = {
-            1: '#92D050',   // Shift 1 - hijau
-            2: '#FFFF00',   // Shift 2 - kuning
-            3: '#00B0F0',   // Shift 3 - biru
-            4: '#FF0000'    // Off      - merah
-        };
 
         function ymd(d) {
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -522,6 +561,7 @@
                 val: el.content
             } : null;
         }
+
         // Banner sukses/gagal di tengah-atas — sama seperti halaman lain
         function showFlash(type, message) {
             const ok = type === 'success';
@@ -561,17 +601,18 @@
                 initialView: 'dayGridMonth',
                 locale: 'id',
                 headerToolbar: false,
-                height: 'auto', // responsif: ikut tinggi konten
+                height: 'auto',
                 dayMaxEvents: false,
                 events: BASE + '/events',
 
                 eventContent: function(arg) {
                     const box = document.createElement('div');
                     box.className = 'ev-box';
-                    const s = arg.event.extendedProps.shift;
-                    box.style.background = arg.event.extendedProps.warna || '#04a9f5';
-                    box.textContent = (s == 4 ? '0' : s);
-                    box.title = SHIFT_LABEL[s] + ' - ' + arg.event.extendedProps.nama;
+                    const p = arg.event.extendedProps.piket;
+                    box.style.background = PIKET_WARNA[p] || '#04a9f5';
+                    if (p == 2) box.style.color = '#202124'; // teks gelap di atas kuning
+                    box.textContent = p;
+                    box.title = PIKET_LABEL[p] + ' - ' + arg.event.extendedProps.nama;
                     return { domNodes: [box] };
                 },
                 datesSet: function(info) {
@@ -590,18 +631,12 @@
                     openForm({
                         id: info.event.id,
                         tanggal: p.tanggal,
-                        shift: p.shift,
                         nama: p.nama,
-                        warna: p.warna,
+                        piket: p.piket,
                         keterangan: p.keterangan
                     });
                 }
             });
-            loadNotes();
-
-            document
-                .getElementById("btnTambahNote")
-                .addEventListener("click", addNote);
             Calendar.render();
             feather.replace();
         });
@@ -652,34 +687,25 @@
         function renderPanel(dateStr) {
             document.getElementById('panelDate').textContent = formatTanggal(dateStr);
             const items = Calendar.getEvents()
-                .filter(function(ev) {
-                    return ev.startStr === dateStr;
-                })
-                .map(function(ev) {
-                    return Object.assign({
-                        id: ev.id
-                    }, ev.extendedProps);
-                })
-                .sort(function(a, b) {
-                    return a.shift - b.shift;
-                });
+                .filter(ev => ev.startStr === dateStr)
+                .map(ev => Object.assign({ id: ev.id }, ev.extendedProps))
+                .sort((a, b) => a.piket - b.piket);
 
             const box = document.getElementById('panelList');
             if (!items.length) {
-                box.innerHTML =
-                    '<div class="text-gray-400 text-sm py-2">Belum ada jadwal untuk Hari ini.</div>' +
-                    '<button class="btn2 mt-1 border border-primary-500 text-primary-600 hover:bg-primary-50" ';
+                box.innerHTML = '<div class="text-gray-400 text-sm py-2">Belum ada piket untuk tanggal ini.</div>';
                 return;
             }
             box.innerHTML = items.map(function(it) {
                 const payload = JSON.stringify(it).replace(/'/g, "&#39;");
+                const warna = PIKET_WARNA[it.piket] || '#04a9f5';
                 return '' +
                     '<div class="rounded-lg border border-gray-100 p-3 mb-2.5 cursor-pointer hover:shadow-md transition" ' +
-                    'style="border-left:4px solid ' + it.warna + '" ' +
+                    'style="border-left:4px solid ' + warna + '" ' +
                     "onclick='openForm(" + payload + ")'>" +
                     '<div class="flex items-center gap-2">' +
-                    '<span class="w-3 h-3 rounded-full shrink-0" style="background:' + it.warna + '"></span>' +
-                    '<span class="font-semibold text-[#202124] text-[.92rem]">' + SHIFT_LABEL[it.shift] + ' - ' + escapeHtml(it.nama) + '</span>' +
+                    '<span class="w-3 h-3 rounded-full shrink-0" style="background:' + warna + '"></span>' +
+                    '<span class="font-semibold text-[#202124] text-[.92rem]">' + PIKET_LABEL[it.piket] + ' - ' + escapeHtml(it.nama) + '</span>' +
                     '</div>' +
                     (it.keterangan ? '<div class="text-[.8rem] text-gray-500 mt-1.5 ml-5 leading-snug">' + escapeHtml(it.keterangan) + '</div>' : '') +
                     '</div>';
@@ -689,94 +715,7 @@
         function escapeHtml(s) {
             return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
-        const NOTE_KEY = "calendar_note_warna";
 
-        // state note di memori — diedit dulu, baru dipersist saat tombol "Simpan" ditekan
-        // state note di memori — diambil dari server, dipersist saat "Simpan"/tambah/hapus
-let notesState = [];
-
-async function loadNotes() {
-    try {
-        const res = await fetch(BASE + '/notes');
-        const data = await res.json();
-        notesState = Array.isArray(data) ? data : [];
-    } catch (e) {
-        notesState = [];
-    }
-    renderNotes();
-}
-
-async function persistNotes() {
-    const body = new FormData();
-    body.append('data', JSON.stringify(notesState));
-    const c = getCsrf();
-    if (c) body.append(c.key, c.val);
-    try {
-        await fetch(BASE + '/notes', { method: 'POST', body: body });
-    } catch (e) {}
-}
-
-        function renderNotes() {
-            const box = document.getElementById("noteContainer");
-
-            if (!notesState.length) {
-                box.innerHTML = `<div class="text-gray-400 text-sm">Belum ada tanda.</div>`;
-                return;
-            }
-
-            box.innerHTML = notesState.map((item, index) => `
-        <div class="rounded-lg border border-gray-100 p-3 space-y-2">
-            <div class="flex items-center gap-2">
-                <input
-                    type="color"
-                    value="${item.color || '#04a9f5'}"
-                    onchange="updateNoteField(${index}, 'color', this.value)"
-                    class="clr-round w-9 h-9 shrink-0">
-
-                <input
-                    class="f-input flex-1"
-                    placeholder="Keterangan"
-                    value="${escapeHtml(item.text || '')}"
-                    onchange="updateNoteField(${index}, 'text', this.value)">
-            </div>
-
-            <button
-                onclick="deleteNote(${index})"
-                class="btn2 w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-1">
-                <i class="fa fa-trash"></i> Hapus
-            </button>
-
-            <button
-                onclick="saveNoteRow(${index}, this)"
-                class="btn2 w-full bg-primary-500 hover:bg-primary-600 text-white text-xs flex items-center justify-center gap-1">
-                <i class="fa fa-save"></i> Simpan
-            </button>
-        </div>
-    `).join("");
-        }
-
-        async function addNote() {
-    notesState.push({ color: "#04a9f5", text: "" });
-    await persistNotes();
-    renderNotes();
-}
-
-        function updateNoteField(index, field, val) {
-            notesState[index][field] = val;
-            // belum dipersist ke localStorage — menunggu tombol "Simpan" ditekan
-        }
-
-        async function saveNoteRow(index) {
-    await persistNotes();
-    showFlash('success', 'Tanda tersimpan');
-}
-
-        async function deleteNote(index) {
-            notesState.splice(index, 1);
-            await persistNotes();   // tunggu server selesai simpan
-            renderNotes();
-            showFlash('success', 'Tanda berhasil dihapus');
-        }
         // ---- modal ----
         function showModal() {
             const m = document.getElementById('modalForm');
@@ -803,11 +742,18 @@ async function persistNotes() {
             d = d || {};
             document.getElementById('id').value = d.id || '';
             document.getElementById('tanggal').value = d.tanggal || selectedDate;
-            document.getElementById('shift').value = d.shift || '1';
-            document.getElementById('nama').value = d.nama || '';
-            document.getElementById('warna').value = d.warna || SHIFT_WARNA[d.shift || '1'];
+            const sel = document.getElementById('nama');
+            // nama lama yang sudah tidak ada di data shift tetap bisa ditampilkan saat edit
+            if (d.nama && ![...sel.options].some(o => o.value === d.nama)) {
+                sel.add(new Option(d.nama, d.nama), sel.options[sel.options.length - 1]); // sebelum "Isi Manual"
+            }
+            sel.value = d.nama || '';
+            document.getElementById('namaManual').value = '';
+            document.getElementById('namaManual').classList.add('hidden');
+            document.getElementById('piket').value = d.piket || '1';
+            setSwatch();
             document.getElementById('keterangan').value = d.keterangan || '';
-            document.getElementById('modalTitle').textContent = d.id ? 'Edit Jadwal' : 'Tambah Jadwal';
+            document.getElementById('modalTitle').textContent = d.id ? 'Edit Piket' : 'Tambah Piket';
             document.getElementById('btnHapus').classList.toggle('hidden', !d.id);
             showModal();
         }
@@ -817,9 +763,8 @@ async function persistNotes() {
             const body = new FormData();
             body.append('id', document.getElementById('id').value);
             body.append('tanggal', document.getElementById('tanggal').value);
-            body.append('shift', document.getElementById('shift').value);
-            body.append('nama', document.getElementById('nama').value);
-            body.append('warna', document.getElementById('warna').value);
+            body.append('nama', getNama());
+            body.append('piket', document.getElementById('piket').value);
             body.append('keterangan', document.getElementById('keterangan').value);
             const c = getCsrf();
             if (c) body.append(c.key, c.val);
@@ -832,9 +777,9 @@ async function persistNotes() {
                 selectedDate = document.getElementById('tanggal').value;
                 hideModal();
                 Calendar.refetchEvents();
-                showFlash('success', isNew ? 'Jadwal berhasil ditambahkan' : 'Jadwal berhasil diperbarui'); // << tambah
+                showFlash('success', isNew ? 'Piket berhasil ditambahkan' : 'Piket berhasil diperbarui');
             } else {
-                showFlash('error', 'Pastikan tanggal, shift, dan nama terisi.'); // << ganti Swal (opsional)
+                showFlash('error', 'Pastikan tanggal, nama, dan piket terisi.');
             }
         });
 
@@ -842,7 +787,7 @@ async function persistNotes() {
             const id = document.getElementById('id').value;
             if (!id) return;
             Swal.fire({
-                title: 'Hapus jadwal ini?',
+                title: 'Hapus piket ini?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',
@@ -861,7 +806,7 @@ async function persistNotes() {
                 if (res.ok) {
                     hideModal();
                     Calendar.refetchEvents();
-                    showFlash('success', 'Jadwal berhasil dihapus'); // << tambah
+                    showFlash('success', 'Piket berhasil dihapus');
                 } else {
                     showFlash('error', 'Tidak bisa menghapus.');
                 }

@@ -602,17 +602,16 @@
                         <span>Profile</span>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= site_url('Calendar') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-calendar-week"></i>
-                        </span>
-
-                        <span>Jadwal NOC</span>
-
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
+                        <span class="flex-1">Jadwal NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
+                        <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="<?= site_url('settings') ?>"
