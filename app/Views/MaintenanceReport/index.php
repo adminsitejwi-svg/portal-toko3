@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Merek Perangkat</title>
+    <title>Maintenance Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -118,6 +118,114 @@
             display: block;
         }
 
+        /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
+        .aksi-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #5b6b7f;
+        }
+
+        .aksi-btn:hover,
+        .aksi-btn.open {
+            background: #eef1f5;
+            color: #1e4fa3;
+        }
+
+        #aksiMenu {
+            position: fixed;
+            z-index: 1050;
+            min-width: 190px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            padding: 6px;
+        }
+
+        #aksiMenu .aksi-title {
+            padding: 6px 12px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        #aksiMenu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b4754;
+            text-align: left;
+        }
+
+        #aksiMenu button i {
+            font-size: 17px;
+            color: #64748b;
+        }
+
+        #aksiMenu button:hover {
+            background: #f3f4f6;
+        }
+
+        #aksiMenu button.danger,
+        #aksiMenu button.danger i {
+            color: #dc2626;
+        }
+
+        #aksiMenu hr {
+            margin: 4px 0;
+            border-color: #f1f5f9;
+        }
+
+        .dark #aksiMenu { background: #263240; border-color: rgba(255, 255, 255, .1); }
+        .dark #aksiMenu button { color: #bfc8d6; }
+        .dark #aksiMenu button:hover { background: rgba(255, 255, 255, .05); }
+
+        /* ===== JUMLAH PER GROUP ===== */
+        .grup-count {
+            display: inline-block;
+            min-width: 28px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .grup-count.has {
+            background: #e3edfb;
+            color: #1e4fa3;
+        }
+
+        .grup-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #e3edfb;
+            color: #1e4fa3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .rekap-red { background: #fde8ec; }
+        .rekap-amber { background: #fdf3e3; }
+        .rekap-blue { background: #e3edfb; }
+        .rekap-green { background: #e7f8f1; }
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -146,12 +254,12 @@
         }
 
         /* ===== INVOICE-STYLE TABLE ===== */
-        #mediaKoneksiTable {
+        #reportTable {
             width: 100% !important;
             border-collapse: collapse;
         }
 
-        #mediaKoneksiTable thead th {
+        #reportTable thead th {
             background: #f7f9fb;
             color: #6b7785;
             font-weight: 500;
@@ -163,13 +271,22 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable thead th {
+        .dark #reportTable thead th {
             background: #2b3543;
             color: #9fb0c2;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody td {
+        /* Kolom PIC & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
+        #reportTable tbody td.whitespace-normal {
+            white-space: normal !important;
+        }
+
+        #reportTable tbody td.whitespace-pre-line {
+            white-space: pre-line !important;
+        }
+
+        #reportTable tbody td {
             padding: 16px;
             font-size: 14px;
             color: #3b4754;
@@ -178,25 +295,25 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable tbody td {
+        .dark #reportTable tbody td {
             color: #bfc8d6;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody tr:hover {
+        #reportTable tbody tr:hover {
             background: #fafbfc;
         }
 
-        .dark #mediaKoneksiTable tbody tr:hover {
+        .dark #reportTable tbody tr:hover {
             background: rgba(255, 255, 255, .03);
         }
 
-        #mediaKoneksiTable tbody td.col-bold {
+        #reportTable tbody td.col-bold {
             font-weight: 600;
             color: #2b3540;
         }
 
-        .dark #mediaKoneksiTable tbody td.col-bold {
+        .dark #reportTable tbody td.col-bold {
             color: #e7eaf0;
         }
 
@@ -225,7 +342,17 @@
             color: #ff0000;
         }
 
-        /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
+        .badge-service {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-draft {
+            background: #eef1f5;
+            color: #64748b;
+        }
+
+        /* ===== LENGTH (Show) DROPDOWN ===== */
         .dataTables_length {
             font-size: 0;
         }
@@ -252,7 +379,6 @@
             border-color: #04a9f5;
         }
 
-        /* sembunyikan search bawaan, pakai custom */
         .dataTables_filter {
             display: none;
         }
@@ -412,7 +538,6 @@
             background: rgba(255, 255, 255, .05) !important;
         }
 
-        /* ===== SCROLL HORIZONTAL DI MOBILE ===== */
         .table-scroll {
             width: 100%;
             overflow-x: auto;
@@ -528,7 +653,7 @@
                     </ul>
                 </li>
                 <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
                         <span class="flex-1">Master Data</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -544,12 +669,10 @@
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
                         <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
-
+                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
-
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
                 <li>
@@ -565,7 +688,7 @@
                     </a>
                 </li>
                 <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
                         <span class="flex-1">Report NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -576,9 +699,7 @@
                     </ul>
                 </li>
 
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">informasi</li>
-                <li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li>
                     <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
@@ -596,37 +717,25 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="<?= site_url('InventoryKantor') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                 <li>
+                    <a href="<?= site_url('InventoryKantor') ?>"
+                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
                         <span>Inventory Kantor</span>
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('settings') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-settings"></i>
-                        </span>
-
+                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
                         <span>Pengguna</span>
-
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('Logs') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-report-search"></i>
-                        </span>
-
+                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
                         <span>Change Log</span>
-
                     </a>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -641,9 +750,6 @@
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
@@ -668,17 +774,16 @@
         <div class="p-6">
             <!-- breadcrumb -->
             <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Merek Perangkat</h5>
-
-                <a href="<?= site_url('Perangkat/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                <h5 class="font-medium text-lg">Maintenance Report</h5>
+                <button type="button" onclick="openReportModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
                     <i class="ti ti-plus"></i> Tambah
-                </a>
+                </button>
             </div>
 
             <div class="card">
                 <div class="card-body">
 
-                    <!-- TOOLBAR: dropdown Show (kiri) + Search & Export (kanan) -->
+                    <!-- TOOLBAR -->
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div id="lengthArea"></div>
                         <div class="flex items-center gap-3 flex-wrap">
@@ -690,253 +795,410 @@
                         </div>
                     </div>
 
-                    <!-- TABLE (bisa digeser kiri-kanan saat layar sempit) -->
+                    <!-- TABLE -->
                     <div class="table-scroll">
-                        <table id="mediaKoneksiTable" class="display nowrap" style="width:100%">
+                        <table id="reportTable" class="display nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Aksi</th>
-
-                                    <th>Merek Perangkat</th>
-                                    <th>status</th>
-                                    <th>Keterangan</th>
-                                    <th>Created At</th>
+                                    <th>Nama</th>
+                                    <th>ID Pelanggan</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>Alamat</th>
+                                    <th>ODP (Port)</th>
+                                    <th>Jenis</th>
+                                    <th>Kendala</th>
+                                    <th>No Tiket</th>
+                                    <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($MD_merek_perangkat)) : ?>
+                                <?php if (!empty($report)) : ?>
                                     <?php $no = 1; ?>
-                                    <?php foreach ($MD_merek_perangkat as $row) : ?>
+                                    <?php foreach ($report as $row) : ?>
+                                        <?php
+                                        $jenis = [];
+                                        if (!empty($row['maintenance'])) $jenis[] = 'Maintenance';
+                                        if (!empty($row['perpindahan_perangkat'])) $jenis[] = 'Perpindahan Perangkat';
+                                        ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <button
-                                                    type="button"
-                                                    onclick="openEditModal(
-                                                    '<?= $row['id'] ?>',
-                                                    '<?= esc($row['merk_perangkat']) ?>',
-                                                    '<?= esc($row['status']) ?>',
-                                                    '<?= esc($row['keterangan']) ?>',
-                                                    )"
-                                                    class="btn btn-sm btn-primary">
-
-                                                    <i class="ti ti-edit"></i>
-
-                                                </button>
-
-
-                                                <button
-                                                    type="button"
-                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-danger">
-
-                                                    <i class="ti ti-trash"></i>
-
-                                                </button>
-                                                <br>
+                                                <!-- semua aksi dalam satu menu titik tiga -->
                                                 <button type="button"
-                                                    onclick="openDetailModal(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="ti ti-eye"></i>
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="toggleAksiMenu(event, this)"
+                                                    title="Aksi"
+                                                    class="aksi-btn">
+                                                    <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                             </td>
-                                            <td><?= esc($row['merk_perangkat']); ?></td>
-                                            <td>
-                                                <?php if ($row['status'] == 0) : ?>
-                                                    <span class="badge badge-paid">Aktif</span>
-                                                <?php else : ?>
-                                                    <span class="badge badge-due">Non Aktif</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= esc($row['keterangan']); ?></td>
-                                            <td><?= date('d-m-Y H:i', strtotime($row['created_at'])); ?></td>
-
+                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['nama']); ?></td>
+                                            <td><?= esc($row['id_pelanggan']); ?></td>
+                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['alamat']); ?></td>
+                                            <td class="whitespace-normal min-w-[120px]"><?= esc($row['odp_port']); ?></td>
+                                            <td class="whitespace-normal min-w-[150px]"><?= $jenis ? esc(implode(', ', $jenis)) : '-' ?></td>
+                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['kendala']); ?></td>
+                                            <td><?= esc($row['no_tiket']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action']); ?></td>
+                                            <td><span class="badge <?= $statusList[$row['status']] ?? 'badge-draft' ?>"><?= esc($row['status']); ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
-
-
                         </table>
-                        <div id="editModal"
-                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
 
-                            <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6">
-
-                                <div class="flex justify-between items-center mb-6">
-                                    <h3 class="text-xl font-bold">
-                                        Edit Perangkat
-                                    </h3>
-
-                                    <button onclick="closeEditModal()">
-                                        <i class="ti ti-x text-2xl"></i>
-                                    </button>
-                                </div>
-
-                                <form action="<?= site_url('Perangkat/update') ?>" method="POST">
-
-                                    <?= csrf_field() ?>
-
-                                    <input type="hidden" name="id" id="edit_id">
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                        <div class="md:col-span-2">
-                                            <label>Merek Perangkat</label>
-                                            <input
-                                                type="text"
-                                                id="edit_merk_perangkat"
-                                                name="merk_perangkat" placeholder="Masukan Merek Perangkat"
-                                                class="w-full border rounded-lg p-3">
-                                        </div>
-
-                                        <div class="md:col-span-2">
-                                            <label>Status</label>
-
-                                            <select
-                                                id="edit_status"
-                                                name="status"
-                                                class="w-full border rounded-lg p-3">
-
-                                                <option value="0">Aktif</option>
-                                                <option value="1">Tidak Aktif</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="md:col-span-2">
-                                            <label>Keterangan</label>
-
-                                            <textarea
-                                                id="edit_keterangan"
-                                                name="keterangan"
-                                                rows="3" placeholder="Masukan Keterangan"
-                                                class="w-full border rounded-lg p-3"></textarea>
-                                        </div>
-
-
-                                    </div>
-
-                                    <div class="flex justify-end gap-3 mt-6">
-
-                                        <button
-                                            type="button"
-                                            onclick="closeEditModal()"
-                                            class="px-4 py-2 bg-gray-500 text-white rounded-lg">
-
-                                            Batal
-
-                                        </button>
-
-                                        <button
-                                            type="submit"
-                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-
-                                            Update
-
-                                        </button>
-
-                                    </div>
-
-                                </form>
-
-                            </div>
-
-                        </div>
-
-                        <div id="detailModal"
-                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-
-                            <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden">
-
-                                <!-- Header biru -->
-                                <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
-                                    <h3 class="font-semibold flex items-center gap-2">
-                                        Detail Data Merek Perangkat
-                                    </h3>
-                                    <button onclick="closeDetailModal()">
-                                        <i class="ti ti-x text-xl"></i>
-                                    </button>
-                                </div>
-
-                                <div class="p-6">
-
-                                    <!-- Keterangan ringkas -->
-                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
-                                        <p class="text-xs text-gray-500 mb-1">Keterangan</p>
-                                        <p class="text-sm font-medium" id="detail_ringkas">-</p>
-                                    </div>
-
-                                    <!-- Detail data -->
-                                    <div class="border rounded-lg divide-y">
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Merek Perangkat</span>
-                                            <span class="font-medium text-right" id="detail_merek">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm items-center">
-                                            <span class="text-gray-500">Status</span>
-                                            <span id="detail_status">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Keterangan</span>
-                                            <span class="font-medium text-right" id="detail_keterangan">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Created At</span>
-                                            <span class="font-medium text-right" id="detail_created">-</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ====== POP UP TAMBAH / EDIT ====== -->
+    <div id="reportModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold" id="reportModalTitle">Tambah Maintenance Report</h3>
+                <button type="button" onclick="closeReportModal()"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+
+            <form action="<?= site_url('MaintenanceReport/save') ?>" method="POST" id="reportForm">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" id="r_id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Nama <span class="text-red-500">*</span></label>
+                        <!-- nama diambil dari data shift (jadwal_noc), seperti Daily Report -->
+                        <select name="nama" id="r_nama" required class="w-full border rounded-lg p-3">
+                            <option value="">-- Pilih Nama --</option>
+                            <?php foreach ($namaOptions as $nama) : ?>
+                                <option value="<?= esc($nama, 'attr') ?>"><?= esc($nama) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (empty($namaOptions)) : ?>
+                            <p class="text-[12px] text-gray-500 mt-1">Belum ada nama di data Shift (Jadwal NOC).</p>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">ID Pelanggan <span class="text-red-500">*</span></label>
+                        <input type="text" name="id_pelanggan" id="r_id_pelanggan" maxlength="100" required placeholder="Masukkan ID pelanggan" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">Nama Pelanggan <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_pelanggan" id="r_nama_pelanggan" maxlength="255" required placeholder="Masukkan nama pelanggan" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Alamat <span class="text-red-500">*</span></label>
+                        <textarea name="alamat" id="r_alamat" rows="2" required placeholder="Masukkan alamat" class="w-full border rounded-lg p-3"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">ODP (Port) <span class="text-red-500">*</span></label>
+                        <input type="text" name="odp_port" id="r_odp_port" maxlength="255" required placeholder="Contoh: ODP-01 / Port 3" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">No Tiket <span class="text-red-500">*</span></label>
+                        <input type="text" name="no_tiket" id="r_no_tiket" maxlength="100" required placeholder="Masukkan nomor tiket" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Jenis</label>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 mt-2">
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" name="maintenance" id="r_maintenance" value="1" class="w-4 h-4"> Maintenance
+                            </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" name="perpindahan_perangkat" id="r_perpindahan_perangkat" value="1" class="w-4 h-4"> Perpindahan Perangkat
+                            </label>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Kendala <span class="text-red-500">*</span></label>
+                        <textarea name="kendala" id="r_kendala" rows="3" required placeholder="Masukkan kendala" class="w-full border rounded-lg p-3"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Action <span class="text-red-500">*</span></label>
+                        <textarea name="action" id="r_action" rows="3" required placeholder="Masukkan action yang dilakukan" class="w-full border rounded-lg p-3"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Status <span class="text-red-500">*</span></label>
+                        <select name="status" id="r_status" required class="w-full border rounded-lg p-3">
+                            <?php foreach (array_keys($statusList) as $st) : ?>
+                                <option value="<?= esc($st, 'attr') ?>"><?= esc($st) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeReportModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Batal</button>
+                    <button type="submit" id="reportSubmit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== POP UP VIEW ====== -->
+    <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeViewModal()">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold">View Maintenance Report</h3>
+                <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <div class="text-gray-500">Nama</div>
+                    <div class="font-medium" id="v_nama"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Status</div>
+                    <div><span id="v_status" class="badge"></span></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">ID Pelanggan</div>
+                    <div class="font-medium" id="v_id_pelanggan"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Nama Pelanggan</div>
+                    <div class="font-medium" id="v_nama_pelanggan"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Alamat</div>
+                    <div class="font-medium whitespace-pre-line" id="v_alamat"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">ODP (Port)</div>
+                    <div class="font-medium" id="v_odp_port"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">No Tiket</div>
+                    <div class="font-medium" id="v_no_tiket"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Jenis</div>
+                    <div class="font-medium" id="v_jenis"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Dibuat</div>
+                    <div class="font-medium" id="v_created"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Kendala</div>
+                    <div class="font-medium whitespace-pre-line" id="v_kendala"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Action</div>
+                    <div class="font-medium whitespace-pre-line" id="v_action"></div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MENU AKSI (titik tiga) ====== -->
+    <div id="aksiMenu" class="hidden" role="menu">
+        <div class="aksi-title">Aksi</div>
+        <button type="button" onclick="aksiRun('edit')"><i class="ti ti-edit"></i> Edit</button>
+        <button type="button" onclick="aksiRun('view')"><i class="ti ti-eye"></i> View</button>
+        <hr>
+        <button type="button" onclick="aksiRun('hapus')" class="danger"><i class="ti ti-trash"></i> Hapus</button>
+    </div>
+
     <script>
-        function openDetailModal(id) {
-            fetch("<?= site_url('Perangkat/show/') ?>" + id)
-                .then(res => {
-                    if (!res.ok) throw new Error('not found');
-                    return res.json();
-                })
-                .then(json => {
-                    const d = json.data;
+        // ====== MENU AKSI (titik tiga) ======
+        let aksiRow = null, aksiOwner = null;
 
-                    document.getElementById('detail_ringkas').textContent =
-                        'Data Merek Perangkat ( ID: ' + d.id + ' )';
+        function toggleAksiMenu(e, btn) {
+            e.stopPropagation();
+            const menu = document.getElementById('aksiMenu');
+            if (aksiOwner === btn && !menu.classList.contains('hidden')) return closeAksiMenu();
 
-                    document.getElementById('detail_merek').textContent = d.merk_perangkat;
-                    document.getElementById('detail_keterangan').textContent = d.keterangan;
-                    document.getElementById('detail_created').textContent = d.created_at;
+            closeAksiMenu();
+            aksiRow = JSON.parse(btn.dataset.row);
+            aksiOwner = btn;
+            btn.classList.add('open');
+            menu.classList.remove('hidden');
 
-                    // badge status
-                    const statusEl = document.getElementById('detail_status');
-                    if (d.status == 0) {
-                        statusEl.innerHTML = '<span class="badge badge-paid">Aktif</span>';
-                    } else {
-                        statusEl.innerHTML = '<span class="badge badge-due">Non Aktif</span>';
-                    }
-
-                    document.getElementById('detailModal').classList.remove('hidden');
-                })
-                .catch(() => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: 'Data tidak ditemukan di database.',
-                        confirmButtonColor: '#04a9f5'
-                    });
-                });
+            // di bawah tombol; pindah ke atas / geser kiri jika mentok layar
+            const r = btn.getBoundingClientRect();
+            const mw = menu.offsetWidth, mh = menu.offsetHeight;
+            let top = r.bottom + 4, left = r.left;
+            if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
+            if (left + mw > window.innerWidth) left = window.innerWidth - mw - 8;
+            menu.style.top = top + 'px';
+            menu.style.left = left + 'px';
         }
 
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
+        function closeAksiMenu() {
+            document.getElementById('aksiMenu').classList.add('hidden');
+            if (aksiOwner) aksiOwner.classList.remove('open');
+            aksiOwner = null;
+        }
+
+        function aksiRun(aksi) {
+            const d = aksiRow;
+            closeAksiMenu();
+            if (!d) return;
+            if (aksi === 'edit') openReportModal(d);
+            if (aksi === 'view') openViewModal(d);
+            if (aksi === 'hapus') confirmDelete(d.id);
+        }
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#aksiMenu')) closeAksiMenu();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeAksiMenu();
+        });
+        window.addEventListener('scroll', closeAksiMenu, true);
+        window.addEventListener('resize', closeAksiMenu);
+
+        // ====== VIEW ======
+        const tglIndo = t => t ? t.split('-').reverse().join('-') : '-';
+        const STATUS_BADGE = <?= json_encode($statusList) ?>;
+
+        function openViewModal(d) {
+            const set = (id, v) => document.getElementById(id).textContent = v || '-';
+            set('v_nama', d.nama);
+            set('v_id_pelanggan', d.id_pelanggan);
+            set('v_nama_pelanggan', d.nama_pelanggan);
+            set('v_alamat', d.alamat);
+            set('v_odp_port', d.odp_port);
+            set('v_no_tiket', d.no_tiket);
+            set('v_kendala', d.kendala);
+            set('v_action', d.action);
+
+            const jenis = [];
+            if (Number(d.maintenance)) jenis.push('Maintenance');
+            if (Number(d.perpindahan_perangkat)) jenis.push('Perpindahan Perangkat');
+            set('v_jenis', jenis.join(', '));
+            set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
+
+            const st = document.getElementById('v_status');
+            st.textContent = d.status || '-';
+            st.className = 'badge ' + (STATUS_BADGE[d.status] || 'badge-draft');
+
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.add('hidden');
         }
     </script>
+
+    <script>
+        // ====== POP UP TAMBAH / EDIT ======
+        const URL_SAVE = "<?= site_url('MaintenanceReport/save') ?>";
+        const URL_UPDATE = "<?= site_url('MaintenanceReport/update') ?>";
+
+        // Pilih nama; nama yang tidak ada lagi di data shift tetap ditampilkan (seperti Daily Report)
+        function setNama(nama) {
+            const sel = document.getElementById('r_nama');
+            sel.querySelectorAll('option[data-extra]').forEach(o => o.remove());
+            if (nama && ![...sel.options].some(o => o.value === nama)) {
+                const opt = new Option(nama, nama);
+                opt.dataset.extra = '1';
+                sel.add(opt);
+            }
+            sel.value = nama || '';
+        }
+
+        // d kosong = tambah; d berisi data baris = edit
+        function openReportModal(d) {
+            d = d || {};
+            const isEdit = !!d.id;
+            const f = document.getElementById('reportForm');
+            f.reset();
+            f.action = isEdit ? URL_UPDATE : URL_SAVE;
+            document.getElementById('reportModalTitle').textContent = isEdit ? 'Edit Maintenance Report' : 'Tambah Maintenance Report';
+            document.getElementById('reportSubmit').textContent = isEdit ? 'Update' : 'Simpan';
+
+            document.getElementById('r_id').value = d.id || '';
+            setNama(d.nama || '');
+            document.getElementById('r_id_pelanggan').value = d.id_pelanggan || '';
+            document.getElementById('r_nama_pelanggan').value = d.nama_pelanggan || '';
+            document.getElementById('r_alamat').value = d.alamat || '';
+            document.getElementById('r_odp_port').value = d.odp_port || '';
+            document.getElementById('r_no_tiket').value = d.no_tiket || '';
+            document.getElementById('r_maintenance').checked = !!Number(d.maintenance);
+            document.getElementById('r_perpindahan_perangkat').checked = !!Number(d.perpindahan_perangkat);
+            document.getElementById('r_kendala').value = d.kendala || '';
+            document.getElementById('r_action').value = d.action || '';
+            document.getElementById('r_status').value = d.status || 'On Progress';
+
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.add('hidden');
+        }
+
+        // ====== VALIDASI SEBELUM SUBMIT ======
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            const wajib = ['r_nama', 'r_id_pelanggan', 'r_nama_pelanggan', 'r_alamat', 'r_odp_port', 'r_no_tiket', 'r_kendala', 'r_action', 'r_status']
+                .map(id => document.getElementById(id).value.trim());
+
+            if (wajib.includes('')) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Belum Lengkap',
+                    text: 'Semua field bertanda * wajib diisi.',
+                    confirmButtonColor: '#185a82'
+                });
+                return false;
+            }
+        });
+
+        <?php
+        // Gagal validasi di server: buka lagi pop up dengan isian terakhir
+        $oldKeys = ['id', 'nama', 'id_pelanggan', 'nama_pelanggan', 'alamat', 'odp_port', 'maintenance', 'perpindahan_perangkat', 'kendala', 'no_tiket', 'action', 'status'];
+        $oldData = [];
+        foreach ($oldKeys as $k) {
+            $oldData[$k] = old($k, null, false);
+        }
+        ?>
+        <?php if ($oldData['nama'] !== null || $oldData['id_pelanggan'] !== null) : ?>
+            openReportModal(<?= json_encode($oldData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
+        <?php endif; ?>
+    </script>
+
+    <script>
+        // ====== DELETE ======
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: 'Data yang dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "<?= site_url('MaintenanceReport/delete/') ?>" + id;
+                }
+            });
+        }
+
+        function isTableEmpty(table) {
+            return table.rows({ search: 'applied' }).data().length === 0;
+        }
+
+        function showEmptyExportAlert() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Kosong',
+                text: 'Tidak ada data yang bisa diexport.',
+                confirmButtonColor: '#04a9f5'
+            });
+        }
+    </script>
+
     <script>
         // ---- Sidebar ----
         let collapsed = false;
@@ -960,7 +1222,6 @@
             }
         }
 
-        // ---- Dropdowns ----
         function toggleDrop(e, el) {
             e.preventDefault();
             e.stopPropagation();
@@ -969,6 +1230,7 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
             if (!isOpen) menu.classList.add('show');
         }
+
         document.addEventListener('click', function(e) {
             if (window.innerWidth < 1024) {
                 const sb = document.getElementById('sidebar');
@@ -980,7 +1242,6 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
         });
 
-        // ---- Submenu ----
         function toggleSub(el) {
             const parent = el.closest('.hasmenu');
             const sub = parent.querySelector('.submenu');
@@ -988,8 +1249,6 @@
             sub.classList.toggle('open');
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
-
-
 
         feather.replace();
     </script>
@@ -1001,17 +1260,13 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
+                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
+                    setTimeout(() => { alertBox.remove(); }, 500);
                 }, 3000);
             }
         });
@@ -1032,19 +1287,17 @@
                 }
             };
 
-            const table = $('#mediaKoneksiTable').DataTable({
+            const table = $('#reportTable').DataTable({
                 pageLength: 10,
                 lengthMenu: [
                     [10, 15, 25, 50, -1],
                     [10, 15, 25, 50, "Semua"]
                 ],
-                order: [
-                    [1, 'asc']
-                ],
+                order: [],
                 columnDefs: [{
-                    targets: 0, // kolom No
-                    orderable: false, // tidak bisa di-sort
-                    searchable: false // tidak ikut pencarian
+                    targets: [0, 1],
+                    orderable: false,
+                    searchable: false
                 }],
                 dom: "lBfrtip",
                 buttons: [{
@@ -1054,7 +1307,7 @@
                     buttons: [{
                             extend: 'copyHtml5',
                             text: '<i class="ti ti-copy"></i> Copy',
-                            title: 'Data Perangkat',
+                            title: 'Data Maintenance Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1064,7 +1317,7 @@
                         {
                             extend: 'csvHtml5',
                             text: '<i class="ti ti-file-text"></i> Export CSV',
-                            title: 'Data Perangkat',
+                            title: 'Data Maintenance Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1074,7 +1327,7 @@
                         {
                             extend: 'excelHtml5',
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
-                            title: 'Data Perangkat',
+                            title: 'Data Maintenance Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1084,23 +1337,14 @@
                         {
                             extend: 'pdfHtml5',
                             text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
-                            title: 'Data Perangkat',
+                            title: 'Data Maintenance Report',
                             orientation: 'landscape',
                             pageSize: 'A4',
                             ...exportConfig,
-
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
-
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(
-                                    this,
-                                    e,
-                                    dt,
-                                    button,
-                                    config
-                                );
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
                             },
-
                             customize: function(doc) {
                                 doc.styles.tableHeader = {
                                     fillColor: '#04a9f5',
@@ -1109,14 +1353,12 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 10;
-                                doc.content[1].table.widths = ['10%', '22%', '30%', '13%', '15%', '10%'];
                                 doc.content[1].layout = {
                                     hLineWidth: () => 0.5,
                                     vLineWidth: () => 0.5,
                                     hLineColor: () => '#e0e0e0',
                                     vLineColor: () => '#e0e0e0'
                                 };
-
                             }
                         }
                     ]
@@ -1126,7 +1368,7 @@
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
                     infoEmpty: "Showing 0 to 0 of 0 entries",
                     infoFiltered: "(filtered from _MAX_ total entries)",
-                    emptyTable: "Data Perangkat belum tersedia",
+                    emptyTable: "Data maintenance report belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
                         previous: "Previous",
@@ -1134,6 +1376,7 @@
                     }
                 }
             });
+
             table.on('draw.dt order.dt search.dt', function() {
                 let i = table.page.info().start;
                 table.column(0, {
@@ -1145,11 +1388,10 @@
                 });
             });
             table.draw();
-            // pindahkan dropdown Show & tombol Export ke toolbar custom
+
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
 
-            // custom search + tombol Go
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
             });
@@ -1162,75 +1404,20 @@
         });
     </script>
 
-    <script>
-        function confirmDelete(id) {
-
-            Swal.fire({
-                title: 'Hapus Data?',
-                text: 'Data yang dihapus tidak dapat dikembalikan.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    window.location.href =
-                        "<?= site_url('Perangkat/delete/') ?>" + id;
-                }
-
-            });
-
-        }
-    </script>
-    <script>
-        function openEditModal(id, merk_perangkat, status, keterangan) {
-
-            document.getElementById('edit_id').value = id;
-            document.getElementById('edit_merk_perangkat').value = merk_perangkat;
-            document.getElementById('edit_status').value = status;
-            document.getElementById('edit_keterangan').value = keterangan;
-
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function closeEditModal() {
-            document
-                .getElementById('editModal')
-                .classList.add('hidden');
-        }
-
-        function isTableEmpty(table) {
-            return table.rows({
-                search: 'applied'
-            }).data().length === 0;
-        }
-
-        function showEmptyExportAlert() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Data Kosong',
-                text: 'Tidak ada data yang bisa diexport.',
-                confirmButtonColor: '#04a9f5'
-            });
-        }
-    </script>
-    <script>
-        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
-            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
-        });
-    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";
         </script>
     <?php endif; ?>
 </body>
+<script>
+    // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12') e.preventDefault();
+        if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+        if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+    });
+</script>
 
 </html>

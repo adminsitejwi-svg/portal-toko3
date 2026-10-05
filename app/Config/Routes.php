@@ -261,6 +261,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('MDMaintenance/delete/(:num)', 'MDMaintenance::delete/$1');
     $routes->get('MDMaintenance/view/(:num)', 'MDMaintenance::view/$1');
 
+    $routes->get('MaintenanceReport', 'MaintenanceReport::index');
+    $routes->post('MaintenanceReport/save', 'MaintenanceReport::save');
+    $routes->post('MaintenanceReport/update', 'MaintenanceReport::update');
+    $routes->get('MaintenanceReport/delete/(:num)', 'MaintenanceReport::delete/$1');
+
     $routes->get('HistoryReport', 'HistoryReport::index');
     $routes->post('HistoryReport/save', 'HistoryReport::save');
     $routes->post('HistoryReport/update', 'HistoryReport::update');
@@ -293,4 +298,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('HistoryReport/catatan/save', 'Catatan::save');
     $routes->post('HistoryReport/catatan/update', 'Catatan::update');
     $routes->get('HistoryReport/catatan/delete/(:num)', 'Catatan::delete/$1');
+
+    // Aktivasi per report (tab Aktivasi di halaman gangguan)
+    $routes->post('HistoryReport/aktivasi/save', 'Aktivasi::save');
+    $routes->post('HistoryReport/aktivasi/update', 'Aktivasi::update');
+    $routes->get('HistoryReport/aktivasi/delete/(:num)', 'Aktivasi::delete/$1');
 });

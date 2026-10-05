@@ -63,11 +63,19 @@ class RFOModel extends BaseModel
         'PT RTIGA GLOBAL MEDIA'              => 'noc@rnet.id',
     ];
 
-    /** Kalimat penutup surat RFO (halaman View / Print); %s = e-mail NOC. */
+    /** Nomor WA Support pada kalimat penutup surat RFO, sesuai perusahaan/logo. */
+    public const NOMOR_WA = [
+        'PT JURAGAN WIFI INDONESIA'          => '+62 811-1370-5508',
+        'PT NORLEC TELEKOMUNIKASI INDONESIA' => '+62 811-1370-5508',
+        'PT GENEZIS MITRA TECHNOLOGY'        => '+62 811-1370-550',
+        'PT RTIGA GLOBAL MEDIA'              => '+62 811-1370-5508',
+    ];
+
+    /** Kalimat penutup surat RFO (halaman View / Print); %1$s = nomor WA Support, %2$s = e-mail NOC. */
     public const SURAT_PENUTUP = "Atas ketidaknyamanan yang ditimbulkan kami sampaikan permohonan maaf.\n"
         . "Sekian informasi yang dapat kami sampaikan. Untuk informasi lebih lanjut, silahkan hubungi\n"
-        . "Hotline Support kami di 021-5011-2225 / +62 811-1370-5508 (WA Support) yang beroperasi 24/7\n"
-        . "atau e-mail ke %s\n"
+        . "Hotline Support kami di 021-5011-2225 / %1\$s (WA Support) yang beroperasi 24/7\n"
+        . "atau e-mail ke %2\$s\n"
         . "Demikian informasi yang kami sampaikan, Atas perhatian dan kerjasamanya kami ucapkan terima\n"
         . "kasih.";
 

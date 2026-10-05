@@ -12,6 +12,7 @@ class HistoryReportModel extends BaseModel
     protected $allowedFields = [
         'tanggal',
         'shift',
+        'kategori',
         'pic_shift',
         'jam_mulai',
         'jam_selesai',
@@ -25,6 +26,9 @@ class HistoryReportModel extends BaseModel
 
     // Nonaktifkan updated_at
     protected $updatedField  = '';
+
+    /** Pilihan kategori laporan. */
+    public const KATEGORI = ['NOC Corp Dan Retail', 'NOC Alfa Grup'];
 
     /** Shift laporan => nomor shift di tabel jadwal_noc (Jadwal NOC). */
     public const SHIFT = [

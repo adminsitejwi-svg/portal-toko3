@@ -75,6 +75,13 @@ class ShiftReportText
             '   • PIC: ' . self::v($r['pic']),
         ]));
 
+        self::section($lines, 'AKTIVASI', self::items($data['aktivasi'] ?? [], static fn ($r, $no) => [
+            $no . '. ' . self::v($r['nama_pelanggan']) . ' (' . self::v($r['id_pelanggan']) . ')',
+            '   • Kapasitas: ' . self::v($r['kapasitas_mbps']) . ' Mbps',
+            '   • SN: ' . self::v($r['sn']),
+            '   • Tanggal Aktivasi: ' . self::v($r['tanggal_aktivasi']),
+        ]));
+
         self::section($lines, 'CATATAN', self::items($data['catatan'] ?? [], static function ($r, $no) {
             $out = [$no . '.1 ' . $r['grup'] . ' — ' . trim($r['judul'])];
             foreach (CatatanModel::poin($r['catatan']) as $p) {

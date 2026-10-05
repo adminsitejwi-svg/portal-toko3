@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\AktivasiModel;
 use App\Models\CatatanModel;
 use App\Models\FollowUpModel;
 use App\Models\GangguanModel;
@@ -52,8 +53,12 @@ class Gangguan extends BaseController
                 ->where('report_id', $reportId)
                 ->orderBy('id', 'DESC')
                 ->findAll(),
-            // Tab yang dibuka: ?tab=followup / pengiriman / maintenance / catatan setelah simpan/hapus
-            'activeTab'       => in_array($this->request->getGet('tab'), ['followup', 'pengiriman', 'maintenance', 'catatan'], true)
+            'aktivasi' => (new AktivasiModel())
+                ->where('report_id', $reportId)
+                ->orderBy('id', 'DESC')
+                ->findAll(),
+            // Tab yang dibuka: ?tab=followup / pengiriman / maintenance / aktivasi / catatan setelah simpan/hapus
+            'activeTab'       => in_array($this->request->getGet('tab'), ['followup', 'pengiriman', 'maintenance', 'aktivasi', 'catatan'], true)
                 ? $this->request->getGet('tab')
                 : 'gangguan',
             'pengirimanStatusOptions'  => PengirimanModel::STATUS,

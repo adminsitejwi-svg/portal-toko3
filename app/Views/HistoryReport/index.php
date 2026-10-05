@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>History Report</title>
+    <title>Daily Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -687,11 +687,16 @@
                         <span>Maintenance</span>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span>Report NOC</span>
+                        <span class="flex-1">Report NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
+                        <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
                 </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
@@ -742,6 +747,14 @@
         <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
             <ul class="flex items-center gap-1">
                 <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
+                <li class="ml-2">
+                    <!-- filter Kategori Daily Report -->
+                    <select id="filterKategori" class="border rounded-lg px-3 py-2 text-sm bg-white dark:bg-[#263240] max-w-[200px]" title="Filter Kategori">
+                        <?php foreach ($kategoriOptions as $opt) : ?>
+                            <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </li>
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
@@ -769,7 +782,7 @@
         <div class="p-6">
             <!-- breadcrumb -->
             <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">History Report</h5>
+                <h5 class="font-medium text-lg">Daily Report</h5>
                 <button type="button" onclick="openReportModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
                     <i class="ti ti-plus"></i> Tambah
                 </button>
@@ -834,6 +847,7 @@
                                     <th>Aksi</th>
                                     <th>Tanggal</th>
                                     <th>Shift</th>
+                                    <th>Kategori</th>
                                     <th>PIC Shift</th>
                                     <th>Periode</th>
                                     <?php foreach ($grupList as $g) : ?>
@@ -865,6 +879,7 @@
                                             </td>
                                             <td data-order="<?= esc($row['tanggal']) ?>"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
                                             <td><span class="badge <?= $shiftBadge[$row['shift']] ?? 'badge-service' ?>"><?= esc($row['shift']); ?></span></td>
+                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['kategori'] ?: '-'); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['pic_shift']); ?></td>
                                             <td data-order="<?= esc($row['jam_mulai'] ?? '') ?>"><?= $hm($row['jam_mulai']); ?> - <?= $hm($row['jam_selesai']); ?></td>
                                             <?php foreach ($grupList as $g) : ?>
@@ -900,7 +915,7 @@
     <div id="reportModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
-                <h3 class="text-xl font-bold" id="reportModalTitle">Tambah History Report</h3>
+                <h3 class="text-xl font-bold" id="reportModalTitle">Tambah Daily Report</h3>
                 <button type="button" onclick="closeReportModal()"><i class="ti ti-x text-2xl"></i></button>
             </div>
 
@@ -920,6 +935,15 @@
                             <option value="Pagi">Pagi</option>
                             <option value="Siang">Siang</option>
                             <option value="Malam">Malam</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Kategori <span class="text-red-500">*</span></label>
+                        <select name="kategori" id="r_kategori" required class="w-full border rounded-lg p-3">
+                            <option value="">-- Pilih Kategori --</option>
+                            <?php foreach ($kategoriOptions as $opt) : ?>
+                                <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="md:col-span-2">
@@ -963,7 +987,7 @@
     <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeViewModal()">
         <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
-                <h3 class="text-xl font-bold">View History Report</h3>
+                <h3 class="text-xl font-bold">View Daily Report</h3>
                 <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -974,6 +998,10 @@
                 <div>
                     <div class="text-gray-500">Shift</div>
                     <div class="font-medium" id="v_shift"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Kategori</div>
+                    <div class="font-medium" id="v_kategori"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">PIC Shift</div>
@@ -1085,7 +1113,7 @@
             const shiftBaru = idx === -1 ? d.shift : urutShift[(idx + 1) % urutShift.length];
             openReportModal({ ...d, id: '', tanggal: todayStr(), shift: shiftBaru });
             document.getElementById('r_duplikat_dari').value = d.id;
-            document.getElementById('reportModalTitle').textContent = 'Duplikat History Report';
+            document.getElementById('reportModalTitle').textContent = 'Duplikat Daily Report';
         }
 
         // Copy: salin "NOC SHIFT REPORT" (format WhatsApp, disusun di server) ke clipboard
@@ -1115,6 +1143,7 @@
         function openViewModal(d, status) {
             document.getElementById('v_tanggal').textContent = tglIndo(d.tanggal);
             document.getElementById('v_shift').textContent = d.shift || '-';
+            document.getElementById('v_kategori').textContent = d.kategori || '-';
             document.getElementById('v_pic_shift').textContent = d.pic_shift || '-';
             document.getElementById('v_periode').textContent = hm(d.jam_mulai) + ' - ' + hm(d.jam_selesai);
             document.getElementById('v_created').textContent = d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '-';
@@ -1170,13 +1199,14 @@
             const f = document.getElementById('reportForm');
             f.reset();
             f.action = isEdit ? URL_UPDATE : URL_SAVE;
-            document.getElementById('reportModalTitle').textContent = isEdit ? 'Edit History Report' : 'Tambah History Report';
+            document.getElementById('reportModalTitle').textContent = isEdit ? 'Edit Daily Report' : 'Tambah Daily Report';
             document.getElementById('reportSubmit').textContent = isEdit ? 'Update' : 'Simpan';
 
             document.getElementById('r_id').value = d.id || '';
             document.getElementById('r_duplikat_dari').value = '';
             document.getElementById('r_tanggal').value = d.tanggal || todayStr();
             document.getElementById('r_shift').value = d.shift || '';
+            document.getElementById('r_kategori').value = d.kategori || '';
             setPic(d.pic_shift || '');
             document.getElementById('r_pic_manual').value = d.pic_manual || '';
             document.getElementById('r_jam_mulai').value = (d.jam_mulai || '').substring(0, 5);
@@ -1193,7 +1223,7 @@
 
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_tanggal', 'r_shift', 'r_pic_shift', 'r_jam_mulai', 'r_jam_selesai', 'r_ringkasan']
+            const wajib = ['r_tanggal', 'r_shift', 'r_kategori', 'r_pic_shift', 'r_jam_mulai', 'r_jam_selesai', 'r_ringkasan']
                 .map(id => document.getElementById(id).value.trim());
             if (document.getElementById('r_pic_shift').value === '__manual__') {
                 wajib.push(document.getElementById('r_pic_manual').value.trim());
@@ -1213,7 +1243,7 @@
 
         <?php
         // Gagal validasi di server: buka lagi pop up dengan isian terakhir
-        $oldKeys = ['id', 'tanggal', 'shift', 'pic_shift', 'pic_manual', 'jam_mulai', 'jam_selesai', 'ringkasan'];
+        $oldKeys = ['id', 'tanggal', 'shift', 'kategori', 'pic_shift', 'pic_manual', 'jam_mulai', 'jam_selesai', 'ringkasan'];
         $oldData = [];
         foreach ($oldKeys as $k) {
             $oldData[$k] = old($k, null, false);
@@ -1365,7 +1395,7 @@
                     buttons: [{
                             extend: 'copyHtml5',
                             text: '<i class="ti ti-copy"></i> Copy',
-                            title: 'Data History Report',
+                            title: 'Data Daily Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1375,7 +1405,7 @@
                         {
                             extend: 'csvHtml5',
                             text: '<i class="ti ti-file-text"></i> Export CSV',
-                            title: 'Data History Report',
+                            title: 'Data Daily Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1385,7 +1415,7 @@
                         {
                             extend: 'excelHtml5',
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
-                            title: 'Data History Report',
+                            title: 'Data Daily Report',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1395,7 +1425,7 @@
                         {
                             extend: 'pdfHtml5',
                             text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
-                            title: 'Data History Report',
+                            title: 'Data Daily Report',
                             orientation: 'landscape',
                             pageSize: 'A4',
                             ...exportConfig,
@@ -1426,7 +1456,7 @@
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
                     infoEmpty: "Showing 0 to 0 of 0 entries",
                     infoFiltered: "(filtered from _MAX_ total entries)",
-                    emptyTable: "Data history report belum tersedia",
+                    emptyTable: "Data daily report belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
                         previous: "Previous",
@@ -1449,6 +1479,15 @@
 
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
+
+            // Filter Kategori: kolom "Kategori" dicocokkan persis (NOC Corp Dan Retail / NOC Alfa Grup)
+            const kategoriCol = $('#reportTable thead th').filter(function() {
+                return $(this).text().trim() === 'Kategori';
+            }).index();
+            $('#filterKategori').on('change', function() {
+                const v = this.value;
+                table.column(kategoriCol).search('^' + $.fn.dataTable.util.escapeRegex(v) + '$', true, false).draw();
+            }).trigger('change'); // kategori pertama langsung terfilter saat halaman dibuka
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();

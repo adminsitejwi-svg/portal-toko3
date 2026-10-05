@@ -82,6 +82,7 @@ class RFO extends BaseController
             'pembuka' => RFOModel::SURAT_PEMBUKA,
             'penutup' => sprintf(
                 RFOModel::SURAT_PENUTUP,
+                RFOModel::NOMOR_WA[$rfo['perusahaan']] ?? RFOModel::NOMOR_WA['PT JURAGAN WIFI INDONESIA'],
                 RFOModel::EMAIL_NOC[$rfo['perusahaan']] ?? RFOModel::EMAIL_NOC['PT JURAGAN WIFI INDONESIA']
             ),
         ]);

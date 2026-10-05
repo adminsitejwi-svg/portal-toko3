@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Libraries\ShiftReportText;
+use App\Models\AktivasiModel;
 use App\Models\CatatanModel;
 use App\Models\FollowUpModel;
 use App\Models\GangguanModel;
@@ -37,6 +38,7 @@ class HistoryReport extends BaseController
             'picOptions' => $this->picOptions(),
             'grupCount'  => $this->grupCount(),
             'grupList'   => GangguanModel::GRUP,
+            'kategoriOptions' => HistoryReportModel::KATEGORI,
             'dataCount'  => $this->dataCount(),
         ];
 
@@ -75,6 +77,7 @@ class HistoryReport extends BaseController
             'pengiriman'  => 'd_pengiriman',
             'maintenance' => 'd_maintenance',
             'catatan'     => 'd_catatan',
+            'aktivasi'    => 'd_aktivasi',
         ];
 
         $anak = [];
@@ -174,6 +177,7 @@ class HistoryReport extends BaseController
         return [
             'tanggal'     => 'required|valid_date[Y-m-d]',
             'shift'       => 'required|in_list[' . implode(',', array_keys(HistoryReportModel::SHIFT)) . ']',
+            'kategori'    => 'required|in_list[' . implode(',', HistoryReportModel::KATEGORI) . ']',
             'pic_shift'   => 'required|max_length[255]',
             'jam_mulai'   => 'required|regex_match[/^\d{2}:\d{2}(:\d{2})?$/]',
             'jam_selesai' => 'required|regex_match[/^\d{2}:\d{2}(:\d{2})?$/]',
@@ -192,6 +196,7 @@ class HistoryReport extends BaseController
         return [
             'tanggal'     => $this->request->getPost('tanggal'),
             'shift'       => $this->request->getPost('shift'),
+            'kategori'    => $this->request->getPost('kategori'),
             'pic_shift'   => trim($pic),
             'jam_mulai'   => $this->request->getPost('jam_mulai'),
             'jam_selesai' => $this->request->getPost('jam_selesai'),
@@ -250,6 +255,7 @@ class HistoryReport extends BaseController
             new PengirimanModel(),
             new MaintenanceModel(),
             new CatatanModel(),
+            new AktivasiModel(),
         ];
 
         foreach ($models as $model) {

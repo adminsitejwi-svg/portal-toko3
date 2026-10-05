@@ -658,11 +658,16 @@
                         <span>Maintenance</span>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span>Report NOC</span>
+                        <span class="flex-1">Report NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
+                        <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
                 </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
@@ -788,7 +793,7 @@
 
             // Form yang gagal validasi di server (dibuka lagi beserta tab-nya)
             $oldForm = old('_form');
-            if (in_array($oldForm, ['gangguan', 'followup', 'pengiriman', 'maintenance', 'catatan'], true)) {
+            if (in_array($oldForm, ['gangguan', 'followup', 'pengiriman', 'maintenance', 'aktivasi', 'catatan'], true)) {
                 $activeTab = $oldForm;
             }
 
@@ -797,6 +802,7 @@
                 'followup'   => ['icon' => '🔔', 'label' => 'Follow Up', 'count' => count($followUp)],
                 'pengiriman' => ['icon' => '📦', 'label' => 'Pengiriman', 'count' => count($pengiriman)],
                 'maintenance' => ['icon' => '🛠️', 'label' => 'Maintenance', 'count' => count($maintenance)],
+                'aktivasi'    => ['icon' => '⚡', 'label' => 'Aktivasi', 'count' => count($aktivasi)],
                 'catatan'     => ['icon' => '📌', 'label' => 'Catatan', 'count' => count($catatan)],
             ];
             ?>
@@ -1156,6 +1162,84 @@
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['issue'] ?: '-'); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action'] ?: '-'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== PANEL AKTIVASI ====== -->
+            <div class="ho-panel <?= $activeTab === 'aktivasi' ? '' : 'hidden' ?>" data-panel="aktivasi">
+                <div class="card">
+                    <div class="card-body">
+
+                        <!-- TOOLBAR -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="custom-search">
+                                    <input type="text" class="search-input" placeholder="search..." />
+                                    <button class="go-btn" type="button"></button>
+                                </div>
+                                <div class="export-area"></div>
+                                <button type="button" onclick="openAktivasiModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                    <i class="ti ti-plus"></i> Tambah
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TABLE -->
+                        <div class="table-scroll">
+                            <table id="aktivasiTable" class="ho-table display nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Aksi</th>
+                                        <th>ID Pelanggan</th>
+                                        <th>Nama Pelanggan</th>
+                                        <th>Kapasitas (Mbps)</th>
+                                        <th>SN</th>
+                                        <th>Tanggal Aktivasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $no = 1; ?>
+                                    <?php foreach ($aktivasi as $row) : ?>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal('aktivasi', JSON.parse(this.dataset.row))"
+                                                    title="View"
+                                                    class="btn btn-sm">
+                                                        <i class="ti ti-eye"></i>
+                                                </button>
+
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openAktivasiModal(JSON.parse(this.dataset.row))"
+                                                    title="Edit"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete('<?= site_url('HistoryReport/aktivasi/delete/' . $row['id']) ?>')"
+                                                    title="Hapus"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td><?= esc($row['id_pelanggan']); ?></td>
+                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
+                                            <td><?= esc($row['kapasitas_mbps']); ?></td>
+                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['sn']); ?></td>
+                                            <td data-order="<?= esc($row['tanggal_aktivasi'] ?? '') ?>"><?= $row['tanggal_aktivasi'] ? date('d-m-Y', strtotime($row['tanggal_aktivasi'])) : '-'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1585,7 +1669,50 @@
         </div>
     </div>
 
-    <!-- ====== POP UP VIEW (Gangguan / Follow Up / Pengiriman / Maintenance / Catatan) ====== -->
+    <!-- ====== POP UP TAMBAH / EDIT AKTIVASI ====== -->
+    <div id="aktivasiModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold" id="aktivasiModalTitle">Tambah Aktivasi</h3>
+                <button type="button" onclick="closeModal('aktivasiModal')"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+
+            <form action="<?= site_url('HistoryReport/aktivasi/save') ?>" method="POST" id="aktivasiForm">
+                <?= csrf_field() ?>
+                <input type="hidden" name="_form" value="aktivasi">
+                <input type="hidden" name="id" id="a_id">
+                <input type="hidden" name="report_id" value="<?= esc($report['id']) ?>">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm font-medium">ID Pelanggan <span class="text-red-500">*</span></label>
+                        <input type="text" name="id_pelanggan" id="a_id_pelanggan" maxlength="100" required placeholder="Masukan ID Pelanggan" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">Nama Pelanggan <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_pelanggan" id="a_nama_pelanggan" maxlength="255" required placeholder="Masukan Nama Pelanggan" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">Kapasitas (Mbps) <span class="text-red-500">*</span></label>
+                        <input type="text" name="kapasitas_mbps" id="a_kapasitas_mbps" maxlength="50" required placeholder="Contoh: 100" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium">SN <span class="text-red-500">*</span></label>
+                        <input type="text" name="sn" id="a_sn" maxlength="255" required placeholder="Masukan Serial Number" class="w-full border rounded-lg p-3">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Tanggal Aktivasi <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_aktivasi" id="a_tanggal_aktivasi" required class="w-full border rounded-lg p-3">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeModal('aktivasiModal')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Batal</button>
+                    <button type="submit" id="aktivasiSubmit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== POP UP VIEW (Gangguan / Follow Up / Pengiriman / Maintenance / Aktivasi / Catatan) ====== -->
     <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeModal('viewModal')">
         <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
@@ -1629,6 +1756,10 @@
             maintenance: {
                 label: 'Maintenance',
                 fields: [['grup', 'Group'], ['site', 'Site'], ['equipment', 'Equipment'], ['schedule', 'Schedule'], ['status', 'Status'], ['pic', 'PIC'], ['issue', 'Issue'], ['action', 'Action']],
+            },
+            aktivasi: {
+                label: 'Aktivasi',
+                fields: [['id_pelanggan', 'ID Pelanggan'], ['nama_pelanggan', 'Nama Pelanggan'], ['kapasitas_mbps', 'Kapasitas (Mbps)'], ['sn', 'SN'], ['tanggal_aktivasi', 'Tanggal Aktivasi']],
             },
             catatan: {
                 label: 'Catatan',
@@ -1718,6 +1849,16 @@
         };
         const openMaintenanceModal = d => openFormModal(FORM_MAINTENANCE, d);
 
+        const FORM_AKTIVASI = {
+            label: 'Aktivasi', prefix: 'a_', modal: 'aktivasiModal', form: 'aktivasiForm',
+            title: 'aktivasiModalTitle', submit: 'aktivasiSubmit',
+            urlSave: "<?= site_url('HistoryReport/aktivasi/save') ?>",
+            urlUpdate: "<?= site_url('HistoryReport/aktivasi/update') ?>",
+            fields: ['id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'],
+            wajib: ['id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'],
+        };
+        const openAktivasiModal = d => openFormModal(FORM_AKTIVASI, d);
+
         // ====== CATATAN: beberapa baris poin catatan ======
         function addCatatanRow(value, focus) {
             const list = document.getElementById('c_list');
@@ -1763,7 +1904,7 @@
         const openCatatanModal = d => openFormModal(FORM_CATATAN, d);
 
         // ====== VALIDASI SEBELUM SUBMIT ======
-        [FORM_GANGGUAN, FORM_FOLLOW_UP, FORM_PENGIRIMAN, FORM_MAINTENANCE, FORM_CATATAN].forEach(cfg => {
+        [FORM_GANGGUAN, FORM_FOLLOW_UP, FORM_PENGIRIMAN, FORM_MAINTENANCE, FORM_AKTIVASI, FORM_CATATAN].forEach(cfg => {
             document.getElementById(cfg.form).addEventListener('submit', function(e) {
                 const kosong = cfg.wajib.some(k => document.getElementById(cfg.prefix + k).value.trim() === '') ||
                     (cfg.check && !cfg.check());
@@ -1782,7 +1923,7 @@
 
         <?php
         // Gagal validasi di server: buka lagi pop up dengan isian terakhir
-        $oldKeys = ['id', 'grup', 'sub_grup', 'customer_site', 'cid_ticket', 'status', 'priority', 'gangguan', 'tindakan', 'next_action', 'pic', 'due_date', 'issue', 'action', 'customer', 'device', 'tracking_resi', 'eta', 'site', 'equipment', 'schedule', 'kategori', 'judul', 'catatan'];
+        $oldKeys = ['id', 'grup', 'sub_grup', 'customer_site', 'cid_ticket', 'status', 'priority', 'gangguan', 'tindakan', 'next_action', 'pic', 'due_date', 'issue', 'action', 'customer', 'device', 'tracking_resi', 'eta', 'site', 'equipment', 'schedule', 'kategori', 'judul', 'catatan', 'id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'];
         $oldData = [];
         foreach ($oldKeys as $k) {
             $oldData[$k] = old($k, null, false);
@@ -1796,6 +1937,8 @@
             openPengirimanModal(<?= json_encode($oldData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
         <?php elseif ($oldForm === 'maintenance') : ?>
             openMaintenanceModal(<?= json_encode($oldData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
+        <?php elseif ($oldForm === 'aktivasi') : ?>
+            openAktivasiModal(<?= json_encode($oldData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
         <?php elseif ($oldForm === 'catatan') : ?>
             openCatatanModal(<?= json_encode($oldData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>);
         <?php endif; ?>
@@ -2032,6 +2175,7 @@
             initTable('followUpTable', 'Data Follow Up', 'Data follow up belum tersedia');
             initTable('pengirimanTable', 'Data Pengiriman', 'Data pengiriman belum tersedia');
             initTable('maintenanceTable', 'Data Maintenance', 'Data maintenance belum tersedia');
+            initTable('aktivasiTable', 'Data Aktivasi', 'Data aktivasi belum tersedia');
             initTable('catatanTable', 'Data Catatan', 'Data catatan belum tersedia');
         });
     </script>

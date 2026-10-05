@@ -721,11 +721,16 @@
                         <span>Maintenance</span>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span>Report NOC</span>
+                        <span class="flex-1">Report NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
+                        <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
                 </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
@@ -825,6 +830,7 @@
                 'followup'    => ['icon' => '🔔', 'label' => 'Follow Up'],
                 'pengiriman'  => ['icon' => '📦', 'label' => 'Pengiriman Perangkat'],
                 'maintenance' => ['icon' => '🛠️', 'label' => 'Maintenance'],
+                'aktivasi'    => ['icon' => '⚡', 'label' => 'Aktivasi'],
                 'catatan'     => ['icon' => '📌', 'label' => 'Catatan'],
             ];
             $total = 0;
@@ -921,6 +927,13 @@
                     'PIC' => fn ($r) => $v($r['pic']),
                     'Issue' => fn ($r) => $v($r['issue']),
                     'Action' => fn ($r) => $v($r['action']),
+                ],
+                'aktivasi' => [
+                    'ID Pelanggan' => fn ($r) => $v($r['id_pelanggan']),
+                    'Nama Pelanggan' => fn ($r) => $v($r['nama_pelanggan']),
+                    'Kapasitas (Mbps)' => fn ($r) => $v($r['kapasitas_mbps']),
+                    'SN' => fn ($r) => $v($r['sn']),
+                    'Tanggal Aktivasi' => fn ($r) => $tgl($r['tanggal_aktivasi']),
                 ],
                 'catatan' => [
                     'Group' => fn ($r) => esc($r['grup']),
