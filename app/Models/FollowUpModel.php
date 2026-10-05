@@ -4,15 +4,21 @@ namespace App\Models;
 
 use App\Models\BaseModel;
 
-class AktivasiRipotModel extends BaseModel
+class FollowUpModel extends BaseModel
 {
-    protected $table            = 'aktivasi_ripot';
+    protected $table            = 'd_follow_up';
     protected $primaryKey       = 'id';
 
     protected $allowedFields = [
-        'id_pelanggan',
-        'layanan',
-        'status',
+        'report_id',
+        'grup',
+        'customer_site',
+        'priority',
+        'due_date',
+        'pic',
+        'issue',
+        'action',
+        'created_at'
     ];
 
     protected $useTimestamps = true;

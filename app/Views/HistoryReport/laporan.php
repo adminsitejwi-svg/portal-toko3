@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Pelanggan</title>
+    <title>Laporan Shift</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -118,6 +118,114 @@
             display: block;
         }
 
+        /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
+        .aksi-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #5b6b7f;
+        }
+
+        .aksi-btn:hover,
+        .aksi-btn.open {
+            background: #eef1f5;
+            color: #1e4fa3;
+        }
+
+        #aksiMenu {
+            position: fixed;
+            z-index: 1050;
+            min-width: 190px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            padding: 6px;
+        }
+
+        #aksiMenu .aksi-title {
+            padding: 6px 12px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        #aksiMenu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b4754;
+            text-align: left;
+        }
+
+        #aksiMenu button i {
+            font-size: 17px;
+            color: #64748b;
+        }
+
+        #aksiMenu button:hover {
+            background: #f3f4f6;
+        }
+
+        #aksiMenu button.danger,
+        #aksiMenu button.danger i {
+            color: #dc2626;
+        }
+
+        #aksiMenu hr {
+            margin: 4px 0;
+            border-color: #f1f5f9;
+        }
+
+        .dark #aksiMenu { background: #263240; border-color: rgba(255, 255, 255, .1); }
+        .dark #aksiMenu button { color: #bfc8d6; }
+        .dark #aksiMenu button:hover { background: rgba(255, 255, 255, .05); }
+
+        /* ===== JUMLAH PER GROUP ===== */
+        .grup-count {
+            display: inline-block;
+            min-width: 28px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .grup-count.has {
+            background: #e3edfb;
+            color: #1e4fa3;
+        }
+
+        .grup-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #e3edfb;
+            color: #1e4fa3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .rekap-red { background: #fde8ec; }
+        .rekap-amber { background: #fdf3e3; }
+        .rekap-blue { background: #e3edfb; }
+        .rekap-green { background: #e7f8f1; }
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -146,12 +254,12 @@
         }
 
         /* ===== INVOICE-STYLE TABLE ===== */
-        #mediaKoneksiTable {
+        #reportTable {
             width: 100% !important;
             border-collapse: collapse;
         }
 
-        #mediaKoneksiTable thead th {
+        #reportTable thead th {
             background: #f7f9fb;
             color: #6b7785;
             font-weight: 500;
@@ -163,13 +271,22 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable thead th {
+        .dark #reportTable thead th {
             background: #2b3543;
             color: #9fb0c2;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody td {
+        /* Kolom PIC & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
+        #reportTable tbody td.whitespace-normal {
+            white-space: normal !important;
+        }
+
+        #reportTable tbody td.whitespace-pre-line {
+            white-space: pre-line !important;
+        }
+
+        #reportTable tbody td {
             padding: 16px;
             font-size: 14px;
             color: #3b4754;
@@ -178,25 +295,25 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable tbody td {
+        .dark #reportTable tbody td {
             color: #bfc8d6;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody tr:hover {
+        #reportTable tbody tr:hover {
             background: #fafbfc;
         }
 
-        .dark #mediaKoneksiTable tbody tr:hover {
+        .dark #reportTable tbody tr:hover {
             background: rgba(255, 255, 255, .03);
         }
 
-        #mediaKoneksiTable tbody td.col-bold {
+        #reportTable tbody td.col-bold {
             font-weight: 600;
             color: #2b3540;
         }
 
-        .dark #mediaKoneksiTable tbody td.col-bold {
+        .dark #reportTable tbody td.col-bold {
             color: #e7eaf0;
         }
 
@@ -225,7 +342,17 @@
             color: #ff0000;
         }
 
-        /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
+        .badge-service {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-draft {
+            background: #eef1f5;
+            color: #64748b;
+        }
+
+        /* ===== LENGTH (Show) DROPDOWN ===== */
         .dataTables_length {
             font-size: 0;
         }
@@ -252,7 +379,6 @@
             border-color: #04a9f5;
         }
 
-        /* sembunyikan search bawaan, pakai custom */
         .dataTables_filter {
             display: none;
         }
@@ -412,7 +538,6 @@
             background: rgba(255, 255, 255, .05) !important;
         }
 
-        /* ===== SCROLL HORIZONTAL DI MOBILE ===== */
         .table-scroll {
             width: 100%;
             overflow-x: auto;
@@ -422,117 +547,46 @@
         .table-scroll table {
             min-width: 760px;
         }
-    </style>
-
-    <style>
-        .form-container {
-            background-color: #ffffff;
-            padding: 30px;
-            margin-top: 140px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-            width: 100%;
-            max-width: 1000px;
-            margin: 20px auto;
-        }
-
-        h2 {
-            text-align: center;
-            color: #185a82;
-
-            font-size: 42px;
-            font-weight: 800;
-
-            text-transform: uppercase;
-            letter-spacing: 2px;
-
-            margin-bottom: 35px;
-            padding-bottom: 15px;
-
-            border-bottom: 3px solid #185a82;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #185a82;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[readonly] {
-            background: #f1f5f9;
-        }
-
-        button {
-            width: 100%;
-            height: 55px;
-
-            border: none;
-            border-radius: 10px;
-
-            font-size: 17px;
-            font-weight: 600;
-
-            cursor: pointer;
-            transition: all .3s ease;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .d-flex {
-            display: flex;
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .d-flex button {
-            flex: 1;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #185a82, #2196f3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(24, 90, 130, 0.3);
-        }
-
-        button[type="submit"]:hover {
-            box-shadow: 0 8px 25px rgba(24, 90, 130, 0.4);
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
-        }
-
-        .btn-back:hover {
-            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        }
 
         .brand-text {
             font-size: 18px;
         }
+        /* ===== HALAMAN SHIFT LAPORAN ===== */
+        .lp-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1d6fd8; }
+        .lp-title { font-size: 24px; font-weight: 700; color: #1f2937; line-height: 1.3; }
+        .lp-sub { font-size: 12px; color: #6b7280; margin-top: 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+        .lp-pic { font-weight: 700; text-transform: uppercase; color: #4b5563; }
+
+        .lp-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid #e3e8ee; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 500; color: #3b4754; }
+        .lp-btn:hover { background: #f8fafc; }
+        .lp-btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+        .lp-btn-primary:hover { background: #1d4ed8; }
+
+        .lp-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; background: #f8fafc; border: 1px solid #e5e9f0; border-radius: 12px; }
+        .lp-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #4b5563; }
+        .lp-chip:hover { background: #fff; box-shadow: 0 2px 8px rgba(15, 23, 42, .08); }
+        .lp-count { min-width: 22px; padding: 2px 7px; border-radius: 6px; background: #eef1f5; color: #4b5563; font-size: 12px; text-align: center; }
+
+        .lp-sec-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+        .lp-empty { padding: 18px; border: 1px dashed #e2e8f0; border-radius: 10px; text-align: center; font-size: 13px; color: #94a3b8; }
+
+        .lp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .lp-table th { background: #f8fafc; color: #5b6b7f; font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e9f0; white-space: nowrap; }
+        .lp-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; white-space: pre-line; min-width: 90px; }
+        .lp-table tbody tr:hover { background: #fafbfc; }
+
+        .dark .lp-title { color: #e5e7eb; }
+        .dark .lp-pic { color: #cbd5e1; }
+        .dark .lp-btn { background: #263240; border-color: rgba(255, 255, 255, .1); color: #bfc8d6; }
+        .dark .lp-chips { background: rgba(255, 255, 255, .03); border-color: rgba(255, 255, 255, .08); }
+        .dark .lp-chip { color: #bfc8d6; }
+        .dark .lp-chip:hover { background: #263240; }
+        .dark .lp-count { background: rgba(255, 255, 255, .06); color: #bfc8d6; }
+        .dark .lp-table th { background: rgba(255, 255, 255, .04); color: #bfc8d6; border-color: rgba(255, 255, 255, .08); }
+        .dark .lp-table td { border-color: rgba(255, 255, 255, .06); }
+
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -649,33 +703,32 @@
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
                         <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
-
+                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
-
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'down' ? 'active-store' : '' ?>">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'progress' ? 'active-store' : '' ?>">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-
-
-                    </ul>
-
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
-
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
                 <li>
                     <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
@@ -693,31 +746,25 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="<?= site_url('settings') ?>"
+                 <li>
+                    <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-settings"></i>
-                        </span>
-
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
                         <span>Pengguna</span>
-
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('Logs') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-report-search"></i>
-                        </span>
-
+                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
                         <span>Change Log</span>
-
                     </a>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -732,9 +779,6 @@
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
@@ -756,230 +800,216 @@
             </ul>
         </header>
 
-        <?php
-        // Helper: ubah "Y-m-d H:i:s" dari DB -> "Y-m-d\TH:i" untuk input datetime-local
-        $dtLocal = function ($value) {
-            if (empty($value)) return '';
-            $ts = strtotime($value);
-            return $ts ? date('Y-m-d\TH:i', $ts) : '';
-        };
-        ?>
-
         <div class="p-6">
-            <div class="form-container">
-                <h2>Edit Report NOC</h2>
-                <form action="<?= site_url('RipotRetail/update') ?>" method="POST" id="ripotForm">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="id" value="<?= esc($repot_noc['id']) ?>">
+            <?php
+            $hm = static fn ($t) => $t ? substr($t, 0, 5) : '-';
+            $tgl = static fn ($t) => $t ? date('d-m-Y', strtotime($t)) : '-';
+            $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            $ts = strtotime($report['tanggal']);
+            $tanggalPanjang = date('j', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts);
+            $v = static fn ($x) => trim((string) $x) === '' ? '-' : esc($x);
 
-                    <div class="form-group mt-3">
-                        <label>Daily</label>
-                        <textarea name="daily" id="daily" rows="2"
-                            placeholder="Masukkan Daily"
-                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($repot_noc['daily']) ?></textarea>
-                    </div>
-                    <div class="form-group mt-5">
-                        <label>Shift <span style="color:red">*</span></label>
-                        <select name="shift" id="shift" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                            <option value="">Pilih Shift</option>
-                            <option value="1" <?= $repot_noc['shift'] == '1' ? 'selected' : '' ?>>1</option>
-                            <option value="2" <?= $repot_noc['shift'] == '2' ? 'selected' : '' ?>>2</option>
-                            <option value="3" <?= $repot_noc['shift'] == '3' ? 'selected' : '' ?>>3</option>
-                        </select>
-                    </div>
+            // Badge warna (sama dengan halaman Shift Handover)
+            $badge = [
+                'High' => 'badge-due', 'Medium' => 'badge-pending', 'Low' => 'badge-service',
+                'Resolved' => 'badge-paid', 'On Progress' => 'badge-service', 'Monitoring' => 'badge-pending', 'Down' => 'badge-due', 'Pending' => 'badge-pending',
+                'Requested' => 'badge-pending', 'Shipped' => 'badge-service', 'In Transit' => 'badge-service', 'Received' => 'badge-paid', 'Installed' => 'badge-paid', 'Closed' => 'badge-paid',
+                'Planned' => 'badge-service', 'Done' => 'badge-paid',
+                'Open' => 'badge-pending',
+                'Info' => 'badge-service', 'Note' => 'badge-pending', 'Recurring' => 'badge-paid',
+            ];
+            $b = static fn ($x) => '<span class="badge ' . ($badge[$x] ?? 'badge-service') . '">' . esc($x) . '</span>';
 
-                    <div class="form-group">
-                        <label>Client <span style="color:red">*</span></label>
-                        <input type="text" name="client" id="client" required
-                            value="<?= esc($repot_noc['client']) ?>" placeholder="Masukkan Nama Client">
-                    </div>
+            $bagian = [
+                'gangguan'    => ['icon' => '🚨', 'label' => 'Gangguan / Incident'],
+                'followup'    => ['icon' => '🔔', 'label' => 'Follow Up'],
+                'pengiriman'  => ['icon' => '📦', 'label' => 'Pengiriman Perangkat'],
+                'maintenance' => ['icon' => '🛠️', 'label' => 'Maintenance'],
+                'catatan'     => ['icon' => '📌', 'label' => 'Catatan'],
+            ];
+            $total = 0;
+            foreach ($bagian as $k => $_) {
+                $total += count($anak[$k] ?? []);
+            }
+            ?>
 
-                    <div class="form-group" style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
-                        <label style="margin-bottom:12px;font-size:15px">Waktu Gangguan</label>
-
-                        <div style="display:flex;gap:15px;flex-wrap:wrap">
-                            <div style="flex:1;min-width:200px">
-                                <label>Start Time</label>
-                                <input type="datetime-local" name="start_time" id="start_time" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= $dtLocal($repot_noc['start_time']) ?>">
-                            </div>
-                            <div style="flex:1;min-width:200px">
-                                <label>Finish Time</label>
-                                <input type="datetime-local" name="finish_time" id="finish_time" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= $dtLocal($repot_noc['finish_time']) ?>">
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:15px;margin-top:12px">
-                            <div style="flex:1">
-                                <label>Duration (Hour)</label>
-                                <input type="text" id="duration_hour_display" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    placeholder="Otomatis" style="background:#f1f5f9"
-                                    value="<?= !empty($repot_noc['duration_hour']) ? $repot_noc['duration_hour'] . ':' . str_pad($repot_noc['duration_minute'] % 60, 2, '0', STR_PAD_LEFT) . ':00' : '' ?>">
-                                <input type="hidden" name="duration_hour" id="duration_hour"
-                                    value="<?= esc($repot_noc['duration_hour']) ?>">
-                            </div>
-                            <div style="flex:1">
-                                <label>Duration (Minute)</label>
-                                <input type="number" min="0" name="duration_minute" id="duration_minute" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= esc($repot_noc['duration_minute']) ?>" placeholder="Otomatis" style="background:#f1f5f9">
-                            </div>
+            <!-- HEADER LAPORAN -->
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                <div class="flex items-start gap-3">
+                    <a href="<?= site_url('HistoryReport') ?>" title="Kembali" class="mt-5 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5">
+                        <i class="ti ti-arrow-left text-xl"></i>
+                    </a>
+                    <div>
+                        <div class="lp-eyebrow">Shift Laporan</div>
+                        <h4 class="lp-title"><?= esc($report['shift']); ?> · <?= $tanggalPanjang ?></h4>
+                        <div class="lp-sub">
+                            <span class="lp-pic"><?= esc($report['pic_shift']); ?></span>
+                            · <?= $hm($report['jam_mulai']); ?>–<?= $hm($report['jam_selesai']); ?>
+                            ·
+                            <?php if ($total > 0) : ?>
+                                <span class="badge badge-paid"><i class="ti ti-circle-check mr-1"></i>Completed</span>
+                            <?php else : ?>
+                                <span class="badge badge-draft"><i class="ti ti-pencil mr-1"></i>Draft</span>
+                            <?php endif; ?>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Jenis Layanan</label>
-                        <input type="text" name="jenis_layanan" id="jenis_layanan"
-                            value="<?= esc($repot_noc['jenis_layanan']) ?>" placeholder="Masukan Jenis Layanan">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Problem <span style="color:red">*</span></label>
-                        <textarea name="problem" id="problem" rows="3" required
-                            placeholder="Masukkan Problem"
-                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($repot_noc['problem']) ?></textarea>
-                    </div>
-
-                    <div class="form-group" style="display:flex;gap:15px">
-                        <div style="flex:1">
-                            <label>Action</label>
-                            <input type="text" name="action" id="action"
-                                value="<?= esc($repot_noc['action']) ?>" placeholder="Masukan Action">
-                        </div>
-                        <div style="flex:1">
-                            <label>Solver</label>
-                            <input type="text" name="solver" id="solver"
-                                value="<?= esc($repot_noc['solver']) ?>" placeholder="Masukkan Solver">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Note</label>
-                        <textarea name="note" id="note" rows="2"
-                            placeholder="Masukkan Note"
-                            class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($repot_noc['note']) ?></textarea>
-                    </div>
-
-                    <div class="form-group" style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:18px">
-                        <label style="margin-bottom:12px;font-size:15px">Using Backup <span style="color:#9ca3af;font-weight:normal">(opsional)</span></label>
-
-                        <div style="display:flex;gap:15px;flex-wrap:wrap">
-                            <div style="flex:1;min-width:200px">
-                                <label>Start Time</label>
-                                <input type="datetime-local" name="backup_start_time" id="backup_start_time" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= $dtLocal($repot_noc['backup_start_time']) ?>">
-                            </div>
-                            <div style="flex:1;min-width:200px">
-                                <label>Finish Time</label>
-                                <input type="datetime-local" name="backup_finish_time" id="backup_finish_time" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= $dtLocal($repot_noc['backup_finish_time']) ?>">
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:15px" class="mt-4">
-                            <div style="flex:1">
-                                <label>Backup Duration (Hour)</label>
-                                <input type="text" id="backup_duration_hour_display" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    placeholder="Otomatis" style="background:#f1f5f9"
-                                    value="<?= !empty($repot_noc['backup_duration_hour']) ? $repot_noc['backup_duration_hour'] . ':' . str_pad($repot_noc['backup_duration_minute'] % 60, 2, '0', STR_PAD_LEFT) . ':00' : '' ?>">
-                                <input type="hidden" name="backup_duration_hour" id="backup_duration_hour"
-                                    value="<?= esc($repot_noc['backup_duration_hour']) ?>">
-                            </div>
-                            <div style="flex:1">
-                                <label>Backup Duration (Minute)</label>
-                                <input type="number" min="0" name="backup_duration_minute" id="backup_duration_minute" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"
-                                    value="<?= esc($repot_noc['backup_duration_minute']) ?>" placeholder="Otomatis" style="background:#f1f5f9">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Regards</label>
-                        <input type="text" name="regards" id="regards"
-                            value="<?= esc($repot_noc['regards']) ?>" placeholder="Masukkan Regards">
-                    </div>
-                    <div class="form-group">
-                        <label>Status <span style="color:red">*</span></label>
-                        <select name="status" id="status" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                            <option value="0" <?= $repot_noc['status'] == '0' ? 'selected' : '' ?>>Done</option>
-                            <option value="1" <?= $repot_noc['status'] == '1' ? 'selected' : '' ?>>On Progress</option>
-                        </select>
-                    </div>
-
-                    <div class="d-flex">
-                        <button type="submit">Update</button>
-                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('RipotRetail') ?>'">Kembali</button>
-                    </div>
-                </form>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="copyLaporan()" class="lp-btn"><i class="ti ti-copy"></i> Copy WhatsApp</button>
+                    <a href="<?= site_url('HistoryReport/gangguan/' . $report['id']) ?>" class="lp-btn lp-btn-primary"><i class="ti ti-tool"></i> Edit Data</a>
+                </div>
             </div>
+
+            <!-- JUMLAH PER BAGIAN (klik untuk lompat ke bagiannya) -->
+            <div class="lp-chips mb-6">
+                <?php foreach ($bagian as $k => $s) : ?>
+                    <a href="#lp-<?= $k ?>" class="lp-chip">
+                        <span><?= $s['icon'] ?></span>
+                        <span><?= $s['label'] ?></span>
+                        <span class="lp-count"><?= count($anak[$k] ?? []) ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- RINGKASAN -->
+            <div class="card mb-6">
+                <div class="card-body">
+                    <h6 class="lp-sec-title">📝 Ringkasan</h6>
+                    <div class="whitespace-pre-line text-sm"><?= $v($report['ringkasan']) ?></div>
+                </div>
+            </div>
+
+            <?php
+            // Kolom tabel tiap bagian: judul kolom => fungsi isi sel
+            $kolom = [
+                'gangguan' => [
+                    'Group' => fn ($r) => esc($r['grup']),
+                    'Sub Group' => fn ($r) => $v($r['sub_grup']),
+                    'Customer / Site' => fn ($r) => $v($r['customer_site']),
+                    'CID / Ticket' => fn ($r) => $v($r['cid_ticket']),
+                    'Status' => fn ($r) => $b($r['status']),
+                    'Priority' => fn ($r) => $b($r['priority']),
+                    'Problem' => fn ($r) => $v($r['gangguan']),
+                    'Tindakan' => fn ($r) => $v($r['tindakan']),
+                    'Next Action / Handover' => fn ($r) => $v($r['next_action']),
+                    'PIC' => fn ($r) => $v($r['pic']),
+                ],
+                'followup' => [
+                    'Group' => fn ($r) => esc($r['grup']),
+                    'Customer / Site' => fn ($r) => $v($r['customer_site']),
+                    'Priority' => fn ($r) => $b($r['priority']),
+                    'Due Date' => fn ($r) => $tgl($r['due_date']),
+                    'PIC' => fn ($r) => $v($r['pic']),
+                    'Issue' => fn ($r) => $v($r['issue']),
+                    'Action / Next Step' => fn ($r) => $v($r['action']),
+                ],
+                'pengiriman' => [
+                    'Group' => fn ($r) => esc($r['grup']),
+                    'Customer' => fn ($r) => $v($r['customer']),
+                    'Device' => fn ($r) => $v($r['device']),
+                    'Tracking / Resi' => fn ($r) => $v($r['tracking_resi']),
+                    'Status' => fn ($r) => $b($r['status']),
+                    'ETA' => fn ($r) => $tgl($r['eta']),
+                    'PIC' => fn ($r) => $v($r['pic']),
+                ],
+                'maintenance' => [
+                    'Group' => fn ($r) => esc($r['grup']),
+                    'Site' => fn ($r) => $v($r['site']),
+                    'Equipment' => fn ($r) => $v($r['equipment']),
+                    'Schedule' => fn ($r) => $tgl($r['schedule']),
+                    'Status' => fn ($r) => $b($r['status']),
+                    'PIC' => fn ($r) => $v($r['pic']),
+                    'Issue' => fn ($r) => $v($r['issue']),
+                    'Action' => fn ($r) => $v($r['action']),
+                ],
+                'catatan' => [
+                    'Group' => fn ($r) => esc($r['grup']),
+                    'Kategori' => fn ($r) => $b($r['kategori']),
+                    'Priority' => fn ($r) => $b($r['priority']),
+                    'Status' => fn ($r) => $b($r['status']),
+                    'Judul' => fn ($r) => '<b>' . $v($r['judul']) . '</b>',
+                    // poin catatan bernomor, satu per baris
+                    'Catatan' => function ($r) {
+                        $out = [];
+                        foreach (\App\Models\CatatanModel::poin($r['catatan']) as $i => $p) {
+                            $out[] = ($i + 1) . '. ' . esc($p);
+                        }
+
+                        return implode("\n", $out);
+                    },
+                ],
+            ];
+            ?>
+
+            <!-- BAGIAN-BAGIAN LAPORAN -->
+            <?php foreach ($bagian as $k => $s) : ?>
+                <?php $rows = $anak[$k] ?? []; ?>
+                <div class="card mb-6" id="lp-<?= $k ?>">
+                    <div class="card-body">
+                        <h6 class="lp-sec-title">
+                            <?= $s['icon'] ?> <?= $s['label'] ?>
+                            <span class="lp-count"><?= count($rows) ?></span>
+                        </h6>
+
+                        <?php if (! $rows) : ?>
+                            <div class="lp-empty">Belum ada data <?= strtolower($s['label']) ?>.</div>
+                        <?php else : ?>
+                            <div class="table-scroll">
+                                <table class="lp-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <?php foreach (array_keys($kolom[$k]) as $judul) : ?>
+                                                <th><?= $judul ?></th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($rows as $i => $r) : ?>
+                                            <tr>
+                                                <td><?= $i + 1 ?></td>
+                                                <?php foreach ($kolom[$k] as $isi) : ?>
+                                                    <td><?= $isi($r) ?></td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
+
     <script>
-        function autoDuration(startId, finishId, hourId, minuteId) {
-            const startEl = document.getElementById(startId);
-            const finishEl = document.getElementById(finishId);
-            const hourEl = document.getElementById(hourId);
-            const hourDisplayEl = document.getElementById(hourId + '_display');
-            const minuteEl = document.getElementById(minuteId);
+        // Copy: teks "NOC SHIFT REPORT" (format WhatsApp) yang sama dengan tombol Copy di halaman History Report
+        const LAPORAN_TEXT = <?= json_encode($copyText, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
 
-            function calc() {
-                const s = startEl.value;
-                const f = finishEl.value;
-                if (!s || !f) {
-                    hourEl.value = '';
-                    hourDisplayEl.value = '';
-                    minuteEl.value = '';
-                    return;
-                }
-                let diffMs = new Date(f) - new Date(s);
-                if (diffMs < 0) {
-                    hourEl.value = '';
-                    hourDisplayEl.value = '';
-                    minuteEl.value = '';
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Waktu Tidak Valid',
-                        text: 'Finish Time tidak boleh lebih awal dari Start Time.',
-                        confirmButtonColor: '#185a82'
-                    });
-                    finishEl.value = '';
-                    return;
-                }
-                const totalMinutes = Math.floor(diffMs / 60000);
-                const h = Math.floor(totalMinutes / 60);
-                const m = totalMinutes % 60;
-                const p = n => String(n).padStart(2, '0');
+        function copyLaporan() {
+            const done = () => Swal.fire({ icon: 'success', title: 'Tersalin', text: 'Report siap di-paste ke WhatsApp.', timer: 1500, showConfirmButton: false });
+            const fallback = () => {
+                // untuk akses lewat http non-localhost (clipboard API tidak tersedia)
+                const ta = document.createElement('textarea');
+                ta.value = LAPORAN_TEXT;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                ta.remove();
+                ok ? done() : Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data tidak dapat disalin.' });
+            };
 
-                hourDisplayEl.value = h + ':' + p(m) + ':00';
-                hourEl.value = h;
-                minuteEl.value = totalMinutes;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(LAPORAN_TEXT).then(done, fallback);
+            } else {
+                fallback();
             }
-
-            // Hanya recalculate otomatis jika user MENGUBAH waktunya
-            startEl.addEventListener('change', calc);
-            finishEl.addEventListener('change', calc);
         }
-
-        autoDuration('start_time', 'finish_time', 'duration_hour', 'duration_minute');
-        autoDuration('backup_start_time', 'backup_finish_time', 'backup_duration_hour', 'backup_duration_minute');
-
-        document.getElementById('ripotForm').addEventListener('submit', function(e) {
-            const shift = document.getElementById('shift').value.trim();
-            const client = document.getElementById('client').value.trim();
-            const problem = document.getElementById('problem').value.trim();
-
-            if (shift === '' || client === '' || problem === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Form Belum Lengkap',
-                    text: 'Shift, Client, dan Problem wajib diisi.',
-                    confirmButtonColor: '#185a82'
-                });
-                return false;
-            }
-        });
     </script>
+
     <script>
         // ---- Sidebar ----
         let collapsed = false;
@@ -1003,7 +1033,6 @@
             }
         }
 
-        // ---- Dropdowns ----
         function toggleDrop(e, el) {
             e.preventDefault();
             e.stopPropagation();
@@ -1012,6 +1041,7 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
             if (!isOpen) menu.classList.add('show');
         }
+
         document.addEventListener('click', function(e) {
             if (window.innerWidth < 1024) {
                 const sb = document.getElementById('sidebar');
@@ -1023,7 +1053,6 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
         });
 
-        // ---- Submenu ----
         function toggleSub(el) {
             const parent = el.closest('.hasmenu');
             const sub = parent.querySelector('.submenu');
@@ -1031,8 +1060,6 @@
             sub.classList.toggle('open');
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
-
-
 
         feather.replace();
     </script>
@@ -1044,64 +1071,32 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
+                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
+                    setTimeout(() => { alertBox.remove(); }, 500);
                 }, 3000);
             }
         });
     </script>
-    <script>
-        document.getElementById('dcForm').addEventListener('submit', function(e) {
 
-            const namaPelanggan = document.getElementById('kategori_pelanggan').value.trim();
-
-            const status = document.getElementById('status').value.trim();
-            const keterangan = document.getElementById('keterangan').value.trim();
-
-            if (
-                namaPelanggan === '' ||
-
-                status === '' ||
-                keterangan === ''
-            ) {
-
-                e.preventDefault();
-
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Form Belum Lengkap',
-                    text: 'Semua field wajib diisi.',
-                    confirmButtonColor: '#185a82'
-                });
-
-                return false;
-            }
-
-        });
-    </script>
-    <script>
-        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
-            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
-        });
-    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";
         </script>
     <?php endif; ?>
 </body>
+<script>
+    // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12') e.preventDefault();
+        if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+        if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+    });
+</script>
 
 </html>

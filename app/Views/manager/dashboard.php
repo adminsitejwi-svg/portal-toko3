@@ -215,6 +215,7 @@
                 scrollbar-width: thin;
             }
         </style>
+    <?= view('partials/theme') ?>
     </head>
 
     <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -324,24 +325,27 @@
                         </ul>
 
                     </li>
-                    <li class="hasmenu">
-                        <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                            <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                            <span class="flex-1">Report NOC</span>
-                            <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                        </a>
-                        <ul class="submenu bg-black/20">
-                            <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'down' ? 'active-store' : '' ?>">Task On Progress</a></li>
-                            <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'progress' ? 'active-store' : '' ?>">Task Done</a></li>
-                            <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-
-
-                        </ul>
-
-                    </li>
 
 
                     <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                    <li>
+                        <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                            <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                            <span>RFO</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                            <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                            <span>Maintenance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                            <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                            <span>Report NOC</span>
+                        </a>
+                    </li>
 
 
                     <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
@@ -467,220 +471,32 @@
 
 
 
-                    <a href="<?= site_url('Jns_perangkat') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Jenis Perangkat</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-device-desktop text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalJenisPerangkat ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('TypePerangkat') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Type Perangkat</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-devices text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalTypePerangkat ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('Vendor') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Vendor Non Cellular</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-users text-success-500 text-2xl mr-2"></i>
-                                    <?= count($vendor) ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('VendorCelulllar') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Vendor Cellular</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-user text-success-500 text-2xl mr-2"></i>
-                                    <?= count($vendorCellular) ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('LayananVendor') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Layanan Vendor</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-headset text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalLayananVendor ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('DCAdmin') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0 ">
-                                <h5>Total DC</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="flex items-center justify-between flex-wrap gap-3">
-                                    <h3 class="text-2xl font-light flex items-center">
-                                        <i class="ti ti-sitemap text-success-500 text-2xl mr-2"></i>
-                                        <?= $totalDC ?? 0 ?>
-                                    </h3>
+                    <!-- TOTAL GLOBAL: Master Data & Data Penggunaan -->
+                    <div class="col-span-12 md:col-span-6">
+                        <div class="card stat-card">
+                            <div class="card-body flex items-center justify-between gap-4">
+                                <div>
+                                    <div class="stat-label">Total Master Data</div>
+                                    <div class="stat-value"><?= number_format($totalMasterData ?? 0) ?></div>
+                                    <div class="stat-note">dari <?= $jumlahJenisMaster ?? 0 ?> jenis master data</div>
                                 </div>
+                                <i class="ti ti-category stat-icon"></i>
                             </div>
                         </div>
-                    </a>
+                    </div>
 
-
-                    <a href="<?= site_url('MediaKoneksi') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0 ">
-                                <h5>Total Media Koneksi</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="flex items-center justify-between flex-wrap gap-3">
-                                    <h3 class="text-2xl font-light flex items-center">
-                                        <i class="ti ti-world text-success-500 text-2xl mr-2"></i>
-                                        <?= $totalMediaKoneksi ?? 0 ?>
-                                    </h3>
+                    <div class="col-span-12 md:col-span-6">
+                        <div class="card stat-card stat-card-green">
+                            <div class="card-body flex items-center justify-between gap-4">
+                                <div>
+                                    <div class="stat-label">Total Data Penggunaan</div>
+                                    <div class="stat-value"><?= number_format($totalDataPenggunaan ?? 0) ?></div>
+                                    <div class="stat-note">Simcard &amp; Nomor Inet</div>
                                 </div>
+                                <i class="ti ti-brand-databricks stat-icon"></i>
                             </div>
                         </div>
-                    </a>
-
-                    <a href="<?= site_url('PemilikProject') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Pemilik Project</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-user-star text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalPemilikProject ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <!-- Yearly Sales -->
-
-
-                    <a href="<?= site_url('Pelanggan') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0 ">
-                                <h5>Total Kategori Pelanggan</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="flex items-center justify-between flex-wrap gap-3">
-                                    <h3 class="text-2xl font-light flex items-center">
-                                        <i class="ti ti-users-group text-success-500 text-2xl mr-2"></i>
-                                        <?= $totalPelanggan ?? 0 ?>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-
-                    <a href="<?= site_url('NomorInet') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0 ">
-                                <h5>Total Nomor INET</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="flex items-center justify-between flex-wrap gap-3">
-                                    <h3 class="text-2xl font-light flex items-center">
-                                        <i class="ti ti-device-sd-card text-success-500 text-2xl mr-2"></i>
-                                        <?= $totalNomorInet ?? 0 ?>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="<?= site_url('NMRInet') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Data Nomor INET</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-device-sd-card text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalPenggunaanInet ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="<?= site_url('QuotaSIMCARD') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Kuota SIMCARD</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-router text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalKuotaSIMCARD ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-
-
-                    <a href="<?= site_url('DataSI') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total Data SIMCARD</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-router text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalSIMCARD ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="<?= site_url('VPN') ?>" class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card hover:shadow-lg transition-all duration-300 cursor-pointer">
-                            <div class="card-header !border-b-0">
-                                <h5>Total VPN</h5>
-                            </div>
-
-                            <div class="card-body">
-                                <h3 class="text-2xl font-light flex items-center">
-                                    <i class="ti ti-shield-lock text-success-500 text-2xl mr-2"></i>
-                                    <?= $totalVPN ?? 0 ?>
-                                </h3>
-                            </div>
-                        </div>
-                    </a>
+                    </div>
                     <div class="col-span-12">
 
                     </div>

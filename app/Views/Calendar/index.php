@@ -207,6 +207,37 @@
             color: inherit;
         }
 
+        /* ===== MODE DARK: huruf pada data jadwal otomatis putih ===== */
+        .dark #Calendar,
+        .dark #Calendar .fc-col-header-cell-cushion,
+        .dark #Calendar .fc-daygrid-day-number,
+        .dark #panelList,
+        .dark #panelList span,
+        .dark #panelList div,
+        .dark #noteWrap,
+        .dark #noteWrap h6,
+        .dark #noteContainer,
+        .dark #noteContainer input:not([type="color"]),
+        .dark .f-label,
+        .dark #btnKemarin,
+        .dark #btnBesok {
+            color: #fff !important;
+        }
+
+        .dark #Calendar .fc-theme-standard td,
+        .dark #Calendar .fc-theme-standard th,
+        .dark #Calendar .fc-theme-standard .fc-scrollgrid {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark #Calendar .fc-day-today {
+            background: rgba(4, 169, 245, .18) !important;
+        }
+
+        .dark #noteContainer input:not([type="color"]) {
+            background: transparent;
+        }
+
         /* popup SweetAlert selalu tampil di depan modal (modal z-2000) */
         .swal2-container {
             z-index: 3000 !important;
@@ -253,6 +284,7 @@
             border-radius: 9999px;
         }
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -269,6 +301,7 @@
         <div class="flex-1 overflow-y-auto overflow-x-hidden py-2.5">
             <ul class="px-0">
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Halaman Utama</li>
+
                 <li>
                     <a href="<?= site_url('dashboard-manager') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white relative">
                         <span class="pc-micon w-5"><i class="ti ti-home fs-5"></i></span><span class="pc-mtext">Beranda</span>
@@ -319,20 +352,26 @@
                         <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
                 </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-                    </ul>
-                </li>
 
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li><a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span><span>Profile</span></a></li>
@@ -346,6 +385,12 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white text-white font-semibold">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+                <li>
+                    <a href="<?= site_url('InventoryKantor') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
+                    </a>
                 </li>
                 <li><a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-settings"></i></span><span>Pengguna</span></a></li>
                 <li><a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-report-search"></i></span><span>Change Log</span></a></li>
@@ -367,7 +412,7 @@
                             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i data-feather="user" class="w-5 h-5 text-gray-500"></i></div>
                             <div>
                                 <h6 class="font-medium leading-tight"><?= session('username') ?></h6>
-                                
+
 
                             </div>
                         </div>
@@ -481,7 +526,7 @@
     </div>
 
     <script>
-                document.getElementById('shift').addEventListener('change', function() {
+        document.getElementById('shift').addEventListener('change', function() {
             document.getElementById('warna').value = SHIFT_WARNA[this.value] || '#04a9f5';
         });
         const BASE = "<?= site_url('Calendar') ?>";
@@ -495,10 +540,10 @@
             4: 'Off'
         };
         const SHIFT_WARNA = {
-            1: '#92D050',   // Shift 1 - hijau
-            2: '#FFFF00',   // Shift 2 - kuning
-            3: '#00B0F0',   // Shift 3 - biru
-            4: '#FF0000'    // Off      - merah
+            1: '#92D050', // Shift 1 - hijau
+            2: '#FFFF00', // Shift 2 - kuning
+            3: '#00B0F0', // Shift 3 - biru
+            4: '#FF0000' // Off      - merah
         };
 
         function ymd(d) {
@@ -572,7 +617,9 @@
                     box.style.background = arg.event.extendedProps.warna || '#04a9f5';
                     box.textContent = (s == 4 ? '0' : s);
                     box.title = SHIFT_LABEL[s] + ' - ' + arg.event.extendedProps.nama;
-                    return { domNodes: [box] };
+                    return {
+                        domNodes: [box]
+                    };
                 },
                 datesSet: function(info) {
                     const d = info.view.currentStart;
@@ -693,28 +740,31 @@
 
         // state note di memori — diedit dulu, baru dipersist saat tombol "Simpan" ditekan
         // state note di memori — diambil dari server, dipersist saat "Simpan"/tambah/hapus
-let notesState = [];
+        let notesState = [];
 
-async function loadNotes() {
-    try {
-        const res = await fetch(BASE + '/notes');
-        const data = await res.json();
-        notesState = Array.isArray(data) ? data : [];
-    } catch (e) {
-        notesState = [];
-    }
-    renderNotes();
-}
+        async function loadNotes() {
+            try {
+                const res = await fetch(BASE + '/notes');
+                const data = await res.json();
+                notesState = Array.isArray(data) ? data : [];
+            } catch (e) {
+                notesState = [];
+            }
+            renderNotes();
+        }
 
-async function persistNotes() {
-    const body = new FormData();
-    body.append('data', JSON.stringify(notesState));
-    const c = getCsrf();
-    if (c) body.append(c.key, c.val);
-    try {
-        await fetch(BASE + '/notes', { method: 'POST', body: body });
-    } catch (e) {}
-}
+        async function persistNotes() {
+            const body = new FormData();
+            body.append('data', JSON.stringify(notesState));
+            const c = getCsrf();
+            if (c) body.append(c.key, c.val);
+            try {
+                await fetch(BASE + '/notes', {
+                    method: 'POST',
+                    body: body
+                });
+            } catch (e) {}
+        }
 
         function renderNotes() {
             const box = document.getElementById("noteContainer");
@@ -756,10 +806,13 @@ async function persistNotes() {
         }
 
         async function addNote() {
-    notesState.push({ color: "#04a9f5", text: "" });
-    await persistNotes();
-    renderNotes();
-}
+            notesState.push({
+                color: "#04a9f5",
+                text: ""
+            });
+            await persistNotes();
+            renderNotes();
+        }
 
         function updateNoteField(index, field, val) {
             notesState[index][field] = val;
@@ -767,13 +820,13 @@ async function persistNotes() {
         }
 
         async function saveNoteRow(index) {
-    await persistNotes();
-    showFlash('success', 'Tanda tersimpan');
-}
+            await persistNotes();
+            showFlash('success', 'Tanda tersimpan');
+        }
 
         async function deleteNote(index) {
             notesState.splice(index, 1);
-            await persistNotes();   // tunggu server selesai simpan
+            await persistNotes(); // tunggu server selesai simpan
             renderNotes();
             showFlash('success', 'Tanda berhasil dihapus');
         }

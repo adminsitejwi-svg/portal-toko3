@@ -256,6 +256,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             scrollbar-width: thin;
         }
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -322,19 +323,25 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                         <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
                 </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-                    </ul>
-                </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li>
@@ -353,6 +360,12 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+                <li>
+                    <a href="<?= site_url('InventoryKantor') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -412,11 +425,13 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         </header>
 
         <div class="p-6 flex items-center justify-center" style="min-height:calc(100vh - 74px)">
-            <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+            <div class="card auth-card w-full max-w-md p-8">
 
-                <h2 class="text-2xl font-bold text-center mb-6">
-                    Reset Password
-                </h2>
+                <div class="flex flex-col items-center text-center mb-6">
+                    <div class="auth-icon mb-3"><i class="ti ti-lock-cog"></i></div>
+                    <h2 class="text-2xl font-bold">Reset Password</h2>
+                    <p class="text-sm text-gray-500 mt-1">Masukkan username dan password baru</p>
+                </div>
 
 
 

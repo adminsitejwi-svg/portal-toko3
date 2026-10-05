@@ -39,13 +39,14 @@ class DataExportService
         'md_quota_simcard'   => 'Kuota Simcard',
         'md_vpn'             => 'VPN',
         'md_barang'          => 'Inventory Kantor',
+        'd_rfo'              => 'RFO',
+        'md_maintenance'     => 'Maintenance',
+        'd_report'           => 'History Report',
         'd_midi'             => 'Alfamidi',
         'd_lawson'           => 'Lawson',
         'd_alfamart'         => 'Alfamart',
         'd_simcard'          => 'Data SI (Simcard)',
         'd_nomor_inet'       => 'Nomor Inet (Data Penggunaan)',
-        'repot_noc'          => 'Report NOC',
-        'aktivasi_ripot'     => 'Aktivasi Retail',
         'jadwal_noc'         => 'Jadwal NOC',
     ];
 

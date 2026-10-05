@@ -253,6 +253,7 @@
             border-radius: 9999px;
         }
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -269,6 +270,7 @@
         <div class="flex-1 overflow-y-auto overflow-x-hidden py-2.5">
             <ul class="px-0">
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Halaman Utama</li>
+
                 <li>
                     <a href="<?= site_url('dashboard-manager') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white relative">
                         <span class="pc-micon w-5"><i class="ti ti-home fs-5"></i></span><span class="pc-mtext">Beranda</span>
@@ -319,20 +321,26 @@
                         <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
                 </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-                    </ul>
-                </li>
 
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li><a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span><span>Profile</span></a></li>
@@ -346,6 +354,12 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white text-white font-semibold">Piket</a></li>
                     </ul>
+                </li>
+                <li>
+                    <a href="<?= site_url('InventoryKantor') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
+                    </a>
                 </li>
                 <li><a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-settings"></i></span><span>Pengguna</span></a></li>
                 <li><a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-report-search"></i></span><span>Change Log</span></a></li>
@@ -367,7 +381,7 @@
                             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center"><i data-feather="user" class="w-5 h-5 text-gray-500"></i></div>
                             <div>
                                 <h6 class="font-medium leading-tight"><?= session('username') ?></h6>
-                                
+
 
                             </div>
                         </div>
@@ -613,7 +627,9 @@
                     if (p == 2) box.style.color = '#202124'; // teks gelap di atas kuning
                     box.textContent = p;
                     box.title = PIKET_LABEL[p] + ' - ' + arg.event.extendedProps.nama;
-                    return { domNodes: [box] };
+                    return {
+                        domNodes: [box]
+                    };
                 },
                 datesSet: function(info) {
                     const d = info.view.currentStart;
@@ -688,7 +704,9 @@
             document.getElementById('panelDate').textContent = formatTanggal(dateStr);
             const items = Calendar.getEvents()
                 .filter(ev => ev.startStr === dateStr)
-                .map(ev => Object.assign({ id: ev.id }, ev.extendedProps))
+                .map(ev => Object.assign({
+                    id: ev.id
+                }, ev.extendedProps))
                 .sort((a, b) => a.piket - b.piket);
 
             const box = document.getElementById('panelList');

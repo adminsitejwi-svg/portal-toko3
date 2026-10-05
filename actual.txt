@@ -1,0 +1,55 @@
+NOC SHIFT REPORT
+📅 30 September 2026  |  SHIFT SIANG
+👤 PIC: DANANG
+🕐 Periode: 08:00 - 16:00
+
+RINGKASAN
+────────────────────────────────
+2
+
+GANGGUAN / INCIDENT
+────────────────────────────────
+1. RETAIL / test — test | test
+   • Problem: tes
+   • Action: test
+   • Status: On Progress | Priority: High
+   • Next: test
+   • PIC: test
+
+
+FOLLOW UP
+────────────────────────────────
+1. RETAIL — test
+   • Issue: test
+   • Next Action: test
+   • Priority: Medium | Due: 2026-09-30
+   • PIC: test
+
+
+PENGIRIMAN PERANGKAT
+────────────────────────────────
+1. RETAIL — test
+   • Device: test
+   • Status: Requested | Resi: test | ETA: 2026-09-30
+   • PIC: test
+
+
+MAINTENANCE
+────────────────────────────────
+1. RETAIL — test
+   • Equipment: test
+   • Issue: test
+   • Action: test
+   • Status: Planned | Schedule: 2026-09-30
+   • PIC: test
+
+
+CATATAN
+────────────────────────────────
+1.1 UMUM — test
+   • test
+   • Status: Open | Priority: Medium
+
+────────────────────────────────
+End of Shift Report
+NOC Control

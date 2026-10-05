@@ -2,14 +2,10 @@
 <html lang="en" class="light">
 
 <head>
-    <meta name="csrf-token-name" content="<?= csrf_token() ?>">
-    <meta name="csrf-token-value" content="<?= csrf_hash() ?>">
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-
-    <title>Report NOC</title>
+    <title>Maintenance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -61,7 +57,6 @@
             }
         }
     </script>
-
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -151,12 +146,12 @@
         }
 
         /* ===== INVOICE-STYLE TABLE ===== */
-        #mediaKoneksiTable {
+        #mtTable {
             width: 100% !important;
             border-collapse: collapse;
         }
 
-        #mediaKoneksiTable thead th {
+        #mtTable thead th {
             background: #f7f9fb;
             color: #6b7785;
             font-weight: 500;
@@ -168,13 +163,13 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable thead th {
+        .dark #mtTable thead th {
             background: #2b3543;
             color: #9fb0c2;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody td {
+        #mtTable tbody td {
             padding: 16px;
             font-size: 14px;
             color: #3b4754;
@@ -183,25 +178,25 @@
             white-space: nowrap;
         }
 
-        .dark #mediaKoneksiTable tbody td {
+        .dark #mtTable tbody td {
             color: #bfc8d6;
             border-color: #37404c;
         }
 
-        #mediaKoneksiTable tbody tr:hover {
+        #mtTable tbody tr:hover {
             background: #fafbfc;
         }
 
-        .dark #mediaKoneksiTable tbody tr:hover {
+        .dark #mtTable tbody tr:hover {
             background: rgba(255, 255, 255, .03);
         }
 
-        #mediaKoneksiTable tbody td.col-bold {
+        #mtTable tbody td.col-bold {
             font-weight: 600;
             color: #2b3540;
         }
 
-        .dark #mediaKoneksiTable tbody td.col-bold {
+        .dark #mtTable tbody td.col-bold {
             color: #e7eaf0;
         }
 
@@ -230,7 +225,12 @@
             color: #ff0000;
         }
 
-        /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
+        .badge-service {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        /* ===== LENGTH (Show) DROPDOWN ===== */
         .dataTables_length {
             font-size: 0;
         }
@@ -257,9 +257,31 @@
             border-color: #04a9f5;
         }
 
-        /* sembunyikan search bawaan, pakai custom */
         .dataTables_filter {
             display: none;
+        }
+
+        /* ===== FILTER DROPDOWN ===== */
+        .filter-select {
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: #3b4754;
+            background: #fff;
+            outline: none;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #04a9f5;
+        }
+
+        .dark .filter-select {
+            background: #263240;
+            color: #bfc8d6;
+            border-color: rgba(255, 255, 255, .1);
         }
 
         .custom-search {
@@ -417,7 +439,6 @@
             background: rgba(255, 255, 255, .05) !important;
         }
 
-        /* ===== SCROLL HORIZONTAL DI MOBILE ===== */
         .table-scroll {
             width: 100%;
             overflow-x: auto;
@@ -428,63 +449,11 @@
             min-width: 760px;
         }
 
-        .bandwidth-row {
-            display: flex;
-            gap: 10px;
-            align-items: stretch;
-        }
-
-        .bandwidth-row select {
-            flex: 1;
-            width: auto;
-        }
-
-        .btn-add-bw {
-            flex-shrink: 0;
-            padding: 0 18px;
-            white-space: nowrap;
-            background: #185a82;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-add-bw:hover {
-            background: #134866;
-        }
-
         .brand-text {
             font-size: 18px;
         }
-
-        #btnKirimEmail {
-            background: #fff;
-            border: 1px solid #e3e8ee;
-            color: #5b6b7f;
-            border-radius: 8px;
-            padding: 9px 16px;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            justify-content: center;
-            transition: all .2s ease;
-        }
-
-        #btnKirimEmail:hover {
-            border-color: #04a9f5;
-            color: #04a9f5;
-        }
-
-        #btnKirimEmail:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -601,36 +570,32 @@
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
                         <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
-
+                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
-
                 </li>
-
-
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'down' ? 'active-store' : '' ?>">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'progress' ? 'active-store' : '' ?>">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-
-
-                    </ul>
-
-                </li>
-
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
-
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
                 <li>
                     <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
@@ -648,31 +613,25 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="<?= site_url('settings') ?>"
+                 <li>
+                    <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-settings"></i>
-                        </span>
-
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
                         <span>Pengguna</span>
-
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('Logs') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-report-search"></i>
-                        </span>
-
+                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
                         <span>Change Log</span>
-
                     </a>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -687,9 +646,6 @@
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
@@ -714,334 +670,143 @@
         <div class="p-6">
             <!-- breadcrumb -->
             <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg"><?= esc($pageTitle ?? 'Retail & Corporate') ?></h5>
-                <a href="<?= site_url('RipotRetail/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                <h5 class="font-medium text-lg">Maintenance</h5>
+                <a href="<?= site_url('MDMaintenance/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
                     <i class="ti ti-plus"></i> Tambah
                 </a>
             </div>
 
+            <?php
+            $fmtTgl = static fn ($d) => $d ? date('d-m-Y', strtotime($d)) : '-';
+            ?>
+
             <div class="card">
                 <div class="card-body">
 
-                    <!-- TOOLBAR: dropdown Show (kiri) + Search & Export (kanan) -->
+                    <!-- TOOLBAR -->
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                        <div id="lengthArea"></div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div id="lengthArea"></div>
+                            <!-- FILTER -->
+                            <select id="filterPerusahaan" class="filter-select" title="Filter Perusahaan">
+                                <option value="">Semua Perusahaan</option>
+                                <?php foreach ($perusahaan as $nama) : ?>
+                                    <option value="<?= esc($nama) ?>"><?= esc($nama) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="filterMtId" class="filter-select" title="Filter Maintenance ID">
+                                <option value="">Semua Maintenance ID</option>
+                                <?php foreach ($maintenance as $row) : ?>
+                                    <option value="<?= esc($row['maintenance_id']) ?>"><?= esc($row['maintenance_id']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="flex items-center gap-3 flex-wrap">
                             <div class="custom-search">
                                 <input type="text" id="customSearch" placeholder="search..." />
                                 <button class="go-btn" type="button"></button>
                             </div>
-                            <button type="button" id="btnKirimEmail">
-                                <i class="ti ti-mail"></i> Kirim Email
-                            </button>
                             <div id="exportArea"></div>
                         </div>
                     </div>
 
-                    <!-- TABLE (bisa digeser kiri-kanan saat layar sempit) -->
+                    <!-- TABLE -->
                     <div class="table-scroll">
-                        <table id="mediaKoneksiTable" class="display nowrap" style="width:100%">
+                        <table id="mtTable" class="display nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Aksi</th>
-                                    <th>Shift</th>
-                                    <th>Daily</th>
-                                    <th>Client</th>
-                                    <th>Start Time</th>
-                                    <th>Finish Time</th>
-                                    <th>Durasi</th>
-                                    <th>Jenis Layanan</th>
-                                    <th>Problem</th>
-                                    <th>Action</th>
-                                    <th>Solver</th>
-                                    <th>Regards</th>
-                                    <th>Status</th>
+                                    <th>Maintenance ID</th>
+                                    <th>Perusahaan</th>
+                                    <th>Hari / Tanggal</th>
+                                    <th>Waktu Awal</th>
+                                    <th>Waktu Selesai</th>
+                                    <th>Estimasi</th>
+                                    <th>Kegiatan</th>
+                                    <th>Impact</th>
+                                    <th>Nama</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($repot_noc)) : ?>
+                                <?php if (!empty($maintenance)) : ?>
                                     <?php $no = 1; ?>
-                                    <?php foreach ($repot_noc as $row) : ?>
+                                    <?php foreach ($maintenance as $row) : ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <a href="<?= site_url('RipotRetail/edit/' . $row['id']) ?>" class="btn btn-primary btn-sm">
+                                                <a href="<?= site_url('MDMaintenance/edit/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-primary">
                                                     <i class="ti ti-edit"></i>
                                                 </a>
-                                                <button type="button" onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-danger"><i class="ti ti-trash"></i></button>
-                                                <br>
+
                                                 <button type="button"
-                                                    onclick="openDetailModal(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="ti ti-eye"></i>
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
                                                 </button>
+
+                                                <br>
+                                                <a href="<?= site_url('MDMaintenance/view/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-info" title="Lihat / Print">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
                                             </td>
-                                            <td class="col-bold">Shift <?= esc($row['shift']); ?></td>
-                                            <td style="white-space:normal;min-width:200px"><?= esc($row['daily']) ?: '-'; ?></td>
-                                            <td><?= esc($row['client']); ?></td>
-                                            <td><?= $row['start_time'] ? date('d-m-Y H:i', strtotime($row['start_time'])) : '-'; ?></td>
-                                            <td><?= $row['finish_time'] ? date('d-m-Y H:i', strtotime($row['finish_time'])) : '-'; ?></td>
-                                            <td>
-                                                <?php if ($row['duration_hour'] !== null || $row['duration_minute'] !== null) : ?>
-                                                    <?= (int) $row['duration_hour'] ?>j <?= (int) $row['duration_minute'] ?>m
-                                                <?php else : ?>
-                                                    -
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= esc($row['jenis_layanan']) ?: '-'; ?></td>
-                                            <td style="white-space:normal;min-width:280px"><?= esc($row['problem']) ?: '-'; ?></td>
-                                            <td><?= esc($row['action']) ?: '-'; ?></td>
-                                            <td><?= esc($row['solver']) ?: '-'; ?></td>
-                                            <td><?= esc($row['regards']) ?: '-'; ?></td>
-                                            <td>
-                                                <?php if ($row['status'] == 1) : ?>
-                                                    <span class="badge badge-due">On Progress</span>
-                                                <?php else : ?>
-                                                    <span class="badge badge-paid">Done</span>
-                                                <?php endif; ?>
-                                            </td>
+                                            <td class="font-medium"><?= esc($row['maintenance_id']); ?></td>
+                                            <td><?= esc($row['perusahaan']); ?></td>
+                                            <td><?= $fmtTgl($row['tanggal']); ?></td>
+                                            <td><?= esc(substr($row['waktu_mulai'], 0, 5)); ?></td>
+                                            <td><?= esc(substr($row['waktu_selesai'], 0, 5)); ?></td>
+                                            <td><?= esc($row['estimasi']); ?></td>
+                                            <td class="whitespace-normal min-w-[200px]"><?= esc($row['kegiatan']); ?></td>
+                                            <td class="whitespace-normal min-w-[200px]"><?= esc($row['impact']); ?></td>
+                                            <td><?= esc($row['nama']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
-
-
                         </table>
 
-
-                        <div id="detailModal"
-                            class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-
-                            <div class="bg-white rounded-xl shadow-xl w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col">
-
-                                <!-- Header biru -->
-                                <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
-                                    <h3 class="font-semibold flex items-center gap-2">
-                                        Detail Data Report NOC
-                                    </h3>
-                                    <button onclick="closeDetailModal()">
-                                        <i class="ti ti-x text-xl"></i>
-                                    </button>
-                                </div>
-
-                                <div class="p-6 overflow-y-auto">
-                                    <!-- Keterangan ringkas -->
-                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
-                                        <p class="text-xs text-gray-500 mb-1">Keterangan</p>
-                                        <p class="text-sm font-medium" id="detail_ringkas">-</p>
-                                    </div>
-
-                                    <!-- Detail data -->
-                                    <div class="border rounded-lg divide-y">
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Daily</span>
-                                            <span class="font-medium text-right" id="detail_daily">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Shift</span>
-                                            <span class="font-medium text-right" id="detail_shift">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Client</span>
-                                            <span class="font-medium text-right" id="detail_client">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Start Time</span>
-                                            <span class="font-medium text-right" id="detail_start_time">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Finish Time</span>
-                                            <span class="font-medium text-right" id="detail_finish_time">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Durasi</span>
-                                            <span class="font-medium text-right" id="detail_duration">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Jenis Layanan</span>
-                                            <span class="font-medium text-right" id="detail_jenis_layanan">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Problem</span>
-                                            <span class="font-medium text-right" id="detail_problem">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Action</span>
-                                            <span class="font-medium text-right" id="detail_action">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Note</span>
-                                            <span class="font-medium text-right" id="detail_note">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Solver</span>
-                                            <span class="font-medium text-right" id="detail_solver">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Backup Start Time</span>
-                                            <span class="font-medium text-right" id="detail_backup_start">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Backup Finish Time</span>
-                                            <span class="font-medium text-right" id="detail_backup_finish">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Backup Durasi</span>
-                                            <span class="font-medium text-right" id="detail_backup_duration">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm">
-                                            <span class="text-gray-500">Regards</span>
-                                            <span class="font-medium text-right" id="detail_regards">-</span>
-                                        </div>
-                                        <div class="flex justify-between px-4 py-2.5 text-sm items-center">
-                                            <span class="text-gray-500">Status</span>
-                                            <span id="detail_status">-</span>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+
     <script>
-        document.getElementById('btnKirimEmail').addEventListener('click', function() {
+        // ====== DELETE ======
+        function confirmDelete(id) {
             Swal.fire({
-                title: 'Kirim Email?',
-                text: 'Sistem akan mengambil data shift & tanggal terbaru dari database, lalu mengirimkannya ke email.',
-                icon: 'question',
+                title: 'Hapus Data?',
+                text: 'Data yang dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Kirim',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#04a9f5'
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
             }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                Swal.fire({
-                    title: 'Mengirim Email...',
-                    text: 'Mohon tunggu.',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
-                });
-
-                const btn = document.getElementById('btnKirimEmail');
-                btn.disabled = true;
-
-                const csrfName = document.querySelector('meta[name="csrf-token-name"]').content;
-                const csrfHash = document.querySelector('meta[name="csrf-token-value"]').content;
-
-                const formData = new FormData();
-                formData.append(csrfName, csrfHash);
-
-                fetch("<?= site_url('RipotRetail/sendEmail') ?>", {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(json => {
-                        if (json.csrf_hash) {
-                            document.querySelector('meta[name="csrf-token-value"]').content = json.csrf_hash;
-                        }
-                        btn.disabled = false;
-
-                        Swal.fire({
-                            icon: json.success ? 'success' : 'error',
-                            title: json.success ? 'Terkirim' : 'Gagal',
-                            text: json.message,
-                            confirmButtonColor: '#04a9f5'
-                        });
-                    })
-                    .catch(() => {
-                        btn.disabled = false;
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: 'Terjadi kesalahan saat menghubungi server.',
-                            confirmButtonColor: '#04a9f5'
-                        });
-                    });
+                if (result.isConfirmed) {
+                    window.location.href = "<?= site_url('MDMaintenance/delete/') ?>" + id;
+                }
             });
-        });
-    </script>
-    <script>
-        // ===== Helper format =====
-        function fmtDT(v) {
-            if (!v) return '-';
-            const d = new Date(String(v).replace(' ', 'T'));
-            if (isNaN(d)) return v;
-            const p = n => String(n).padStart(2, '0');
-            return p(d.getDate()) + '-' + p(d.getMonth() + 1) + '-' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
         }
 
-        function fmtDur(h, m) {
-            if (h === null && m === null) return '-';
-            return (parseInt(h) || 0) + 'j ' + (parseInt(m) || 0) + 'm';
+        function isTableEmpty(table) {
+            return table.rows({ search: 'applied' }).data().length === 0;
         }
 
-        // ubah "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM" utk input datetime-local
-        function toLocalInput(v) {
-            if (!v) return '';
-            return String(v).replace(' ', 'T').slice(0, 16);
-        }
-
-        function openDetailModal(id) {
-            fetch("<?= site_url('RipotRetail/show/') ?>" + id)
-                .then(res => {
-                    if (!res.ok) throw new Error('not found');
-                    return res.json();
-                })
-                .then(json => {
-                    const d = json.data;
-
-                    document.getElementById('detail_ringkas').textContent =
-                        'Data Report NOC ( ID: ' + d.id + ' ) ';
-
-                    document.getElementById('detail_shift').textContent = d.shift ? 'Shift ' + d.shift : '-';
-                    document.getElementById('detail_client').textContent = d.client ?? '-';
-                    document.getElementById('detail_start_time').textContent = fmtDT(d.start_time);
-                    document.getElementById('detail_finish_time').textContent = fmtDT(d.finish_time);
-                    document.getElementById('detail_duration').textContent = fmtDur(d.duration_hour, d.duration_minute);
-                    document.getElementById('detail_jenis_layanan').textContent = d.jenis_layanan || '-';
-                    document.getElementById('detail_problem').textContent = d.problem || '-';
-                    document.getElementById('detail_action').textContent = d.action || '-';
-                    document.getElementById('detail_note').textContent = d.note || '-';
-                    document.getElementById('detail_solver').textContent = d.solver || '-';
-                    document.getElementById('detail_backup_start').textContent = fmtDT(d.backup_start_time);
-                    document.getElementById('detail_backup_finish').textContent = fmtDT(d.backup_finish_time);
-                    document.getElementById('detail_backup_duration').textContent = fmtDur(d.backup_duration_hour, d.backup_duration_minute);
-                    document.getElementById('detail_daily').textContent = d.daily || '-';
-                    document.getElementById('detail_regards').textContent = d.regards || '-';
-
-                    const statusEl = document.getElementById('detail_status');
-                    if (d.status == 1) {
-                        statusEl.innerHTML = '<span class="badge badge-due">On Progress</span>';
-                    } else {
-                        statusEl.innerHTML = '<span class="badge badge-paid">Done</span>';
-                    }
-
-                    document.getElementById('detailModal').classList.remove('hidden');
-                })
-                .catch(() => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: 'Data tidak ditemukan di database.',
-                        confirmButtonColor: '#04a9f5'
-                    });
-                });
-        }
-
-        function closeDetailModal() {
-            document.getElementById('detailModal').classList.add('hidden');
+        function showEmptyExportAlert() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Kosong',
+                text: 'Tidak ada data yang bisa diexport.',
+                confirmButtonColor: '#04a9f5'
+            });
         }
     </script>
+
     <script>
         // ---- Sidebar ----
         let collapsed = false;
@@ -1065,7 +830,6 @@
             }
         }
 
-        // ---- Dropdowns ----
         function toggleDrop(e, el) {
             e.preventDefault();
             e.stopPropagation();
@@ -1074,6 +838,7 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
             if (!isOpen) menu.classList.add('show');
         }
+
         document.addEventListener('click', function(e) {
             if (window.innerWidth < 1024) {
                 const sb = document.getElementById('sidebar');
@@ -1085,7 +850,6 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
         });
 
-        // ---- Submenu ----
         function toggleSub(el) {
             const parent = el.closest('.hasmenu');
             const sub = parent.querySelector('.submenu');
@@ -1093,8 +857,6 @@
             sub.classList.toggle('open');
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
-
-
 
         feather.replace();
     </script>
@@ -1106,17 +868,13 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
+                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
+                    setTimeout(() => { alertBox.remove(); }, 500);
                 }, 3000);
             }
         });
@@ -1124,8 +882,6 @@
 
     <script>
         $(document).ready(function() {
-            const exportTitle = <?= json_encode('Data ' . ($pageTitle ?? 'Report NOC')) ?>;
-
             const exportConfig = {
                 exportOptions: {
                     columns: ':visible',
@@ -1139,19 +895,17 @@
                 }
             };
 
-            const table = $('#mediaKoneksiTable').DataTable({
+            const table = $('#mtTable').DataTable({
                 pageLength: 10,
                 lengthMenu: [
                     [10, 15, 25, 50, -1],
                     [10, 15, 25, 50, "Semua"]
                 ],
-                order: [
-                    [2, 'asc']
-                ],
+                order: [],
                 columnDefs: [{
-                    targets: 0, // kolom No
-                    orderable: false, // tidak bisa di-sort
-                    searchable: false // tidak ikut pencarian
+                    targets: [0, 1],
+                    orderable: false,
+                    searchable: false
                 }],
                 dom: "lBfrtip",
                 buttons: [{
@@ -1161,7 +915,7 @@
                     buttons: [{
                             extend: 'copyHtml5',
                             text: '<i class="ti ti-copy"></i> Copy',
-                            title: exportTitle,
+                            title: 'Data Maintenance',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1171,7 +925,7 @@
                         {
                             extend: 'csvHtml5',
                             text: '<i class="ti ti-file-text"></i> Export CSV',
-                            title: exportTitle,
+                            title: 'Data Maintenance',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1181,7 +935,7 @@
                         {
                             extend: 'excelHtml5',
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
-                            title: exportTitle,
+                            title: 'Data Maintenance',
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1191,23 +945,14 @@
                         {
                             extend: 'pdfHtml5',
                             text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
-                            title: exportTitle,
+                            title: 'Data Maintenance',
                             orientation: 'landscape',
                             pageSize: 'A4',
                             ...exportConfig,
-
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
-
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(
-                                    this,
-                                    e,
-                                    dt,
-                                    button,
-                                    config
-                                );
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
                             },
-
                             customize: function(doc) {
                                 doc.styles.tableHeader = {
                                     fillColor: '#04a9f5',
@@ -1216,14 +961,12 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 10;
-                                doc.content[1].table.widths = ['3%', '5%', '5%', '9%', '8%', '7%', '7%', '5%', '7%', '15%', '7%', '6%', '6%', '5%'];
                                 doc.content[1].layout = {
                                     hLineWidth: () => 0.5,
                                     vLineWidth: () => 0.5,
                                     hLineColor: () => '#e0e0e0',
                                     vLineColor: () => '#e0e0e0'
                                 };
-
                             }
                         }
                     ]
@@ -1233,7 +976,7 @@
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
                     infoEmpty: "Showing 0 to 0 of 0 entries",
                     infoFiltered: "(filtered from _MAX_ total entries)",
-                    emptyTable: exportTitle + " belum tersedia",
+                    emptyTable: "Data Maintenance belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
                         previous: "Previous",
@@ -1241,6 +984,7 @@
                     }
                 }
             });
+
             table.on('draw.dt order.dt search.dt', function() {
                 let i = table.page.info().start;
                 table.column(0, {
@@ -1252,11 +996,22 @@
                 });
             });
             table.draw();
-            // pindahkan dropdown Show & tombol Export ke toolbar custom
+
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
 
-            // custom search + tombol Go
+            // ====== FILTER DROPDOWN (cocok persis pada kolom) ======
+            function filterColumn(col, value) {
+                const re = value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '';
+                table.column(col).search(re, true, false).draw();
+            }
+            $('#filterMtId').on('change', function() {
+                filterColumn(2, this.value);
+            });
+            $('#filterPerusahaan').on('change', function() {
+                filterColumn(3, this.value);
+            });
+
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
             });
@@ -1269,60 +1024,20 @@
         });
     </script>
 
-    <script>
-        function confirmDelete(id) {
-
-            Swal.fire({
-                title: 'Hapus Data?',
-                text: 'Data yang dihapus tidak dapat dikembalikan.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    window.location.href =
-                        "<?= site_url('RipotRetail/delete/') ?>" + id;
-                }
-
-            });
-
-        }
-    </script>
-    <script>
-        function isTableEmpty(table) {
-            return table.rows({
-                search: 'applied'
-            }).data().length === 0;
-        }
-
-        function showEmptyExportAlert() {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Data Kosong',
-                text: 'Tidak ada data yang bisa diexport.',
-                confirmButtonColor: '#04a9f5'
-            });
-        }
-    </script>
-
-    <script>
-        // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
-            if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
-        });
-    </script>
     <?php if (!session()->get('logged_in')) : ?>
         <script>
             window.location.href = "<?= base_url('/login') ?>";
         </script>
     <?php endif; ?>
 </body>
+<script>
+    // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12') e.preventDefault();
+        if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
+        if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+    });
+</script>
 
 </html>

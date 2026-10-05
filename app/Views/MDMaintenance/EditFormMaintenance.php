@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Media Koneksi</title>
+    <title>Edit Maintenance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,18 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- DataTables core + Buttons -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -81,23 +69,6 @@
             background: #3a4658
         }
 
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 20px 0 rgba(69, 90, 100, .08);
-            margin-bottom: 24px;
-        }
-
-        .dark .card {
-            background: #263240;
-            color: #bfc8d6;
-            box-shadow: none
-        }
-
-        .card-body {
-            padding: 25px
-        }
-
         .pc-sidebar {
             transition: transform .25s ease, width .25s ease
         }
@@ -145,290 +116,10 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        #mediaKoneksiTable {
-            width: 100% !important;
-            border-collapse: collapse;
-        }
-
-        #mediaKoneksiTable thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
-        }
-
-        .dark #mediaKoneksiTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        #mediaKoneksiTable tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark #mediaKoneksiTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        #mediaKoneksiTable tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark #mediaKoneksiTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        #mediaKoneksiTable tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark #mediaKoneksiTable tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN — diperlebar, tanpa teks ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        /* sembunyikan search bawaan, pakai custom */
-        .dataTables_filter {
-            display: none;
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-        }
-
-        .custom-search .go-btn:hover {
-            color: #04a9f5;
-        }
-
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
-        }
-
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
-        }
-
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
-        }
-
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
-        }
-
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
-        }
-
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
-        }
-
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
-        }
-
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
-        }
-
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
-        }
-
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
-        }
-
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
-        }
-
-        /* ===== SCROLL HORIZONTAL DI MOBILE ===== */
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-scroll table {
-            min-width: 760px;
-        }
-    </style>
-
-    <style>
+        /* ===== FORM ===== */
         .form-container {
             background-color: #ffffff;
             padding: 30px;
-            margin-top: 140px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
             width: 100%;
@@ -439,16 +130,12 @@
         h2 {
             text-align: center;
             color: #185a82;
-
             font-size: 42px;
             font-weight: 800;
-
             text-transform: uppercase;
             letter-spacing: 2px;
-
             margin-bottom: 35px;
             padding-bottom: 15px;
-
             border-bottom: 3px solid #185a82;
         }
 
@@ -464,6 +151,7 @@
         }
 
         input[type="text"],
+        input[type="number"],
         textarea,
         select {
             width: 100%;
@@ -480,16 +168,12 @@
         button {
             width: 100%;
             height: 55px;
-
             border: none;
             border-radius: 10px;
-
             font-size: 17px;
             font-weight: 600;
-
             cursor: pointer;
             transition: all .3s ease;
-
             display: flex;
             align-items: center;
             justify-content: center;
@@ -533,6 +217,7 @@
             font-size: 18px;
         }
     </style>
+    <?= view('partials/theme') ?>
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -545,22 +230,6 @@
                 <span class="brand-text">Sistem Operasional <br> JWI Group</span>
             </a>
         </div>
-        <?php if (session()->getFlashdata('success')) : ?>
-            <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
-                <div class="bg-green-500 text-white rounded-xl shadow-xl overflow-hidden">
-                    <div class="flex items-center gap-3 px-5 py-4">
-                        <i class="ti ti-circle-check text-3xl"></i>
-                        <div>
-                            <h4 class="font-bold">Berhasil</h4>
-                            <p class="text-sm"><?= session()->getFlashdata('success') ?></p>
-                        </div>
-                    </div>
-                    <div class="h-1 bg-green-400">
-                        <div id="progressBar" class="h-full bg-white w-full"></div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
         <?php if (session()->getFlashdata('error')) : ?>
             <div id="errorAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
                 <div class="bg-red-500 text-white rounded-xl shadow-xl overflow-hidden">
@@ -649,32 +318,35 @@
                         <li><a href="<?= site_url('MediaKoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Media Koneksi</a></li>
                         <li><a href="<?= site_url('PemilikProject') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Pemilik Projek</a></li>
                         <li><a href="<?= site_url('Pelanggan') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kategori Pelanggan</a></li>
-                        <li><a href="<?= site_url('NomorInet') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
-                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
-                        <li><a href="<?= site_url('VPN') ?>" class=" block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
+                        <li><a href="<?= site_url('NomorInet') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Nomor INET</a></li>
+                        <li><a href="<?= site_url('QuotaSIMCARD') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Kuota Simcard</a></li>
+                        <li><a href="<?= site_url('VPN') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">VPN</a></li>
                     </ul>
-
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-report-medical"></i></span>
-                        <span class="flex-1">Report NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('RipotRetail') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'down' ? 'active-store' : '' ?>">Task On Progress</a></li>
-                        <li><a href="<?= site_url('RipotRetail/progress') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white <?= ($filterMode ?? '') === 'progress' ? 'active-store' : '' ?>">Task Done</a></li>
-                        <li><a href="<?= site_url('RipotActive') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Aktivasi Retail</a></li>
-
-
-                    </ul>
-
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li>
+                    <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
+                        <span>RFO</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('MDMaintenance') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= site_url('HistoryReport') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span>Report NOC</span>
+                    </a>
+                </li>
+
+                <!-- ====== MENU AKTIF: INVENTORY KANTOR ====== -->
 
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
                 <li>
                     <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
@@ -693,30 +365,24 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="<?= site_url('settings') ?>"
+                    <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-settings"></i>
-                        </span>
-
-                        <span>Pengguna</span>
-
+                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
+                        <span>Inventory Kantor</span>
                     </a>
                 </li>
                 <li>
-                    <a href="<?= site_url('Logs') ?>"
-                        class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-
-                        <span class="pc-micon w-5">
-                            <i class="ti ti-report-search"></i>
-                        </span>
-
-                        <span>Change Log</span>
-
+                    <a href="<?= site_url('settings') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-settings"></i></span>
+                        <span>Pengguna</span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="<?= site_url('Logs') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-report-search"></i></span>
+                        <span>Change Log</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -731,9 +397,6 @@
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
-                <!-- theme -->
-
-                <!-- profile -->
                 <li class="relative dropdown">
                     <a href="#" onclick="toggleDrop(event,this)" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="user"></i></a>
                     <div class="dropdown-menu absolute right-0 mt-1 w-64 bg-white dark:bg-[#263240] rounded shadow-lg overflow-hidden border border-gray-100 dark:border-white/10">
@@ -755,45 +418,87 @@
             </ul>
         </header>
 
+        <?php
+        // Nilai form: input lama (bila gagal validasi) atau data dari DB
+        // (old() tanpa escape, karena output selalu dibungkus esc())
+        $val = static fn (string $key, $fallback) => old($key, null, false) ?? $fallback;
+        ?>
+
         <div class="p-6">
-            <div class="form-container ">
-                <h2>Form Aktivasi Retail</h2>
-                <form action="<?= site_url('RipotActive/save') ?>" method="POST" id="aktivasiForm">
+            <div class="form-container">
+                <h2>Edit Maintenance</h2>
+                <form action="<?= site_url('MDMaintenance/update') ?>" method="POST" id="mtForm">
                     <?= csrf_field() ?>
+                    <input type="hidden" name="id" value="<?= esc($mt['id']) ?>">
 
-                    <div class="form-group mt-4">
-                        <label>ID Pelanggan <span style="color:red">*</span></label>
-                        <input type="text" name="id_pelanggan" id="id_pelanggan" required
-                            inputmode="numeric" pattern="[0-9]*" maxlength="20"
-                            value="<?= old('id_pelanggan') ?>" placeholder="Masukan ID Pelanggan (angka saja)">
+                    <div class="form-group mt-5">
+                        <label>Maintenance ID</label>
+                        <input type="text" value="<?= esc($mt['maintenance_id']) ?>" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
                     </div>
 
                     <div class="form-group">
-                        <label>Layanan</label>
-                        <input type="text" name="layanan" id="layanan"
-                            value="<?= old('layanan') ?>" placeholder="Masukan Layanan">
+                        <label>Perusahaan / Logo <span style="color:red">*</span></label>
+                        <select name="perusahaan" id="perusahaan" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <option value="">-- Pilih Perusahaan --</option>
+                            <?php foreach ($perusahaan as $nama => $logo) : ?>
+                                <option value="<?= esc($nama) ?>" data-logo="<?= base_url($logo) ?>" <?= $val('perusahaan', $mt['perusahaan']) === $nama ? 'selected' : '' ?>><?= esc($nama) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div id="logo_box" class="mt-3 border border-[#e3e8ee] rounded-lg bg-white p-3 flex items-center justify-center hidden">
+                            <img id="logo_preview" src="" alt="logo perusahaan" class="h-20 w-auto max-w-full object-contain">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Status</label>
-                        <input type="text" name="status" id="status"
-                            value="<?= old('status') ?>" placeholder="Keterangan Status">
+                        <label>Hari / Tanggal <span style="color:red">*</span></label>
+                        <input type="date" name="tanggal" id="tanggal" required value="<?= esc($val('tanggal', $mt['tanggal'])) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label>Waktu Awal Maintenance <span style="color:red">*</span></label>
+                            <input type="time" name="waktu_mulai" id="waktu_mulai" required value="<?= esc($val('waktu_mulai', substr($mt['waktu_mulai'], 0, 5))) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        </div>
+                        <div class="form-group">
+                            <label>Waktu Selesai Maintenance <span style="color:red">*</span></label>
+                            <input type="time" name="waktu_selesai" id="waktu_selesai" required value="<?= esc($val('waktu_selesai', substr($mt['waktu_selesai'], 0, 5))) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estimasi <span style="color:red">*</span></label>
+                        <input type="text" name="estimasi" id="estimasi" required maxlength="150" placeholder="Masukkan Estimasi (mis. 2 jam)" value="<?= esc($val('estimasi', $mt['estimasi'])) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kegiatan <span style="color:red">*</span></label>
+                        <textarea name="kegiatan" id="kegiatan" rows="3" required placeholder="Masukkan Kegiatan" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($val('kegiatan', $mt['kegiatan'])) ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Impact <span style="color:red">*</span></label>
+                        <textarea name="impact" id="impact" rows="2" required placeholder="Masukkan Impact" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($val('impact', $mt['impact'])) ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nama <span style="color:red">*</span></label>
+                        <select name="nama" id="nama" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <option value="">-- Pilih Nama (data shift NOC) --</option>
+                            <?php foreach ($petugas as $nm) : ?>
+                                <option value="<?= esc($nm) ?>" <?= $val('nama', $mt['nama']) === $nm ? 'selected' : '' ?>><?= esc($nm) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="d-flex">
-                        <button type="submit">Simpan</button>
-                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('RipotActive') ?>'">Kembali</button>
+                        <button type="submit">Update</button>
+                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('MDMaintenance') ?>'">Kembali</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <script>
-        // Hanya izinkan angka pada ID Pelanggan — karakter non-digit langsung dibuang saat mengetik/paste
-        document.getElementById('id_pelanggan').addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
-    </script>
+
     <script>
         // ---- Sidebar ----
         let collapsed = false;
@@ -817,7 +522,6 @@
             }
         }
 
-        // ---- Dropdowns ----
         function toggleDrop(e, el) {
             e.preventDefault();
             e.stopPropagation();
@@ -826,6 +530,7 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
             if (!isOpen) menu.classList.add('show');
         }
+
         document.addEventListener('click', function(e) {
             if (window.innerWidth < 1024) {
                 const sb = document.getElementById('sidebar');
@@ -837,7 +542,6 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
         });
 
-        // ---- Submenu ----
         function toggleSub(el) {
             const parent = el.closest('.hasmenu');
             const sub = parent.querySelector('.submenu');
@@ -846,55 +550,44 @@
             if (arrow) arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
 
-
-
         feather.replace();
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const alertBox = document.getElementById('successAlert');
-            const progressBar = document.getElementById('progressBar');
-            if (alertBox) {
-                if (progressBar) {
-                    progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
-                }
-                setTimeout(() => {
-                    alertBox.style.transition = "all .5s ease";
-                    alertBox.style.opacity = "0";
-                    alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
-                }, 3000);
+        // ====== PREVIEW LOGO ======
+        // Tampilkan logo bawaan sesuai perusahaan yang dipilih
+        function showLogo() {
+            const opt = document.getElementById('perusahaan').selectedOptions[0];
+            const box = document.getElementById('logo_box');
+            if (opt && opt.dataset.logo) {
+                document.getElementById('logo_preview').src = opt.dataset.logo;
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
             }
+        }
+        document.getElementById('perusahaan').addEventListener('change', function() {
+            showLogo();
         });
-    </script>
+        showLogo();
 
-    <script>
-        document.getElementById('aktivasiForm').addEventListener('submit', function(e) {
-            const idPelanggan = document.getElementById('id_pelanggan').value.trim();
+        // ====== VALIDASI SEBELUM SUBMIT ======
+        document.getElementById('mtForm').addEventListener('submit', function(e) {
+            const perusahaan = document.getElementById('perusahaan').value;
+            const start = document.getElementById('waktu_mulai').value;
+            const end = document.getElementById('waktu_selesai').value;
+            const wajib = ['tanggal', 'estimasi', 'kegiatan', 'impact', 'nama'].map(id => document.getElementById(id).value.trim());
 
-            if (idPelanggan === '') {
+            let msg = '';
+            if (!perusahaan || !start || !end || wajib.includes('')) msg = 'Semua field bertanda * wajib diisi.';
+            else if (end < start) msg = 'Waktu selesai maintenance tidak boleh lebih awal dari waktu awal maintenance.';
+
+            if (msg) {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
-                    text: 'ID Pelanggan wajib diisi.',
-                    confirmButtonColor: '#185a82'
-                });
-                return false;
-            }
-
-            if (!/^\d+$/.test(idPelanggan)) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Format Salah',
-                    text: 'ID Pelanggan hanya boleh berisi angka.',
+                    text: msg,
                     confirmButtonColor: '#185a82'
                 });
                 return false;
@@ -903,11 +596,11 @@
     </script>
     <script>
         // PENGHALANG KOSMETIK SAJA — bukan security, mudah dilewati
-        document.addEventListener('contextmenu', e => e.preventDefault()); // klik kanan
+        document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
-            if (e.key === 'F12') e.preventDefault(); // F12
+            if (e.key === 'F12') e.preventDefault();
             if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault(); // view-source
+            if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
         });
     </script>
     <?php if (!session()->get('logged_in')) : ?>

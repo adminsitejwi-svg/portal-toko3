@@ -27,8 +27,6 @@ use App\Controllers\NMRInet;
 use App\Controllers\Logs;
 use App\Controllers\VendorCelulllar;
 use App\Controllers\VPN;
-use App\Controllers\RipotRetail;
-use App\Controllers\RipotActive;
 use App\Controllers\Profile;
 use App\Models\InventoryKantor;
 
@@ -224,25 +222,6 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('VPN/delete/(:num)', 'VPN::delete/$1');
     $routes->get('VPN/show/(:num)', 'VPN::show/$1');
 
-    $routes->get('RipotRetail', 'RipotRetail::index');
-    $routes->get('RipotRetail/create', 'RipotRetail::create');
-    $routes->post('RipotRetail/save', 'RipotRetail::save');
-    $routes->post('RipotRetail/update', 'RipotRetail::update');
-    $routes->get('RipotRetail/delete/(:num)', 'RipotRetail::delete/$1');
-    $routes->get('RipotRetail/show/(:num)', 'RipotRetail::show/$1');
-    $routes->get('RipotRetail/edit/(:num)', 'RipotRetail::edit/$1');
-    $routes->post('RipotRetail/sendEmail', 'RipotRetail::sendEmail');
-
-    $routes->get('RipotActive', 'RipotActive::index');
-    $routes->get('RipotActive/create', 'RipotActive::create');
-    $routes->post('RipotActive/save', 'RipotActive::save');
-    $routes->post('RipotActive/update', 'RipotActive::update');
-    $routes->get('RipotActive/delete/(:num)', 'RipotActive::delete/$1');
-    $routes->get('RipotActive/edit/(:num)', 'RipotActive::edit/$1');
-    $routes->get('RipotActive/show/(:num)', 'RipotActive::show/$1');
-    $routes->post('RipotActive/sendEmail', 'RipotActive::sendEmail');
-    $routes->get('RipotRetail/progress', 'RipotRetail::progress');
-
     $routes->get('Profile', 'Profile::index');
     $routes->post('profile/delete', 'Profile::deleteAccount');
 
@@ -265,4 +244,53 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('InventoryKantor/update', 'InventoryKantor::update');
     $routes->get('InventoryKantor/delete/(:num)', 'InventoryKantor::delete/$1');
     $routes->get('InventoryKantor/show/(:num)', 'InventoryKantor::show/$1');
+
+    $routes->get('RFO', 'RFO::index');
+    $routes->get('RFO/create', 'RFO::create');
+    $routes->post('RFO/save', 'RFO::save');
+    $routes->get('RFO/edit/(:num)', 'RFO::edit/$1');
+    $routes->post('RFO/update', 'RFO::update');
+    $routes->get('RFO/delete/(:num)', 'RFO::delete/$1');
+    $routes->get('RFO/view/(:num)', 'RFO::view/$1');
+
+    $routes->get('MDMaintenance', 'MDMaintenance::index');
+    $routes->get('MDMaintenance/create', 'MDMaintenance::create');
+    $routes->post('MDMaintenance/save', 'MDMaintenance::save');
+    $routes->get('MDMaintenance/edit/(:num)', 'MDMaintenance::edit/$1');
+    $routes->post('MDMaintenance/update', 'MDMaintenance::update');
+    $routes->get('MDMaintenance/delete/(:num)', 'MDMaintenance::delete/$1');
+    $routes->get('MDMaintenance/view/(:num)', 'MDMaintenance::view/$1');
+
+    $routes->get('HistoryReport', 'HistoryReport::index');
+    $routes->post('HistoryReport/save', 'HistoryReport::save');
+    $routes->post('HistoryReport/update', 'HistoryReport::update');
+    $routes->get('HistoryReport/delete/(:num)', 'HistoryReport::delete/$1');
+    // Detail (Shift Laporan) satu report
+    $routes->get('HistoryReport/laporan/(:num)', 'HistoryReport::laporan/$1');
+
+    // Gangguan per report (tombol Settings di History Report)
+    $routes->get('HistoryReport/gangguan/(:num)', 'Gangguan::index/$1');
+    $routes->post('HistoryReport/gangguan/save', 'Gangguan::save');
+    $routes->post('HistoryReport/gangguan/update', 'Gangguan::update');
+    $routes->get('HistoryReport/gangguan/delete/(:num)', 'Gangguan::delete/$1');
+
+    // Follow up per report (tab Follow Up di halaman gangguan)
+    $routes->post('HistoryReport/followup/save', 'FollowUp::save');
+    $routes->post('HistoryReport/followup/update', 'FollowUp::update');
+    $routes->get('HistoryReport/followup/delete/(:num)', 'FollowUp::delete/$1');
+
+    // Pengiriman per report (tab Pengiriman di halaman gangguan)
+    $routes->post('HistoryReport/pengiriman/save', 'Pengiriman::save');
+    $routes->post('HistoryReport/pengiriman/update', 'Pengiriman::update');
+    $routes->get('HistoryReport/pengiriman/delete/(:num)', 'Pengiriman::delete/$1');
+
+    // Maintenance per report (tab Maintenance di halaman gangguan)
+    $routes->post('HistoryReport/maintenance/save', 'Maintenance::save');
+    $routes->post('HistoryReport/maintenance/update', 'Maintenance::update');
+    $routes->get('HistoryReport/maintenance/delete/(:num)', 'Maintenance::delete/$1');
+
+    // Catatan per report (tab Catatan di halaman gangguan)
+    $routes->post('HistoryReport/catatan/save', 'Catatan::save');
+    $routes->post('HistoryReport/catatan/update', 'Catatan::update');
+    $routes->get('HistoryReport/catatan/delete/(:num)', 'Catatan::delete/$1');
 });

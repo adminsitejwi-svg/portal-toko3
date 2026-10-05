@@ -129,6 +129,34 @@ class DashboardManager extends BaseController
         $data['totalSIMCARD'] = $dataSIModel->countAllResults();
 
         $data['totalPenggunaanInet'] = $nmrInetModel->countAllResults();
+
+        // ===== Total global (card Beranda) =====
+        // Master Data = semua menu di sidebar "Master Data"
+        $masterData = [
+            'Merek Perangkat'     => $data['totalPerangkat'],
+            'Jenis Perangkat'     => $data['totalJenisPerangkat'],
+            'Type Perangkat'      => $data['totalTypePerangkat'],
+            'Vendor Non Cellular' => count($data['vendor']),
+            'Vendor Cellular'     => count($data['vendorCellular']),
+            'Layanan Vendor'      => $data['totalLayananVendor'],
+            'DC'                  => $data['totalDC'],
+            'Media Koneksi'       => $data['totalMediaKoneksi'],
+            'Pemilik Project'     => $data['totalPemilikProject'],
+            'Kategori Pelanggan'  => $data['totalPelanggan'],
+            'Nomor INET'          => $data['totalNomorInet'],
+            'Kuota SIMCARD'       => $data['totalKuotaSIMCARD'],
+            'VPN'                 => $data['totalVPN'],
+        ];
+        // Data Penggunaan = menu di sidebar "Data Penggunaan" (Simcard & Nomor Inet)
+        $dataPenggunaan = [
+            'Simcard'    => $data['totalSIMCARD'],
+            'Nomor Inet' => $data['totalPenggunaanInet'],
+        ];
+        $data['totalMasterData']       = array_sum($masterData);
+        $data['jumlahJenisMaster']     = count($masterData);
+        $data['totalDataPenggunaan']   = array_sum($dataPenggunaan);
+        $data['jumlahJenisPenggunaan'] = count($dataPenggunaan);
+
         return view('manager/dashboard', $data);
         $data['totalVPN'] = $db->table('md_vpn')->countAllResults();
     }
