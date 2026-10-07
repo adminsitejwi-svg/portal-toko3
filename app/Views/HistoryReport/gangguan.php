@@ -177,6 +177,18 @@
             white-space: pre-line !important;
         }
 
+        /* Link "Selengkapnya" di kolom teks panjang */
+        .ringkasan-more {
+            color: #04a9f5;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .ringkasan-more:hover {
+            text-decoration: underline;
+        }
+
         table.ho-table tbody td {
             padding: 16px;
             font-size: 14px;
@@ -751,6 +763,18 @@
                 $ts = strtotime($t);
                 return date('d', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts);
             };
+            // Kolom teks panjang: lebih dari satu paragraf -> paragraf pertama + "Selengkapnya" (isi lengkap di pop up)
+            $tdTeks = static function ($teks, string $label, string $info = '', string $minW = 'min-w-[240px]') {
+                $teks = trim((string) $teks);
+                if ($teks === '') $teks = '-';
+                $paragraf = array_values(array_filter(array_map('trim', preg_split('/\R+/', $teks)), 'strlen'));
+                $isi = esc($teks);
+                if (count($paragraf) > 1) {
+                    $isi = esc($paragraf[0]) . '… <button type="button" class="ringkasan-more" onclick="openTeksModal(this)"'
+                        . ' data-full="' . esc($teks, 'attr') . '" data-label="' . esc($label, 'attr') . '" data-info="' . esc($info, 'attr') . '">Selengkapnya</button>';
+                }
+                return '<td class="whitespace-pre-line ' . $minW . '" data-search="' . esc($teks, 'attr') . '" data-full="' . esc($teks, 'attr') . '">' . $isi . '</td>';
+            };
             // Badge warna status & priority
             $statusBadge = [
                 'Resolved'    => 'badge-paid',
@@ -910,9 +934,9 @@
                                             <td><?= esc($row['cid_ticket'] ?: '-'); ?></td>
                                             <td><span class="badge <?= $statusBadge[$row['status']] ?? 'badge-service' ?>"><?= esc($row['status']); ?></span></td>
                                             <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['gangguan']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['tindakan'] ?: '-'); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['next_action'] ?: '-'); ?></td>
+                                            <?= $tdTeks($row['gangguan'], 'Gangguan / Problem', $row['customer_site']); ?>
+                                            <?= $tdTeks($row['tindakan'], 'Tindakan', $row['customer_site']); ?>
+                                            <?= $tdTeks($row['next_action'], 'Next Action / Handover', $row['customer_site']); ?>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -994,8 +1018,8 @@
                                             <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>
                                             <td data-order="<?= esc($row['due_date'] ?? '') ?>"><?= $row['due_date'] ? date('d-m-Y', strtotime($row['due_date'])) : '-'; ?></td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['issue']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action'] ?: '-'); ?></td>
+                                            <?= $tdTeks($row['issue'], 'Issue', $row['customer_site']); ?>
+                                            <?= $tdTeks($row['action'], 'Action / Next Step', $row['customer_site']); ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1160,8 +1184,8 @@
                                             <td data-order="<?= esc($row['schedule']) ?>"><?= date('d-m-Y', strtotime($row['schedule'])); ?></td>
                                             <td><span class="badge <?= $mtBadge[$row['status']] ?? 'badge-service' ?>"><?= esc($row['status']); ?></span></td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['issue'] ?: '-'); ?></td>
-                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action'] ?: '-'); ?></td>
+                                            <?= $tdTeks($row['issue'], 'Issue', $row['site'] . ' · ' . $row['equipment']); ?>
+                                            <?= $tdTeks($row['action'], 'Action', $row['site'] . ' · ' . $row['equipment']); ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1321,7 +1345,13 @@
                                             <td><span class="badge <?= $catatanStatusBadge[$row['status']] ?? 'badge-service' ?>"><?= esc($row['status']); ?></span></td>
                                             <td class="whitespace-normal min-w-[180px] font-medium"><?= esc($row['judul']); ?></td>
                                             <!-- poin catatan bernomor, satu per baris -->
-                                            <td class="whitespace-pre-line min-w-[280px]"><?php foreach ($poin as $i => $p) : ?><?= ($i ? "\n" : '') . ($i + 1) . '. ' . esc($p) ?><?php endforeach; ?></td>
+                                            <?php
+                                            $teksPoin = '';
+                                            foreach ($poin as $i => $p) {
+                                                $teksPoin .= ($i ? "\n" : '') . ($i + 1) . '. ' . $p;
+                                            }
+                                            ?>
+                                            <?= $tdTeks($teksPoin, 'Catatan', $row['judul'], 'min-w-[280px]'); ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1726,6 +1756,36 @@
         </div>
     </div>
 
+    <!-- ====== POP UP TEKS LENGKAP (Selengkapnya) ====== -->
+    <div id="teksModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeModal('teksModal')">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-bold" id="tk_label"></h3>
+                    <div class="text-sm text-gray-500 mt-1" id="tk_info"></div>
+                </div>
+                <button type="button" onclick="closeModal('teksModal')"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <div class="text-sm leading-relaxed whitespace-pre-line break-words" id="tk_text"></div>
+            <div class="flex justify-end mt-6">
+                <button type="button" onclick="closeModal('teksModal')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Selengkapnya: tampilkan teks lengkap kolom di pop up
+        function openTeksModal(btn) {
+            document.getElementById('tk_label').textContent = btn.dataset.label || '';
+            document.getElementById('tk_info').textContent = btn.dataset.info || '';
+            document.getElementById('tk_text').textContent = btn.dataset.full || '-';
+            document.getElementById('teksModal').classList.remove('hidden');
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal('teksModal');
+        });
+    </script>
+
     <script>
         // ====== TAB ======
         function switchTab(key) {
@@ -2057,7 +2117,9 @@
                 exportOptions: {
                     columns: (idx) => idx !== 1, // tanpa kolom Aksi
                     format: {
-                        body: function(data) {
+                        body: function(data, row, column, node) {
+                            // kolom teks panjang: export teks lengkap, bukan potongan + "Selengkapnya"
+                            if (node && node.dataset && node.dataset.full !== undefined) return node.dataset.full;
                             const tmp = document.createElement('div');
                             tmp.innerHTML = data;
                             return tmp.textContent.trim();

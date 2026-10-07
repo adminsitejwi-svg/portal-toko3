@@ -118,6 +118,18 @@
             display: block;
         }
 
+        /* ===== LINK "Selengkapnya" di kolom Ringkasan / Keterangan ===== */
+        .ringkasan-more {
+            color: #04a9f5;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .ringkasan-more:hover {
+            text-decoration: underline;
+        }
+
         /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
         .aksi-btn {
             width: 32px;
@@ -897,7 +909,13 @@
                                                     <span class="badge badge-draft"><i class="ti ti-pencil mr-1"></i>Draft</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td class="whitespace-pre-line min-w-[320px]"><?= esc($row['ringkasan']); ?></td>
+                                            <?php
+                                            // Lebih dari satu paragraf: tampilkan paragraf pertama + "Selengkapnya" (isi lengkap di pop up)
+                                            $ringkasan = trim((string) $row['ringkasan']);
+                                            $paragraf  = preg_split('/\R+/', $ringkasan, -1, PREG_SPLIT_NO_EMPTY);
+                                            $paragraf  = array_values(array_filter(array_map('trim', $paragraf), 'strlen'));
+                                            ?>
+                                            <td class="whitespace-pre-line min-w-[320px]" data-search="<?= esc($ringkasan, 'attr') ?>" data-full="<?= esc($ringkasan, 'attr') ?>"><?php if (count($paragraf) > 1) : ?><?= esc($paragraf[0]); ?>… <button type="button" class="ringkasan-more" onclick="openRingkasanModal(this)" data-full="<?= esc($ringkasan, 'attr') ?>" data-info="<?= esc(date('d-m-Y', strtotime($row['tanggal'])) . ' · Shift ' . $row['shift'] . ' · ' . $row['pic_shift'], 'attr') ?>">Selengkapnya</button><?php else : ?><?= esc($ringkasan); ?><?php endif; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -1026,6 +1044,23 @@
             </div>
             <div class="flex justify-end gap-3 mt-6">
                 <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== POP UP RINGKASAN / KETERANGAN (Selengkapnya) ====== -->
+    <div id="ringkasanModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeRingkasanModal()">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-bold">Ringkasan / Keterangan</h3>
+                    <div class="text-sm text-gray-500 mt-1" id="rk_info"></div>
+                </div>
+                <button type="button" onclick="closeRingkasanModal()"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <div class="text-sm leading-relaxed whitespace-pre-line" id="rk_text"></div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeRingkasanModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
             </div>
         </div>
     </div>
@@ -1159,6 +1194,20 @@
         function closeViewModal() {
             document.getElementById('viewModal').classList.add('hidden');
         }
+
+        // Selengkapnya: tampilkan ringkasan / keterangan lengkap di pop up
+        function openRingkasanModal(btn) {
+            document.getElementById('rk_info').textContent = btn.dataset.info || '';
+            document.getElementById('rk_text').textContent = btn.dataset.full || '-';
+            document.getElementById('ringkasanModal').classList.remove('hidden');
+        }
+
+        function closeRingkasanModal() {
+            document.getElementById('ringkasanModal').classList.add('hidden');
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeRingkasanModal();
+        });
     </script>
 
     <script>
@@ -1366,7 +1415,9 @@
                 exportOptions: {
                     columns: ':visible',
                     format: {
-                        body: function(data) {
+                        body: function(data, row, column, node) {
+                            // kolom ringkasan: export teks lengkap, bukan potongan + "Selengkapnya"
+                            if (node && node.dataset && node.dataset.full !== undefined) return node.dataset.full;
                             const tmp = document.createElement('div');
                             tmp.innerHTML = data;
                             return tmp.textContent.trim();
