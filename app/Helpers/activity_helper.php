@@ -129,6 +129,7 @@ if (! function_exists('activity_label_action')) {
                 'd_rfo'                => 'RFO',
                 'd_rfo_email_log'      => 'RFO Email',
                 'md_maintenance'       => 'Maintenance',
+                'md_maintenance_email_log' => 'Maintenance Email',
                 'd_report'             => 'Daily Report',
                 'd_maintenance_report' => 'Maintenance Report',
                 'repot_noc'            => 'Report NOC',

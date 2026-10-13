@@ -676,13 +676,19 @@
             <!-- breadcrumb -->
             <div class="flex items-center justify-between mb-6">
                 <h5 class="font-medium text-lg">Maintenance</h5>
-                <a href="<?= site_url('MDMaintenance/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
-                    <i class="ti ti-plus"></i> Tambah
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="<?= site_url('MDMaintenance/email-log') ?>" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                        <i class="ti ti-mail"></i> Riwayat Email
+                    </a>
+                    <a href="<?= site_url('MDMaintenance/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                        <i class="ti ti-plus"></i> Tambah
+                    </a>
+                </div>
             </div>
 
             <?php
             $fmtTgl = static fn ($d) => $d ? date('d-m-Y', strtotime($d)) : '-';
+            $fmt    = static fn ($dt) => $dt ? date('d-m-Y H:i', strtotime($dt)) : '-';
             ?>
 
             <div class="card">
@@ -698,6 +704,12 @@
                                 <?php foreach ($perusahaan as $nama) : ?>
                                     <option value="<?= esc($nama) ?>"><?= esc($nama) ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                            <select id="filterStatusEmail" class="filter-select" title="Filter Status Email">
+                                <option value="">Semua Status Email</option>
+                                <option value="Terkirim">Terkirim</option>
+                                <option value="Gagal">Gagal</option>
+                                <option value="Belum Dikirim">Belum Dikirim</option>
                             </select>
                             <select id="filterMtId" class="filter-select" title="Filter Maintenance ID">
                                 <option value="">Semua Maintenance ID</option>
@@ -731,6 +743,7 @@
                                     <th>Kegiatan</th>
                                     <th>Impact</th>
                                     <th>Nama</th>
+                                    <th>Status Email</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -756,6 +769,12 @@
                                                     class="btn btn-sm btn-info" title="Lihat / Print">
                                                     <i class="ti ti-eye"></i>
                                                 </a>
+
+                                                <button type="button"
+                                                    onclick="openEmailModal(<?= $row['id'] ?>, '<?= esc($row['maintenance_id'], 'js') ?>', '<?= esc(\App\Models\MDMaintenanceModel::EMAIL_NOC[$row['perusahaan']] ?? '', 'js') ?>')"
+                                                    class="btn btn-sm btn-success" title="Kirim Email">
+                                                    <i class="ti ti-mail"></i>
+                                                </button>
                                             </td>
                                             <td class="font-medium"><?= esc($row['maintenance_id']); ?></td>
                                             <td><?= esc($row['perusahaan']); ?></td>
@@ -766,6 +785,17 @@
                                             <td class="whitespace-normal min-w-[200px]"><?= esc($row['kegiatan']); ?></td>
                                             <td class="whitespace-normal min-w-[200px]"><?= esc($row['impact']); ?></td>
                                             <td><?= esc($row['nama']); ?></td>
+                                            <?php
+                                            // Status kirim email terakhir; data-search dipakai filter (cocok persis)
+                                            $mail       = $statusEmail[$row['id']] ?? null;
+                                            $mailStatus = $mail['status'] ?? 'Belum Dikirim';
+                                            ?>
+                                            <td data-search="<?= esc($mailStatus) ?>">
+                                                <span class="badge <?= ['Terkirim' => 'badge-paid', 'Gagal' => 'badge-due'][$mailStatus] ?? 'badge-service' ?>"><?= esc($mailStatus) ?></span>
+                                                <?php if ($mail) : ?>
+                                                    <div class="text-[11px] text-gray-500 mt-1" title="Kepada: <?= esc($mail['kepada'], 'attr') ?>"><?= $fmt($mail['created_at']) ?></div>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -779,7 +809,111 @@
         </div>
     </div>
 
+    <!-- MODAL KIRIM EMAIL (akun pengirim dipilih di dropdown "Dari") -->
+    <div id="emailModal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/50 p-4">
+        <div id="emailBox" class="w-full max-w-2xl max-h-[95vh] overflow-y-auto rounded-lg bg-white shadow-xl">
+            <form action="<?= site_url('MDMaintenance/email') ?>" method="POST" id="emailForm">
+                <?= csrf_field() ?>
+                <div id="emailIds"></div>
+                <div class="flex items-center justify-between border-b border-[#e3e8ee] px-5 py-3">
+                    <h5 class="font-medium text-base"><i class="ti ti-mail"></i> Kirim Email Maintenance</h5>
+                    <button type="button" onclick="closeEmailModal()" class="text-xl leading-none text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+                <div class="space-y-4 px-5 py-4 text-sm">
+                    <div>
+                        <label class="mb-1 block font-medium">Data Maintenance</label>
+                        <div id="emailRfoList" class="rounded-lg bg-[#f1f5f9] px-3 py-2 text-[#3b4754] break-words"></div>
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">Dari <span style="color:red">*</span></label>
+                        <select name="dari" id="emailDari" required class="w-full rounded-lg border border-[#e3e8ee] bg-white px-3 py-2 outline-none focus:border-primary-500">
+                            <?php foreach ($akunEmail as $alamat => $label) : ?>
+                                <option value="<?= esc($alamat) ?>"><?= esc($label) ?> &lt;<?= esc($alamat) ?>&gt;</option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="mt-1 text-xs text-gray-500">Otomatis dipilih sesuai perusahaan Maintenance, bisa diganti.</p>
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">Kepada <span style="color:red">*</span></label>
+                        <input type="text" name="kepada" id="emailKepada" required placeholder="pelanggan@contoh.com, lainnya@contoh.com" class="w-full rounded-lg border border-[#e3e8ee] px-3 py-2 outline-none focus:border-primary-500">
+                        <p class="mt-1 text-xs text-gray-500">Lebih dari satu alamat dipisah koma.</p>
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">CC</label>
+                        <input type="text" name="cc" placeholder="opsional" class="w-full rounded-lg border border-[#e3e8ee] px-3 py-2 outline-none focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">Subjek</label>
+                        <input type="text" name="subjek" placeholder="Kosongkan: otomatis &quot;Maintenance [Maintenance ID] - [Perusahaan]&quot;" class="w-full rounded-lg border border-[#e3e8ee] px-3 py-2 outline-none focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">Isi Email</label>
+                        <!-- Hanya preview (sandbox, tanpa script): isi email tidak bisa diubah, sama dengan yang dikirim -->
+                        <iframe id="emailBodyFrame" title="Isi Email Maintenance" sandbox="" class="h-[300px] w-full rounded-lg border border-[#e3e8ee] bg-white"></iframe>
+                        <p class="mt-1 text-xs text-gray-500">Isi email otomatis sesuai perusahaan Maintenance dan tidak bisa diubah.</p>
+                    </div>
+                    <div>
+                        <label class="mb-1 block font-medium">Lampiran</label>
+                        <div class="flex items-center justify-between gap-2 rounded-lg border border-[#e3e8ee] bg-[#f1f5f9] px-3 py-2">
+                            <span class="flex items-center gap-1.5 text-[#3b4754] break-all"><i class="ti ti-file-type-pdf text-red-600 text-lg"></i> <span id="emailPdfNama"></span></span>
+                            <button type="button" id="btnCekPdf" onclick="toggleCekPdf()" class="shrink-0 inline-flex items-center gap-1 rounded-md bg-blue-600 px-2.5 py-1 text-xs text-white hover:bg-blue-700"><i class="ti ti-eye"></i> Cek PDF</button>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Dibuat otomatis dari surat Maintenance (sama dengan halaman View). PDF terkunci, tidak bisa diubah.</p>
+                        <iframe id="emailPdfFrame" title="Preview PDF Maintenance" class="mt-2 hidden h-[60vh] w-full rounded-lg border border-[#e3e8ee]"></iframe>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 border-t border-[#e3e8ee] px-5 py-3">
+                    <button type="button" onclick="closeEmailModal()" class="rounded-lg bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600">Batal</button>
+                    <button type="submit" id="emailSubmit" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-emerald-700"><i class="ti ti-send"></i> Kirim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // ====== KIRIM EMAIL (satu data per klik tombol email) ======
+        let emailRfoId = null;
+
+        // dariDefault: e-mail NOC perusahaan Maintenance; dipilih bila ada di dropdown, selain itu akun pertama
+        function openEmailModal(id, rfoId, dariDefault) {
+            emailRfoId = parseInt(id, 10);
+            const dari = $('#emailDari');
+            dari.val(dari.find('option[value="' + dariDefault + '"]').length ? dariDefault : dari.find('option:first').val());
+            $('#emailIds').html('<input type="hidden" name="ids[]" value="' + emailRfoId + '">');
+            $('#emailRfoList').text(rfoId);
+            // Nama file sama dengan RfoPdf::namaFile(): karakter selain huruf/angka/- jadi "-"
+            $('#emailPdfNama').text(rfoId.replace(/[^A-Za-z0-9\-]+/g, '-') + '.pdf');
+            tutupCekPdf();
+            $('#emailBodyFrame').attr('src', '<?= site_url('MDMaintenance/email-preview/') ?>' + emailRfoId);
+            $('#emailModal').removeClass('hidden').addClass('flex');
+            $('#emailKepada').trigger('focus');
+        }
+
+        function closeEmailModal() {
+            tutupCekPdf();
+            $('#emailBodyFrame').attr('src', 'about:blank');
+            $('#emailModal').addClass('hidden').removeClass('flex');
+        }
+
+        // Preview PDF lampiran di dalam form (dimuat saat tombol Cek PDF diklik)
+        function toggleCekPdf() {
+            const frame = $('#emailPdfFrame');
+            if (!frame.hasClass('hidden')) return tutupCekPdf();
+            frame.attr('src', '<?= site_url('MDMaintenance/pdf/') ?>' + emailRfoId + '#toolbar=0').removeClass('hidden');
+            $('#emailBox').removeClass('max-w-2xl').addClass('max-w-3xl');
+            $('#btnCekPdf').html('<i class="ti ti-eye-off"></i> Tutup PDF');
+        }
+
+        function tutupCekPdf() {
+            $('#emailPdfFrame').addClass('hidden').attr('src', 'about:blank');
+            $('#emailBox').removeClass('max-w-3xl').addClass('max-w-2xl');
+            $('#btnCekPdf').html('<i class="ti ti-eye"></i> Cek PDF');
+        }
+
+        $(document).on('submit', '#emailForm', function() {
+            $('#emailSubmit').prop('disabled', true).html('<i class="ti ti-loader"></i> Mengirim...');
+        });
+
         // ====== DELETE ======
         function confirmDelete(id) {
             Swal.fire({
@@ -1015,6 +1149,9 @@
             });
             $('#filterPerusahaan').on('change', function() {
                 filterColumn(3, this.value);
+            });
+            $('#filterStatusEmail').on('change', function() {
+                filterColumn(11, this.value);
             });
 
             $('#customSearch').on('keyup', function() {

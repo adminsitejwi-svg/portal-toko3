@@ -7,7 +7,7 @@ use Dompdf\Options;
 
 /**
  * =====================================================================
- *  PDF SURAT RFO — dibuat otomatis dari data RFO (tampilan = halaman View)
+ *  PDF SURAT RFO & MAINTENANCE — dibuat otomatis dari data surat (tampilan = halaman View)
  *
  *  - Gelombang kop atas/bawah digambar dengan GD menjadi PNG
  *    (dompdf tidak mendukung gradasi SVG), di-cache di writable/cache.
@@ -28,23 +28,31 @@ class RfoPdf
     /** Nama file PDF untuk RFO, mis. RFO-13-10-2026-001.pdf */
     public static function namaFile(array $rfo): string
     {
-        return preg_replace('/[^A-Za-z0-9\-]+/', '-', $rfo['rfo_id']) . '.pdf';
+        return self::namaFileId($rfo['rfo_id']);
+    }
+
+    /** Nama file PDF dari nomor surat (RFO ID / Maintenance ID): karakter selain huruf/angka/- jadi "-" */
+    public static function namaFileId(string $id): string
+    {
+        return preg_replace('/[^A-Za-z0-9\-]+/', '-', $id) . '.pdf';
     }
 
     /**
-     * Buat PDF surat RFO (isi biner).
+     * Buat PDF surat (isi biner).
      *
-     * @param array $data Data surat dari RFO::suratData() (rfo, warnaKop, pembuka, penutup, ...)
+     * @param array  $data Data surat dari RFO::suratData() / MDMaintenance::suratData() (warnaKop, pembuka, penutup, ...)
+     * @param string $view View PDF: RFO/PdfRFO atau MDMaintenance/PdfMaintenance
      */
-    public function buat(array $data): string
+    public function buat(array $data, string $view = 'RFO/PdfRFO'): string
     {
-        $rfo = $data['rfo'];
+        // Logo perusahaan dari data RFO ($data['rfo']) atau Maintenance ($data['mt'])
+        $logo = ($data['rfo'] ?? $data['mt'] ?? [])['logo'] ?? null;
 
-        $html = view('RFO/PdfRFO', $data + [
+        $html = view($view, $data + [
             'kopAtas'  => $this->dataUri($this->gelombangPng($data['warnaKop'], false)),
             'kopBawah' => $this->dataUri($this->gelombangPng($data['warnaKop'], true)),
-            'logo'     => ! empty($rfo['logo']) && is_file(FCPATH . $rfo['logo'])
-                ? $this->dataUri($this->logoTrim(FCPATH . $rfo['logo']))
+            'logo'     => ! empty($logo) && is_file(FCPATH . $logo)
+                ? $this->dataUri($this->logoTrim(FCPATH . $logo))
                 : null,
         ]);
 

@@ -1,6 +1,6 @@
 -- Tabel Maintenance (jadwal maintenance jaringan; halaman & fitur seperti RFO)
 -- perusahaan dipilih dari dropdown; logo = logo bawaan perusahaan (public/Logo)
--- maintenance_id dibuat otomatis oleh aplikasi: MT-ddmmyyyy-NNN (urutan reset tiap hari)
+-- maintenance_id dibuat otomatis oleh aplikasi: MT-dd/mm/yyyy-NNN (urutan reset tiap bulan, sama dengan RFO ID)
 CREATE TABLE IF NOT EXISTS `md_maintenance` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `maintenance_id` varchar(30) NOT NULL,

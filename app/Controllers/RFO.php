@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\DaftarEmail;
 use App\Libraries\RfoPdf;
 use App\Models\JadwalModel;
 use App\Models\RFOEmailLogModel;
@@ -111,44 +112,6 @@ class RFO extends BaseController
         ];
     }
 
-    /**
-     * Pecah daftar e-mail (pisah koma / titik koma / baris baru).
-     * Menerima "nama@domain.com" maupun "Nama <nama@domain.com>" (hasil copy dari webmail),
-     * serta membuang spasi tak terlihat hasil copy-paste.
-     * Hasil: ['valid' => [...alamat], 'invalid' => [...teks yang bukan e-mail]].
-     */
-    private function parseEmails(string $raw): array
-    {
-        // Spasi non-breaking / zero-width -> spasi biasa
-        $raw    = preg_replace('/[\x{00A0}\x{200B}-\x{200D}\x{2060}\x{FEFF}]/u', ' ', $raw) ?? $raw;
-        $hasil  = ['valid' => [], 'invalid' => []];
-
-        foreach (preg_split('/[,;\r\n]+/', $raw) as $bagian) {
-            $bagian = trim($bagian, " \t\"'");
-            if ($bagian === '') {
-                continue;
-            }
-
-            // Format "Nama <alamat>": ambil alamat di dalam < >
-            if (preg_match('/<([^>]+)>/', $bagian, $m)) {
-                $bagian = trim($m[1]);
-            }
-
-            // Beberapa alamat dipisah spasi dalam satu bagian
-            foreach (preg_split('/\s+/', $bagian) as $addr) {
-                if (filter_var($addr, FILTER_VALIDATE_EMAIL)) {
-                    $hasil['valid'][] = strtolower($addr);
-                } else {
-                    $hasil['invalid'][] = $addr;
-                }
-            }
-        }
-
-        $hasil['valid'] = array_values(array_unique($hasil['valid']));
-
-        return $hasil;
-    }
-
     // Halaman riwayat pengiriman email RFO
     // View: app/Views/RFO/EmailLog.php
     public function emailLog()
@@ -215,8 +178,8 @@ class RFO extends BaseController
     public function email()
     {
         $ids    = array_filter(array_map('intval', (array) $this->request->getPost('ids')));
-        $kepada = $this->parseEmails((string) $this->request->getPost('kepada'));
-        $cc     = $this->parseEmails((string) $this->request->getPost('cc'));
+        $kepada = DaftarEmail::parse((string) $this->request->getPost('kepada'));
+        $cc     = DaftarEmail::parse((string) $this->request->getPost('cc'));
         $subjek = trim((string) $this->request->getPost('subjek'));
         $dari   = (string) $this->request->getPost('dari');
 

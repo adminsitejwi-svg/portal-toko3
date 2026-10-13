@@ -265,6 +265,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('MDMaintenance/update', 'MDMaintenance::update');
     $routes->get('MDMaintenance/delete/(:num)', 'MDMaintenance::delete/$1');
     $routes->get('MDMaintenance/view/(:num)', 'MDMaintenance::view/$1');
+    $routes->post('MDMaintenance/email', 'MDMaintenance::email');
+    $routes->get('MDMaintenance/email-log', 'MDMaintenance::emailLog');
+    $routes->get('MDMaintenance/email-log/body/(:num)', 'MDMaintenance::emailLogBody/$1');
+    $routes->get('MDMaintenance/pdf/(:num)', 'MDMaintenance::pdf/$1');
+    $routes->get('MDMaintenance/email-preview/(:num)', 'MDMaintenance::emailPreview/$1');
 
     $routes->get('MaintenanceReport', 'MaintenanceReport::index');
     $routes->post('MaintenanceReport/save', 'MaintenanceReport::save');
