@@ -734,7 +734,7 @@
                                     <th>Subjek</th>
                                     <th>Lampiran</th>
                                     <th>Status</th>
-                                    <th>Keterangan</th>
+                                    <th class="no-export">Body Email</th>
                                     <th>Dikirim Oleh</th>
                                 </tr>
                             </thead>
@@ -758,9 +758,10 @@
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['cc'] ?: '-'); ?></td>
                                             <td class="whitespace-normal min-w-[200px]"><?= esc($row['subjek']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['lampiran'] ?: '-'); ?></td>
-                                            <td><span class="badge <?= $statusBadge[$row['status']] ?? 'badge-service' ?>"><?= esc($row['status']); ?></span></td>
-                                            <td class="whitespace-normal min-w-[220px] text-xs" title="<?= esc($row['pesan_error'] ?? '', 'attr') ?>">
-                                                <?= $row['pesan_error'] ? esc(mb_strimwidth(trim($row['pesan_error']), 0, 200, '...')) : '-'; ?>
+                                            <!-- Pesan error (status Gagal) tampil saat kursor diarahkan ke status -->
+                                            <td><span class="badge <?= $statusBadge[$row['status']] ?? 'badge-service' ?>" title="<?= esc(trim($row['pesan_error'] ?? ''), 'attr') ?>"><?= esc($row['status']); ?></span></td>
+                                            <td>
+                                                <button type="button" onclick="lihatBody(<?= (int) $row['id'] ?>, '<?= esc($row['kode_rfo'] ?? '', 'js') ?>')" class="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2.5 py-1 text-xs text-white hover:bg-blue-700"><i class="ti ti-mail-opened"></i> Lihat</button>
                                             </td>
                                             <td><?= esc($row['dikirim_oleh'] ?? '-'); ?></td>
                                         </tr>
@@ -776,7 +777,31 @@
         </div>
     </div>
 
+    <!-- MODAL BODY EMAIL (hanya tampilan, tidak bisa diubah) -->
+    <div id="bodyModal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/50 p-4" onclick="if (event.target === this) tutupBody()">
+        <div class="w-full max-w-2xl rounded-lg bg-white shadow-xl">
+            <div class="flex items-center justify-between border-b border-[#e3e8ee] px-5 py-3">
+                <h5 class="font-medium text-base"><i class="ti ti-mail-opened"></i> Body Email <span id="bodyRfoId" class="text-gray-500"></span></h5>
+                <button type="button" onclick="tutupBody()" class="text-xl leading-none text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <div class="px-5 py-4">
+                <iframe id="bodyFrame" title="Body Email RFO" sandbox="" class="h-[60vh] w-full rounded-lg border border-[#e3e8ee] bg-white"></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function lihatBody(id, rfoId) {
+            $('#bodyRfoId').text(rfoId);
+            $('#bodyFrame').attr('src', '<?= site_url('RFO/email-log/body/') ?>' + parseInt(id, 10));
+            $('#bodyModal').removeClass('hidden').addClass('flex');
+        }
+
+        function tutupBody() {
+            $('#bodyFrame').attr('src', 'about:blank');
+            $('#bodyModal').addClass('hidden').removeClass('flex');
+        }
+
         function isTableEmpty(table) {
             return table.rows({ search: 'applied' }).data().length === 0;
         }
@@ -868,7 +893,7 @@
         $(document).ready(function() {
             const exportConfig = {
                 exportOptions: {
-                    columns: ':visible',
+                    columns: ':visible:not(.no-export)',
                     format: {
                         body: function(data) {
                             const tmp = document.createElement('div');

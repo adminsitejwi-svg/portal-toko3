@@ -16,6 +16,7 @@ class RFOEmailLogModel extends BaseModel
         'cc',
         'subjek',
         'lampiran',
+        'body',
         'status',
         'pesan_error',
         'dikirim_oleh',

@@ -153,13 +153,34 @@ class RFO extends BaseController
     // View: app/Views/RFO/EmailLog.php
     public function emailLog()
     {
+        // Kolom body (HTML) tidak ikut dimuat; dibuka per baris lewat RFO/email-log/body/{id}
         $log = (new RFOEmailLogModel())
-            ->select('d_rfo_email_log.*, d_rfo.rfo_id AS kode_rfo, d_rfo.perusahaan')
-            ->join('d_rfo', 'd_rfo.id = d_rfo_email_log.rfo_id', 'left')
-            ->orderBy('d_rfo_email_log.id', 'DESC')
+            ->select('l.id, l.rfo_id, l.dari, l.kepada, l.cc, l.subjek, l.lampiran, l.status, l.pesan_error, l.dikirim_oleh, l.created_at, d_rfo.rfo_id AS kode_rfo, d_rfo.perusahaan')
+            ->from('d_rfo_email_log l', true)
+            ->join('d_rfo', 'd_rfo.id = l.rfo_id', 'left')
+            ->orderBy('l.id', 'DESC')
             ->findAll();
 
         return view('RFO/EmailLog', ['log' => $log]);
+    }
+
+    // Body email yang tersimpan di riwayat (GET RFO/email-log/body/{id}); hanya tampilan, tidak bisa diubah.
+    // Riwayat lama (sebelum body disimpan) memakai body yang dibuat ulang dari data RFO saat ini.
+    public function emailLogBody($id)
+    {
+        $log  = (new RFOEmailLogModel())->find($id);
+        $body = $log['body'] ?? null;
+
+        if ($log && empty($body) && ($rfo = $this->rfoModel->find($log['rfo_id']))) {
+            $body = view('RFO/EmailRFO', $this->suratData($rfo));
+        }
+
+        if (empty($body)) {
+            return $this->response->setStatusCode(404)->setBody('Body email tidak tersedia.');
+        }
+
+        // CSP sandbox: body ditampilkan tanpa menjalankan script
+        return $this->response->setHeader('Content-Security-Policy', 'sandbox')->setBody($body);
     }
 
     // PDF surat RFO (GET RFO/pdf/{id}) untuk dicek sebelum dikirim; tampil di browser, terkunci (tidak bisa diubah)
@@ -248,7 +269,8 @@ class RFO extends BaseController
             $data     = $this->suratData($rfo);
             $namaPdf  = RfoPdf::namaFile($rfo);
             $mailer->attach((new RfoPdf())->buat($data), 'attachment', $namaPdf, 'application/pdf');
-            $mailer->setMessage(view('RFO/EmailRFO', $data));
+            $body = view('RFO/EmailRFO', $data);
+            $mailer->setMessage($body);
 
             $ok = $mailer->send(false);
 
@@ -259,6 +281,7 @@ class RFO extends BaseController
                 'cc'           => $cc !== [] ? implode(', ', $cc) : null,
                 'subjek'       => $judul,
                 'lampiran'     => $namaPdf,
+                'body'         => $body,
                 'status'       => $ok ? 'Terkirim' : 'Gagal',
                 'pesan_error'  => $ok ? null : strip_tags($mailer->printDebugger(['headers'])),
                 'dikirim_oleh' => session()->get('username'),

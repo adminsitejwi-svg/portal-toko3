@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `d_rfo_email_log` (
   `cc` text DEFAULT NULL,
   `subjek` varchar(255) NOT NULL,
   `lampiran` text DEFAULT NULL COMMENT 'nama file lampiran, pisah koma',
+  `body` mediumtext DEFAULT NULL COMMENT 'isi body email (HTML) yang dikirim',
   `status` enum('Terkirim','Gagal') NOT NULL,
   `pesan_error` text DEFAULT NULL,
   `dikirim_oleh` varchar(100) DEFAULT NULL COMMENT 'username yang mengirim',
@@ -19,3 +20,4 @@ CREATE TABLE IF NOT EXISTS `d_rfo_email_log` (
 -- Upgrade tabel lama: tambah kolom lampiran & dari
 -- ALTER TABLE `d_rfo_email_log` ADD COLUMN `lampiran` text DEFAULT NULL COMMENT 'nama file lampiran, pisah koma' AFTER `subjek`;
 -- ALTER TABLE `d_rfo_email_log` ADD COLUMN `dari` varchar(100) DEFAULT NULL COMMENT 'akun pengirim' AFTER `rfo_id`;
+-- ALTER TABLE `d_rfo_email_log` ADD COLUMN `body` mediumtext DEFAULT NULL COMMENT 'isi body email (HTML) yang dikirim' AFTER `lampiran`;

@@ -254,6 +254,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('RFO/view/(:num)', 'RFO::view/$1');
     $routes->post('RFO/email', 'RFO::email');
     $routes->get('RFO/email-log', 'RFO::emailLog');
+    $routes->get('RFO/email-log/body/(:num)', 'RFO::emailLogBody/$1');
     $routes->get('RFO/pdf/(:num)', 'RFO::pdf/$1');
     $routes->get('RFO/email-preview/(:num)', 'RFO::emailPreview/$1');
 
