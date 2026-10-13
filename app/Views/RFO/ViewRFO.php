@@ -440,110 +440,118 @@
                 margin: 0 auto 16px;
             }
 
+            /* Tata letak mengikuti public/Dokumentasi/Format RFO.jpg */
             .rfo-paper {
+                position: relative;
                 max-width: 794px;
                 margin: 0 auto;
                 background: #fff;
-                border: 1px solid #333;
+                box-shadow: 0 1px 6px rgba(0, 0, 0, .15);
                 color: #000;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 14px;
-                line-height: 1.45;
-                min-height: 1100px;
+                font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+                font-size: 15px;
+                line-height: 1.35;
+                min-height: 1123px;
+            }
+
+            /* Logo perusahaan kiri atas, RFO ID kanan atas */
+            /* Gelombang kop surat atas & bawah, warna mengikuti logo perusahaan */
+            .rfo-wave {
+                display: block;
+                width: 100%;
+                height: 140px;
+            }
+
+            .rfo-wave-bottom {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                transform: rotate(180deg);
             }
 
             .rfo-head {
-                height: 180px;
-                overflow: hidden;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                border-bottom: 1px solid #333;
-                padding: 12px 24px;
+                justify-content: space-between;
+                gap: 24px;
+                height: 100px;
+                padding: 0 24px;
+                overflow: hidden;
             }
 
             /* File logo punya banyak ruang kosong, jadi gambar dibuat lebih
                tinggi dari header dan kelebihannya terpotong (logo lebih besar) */
             .rfo-head img {
-                width: 85%;
-                height: 260px;
+                width: 45%;
+                height: 150px;
                 flex-shrink: 0;
                 object-fit: contain;
+                object-position: left center;
             }
 
+
+            /* Ruang bawah agar isi tidak menimpa gelombang bawah */
+            /* Isi surat berada di tengah kertas (teks tetap rata kiri) */
             .rfo-body {
-                padding: 14px 18px 40px;
+                width: fit-content;
+                max-width: calc(100% - 80px);
+                margin: 0 auto;
+                padding: 44px 0 180px;
             }
 
             .rfo-id {
-                text-align: right;
-                font-weight: 700;
-                padding-right: 60px;
+                margin-left: auto;
+                white-space: nowrap;
             }
 
             .rfo-greet {
-                font-weight: 700;
-                font-size: 15px;
-                margin: 4px 0 12px;
+                margin-bottom: 19px;
             }
 
             .rfo-text {
                 white-space: pre-line;
-                line-height: 1.6;
-                padding: 0 2px;
             }
 
             .rfo-table {
-                width: 100%;
                 border-collapse: collapse;
-                margin: 14px 0 6px;
+                margin: 19px 0;
             }
 
             .rfo-table td {
-                border-top: 1px solid #000;
-                border-bottom: 1px solid #000;
-                padding: 8px 10px;
-                vertical-align: middle;
-                height: 39px;
+                padding: 0;
+                vertical-align: top;
             }
 
-            .rfo-table tr td:first-child {
-                border-left: 1px solid #000;
-                width: 30%;
+            .rfo-table td:first-child {
+                width: 140px;
             }
 
-            .rfo-table tr td:last-child {
-                border-right: 1px solid #000;
+            .rfo-table td:last-child {
                 white-space: pre-line;
             }
 
             .rfo-table td.rfo-colon {
-                width: 14px;
-                padding: 8px 0;
-                text-align: center;
+                padding-right: 4px;
             }
 
             .rfo-sign {
-                margin-top: 10px;
-                line-height: 1.7;
+                margin-top: 58px;
             }
 
-            .rfo-sign b {
+            .rfo-sign span {
                 display: block;
             }
 
-            /* Nama petugas: jarak dari "Salam," (ruang tanda tangan) */
-            .rfo-sign-name {
-                display: block;
-                margin-top: 56px;
-                font-weight: 700;
-                text-decoration: underline;
+            /* Jarak antara salam dan nama divisi/perusahaan */
+            .rfo-sign .rfo-sign-org {
+                margin-top: 38px;
             }
 
-            /* ===== PRINT: hanya kertas surat yang dicetak (A4) ===== */
+            /* ===== PRINT: hanya kertas surat yang dicetak, pas 1 halaman A4 =====
+               Margin halaman 0 agar gelombang kop menempel ke tepi atas & bawah kertas */
             @page {
                 size: A4;
-                margin: 10mm;
+                margin: 0;
             }
 
             @media print {
@@ -556,19 +564,33 @@
                     visibility: visible;
                 }
 
+                /* Elemen lain tersembunyi tetap makan tempat; potong agar tidak ada halaman ke-2 */
                 html,
                 body {
                     background: #fff !important;
+                    width: 210mm;
+                    height: 297mm;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    overflow: hidden !important;
                 }
 
                 .rfo-paper {
                     position: absolute;
                     left: 0;
                     top: 0;
-                    width: 100%;
+                    width: 210mm;
+                    height: 297mm;
+                    min-height: 0;
                     max-width: none;
-                    min-height: 275mm;
                     margin: 0;
+                    overflow: hidden;
+                    box-shadow: none;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+
+                .rfo-paper * {
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
                 }
@@ -588,15 +610,27 @@
 
             <!-- KERTAS SURAT RFO -->
             <div class="rfo-paper">
+                <svg class="rfo-wave rfo-wave-top" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="rfoWaveTop" x1="0" x2="1" y1="0" y2="0">
+                            <stop offset="0" stop-color="<?= esc($warnaKop[0], 'attr') ?>" />
+                            <stop offset="1" stop-color="<?= esc($warnaKop[1], 'attr') ?>" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,0 H660 C480,34 250,56 0,66 Z" fill="<?= esc($warnaKop[2], 'attr') ?>" />
+                    <path d="M0,80 C250,74 470,30 800,22 V62 C560,66 330,128 0,132 Z" fill="url(#rfoWaveTop)" />
+                    <path d="M360,148 C540,112 680,86 800,84 V98 C660,104 520,134 360,148 Z" fill="url(#rfoWaveTop)" />
+                    <path d="M590,152 C680,128 750,116 800,114 V136 C740,138 670,144 590,152 Z" fill="<?= esc($warnaKop[2], 'attr') ?>" />
+                </svg>
+
                 <div class="rfo-head">
                     <?php if (!empty($rfo['logo'])) : ?>
                         <img src="<?= base_url($rfo['logo']) ?>" alt="Logo <?= esc($rfo['perusahaan']) ?>">
                     <?php endif; ?>
+                    <div class="rfo-id"><?= esc($rfo['rfo_id']) ?></div>
                 </div>
 
                 <div class="rfo-body">
-                    <div class="rfo-id"><?= esc($rfo['rfo_id']) ?></div>
-
                     <div class="rfo-greet">Kepada Pelanggan Yth,</div>
 
                     <div class="rfo-text"><?= esc($pembuka) ?></div>
@@ -642,14 +676,27 @@
                     <div class="rfo-text"><?= esc($penutup) ?></div>
 
                     <div class="rfo-sign">
-                        Salam,
+                        <span>Salam,</span>
                         <?php if (!empty($petugas)) : ?>
-                            <span class="rfo-sign-name"><?= esc(implode(' / ', $petugas)) ?></span>
+                            <span><?= esc(implode(' / ', $petugas)) ?></span>
                         <?php endif; ?>
-                        <b>Network Operation Center</b>
-                        <b><?= esc($namaTtd) ?></b>
+                        <span class="rfo-sign-org">Network Operation Center</span>
+                        <span><?= esc($namaTtd) ?></span>
                     </div>
                 </div>
+
+                <svg class="rfo-wave rfo-wave-bottom" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="rfoWaveBottom" x1="0" x2="1" y1="0" y2="0">
+                            <stop offset="0" stop-color="<?= esc($warnaKop[0], 'attr') ?>" />
+                            <stop offset="1" stop-color="<?= esc($warnaKop[1], 'attr') ?>" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,0 H660 C480,34 250,56 0,66 Z" fill="<?= esc($warnaKop[2], 'attr') ?>" />
+                    <path d="M0,80 C250,74 470,30 800,22 V62 C560,66 330,128 0,132 Z" fill="url(#rfoWaveBottom)" />
+                    <path d="M360,148 C540,112 680,86 800,84 V98 C660,104 520,134 360,148 Z" fill="url(#rfoWaveBottom)" />
+                    <path d="M590,152 C680,128 750,116 800,114 V136 C740,138 670,144 590,152 Z" fill="<?= esc($warnaKop[2], 'attr') ?>" />
+                </svg>
             </div>
         </div>
     </div>

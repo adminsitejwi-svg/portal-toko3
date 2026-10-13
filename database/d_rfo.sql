@@ -1,6 +1,6 @@
 -- Tabel RFO (Reason For Outage)
 -- perusahaan dipilih dari dropdown; logo = logo bawaan perusahaan (public/Logo)
--- rfo_id dibuat otomatis oleh aplikasi: RFO-ddmmyyyy-NNN (urutan reset tiap hari)
+-- rfo_id dibuat otomatis oleh aplikasi: RFO-dd/mm/yyyy-NNN, contoh RFO-13/10/2026-001 (urutan reset tiap bulan)
 CREATE TABLE IF NOT EXISTS `d_rfo` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `rfo_id` varchar(30) NOT NULL,
@@ -18,3 +18,4 @@ CREATE TABLE IF NOT EXISTS `d_rfo` (
   UNIQUE KEY `uniq_rfo_id` (`rfo_id`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

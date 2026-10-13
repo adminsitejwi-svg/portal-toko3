@@ -127,6 +127,7 @@ if (! function_exists('activity_label_action')) {
                 'd_nomor_inet'         => 'Nomor Inet',
                 'md_barang'            => 'Inventory Kantor',
                 'd_rfo'                => 'RFO',
+                'd_rfo_email_log'      => 'RFO Email',
                 'md_maintenance'       => 'Maintenance',
                 'd_report'             => 'Daily Report',
                 'd_maintenance_report' => 'Maintenance Report',

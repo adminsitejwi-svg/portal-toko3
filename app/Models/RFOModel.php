@@ -41,6 +41,25 @@ class RFOModel extends BaseModel
         'PT RTIGA GLOBAL MEDIA'              => 'Logo/Rtiga.png',
     ];
 
+    /**
+     * Warna gelombang kop surat RFO (atas & bawah), mengikuti warna logo perusahaan:
+     * [gradasi gelap, gradasi terang, warna aksen].
+     */
+    public const WARNA_KOP = [
+        'PT JURAGAN WIFI INDONESIA'          => ['#E8461B', '#F7A21B', '#1414E6'],
+        'PT NORLEC TELEKOMUNIKASI INDONESIA' => ['#0E5FA8', '#2FB5EE', '#F39A12'],
+        'PT GENEZIS MITRA TECHNOLOGY'        => ['#2F5A2C', '#8FCB7E', '#F28C0F'],
+        'PT RTIGA GLOBAL MEDIA'              => ['#1F7BC1', '#3BB4E6', '#36215F'],
+    ];
+
+    /** Alamat & kontak kantor pada tanda tangan body email RFO (di bawah nama perusahaan). */
+    public const ALAMAT_KANTOR = [
+        'MTH Square Lt 2 No.0219',
+        'Jl. Letjen MT. Haryono Kav 10 Bidara Cina',
+        'Jatinegara, Jakarta Timur DKI Jakarta 13330.',
+        'Telp (021-50112225)  Mobile +62 877-0029-5324',
+    ];
+
     /** Nama perusahaan pada tanda tangan surat RFO. */
     public const NAMA_TTD = [
         'PT JURAGAN WIFI INDONESIA'          => 'PT. Juragan Wifi Indonesia',
@@ -76,6 +95,7 @@ class RFOModel extends BaseModel
         . "Sekian informasi yang dapat kami sampaikan. Untuk informasi lebih lanjut, silahkan hubungi\n"
         . "Hotline Support kami di 021-5011-2225 / %1\$s (WA Support) yang beroperasi 24/7\n"
         . "atau e-mail ke %2\$s\n"
+        . "\n"
         . "Demikian informasi yang kami sampaikan, Atas perhatian dan kerjasamanya kami ucapkan terima\n"
         . "kasih.";
 
@@ -89,17 +109,25 @@ class RFOModel extends BaseModel
     }
 
     /**
-     * RFO ID berikutnya untuk tanggal hari ini: RFO-ddmmyyyy-NNN.
+     * RFO ID berikutnya untuk tanggal hari ini: RFO-dd/mm/yyyy-NNN (contoh RFO-13/10/2026-001).
      * Nomor urut lanjut terus antar hari dan reset ke 001 setiap ganti bulan.
      */
     public function generateRfoId(): string
     {
-        $prefix = 'RFO-' . date('dmY') . '-';
+        $prefix = 'RFO-' . date('d/m/Y') . '-';
 
-        // Cari nomor urut terbesar dari semua RFO di bulan ini (RFO-__mmyyyy-NNN), tanggal berapa pun
+        // Romawi untuk RFO lama berformat RFO-dd/X/yyyy-NNN
+        $romawi = [1 => 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'][(int) date('n')];
+
+        // Cari nomor urut terbesar dari semua RFO di bulan ini, tanggal berapa pun:
+        // format sekarang RFO-__/mm/yyyy-NNN, serta format lama RFO-__mmyyyy-NNN dan RFO-__/X/yyyy-NNN
         $last = $this->builder()
             ->select("MAX(CAST(SUBSTRING_INDEX(rfo_id, '-', -1) AS UNSIGNED)) AS seq", false)
-            ->where("rfo_id LIKE 'RFO-__" . date('mY') . "-%'", null, false)
+            ->groupStart()
+                ->where("rfo_id LIKE 'RFO-__/" . date('m/Y') . "-%'", null, false)
+                ->orWhere("rfo_id LIKE 'RFO-__" . date('mY') . "-%'", null, false)
+                ->orWhere("rfo_id LIKE 'RFO-__/" . $romawi . '/' . date('Y') . "-%'", null, false)
+            ->groupEnd()
             ->get()
             ->getRowArray();
 

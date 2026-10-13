@@ -252,6 +252,10 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('RFO/update', 'RFO::update');
     $routes->get('RFO/delete/(:num)', 'RFO::delete/$1');
     $routes->get('RFO/view/(:num)', 'RFO::view/$1');
+    $routes->post('RFO/email', 'RFO::email');
+    $routes->get('RFO/email-log', 'RFO::emailLog');
+    $routes->get('RFO/pdf/(:num)', 'RFO::pdf/$1');
+    $routes->get('RFO/email-preview/(:num)', 'RFO::emailPreview/$1');
 
     $routes->get('MDMaintenance', 'MDMaintenance::index');
     $routes->get('MDMaintenance/create', 'MDMaintenance::create');
