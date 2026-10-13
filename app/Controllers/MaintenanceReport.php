@@ -37,6 +37,7 @@ class MaintenanceReport extends BaseController
     private function rules(): array
     {
         return [
+            'tanggal_report' => 'required|valid_date[Y-m-d]',
             'nama'           => 'required|max_length[255]',
             'id_pelanggan'   => 'required|max_length[100]',
             'nama_pelanggan' => 'required|max_length[255]',
@@ -54,6 +55,7 @@ class MaintenanceReport extends BaseController
         $post = fn (string $k) => trim((string) $this->request->getPost($k));
 
         return [
+            'tanggal_report'        => $post('tanggal_report'),
             'nama'                  => $post('nama'),
             'id_pelanggan'          => $post('id_pelanggan'),
             'nama_pelanggan'        => $post('nama_pelanggan'),

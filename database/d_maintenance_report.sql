@@ -1,8 +1,10 @@
 -- Tabel Maintenance Report (menu Report NOC > Maintenance Report)
 -- nama: petugas, dipilih dari data shift (jadwal_noc)
+-- tanggal_report: tanggal report yang diisi manual di form
 -- maintenance / perpindahan_perangkat: kotak ceklis (1 = dicentang)
 CREATE TABLE IF NOT EXISTS `d_maintenance_report` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tanggal_report` date DEFAULT NULL,
   `nama` varchar(255) NOT NULL,
   `id_pelanggan` varchar(100) NOT NULL,
   `nama_pelanggan` varchar(255) NOT NULL,
@@ -18,3 +20,6 @@ CREATE TABLE IF NOT EXISTS `d_maintenance_report` (
   PRIMARY KEY (`id`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Untuk tabel yang sudah ada:
+-- ALTER TABLE `d_maintenance_report` ADD `tanggal_report` date DEFAULT NULL AFTER `id`;

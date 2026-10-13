@@ -10,6 +10,7 @@ class MaintenanceReportModel extends BaseModel
     protected $primaryKey       = 'id';
 
     protected $allowedFields = [
+        'tanggal_report',
         'nama',
         'id_pelanggan',
         'nama_pelanggan',

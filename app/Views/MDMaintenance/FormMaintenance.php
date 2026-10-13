@@ -216,6 +216,15 @@
         .brand-text {
             font-size: 18px;
         }
+
+        /* Dark mode: kotak form tetap putih, jadi judul dan teks ID dibuat hitam agar terbaca */
+        html.dark .form-container h2 {
+            color: #000 !important;
+        }
+
+        html.dark .form-container input[readonly] {
+            color: #000 !important;
+        }
     </style>
     <?= view('partials/theme') ?>
 </head>

@@ -189,9 +189,18 @@
             border-color: #f1f5f9;
         }
 
-        .dark #aksiMenu { background: #263240; border-color: rgba(255, 255, 255, .1); }
-        .dark #aksiMenu button { color: #bfc8d6; }
-        .dark #aksiMenu button:hover { background: rgba(255, 255, 255, .05); }
+        .dark #aksiMenu {
+            background: #263240;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .dark #aksiMenu button {
+            color: #bfc8d6;
+        }
+
+        .dark #aksiMenu button:hover {
+            background: rgba(255, 255, 255, .05);
+        }
 
         /* ===== JUMLAH PER GROUP ===== */
         .grup-count {
@@ -222,10 +231,22 @@
             font-size: 22px;
         }
 
-        .rekap-red { background: #fde8ec; }
-        .rekap-amber { background: #fdf3e3; }
-        .rekap-blue { background: #e3edfb; }
-        .rekap-green { background: #e7f8f1; }
+        .rekap-red {
+            background: #fde8ec;
+        }
+
+        .rekap-amber {
+            background: #fdf3e3;
+        }
+
+        .rekap-blue {
+            background: #e3edfb;
+        }
+
+        .rekap-green {
+            background: #e7f8f1;
+        }
+
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -717,7 +738,7 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                 <li>
+                <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
@@ -811,17 +832,23 @@
                                     <th>Kendala</th>
                                     <th>No Tiket</th>
                                     <th>Action</th>
+                                    <th>Tanggal Report</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (!empty($report)) : ?>
                                     <?php $no = 1; ?>
+                                    <?php $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']; ?>
                                     <?php foreach ($report as $row) : ?>
                                         <?php
                                         $jenis = [];
                                         if (!empty($row['maintenance'])) $jenis[] = 'Maintenance';
                                         if (!empty($row['perpindahan_perangkat'])) $jenis[] = 'Perpindahan Perangkat';
+                                        // Tanggal report diisi manual; data lama pakai created_at. Format: 1 Oktober 2026
+                                        $tglRaw = ($row['tanggal_report'] ?? '') ?: ($row['created_at'] ?? '');
+                                        $ts = $tglRaw ? strtotime($tglRaw) : false;
+                                        $tglReport = $ts ? date('j', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts) : '-';
                                         ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
@@ -844,6 +871,7 @@
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['kendala']); ?></td>
                                             <td><?= esc($row['no_tiket']); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action']); ?></td>
+                                            <td data-order="<?= esc($tglRaw, 'attr') ?>"><?= esc($tglReport); ?></td>
                                             <td><span class="badge <?= $statusList[$row['status']] ?? 'badge-draft' ?>"><?= esc($row['status']); ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -870,6 +898,10 @@
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" id="r_id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Tanggal Report <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_report" id="r_tanggal_report" required class="w-full border rounded-lg p-3">
+                    </div>
                     <div class="md:col-span-2">
                         <label class="text-sm font-medium">Nama <span class="text-red-500">*</span></label>
                         <!-- nama diambil dari data shift (jadwal_noc), seperti Daily Report -->
@@ -980,6 +1012,10 @@
                     <div class="font-medium" id="v_jenis"></div>
                 </div>
                 <div>
+                    <div class="text-gray-500">Tanggal Report</div>
+                    <div class="font-medium" id="v_tanggal_report"></div>
+                </div>
+                <div>
                     <div class="text-gray-500">Dibuat</div>
                     <div class="font-medium" id="v_created"></div>
                 </div>
@@ -1009,7 +1045,8 @@
 
     <script>
         // ====== MENU AKSI (titik tiga) ======
-        let aksiRow = null, aksiOwner = null;
+        let aksiRow = null,
+            aksiOwner = null;
 
         function toggleAksiMenu(e, btn) {
             e.stopPropagation();
@@ -1024,8 +1061,10 @@
 
             // di bawah tombol; pindah ke atas / geser kiri jika mentok layar
             const r = btn.getBoundingClientRect();
-            const mw = menu.offsetWidth, mh = menu.offsetHeight;
-            let top = r.bottom + 4, left = r.left;
+            const mw = menu.offsetWidth,
+                mh = menu.offsetHeight;
+            let top = r.bottom + 4,
+                left = r.left;
             if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
             if (left + mw > window.innerWidth) left = window.innerWidth - mw - 8;
             menu.style.top = top + 'px';
@@ -1057,7 +1096,13 @@
         window.addEventListener('resize', closeAksiMenu);
 
         // ====== VIEW ======
-        const tglIndo = t => t ? t.split('-').reverse().join('-') : '-';
+        const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        // '2026-10-01' -> '1 Oktober 2026'
+        const tglIndo = t => {
+            if (!t) return '-';
+            const [y, m, d] = t.split('-');
+            return Number(d) + ' ' + BULAN[Number(m) - 1] + ' ' + y;
+        };
         const STATUS_BADGE = <?= json_encode($statusList) ?>;
 
         function openViewModal(d) {
@@ -1075,6 +1120,7 @@
             if (Number(d.maintenance)) jenis.push('Maintenance');
             if (Number(d.perpindahan_perangkat)) jenis.push('Perpindahan Perangkat');
             set('v_jenis', jenis.join(', '));
+            set('v_tanggal_report', tglIndo((d.tanggal_report || d.created_at || '').substring(0, 10)));
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             const st = document.getElementById('v_status');
@@ -1117,6 +1163,8 @@
             document.getElementById('reportSubmit').textContent = isEdit ? 'Update' : 'Simpan';
 
             document.getElementById('r_id').value = d.id || '';
+            const hariIni = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+            document.getElementById('r_tanggal_report').value = d.tanggal_report || (d.created_at || '').substring(0, 10) || hariIni;
             setNama(d.nama || '');
             document.getElementById('r_id_pelanggan').value = d.id_pelanggan || '';
             document.getElementById('r_nama_pelanggan').value = d.nama_pelanggan || '';
@@ -1138,7 +1186,7 @@
 
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_nama', 'r_id_pelanggan', 'r_nama_pelanggan', 'r_alamat', 'r_odp_port', 'r_no_tiket', 'r_kendala', 'r_action', 'r_status']
+            const wajib = ['r_tanggal_report', 'r_nama', 'r_id_pelanggan', 'r_nama_pelanggan', 'r_alamat', 'r_odp_port', 'r_no_tiket', 'r_kendala', 'r_action', 'r_status']
                 .map(id => document.getElementById(id).value.trim());
 
             if (wajib.includes('')) {
@@ -1155,7 +1203,7 @@
 
         <?php
         // Gagal validasi di server: buka lagi pop up dengan isian terakhir
-        $oldKeys = ['id', 'nama', 'id_pelanggan', 'nama_pelanggan', 'alamat', 'odp_port', 'maintenance', 'perpindahan_perangkat', 'kendala', 'no_tiket', 'action', 'status'];
+        $oldKeys = ['id', 'tanggal_report', 'nama', 'id_pelanggan', 'nama_pelanggan', 'alamat', 'odp_port', 'maintenance', 'perpindahan_perangkat', 'kendala', 'no_tiket', 'action', 'status'];
         $oldData = [];
         foreach ($oldKeys as $k) {
             $oldData[$k] = old($k, null, false);
@@ -1186,7 +1234,9 @@
         }
 
         function isTableEmpty(table) {
-            return table.rows({ search: 'applied' }).data().length === 0;
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
         }
 
         function showEmptyExportAlert() {
@@ -1260,13 +1310,17 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
+                    setTimeout(() => {
+                        progressBar.style.width = "0%";
+                    }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => { alertBox.remove(); }, 500);
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
                 }, 3000);
             }
         });

@@ -90,18 +90,20 @@ class RFOModel extends BaseModel
 
     /**
      * RFO ID berikutnya untuk tanggal hari ini: RFO-ddmmyyyy-NNN.
-     * Nomor urut dimulai dari 001 dan reset setiap ganti tanggal.
+     * Nomor urut lanjut terus antar hari dan reset ke 001 setiap ganti bulan.
      */
     public function generateRfoId(): string
     {
         $prefix = 'RFO-' . date('dmY') . '-';
 
-        $last = $this->select('rfo_id')
-            ->like('rfo_id', $prefix, 'after')
-            ->orderBy('rfo_id', 'DESC')
-            ->first();
+        // Cari nomor urut terbesar dari semua RFO di bulan ini (RFO-__mmyyyy-NNN), tanggal berapa pun
+        $last = $this->builder()
+            ->select("MAX(CAST(SUBSTRING_INDEX(rfo_id, '-', -1) AS UNSIGNED)) AS seq", false)
+            ->where("rfo_id LIKE 'RFO-__" . date('mY') . "-%'", null, false)
+            ->get()
+            ->getRowArray();
 
-        $next = $last ? ((int) substr($last['rfo_id'], strlen($prefix))) + 1 : 1;
+        $next = ((int) ($last['seq'] ?? 0)) + 1;
 
         return $prefix . str_pad((string) $next, 3, '0', STR_PAD_LEFT);
     }
