@@ -148,7 +148,7 @@
             color: #1e4fa3;
         }
 
-        #aksiMenu {
+        :is(#aksiMenu, #statusMenu) {
             position: fixed;
             z-index: 1050;
             min-width: 190px;
@@ -159,7 +159,7 @@
             padding: 6px;
         }
 
-        #aksiMenu .aksi-title {
+        :is(#aksiMenu, #statusMenu) .aksi-title {
             padding: 6px 12px 8px;
             font-size: 11px;
             font-weight: 700;
@@ -170,7 +170,7 @@
             margin-bottom: 4px;
         }
 
-        #aksiMenu button {
+        :is(#aksiMenu, #statusMenu) button {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -182,28 +182,48 @@
             text-align: left;
         }
 
-        #aksiMenu button i {
+        :is(#aksiMenu, #statusMenu) button i {
             font-size: 17px;
             color: #64748b;
         }
 
-        #aksiMenu button:hover {
+        :is(#aksiMenu, #statusMenu) button:hover {
             background: #f3f4f6;
         }
 
-        #aksiMenu button.danger,
-        #aksiMenu button.danger i {
+        :is(#aksiMenu, #statusMenu) button.danger,
+        :is(#aksiMenu, #statusMenu) button.danger i {
             color: #dc2626;
         }
 
-        #aksiMenu hr {
+        :is(#aksiMenu, #statusMenu) hr {
             margin: 4px 0;
             border-color: #f1f5f9;
         }
 
-        .dark #aksiMenu { background: #263240; border-color: rgba(255, 255, 255, .1); }
-        .dark #aksiMenu button { color: #bfc8d6; }
-        .dark #aksiMenu button:hover { background: rgba(255, 255, 255, .05); }
+        .dark :is(#aksiMenu, #statusMenu) { background: #263240; border-color: rgba(255, 255, 255, .1); }
+        .dark :is(#aksiMenu, #statusMenu) button { color: #bfc8d6; }
+        .dark :is(#aksiMenu, #statusMenu) button:hover { background: rgba(255, 255, 255, .05); }
+
+        /* ===== CARD REKAP (bisa diklik) ===== */
+        .rekap-card { cursor: pointer; transition: transform .15s, box-shadow .15s; }
+        .rekap-card:hover,
+        .rekap-card:focus-visible { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, .1); outline: none; }
+
+        /* ===== MENU STATUS GANGGUAN (titik tiga di card Gangguan) ===== */
+        #statusMenu button { justify-content: space-between; }
+        #statusMenu button.active { background: #eef4ff; color: #1e4fa3; font-weight: 600; }
+        #statusMenu .st-count {
+            min-width: 26px;
+            padding: 1px 8px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .dark #statusMenu button.active { background: rgba(4, 169, 245, .15); color: #7cc8f5; }
+        .dark #statusMenu .st-count { background: rgba(255, 255, 255, .08); }
 
         /* ===== JUMLAH PER GROUP ===== */
         .grup-count {
@@ -821,14 +841,24 @@
             <!-- REKAP PER JENIS DATA -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
                 <?php foreach ($dataCards as $key => $card) : ?>
-                    <div class="card mb-0">
+                    <!-- klik card: buka Shift Handover report terbaru, tab sesuai card -->
+                    <div class="card mb-0 rekap-card" role="link" tabindex="0" title="Buka <?= esc($card['label'], 'attr') ?> report terbaru"
+                        onclick="bukaRekapCard('<?= $key ?>')" onkeydown="if (event.key === 'Enter' && event.target === this) bukaRekapCard('<?= $key ?>')">
                         <div class="card-body">
                             <div class="flex items-center gap-4">
                                 <div class="grup-icon <?= $card['color'] ?>"><?= $card['icon'] ?></div>
-                                <div>
-                                    <div class="text-[12px] uppercase tracking-wide text-gray-500 font-semibold"><?= $card['label'] ?></div>
-                                    <div class="text-2xl font-bold leading-tight"><?= $dataCount[$key] ?? 0 ?></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-[12px] uppercase tracking-wide text-gray-500 font-semibold">
+                                        <?= $card['label'] ?>
+                                        <span data-rekap-label="<?= $key ?>" class="normal-case tracking-normal text-primary-500"></span>
+                                    </div>
+                                    <!-- angka diganti sesuai filter Kategori di header -->
+                                    <div class="text-2xl font-bold leading-tight" data-rekap="<?= $key ?>"><?= $dataCount[$kategoriOptions[0] ?? ''][$key] ?? 0 ?></div>
                                 </div>
+                                <!-- titik tiga: filter & hitung per status (follow up: priority) -->
+                                <button type="button" onclick="toggleStatusMenu(event, this, '<?= $key ?>')" title="<?= esc($rekapStatusList[$key][2] ?? '', 'attr') ?>" class="aksi-btn self-start shrink-0">
+                                    <i class="ti ti-dots-vertical"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1066,6 +1096,9 @@
     </div>
 
     <!-- ====== MENU AKSI (titik tiga) ====== -->
+    <!-- Menu status (titik tiga di card rekap); isi dibuat JS sesuai card; memakai gaya #aksiMenu -->
+    <div id="statusMenu" class="hidden" role="menu"></div>
+
     <div id="aksiMenu" class="hidden" role="menu">
         <div class="aksi-title">Aksi</div>
         <button type="button" onclick="aksiRun('edit')"><i class="ti ti-edit"></i> Edit</button>
@@ -1084,6 +1117,7 @@
 
         function toggleAksiMenu(e, btn) {
             e.stopPropagation();
+            closeStatusMenu();
             const menu = document.getElementById('aksiMenu');
             if (aksiOwner === btn && !menu.classList.contains('hidden')) return closeAksiMenu();
 
@@ -1135,6 +1169,111 @@
         window.addEventListener('scroll', closeAksiMenu, true);
         window.addEventListener('resize', closeAksiMenu);
 
+        // ====== STATUS PER CARD REKAP (titik tiga di card Gangguan/Follow Up/Pengiriman/Maintenance) ======
+        // REKAP_STATUS: [jenis => [kategori => [status => jumlah]]]; ikut filter Kategori di header
+        const REKAP_STATUS = <?= json_encode($rekapStatus) ?>;
+        const REKAP_MENU = <?= json_encode(array_map(static fn ($s) => ['judul' => $s[2], 'nilai' => $s[3]], $rekapStatusList)) ?>;
+        const statusTerpilih = {}; // [jenis => status], '' = semua
+        let statusMenuJenis = null;
+
+        function jumlahRekap(jenis, kategori, status) {
+            const per = (REKAP_STATUS[jenis] || {})[kategori] || {};
+            return status ? (per[status] || 0) : Object.values(per).reduce((a, b) => a + b, 0);
+        }
+
+        // Angka card + label status terpilih (hanya card yang statusnya dipilih)
+        function renderRekapStatus() {
+            const kategori = document.getElementById('filterKategori').value;
+            Object.keys(statusTerpilih).forEach(jenis => {
+                const st = statusTerpilih[jenis];
+                document.querySelector('[data-rekap="' + jenis + '"]').textContent = jumlahRekap(jenis, kategori, st);
+                document.querySelector('[data-rekap-label="' + jenis + '"]').textContent = st ? '· ' + st : '';
+            });
+        }
+
+        // Isi menu sesuai card: judul, "Semua", lalu setiap status beserta jumlahnya
+        function buildStatusMenu(jenis) {
+            const kategori = document.getElementById('filterKategori').value;
+            const cfg = REKAP_MENU[jenis];
+            const aktif = statusTerpilih[jenis] || '';
+            const menu = document.getElementById('statusMenu');
+            menu.innerHTML = '';
+
+            const title = document.createElement('div');
+            title.className = 'aksi-title';
+            title.textContent = cfg.judul;
+            menu.appendChild(title);
+
+            ['', ...cfg.nilai].forEach((st, i) => {
+                if (i === 1) menu.appendChild(document.createElement('hr'));
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = st === aktif ? 'active' : '';
+                b.innerHTML = '<span></span><span class="st-count"></span>';
+                b.children[0].textContent = st || 'Semua';
+                b.children[1].textContent = jumlahRekap(jenis, kategori, st);
+                b.addEventListener('click', () => pilihStatusRekap(jenis, st));
+                menu.appendChild(b);
+            });
+        }
+
+        function toggleStatusMenu(e, btn, jenis) {
+            e.stopPropagation();
+            const menu = document.getElementById('statusMenu');
+            const bukaUlang = menu.classList.contains('hidden') || statusMenuJenis !== jenis;
+            closeStatusMenu();
+            if (!bukaUlang) return;
+
+            closeAksiMenu();
+            statusMenuJenis = jenis;
+            buildStatusMenu(jenis);
+            btn.classList.add('open');
+            menu.classList.remove('hidden');
+
+            // di bawah tombol, rata kanan; pindah ke atas jika mentok layar
+            const r = btn.getBoundingClientRect();
+            const mw = menu.offsetWidth, mh = menu.offsetHeight;
+            let top = r.bottom + 4, left = Math.max(8, r.right - mw);
+            if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
+            menu.style.top = top + 'px';
+            menu.style.left = left + 'px';
+        }
+
+        function closeStatusMenu() {
+            document.getElementById('statusMenu').classList.add('hidden');
+            document.querySelectorAll('.aksi-btn.open').forEach(b => b.classList.remove('open'));
+            statusMenuJenis = null;
+        }
+
+        // Klik card: Shift Handover report terbaru di kategori terpilih, langsung ke tab card tsb
+        const REPORT_TERBARU = <?= json_encode((object) $reportTerbaru) ?>;
+        const URL_HANDOVER = "<?= site_url('HistoryReport/gangguan') ?>/";
+
+        function bukaRekapCard(jenis) {
+            const kategori = document.getElementById('filterKategori').value;
+            const id = REPORT_TERBARU[kategori];
+            if (!id) {
+                Swal.fire({ icon: 'info', title: 'Belum Ada Report', text: 'Belum ada Daily Report untuk kategori ' + kategori + '.', confirmButtonColor: '#185a82' });
+                return;
+            }
+            window.location.href = URL_HANDOVER + id + (jenis === 'gangguan' ? '' : '?tab=' + jenis);
+        }
+
+        function pilihStatusRekap(jenis, status) {
+            statusTerpilih[jenis] = status;
+            closeStatusMenu();
+            renderRekapStatus();
+        }
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#statusMenu')) closeStatusMenu();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeStatusMenu();
+        });
+        window.addEventListener('scroll', closeStatusMenu, true);
+        window.addEventListener('resize', closeStatusMenu);
+
         // ====== DUPLIKAT / COPY / DETAIL ======
         const hm = t => t ? String(t).substring(0, 5) : '-';
         const tglIndo = t => t ? t.split('-').reverse().join('-') : '-';
@@ -1147,6 +1286,7 @@
             const idx = urutShift.indexOf(d.shift);
             const shiftBaru = idx === -1 ? d.shift : urutShift[(idx + 1) % urutShift.length];
             openReportModal({ ...d, id: '', tanggal: todayStr(), shift: shiftBaru });
+            isiJamShift(shiftBaru); // jam ikut shift baru, bukan jam baris asal
             document.getElementById('r_duplikat_dari').value = d.id;
             document.getElementById('reportModalTitle').textContent = 'Duplikat Daily Report';
         }
@@ -1223,6 +1363,23 @@
             if (manual && focus) inp.focus();
         }
         document.getElementById('r_pic_shift').addEventListener('change', () => togglePicManual(true));
+
+        // Jam otomatis sesuai shift (masih bisa diubah manual)
+        const JAM_SHIFT = {
+            Pagi: ['06:00', '14:00'],
+            Siang: ['14:00', '22:00'],
+            Malam: ['22:00', '06:00'],
+        };
+
+        function isiJamShift(shift) {
+            const jam = JAM_SHIFT[shift];
+            if (!jam) return;
+            document.getElementById('r_jam_mulai').value = jam[0];
+            document.getElementById('r_jam_selesai').value = jam[1];
+        }
+        document.getElementById('r_shift').addEventListener('change', function() {
+            isiJamShift(this.value);
+        });
 
         // Pilih PIC; nama yang tidak ada lagi di data shift tetap ditampilkan (seperti Jadwal Piket)
         function setPic(nama) {
@@ -1535,9 +1692,15 @@
             const kategoriCol = $('#reportTable thead th').filter(function() {
                 return $(this).text().trim() === 'Kategori';
             }).index();
+            // Card rekap (gangguan, follow up, pengiriman, maintenance) per kategori
+            const DATA_COUNT = <?= json_encode($dataCount) ?>;
             $('#filterKategori').on('change', function() {
                 const v = this.value;
                 table.column(kategoriCol).search('^' + $.fn.dataTable.util.escapeRegex(v) + '$', true, false).draw();
+                $('[data-rekap]').each(function() {
+                    this.textContent = (DATA_COUNT[v] || {})[this.dataset.rekap] || 0;
+                });
+                renderRekapStatus(); // card mengikuti status terpilih di menu titik tiga
             }).trigger('change'); // kategori pertama langsung terfilter saat halaman dibuka
 
             $('#customSearch').on('keyup', function() {

@@ -152,7 +152,10 @@ class Gangguan extends BaseController
 
         $this->gangguanModel->update($id, $fields);
 
-        return $this->backToList($row['report_id'], 'Data gangguan berhasil diperbarui.');
+        // Kolom berantai (status/priority) baris asal di shift sebelumnya (hasil duplikat) ikut disamakan
+        $ikut = $this->gangguanModel->samakanShiftSebelumnya($row, $fields);
+
+        return $this->backToList($row['report_id'], 'Data gangguan berhasil diperbarui.' . GangguanModel::pesanBerantai($ikut));
     }
 
     // Hapus data
@@ -164,6 +167,7 @@ class Gangguan extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data gangguan tidak ditemukan.');
         }
 
+        $this->gangguanModel->sambungRantai($row); // salinan di shift berikutnya tetap tersambung ke shift sebelumnya
         $this->gangguanModel->delete($id);
 
         return $this->backToList($row['report_id'], 'Data gangguan berhasil dihapus.');

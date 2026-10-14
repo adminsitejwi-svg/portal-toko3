@@ -404,6 +404,29 @@
             display: none;
         }
 
+        /* ===== FILTER DROPDOWN ===== */
+        .filter-select {
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: #3b4754;
+            background: #fff;
+            outline: none;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #04a9f5;
+        }
+
+        .dark .filter-select {
+            background: #263240;
+            color: #bfc8d6;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
         .custom-search {
             position: relative;
             width: 240px;
@@ -805,8 +828,37 @@
                 <div class="card-body">
 
                     <!-- TOOLBAR -->
+                    <?php
+                    // Opsi filter: nilai unik (satu pelanggan / tiket bisa muncul di beberapa report)
+                    $opsiUnik = static function (array $rows, string $kolom): array {
+                        $nilai = array_unique(array_filter(array_map('trim', array_column($rows, $kolom)), 'strlen'));
+                        natcasesort($nilai);
+                        return $nilai;
+                    };
+                    ?>
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                        <div id="lengthArea"></div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div id="lengthArea"></div>
+                            <!-- FILTER -->
+                            <select id="filterStatus" class="filter-select" title="Filter Status">
+                                <option value="">Semua Status</option>
+                                <?php foreach (array_keys($statusList) as $st) : ?>
+                                    <option value="<?= esc($st) ?>"><?= esc($st) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="filterIdPelanggan" class="filter-select" title="Filter ID Pelanggan">
+                                <option value="">Semua ID Pelanggan</option>
+                                <?php foreach ($opsiUnik($report, 'id_pelanggan') as $idp) : ?>
+                                    <option value="<?= esc($idp) ?>"><?= esc($idp) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="filterNoTiket" class="filter-select" title="Filter No Tiket">
+                                <option value="">Semua No Tiket</option>
+                                <?php foreach ($opsiUnik($report, 'no_tiket') as $tiket) : ?>
+                                    <option value="<?= esc($tiket) ?>"><?= esc($tiket) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="flex items-center gap-3 flex-wrap">
                             <div class="custom-search">
                                 <input type="text" id="customSearch" placeholder="search..." />
@@ -863,16 +915,16 @@
                                                 </button>
                                             </td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['nama']); ?></td>
-                                            <td><?= esc($row['id_pelanggan']); ?></td>
+                                            <td data-search="<?= esc(trim($row['id_pelanggan']), 'attr') ?>"><?= esc($row['id_pelanggan']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
                                             <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['alamat']); ?></td>
                                             <td class="whitespace-normal min-w-[120px]"><?= esc($row['odp_port']); ?></td>
                                             <td class="whitespace-normal min-w-[150px]"><?= $jenis ? esc(implode(', ', $jenis)) : '-' ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['kendala']); ?></td>
-                                            <td><?= esc($row['no_tiket']); ?></td>
+                                            <td data-search="<?= esc(trim($row['no_tiket']), 'attr') ?>"><?= esc($row['no_tiket']); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action']); ?></td>
                                             <td data-order="<?= esc($tglRaw, 'attr') ?>"><?= esc($tglReport); ?></td>
-                                            <td><span class="badge <?= $statusList[$row['status']] ?? 'badge-draft' ?>"><?= esc($row['status']); ?></span></td>
+                                            <td data-search="<?= esc($row['status'], 'attr') ?>"><span class="badge <?= $statusList[$row['status']] ?? 'badge-draft' ?>"><?= esc($row['status']); ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -1445,6 +1497,21 @@
 
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
+
+            // ====== FILTER DROPDOWN (cocok persis pada kolom) ======
+            function filterColumn(col, value) {
+                const re = value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '';
+                table.column(col).search(re, true, false).draw();
+            }
+            $('#filterStatus').on('change', function() {
+                filterColumn(12, this.value);
+            });
+            $('#filterIdPelanggan').on('change', function() {
+                filterColumn(3, this.value);
+            });
+            $('#filterNoTiket').on('change', function() {
+                filterColumn(9, this.value);
+            });
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();

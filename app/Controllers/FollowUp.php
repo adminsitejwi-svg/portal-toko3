@@ -93,7 +93,10 @@ class FollowUp extends BaseController
 
         $this->followUpModel->update($id, $fields);
 
-        return $this->backToList($row['report_id'], 'Data follow up berhasil diperbarui.');
+        // Priority baris asal di shift sebelumnya (hasil duplikat) ikut disamakan
+        $ikut = $this->followUpModel->samakanShiftSebelumnya($row, $fields);
+
+        return $this->backToList($row['report_id'], 'Data follow up berhasil diperbarui.' . FollowUpModel::pesanBerantai($ikut));
     }
 
     // Hapus data
@@ -105,6 +108,7 @@ class FollowUp extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data follow up tidak ditemukan.');
         }
 
+        $this->followUpModel->sambungRantai($row); // salinan di shift berikutnya tetap tersambung ke shift sebelumnya
         $this->followUpModel->delete($id);
 
         return $this->backToList($row['report_id'], 'Data follow up berhasil dihapus.');

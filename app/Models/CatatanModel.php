@@ -6,11 +6,17 @@ use App\Models\BaseModel;
 
 class CatatanModel extends BaseModel
 {
+    use StatusBerantaiTrait;
+
+    // Kolom yang ikut disamakan ke shift sebelumnya (hasil duplikat) saat diubah
+    protected array $kolomBerantai = ['priority'];
+
     protected $table            = 'd_catatan';
     protected $primaryKey       = 'id';
 
     protected $allowedFields = [
         'report_id',
+        'asal_id', // id baris asal (shift sebelumnya) bila hasil duplikat
         'grup',
         'kategori',
         'priority',

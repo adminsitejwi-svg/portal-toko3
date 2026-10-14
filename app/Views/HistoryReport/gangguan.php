@@ -281,6 +281,29 @@
             display: none;
         }
 
+        /* ===== FILTER DROPDOWN ===== */
+        .filter-select {
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: #3b4754;
+            background: #fff;
+            outline: none;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #04a9f5;
+        }
+
+        .dark .filter-select {
+            background: #263240;
+            color: #bfc8d6;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
         .custom-search {
             position: relative;
             width: 240px;
@@ -867,7 +890,28 @@
 
                         <!-- TOOLBAR -->
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis) -->
+                                <select class="filter-select col-filter" data-col="6" title="Filter Status">
+                                    <option value="">Semua Status</option>
+                                    <?php foreach ($statusOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select class="filter-select col-filter" data-col="2" title="Filter Group">
+                                    <option value="">Semua Group</option>
+                                    <?php foreach ($grupOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select class="filter-select col-filter" data-col="7" title="Filter Priority">
+                                    <option value="">Semua Priority</option>
+                                    <?php foreach ($priorityOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -955,7 +999,21 @@
 
                         <!-- TOOLBAR -->
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis) -->
+                                <select class="filter-select col-filter" data-col="2" title="Filter Group">
+                                    <option value="">Semua Group</option>
+                                    <?php foreach ($grupOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select class="filter-select col-filter" data-col="4" title="Filter Priority">
+                                    <option value="">Semua Priority</option>
+                                    <?php foreach ($priorityOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -1015,8 +1073,7 @@
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['customer_site']); ?></td>
-                                            <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>
-                                            <td data-order="<?= esc($row['due_date'] ?? '') ?>"><?= $row['due_date'] ? date('d-m-Y', strtotime($row['due_date'])) : '-'; ?></td>
+                                            <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>                                            <td data-order="<?= esc($row['due_date'] ?? '') ?>"><?= $row['due_date'] ? date('d-m-Y', strtotime($row['due_date'])) : '-'; ?></td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
                                             <?= $tdTeks($row['issue'], 'Issue', $row['customer_site']); ?>
                                             <?= $tdTeks($row['action'], 'Action / Next Step', $row['customer_site']); ?>
@@ -1037,7 +1094,22 @@
 
                         <!-- TOOLBAR -->
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis) -->
+                                <select class="filter-select col-filter" data-col="2" title="Filter Group">
+                                    <option value="">Semua Group</option>
+                                    <?php foreach ($grupOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select class="filter-select col-filter" data-col="6" title="Filter Status">
+                                    <option value="">Semua Status</option>
+                                    <?php foreach ($pengirimanStatusOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -1119,7 +1191,22 @@
 
                         <!-- TOOLBAR -->
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis) -->
+                                <select class="filter-select col-filter" data-col="2" title="Filter Group">
+                                    <option value="">Semua Group</option>
+                                    <?php foreach ($grupOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select class="filter-select col-filter" data-col="6" title="Filter Status">
+                                    <option value="">Semua Status</option>
+                                    <?php foreach ($maintenanceStatusOptions as $opt) : ?>
+                                        <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -1202,8 +1289,27 @@
                     <div class="card-body">
 
                         <!-- TOOLBAR -->
+                        <?php
+                        // Opsi filter aktivasi: nilai unik dari data (teks bebas, bukan pilihan tetap)
+                        $opsiAktivasi = static function (string $kolom) use ($aktivasi): array {
+                            $nilai = array_unique(array_filter(array_map('trim', array_column($aktivasi, $kolom)), 'strlen'));
+                            natcasesort($nilai);
+                            return $nilai;
+                        };
+                        ?>
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis) -->
+                                <?php foreach (['id_pelanggan' => [2, 'ID Pelanggan'], 'nama_pelanggan' => [3, 'Nama Pelanggan'], 'sn' => [5, 'SN']] as $kolom => [$col, $label]) : ?>
+                                    <select class="filter-select col-filter max-w-[200px]" data-col="<?= $col ?>" title="Filter <?= $label ?>">
+                                        <option value="">Semua <?= $label ?></option>
+                                        <?php foreach ($opsiAktivasi($kolom) as $opt) : ?>
+                                            <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php endforeach; ?>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -1259,10 +1365,11 @@
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </td>
-                                            <td><?= esc($row['id_pelanggan']); ?></td>
-                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
+                                            <!-- data-search: nilai tanpa spasi tepi, dicocokkan persis oleh filter dropdown -->
+                                            <td data-search="<?= esc(trim($row['id_pelanggan']), 'attr') ?>"><?= esc($row['id_pelanggan']); ?></td>
+                                            <td data-search="<?= esc(trim($row['nama_pelanggan']), 'attr') ?>" class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
                                             <td><?= esc($row['kapasitas_mbps']); ?></td>
-                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['sn']); ?></td>
+                                            <td data-search="<?= esc(trim($row['sn']), 'attr') ?>" class="whitespace-normal min-w-[140px]"><?= esc($row['sn']); ?></td>
                                             <td data-order="<?= esc($row['tanggal_aktivasi'] ?? '') ?>"><?= $row['tanggal_aktivasi'] ? date('d-m-Y', strtotime($row['tanggal_aktivasi'])) : '-'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -1281,7 +1388,23 @@
 
                         <!-- TOOLBAR -->
                         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                            <div class="length-area"></div>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="length-area"></div>
+                                <!-- FILTER: data-col = indeks kolom tabel (cocok persis); pilihan sama dengan form catatan -->
+                                <?php foreach ([
+                                    [2, 'Group', $catatanGrupOptions],
+                                    [3, 'Kategori', $catatanKategoriOptions],
+                                    [4, 'Priority', $priorityOptions],
+                                    [5, 'Status', $catatanStatusOptions],
+                                ] as [$col, $label, $opsi]) : ?>
+                                    <select class="filter-select col-filter" data-col="<?= $col ?>" title="Filter <?= $label ?>">
+                                        <option value="">Semua <?= $label ?></option>
+                                        <?php foreach ($opsi as $opt) : ?>
+                                            <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php endforeach; ?>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -2230,6 +2353,12 @@
                 });
                 $search.on('keypress', function(e) {
                     if (e.which === 13) table.search(this.value).draw();
+                });
+
+                // Filter dropdown (cocok persis pada kolom data-col)
+                $panel.find('.col-filter').on('change', function() {
+                    const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
+                    table.column($(this).data('col')).search(re, true, false).draw();
                 });
             }
 

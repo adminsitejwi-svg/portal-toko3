@@ -94,7 +94,10 @@ class Maintenance extends BaseController
 
         $this->maintenanceModel->update($id, $fields);
 
-        return $this->backToList($row['report_id'], 'Data maintenance berhasil diperbarui.');
+        // Kolom berantai (status/priority) baris asal di shift sebelumnya (hasil duplikat) ikut disamakan
+        $ikut = $this->maintenanceModel->samakanShiftSebelumnya($row, $fields);
+
+        return $this->backToList($row['report_id'], 'Data maintenance berhasil diperbarui.' . MaintenanceModel::pesanBerantai($ikut));
     }
 
     // Hapus data
@@ -106,6 +109,7 @@ class Maintenance extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data maintenance tidak ditemukan.');
         }
 
+        $this->maintenanceModel->sambungRantai($row); // salinan di shift berikutnya tetap tersambung ke shift sebelumnya
         $this->maintenanceModel->delete($id);
 
         return $this->backToList($row['report_id'], 'Data maintenance berhasil dihapus.');

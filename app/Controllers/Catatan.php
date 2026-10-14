@@ -98,7 +98,10 @@ class Catatan extends BaseController
 
         $this->catatanModel->update($id, $fields);
 
-        return $this->backToList($row['report_id'], 'Data catatan berhasil diperbarui.');
+        // Priority baris asal di shift sebelumnya (hasil duplikat) ikut disamakan
+        $ikut = $this->catatanModel->samakanShiftSebelumnya($row, $fields);
+
+        return $this->backToList($row['report_id'], 'Data catatan berhasil diperbarui.' . CatatanModel::pesanBerantai($ikut));
     }
 
     // Hapus data
@@ -110,6 +113,7 @@ class Catatan extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data catatan tidak ditemukan.');
         }
 
+        $this->catatanModel->sambungRantai($row); // salinan di shift berikutnya tetap tersambung ke shift sebelumnya
         $this->catatanModel->delete($id);
 
         return $this->backToList($row['report_id'], 'Data catatan berhasil dihapus.');

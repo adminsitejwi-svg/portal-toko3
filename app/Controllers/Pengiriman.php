@@ -94,7 +94,10 @@ class Pengiriman extends BaseController
 
         $this->pengirimanModel->update($id, $fields);
 
-        return $this->backToList($row['report_id'], 'Data pengiriman berhasil diperbarui.');
+        // Kolom berantai (status/priority) baris asal di shift sebelumnya (hasil duplikat) ikut disamakan
+        $ikut = $this->pengirimanModel->samakanShiftSebelumnya($row, $fields);
+
+        return $this->backToList($row['report_id'], 'Data pengiriman berhasil diperbarui.' . PengirimanModel::pesanBerantai($ikut));
     }
 
     // Hapus data
@@ -106,6 +109,7 @@ class Pengiriman extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data pengiriman tidak ditemukan.');
         }
 
+        $this->pengirimanModel->sambungRantai($row); // salinan di shift berikutnya tetap tersambung ke shift sebelumnya
         $this->pengirimanModel->delete($id);
 
         return $this->backToList($row['report_id'], 'Data pengiriman berhasil dihapus.');

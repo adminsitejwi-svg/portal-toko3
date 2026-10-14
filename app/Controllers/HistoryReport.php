@@ -40,6 +40,11 @@ class HistoryReport extends BaseController
             'grupList'   => GangguanModel::GRUP,
             'kategoriOptions' => HistoryReportModel::KATEGORI,
             'dataCount'  => $this->dataCount(),
+            // Menu titik tiga di card rekap: filter & hitung per status
+            'rekapStatus'     => $this->rekapStatusCount(),
+            'rekapStatusList' => $this->rekapStatusList(),
+            // Klik card: buka Shift Handover report terbaru di kategori terpilih
+            'reportTerbaru'   => $this->reportTerbaru($report),
         ];
 
         return view('HistoryReport/index', $data);
@@ -113,10 +118,10 @@ class HistoryReport extends BaseController
     }
 
     /**
-     * Isi card rekap: jumlah data per jenis (gangguan, follow up, pengiriman, maintenance),
-     * dihitung langsung dari database.
+     * Isi card rekap: jumlah data per jenis (gangguan, follow up, pengiriman, maintenance)
+     * untuk setiap kategori report (ikut filter Kategori di header), dihitung langsung dari database.
      *
-     * @return array<string, int>
+     * @return array<string, array<string, int>> [kategori => [jenis => jumlah]]
      */
     private function dataCount(): array
     {
@@ -128,9 +133,79 @@ class HistoryReport extends BaseController
             'maintenance' => 'd_maintenance',
         ];
 
-        $count = [];
+        $count = array_fill_keys(HistoryReportModel::KATEGORI, array_fill_keys(array_keys($tables), 0));
         foreach ($tables as $key => $table) {
-            $count[$key] = $db->table($table)->countAllResults();
+            $rows = $db->table($table . ' t')
+                ->select('r.kategori, COUNT(*) AS jumlah')
+                ->join('d_report r', 'r.id = t.report_id')
+                ->where('r.kategori IS NOT NULL')
+                ->groupBy('r.kategori')
+                ->get()
+                ->getResultArray();
+
+            foreach ($rows as $r) {
+                $count[$r['kategori']][$key] = (int) $r['jumlah'];
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Report terbaru per kategori (tujuan klik card rekap). $report sudah urut
+     * tanggal & jam mulai terbaru, jadi baris pertama tiap kategori yang diambil.
+     *
+     * @return array<string, int> [kategori => report id]
+     */
+    private function reportTerbaru(array $report): array
+    {
+        $terbaru = [];
+        foreach ($report as $r) {
+            if (! empty($r['kategori']) && ! isset($terbaru[$r['kategori']])) {
+                $terbaru[$r['kategori']] = (int) $r['id'];
+            }
+        }
+
+        return $terbaru;
+    }
+
+    /**
+     * Pilihan menu titik tiga di setiap card rekap: [tabel, kolom, judul menu, daftar nilai].
+     * Follow up tidak punya kolom status, jadi memakai priority.
+     */
+    private function rekapStatusList(): array
+    {
+        return [
+            'gangguan'    => ['d_gangguan', 'status', 'Status Gangguan', GangguanModel::STATUS],
+            'followup'    => ['d_follow_up', 'priority', 'Priority Follow Up', ['High', 'Medium', 'Low']],
+            'pengiriman'  => ['d_pengiriman', 'status', 'Status Pengiriman', PengirimanModel::STATUS],
+            'maintenance' => ['d_maintenance', 'status', 'Status Maintenance', MaintenanceModel::STATUS],
+        ];
+    }
+
+    /**
+     * Isi menu titik tiga card rekap: jumlah data per status (follow up: priority)
+     * untuk setiap kategori report.
+     *
+     * @return array<string, array<string, array<string, int>>> [jenis => [kategori => [status => jumlah]]]
+     */
+    private function rekapStatusCount(): array
+    {
+        $db    = db_connect();
+        $count = [];
+        foreach ($this->rekapStatusList() as $key => [$table, $kolom, , $nilai]) {
+            $count[$key] = array_fill_keys(HistoryReportModel::KATEGORI, array_fill_keys($nilai, 0));
+            $rows = $db->table($table . ' t')
+                ->select('r.kategori, t.' . $kolom . ' AS nilai, COUNT(*) AS jumlah')
+                ->join('d_report r', 'r.id = t.report_id')
+                ->where('r.kategori IS NOT NULL')
+                ->groupBy('r.kategori, t.' . $kolom)
+                ->get()
+                ->getResultArray();
+
+            foreach ($rows as $r) {
+                $count[$key][$r['kategori']][$r['nilai']] = (int) $r['jumlah'];
+            }
         }
 
         return $count;
@@ -260,7 +335,12 @@ class HistoryReport extends BaseController
 
         foreach ($models as $model) {
             $rows = $model->where('report_id', $dariId)->orderBy('id', 'ASC')->findAll();
+            // Gangguan, pengiriman & maintenance: salinan mencatat baris asalnya (status berantai antar shift)
+            $berantai = method_exists($model, 'samakanShiftSebelumnya');
             foreach ($rows as $row) {
+                if ($berantai) {
+                    $row['asal_id'] = $row['id'];
+                }
                 unset($row['id'], $row['created_at']);
                 $row['report_id'] = $keId;
                 $model->insert($row);
