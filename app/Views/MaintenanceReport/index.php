@@ -118,90 +118,6 @@
             display: block;
         }
 
-        /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
-        .aksi-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #5b6b7f;
-        }
-
-        .aksi-btn:hover,
-        .aksi-btn.open {
-            background: #eef1f5;
-            color: #1e4fa3;
-        }
-
-        #aksiMenu {
-            position: fixed;
-            z-index: 1050;
-            min-width: 190px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
-            padding: 6px;
-        }
-
-        #aksiMenu .aksi-title {
-            padding: 6px 12px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: #94a3b8;
-            border-bottom: 1px solid #f1f5f9;
-            margin-bottom: 4px;
-        }
-
-        #aksiMenu button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #3b4754;
-            text-align: left;
-        }
-
-        #aksiMenu button i {
-            font-size: 17px;
-            color: #64748b;
-        }
-
-        #aksiMenu button:hover {
-            background: #f3f4f6;
-        }
-
-        #aksiMenu button.danger,
-        #aksiMenu button.danger i {
-            color: #dc2626;
-        }
-
-        #aksiMenu hr {
-            margin: 4px 0;
-            border-color: #f1f5f9;
-        }
-
-        .dark #aksiMenu {
-            background: #263240;
-            border-color: rgba(255, 255, 255, .1);
-        }
-
-        .dark #aksiMenu button {
-            color: #bfc8d6;
-        }
-
-        .dark #aksiMenu button:hover {
-            background: rgba(255, 255, 255, .05);
-        }
-
         /* ===== JUMLAH PER GROUP ===== */
         .grup-count {
             display: inline-block;
@@ -719,6 +635,7 @@
                     </ul>
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">NOC Operation</li>
                 <li>
                     <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
@@ -740,6 +657,31 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span class="flex-1">Report SAT Group</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
+                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
+                        <span class="flex-1">All NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                     </ul>
                 </li>
 
@@ -846,6 +788,12 @@
                                     <option value="<?= esc($st) ?>"><?= esc($st) ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <select id="filterJenis" class="filter-select" title="Filter Jenis">
+                                <option value="">Semua Jenis</option>
+                                <?php foreach (['Maintenance', 'Perpindahan Perangkat', 'Gangguan'] as $jn) : ?>
+                                    <option value="<?= esc($jn) ?>"><?= esc($jn) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                             <select id="filterIdPelanggan" class="filter-select" title="Filter ID Pelanggan">
                                 <option value="">Semua ID Pelanggan</option>
                                 <?php foreach ($opsiUnik($report, 'id_pelanggan') as $idp) : ?>
@@ -881,11 +829,13 @@
                                     <th>Alamat</th>
                                     <th>ODP (Port)</th>
                                     <th>Jenis</th>
+                                    <th>Tanggal &amp; Jam Kendala</th>
                                     <th>Kendala</th>
                                     <th>No Tiket</th>
                                     <th>Action</th>
                                     <th>Tanggal Report</th>
                                     <th>Status</th>
+                                    <th>Tanggal &amp; Jam Resolved</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -897,6 +847,13 @@
                                         $jenis = [];
                                         if (!empty($row['maintenance'])) $jenis[] = 'Maintenance';
                                         if (!empty($row['perpindahan_perangkat'])) $jenis[] = 'Perpindahan Perangkat';
+                                        if (!empty($row['gangguan'])) $jenis[] = 'Gangguan';
+                                        // Tanggal & jam kendala. Format: 1 Oktober 2026 14:30
+                                        $tsKendala = !empty($row['waktu_kendala']) ? strtotime($row['waktu_kendala']) : false;
+                                        $waktuKendala = $tsKendala ? date('j', $tsKendala) . ' ' . $bulan[(int) date('n', $tsKendala)] . ' ' . date('Y H:i', $tsKendala) : '-';
+                                        // Tanggal & jam resolved (otomatis saat status Resolved). Format: 1 Oktober 2026 14:30:05
+                                        $tsResolved = !empty($row['waktu_resolved']) ? strtotime($row['waktu_resolved']) : false;
+                                        $waktuResolved = $tsResolved ? date('j', $tsResolved) . ' ' . $bulan[(int) date('n', $tsResolved)] . ' ' . date('Y H:i:s', $tsResolved) : '-';
                                         // Tanggal report diisi manual; data lama pakai created_at. Format: 1 Oktober 2026
                                         $tglRaw = ($row['tanggal_report'] ?? '') ?: ($row['created_at'] ?? '');
                                         $ts = $tglRaw ? strtotime($tglRaw) : false;
@@ -905,13 +862,25 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <!-- semua aksi dalam satu menu titik tiga -->
                                                 <button type="button"
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                    onclick="toggleAksiMenu(event, this)"
-                                                    title="Aksi"
-                                                    class="aksi-btn">
-                                                    <i class="ti ti-dots-vertical"></i>
+                                                    onclick="openReportModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger" title="Hapus">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-info" title="View">
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
                                             </td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['nama']); ?></td>
@@ -919,12 +888,14 @@
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pelanggan']); ?></td>
                                             <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['alamat']); ?></td>
                                             <td class="whitespace-normal min-w-[120px]"><?= esc($row['odp_port']); ?></td>
-                                            <td class="whitespace-normal min-w-[150px]"><?= $jenis ? esc(implode(', ', $jenis)) : '-' ?></td>
+                                            <td class="whitespace-normal min-w-[150px]" data-search="<?= esc('|' . implode('|', $jenis) . '|', 'attr') ?>"><?= $jenis ? esc(implode(', ', $jenis)) : '-' ?></td>
+                                            <td class="min-w-[150px]" data-order="<?= esc($row['waktu_kendala'] ?? '', 'attr') ?>"><?= esc($waktuKendala); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['kendala']); ?></td>
                                             <td data-search="<?= esc(trim($row['no_tiket']), 'attr') ?>"><?= esc($row['no_tiket']); ?></td>
                                             <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['action']); ?></td>
                                             <td data-order="<?= esc($tglRaw, 'attr') ?>"><?= esc($tglReport); ?></td>
                                             <td data-search="<?= esc($row['status'], 'attr') ?>"><span class="badge <?= $statusList[$row['status']] ?? 'badge-draft' ?>"><?= esc($row['status']); ?></span></td>
+                                            <td class="min-w-[160px]" data-order="<?= esc($row['waktu_resolved'] ?? '', 'attr') ?>"><?= esc($waktuResolved); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -996,7 +967,14 @@
                             <label class="flex items-center gap-2 text-sm cursor-pointer">
                                 <input type="checkbox" name="perpindahan_perangkat" id="r_perpindahan_perangkat" value="1" class="w-4 h-4"> Perpindahan Perangkat
                             </label>
+                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                <input type="checkbox" name="gangguan" id="r_gangguan" value="1" class="w-4 h-4"> Gangguan
+                            </label>
                         </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm font-medium">Tanggal &amp; Jam Kendala <span class="text-red-500">*</span></label>
+                        <input type="datetime-local" name="waktu_kendala" id="r_waktu_kendala" required class="w-full border rounded-lg p-3">
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-sm font-medium">Kendala <span class="text-red-500">*</span></label>
@@ -1013,6 +991,11 @@
                                 <option value="<?= esc($st, 'attr') ?>"><?= esc($st) ?></option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+                    <!-- Muncul & terisi otomatis (jam komputer) saat status diubah ke Resolved -->
+                    <div class="md:col-span-2 hidden" id="r_waktu_resolved_wrap">
+                        <label class="text-sm font-medium">Tanggal &amp; Jam Resolved</label>
+                        <input type="datetime-local" step="1" name="waktu_resolved" id="r_waktu_resolved" readonly class="w-full border rounded-lg p-3" style="background:#f1f5f9">
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 mt-6">
@@ -1038,6 +1021,10 @@
                 <div>
                     <div class="text-gray-500">Status</div>
                     <div><span id="v_status" class="badge"></span></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Tanggal &amp; Jam Resolved</div>
+                    <div class="font-medium" id="v_waktu_resolved"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">ID Pelanggan</div>
@@ -1071,6 +1058,10 @@
                     <div class="text-gray-500">Dibuat</div>
                     <div class="font-medium" id="v_created"></div>
                 </div>
+                <div>
+                    <div class="text-gray-500">Tanggal &amp; Jam Kendala</div>
+                    <div class="font-medium" id="v_waktu_kendala"></div>
+                </div>
                 <div class="md:col-span-2">
                     <div class="text-gray-500">Kendala</div>
                     <div class="font-medium whitespace-pre-line" id="v_kendala"></div>
@@ -1086,67 +1077,7 @@
         </div>
     </div>
 
-    <!-- ====== MENU AKSI (titik tiga) ====== -->
-    <div id="aksiMenu" class="hidden" role="menu">
-        <div class="aksi-title">Aksi</div>
-        <button type="button" onclick="aksiRun('edit')"><i class="ti ti-edit"></i> Edit</button>
-        <button type="button" onclick="aksiRun('view')"><i class="ti ti-eye"></i> View</button>
-        <hr>
-        <button type="button" onclick="aksiRun('hapus')" class="danger"><i class="ti ti-trash"></i> Hapus</button>
-    </div>
-
     <script>
-        // ====== MENU AKSI (titik tiga) ======
-        let aksiRow = null,
-            aksiOwner = null;
-
-        function toggleAksiMenu(e, btn) {
-            e.stopPropagation();
-            const menu = document.getElementById('aksiMenu');
-            if (aksiOwner === btn && !menu.classList.contains('hidden')) return closeAksiMenu();
-
-            closeAksiMenu();
-            aksiRow = JSON.parse(btn.dataset.row);
-            aksiOwner = btn;
-            btn.classList.add('open');
-            menu.classList.remove('hidden');
-
-            // di bawah tombol; pindah ke atas / geser kiri jika mentok layar
-            const r = btn.getBoundingClientRect();
-            const mw = menu.offsetWidth,
-                mh = menu.offsetHeight;
-            let top = r.bottom + 4,
-                left = r.left;
-            if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
-            if (left + mw > window.innerWidth) left = window.innerWidth - mw - 8;
-            menu.style.top = top + 'px';
-            menu.style.left = left + 'px';
-        }
-
-        function closeAksiMenu() {
-            document.getElementById('aksiMenu').classList.add('hidden');
-            if (aksiOwner) aksiOwner.classList.remove('open');
-            aksiOwner = null;
-        }
-
-        function aksiRun(aksi) {
-            const d = aksiRow;
-            closeAksiMenu();
-            if (!d) return;
-            if (aksi === 'edit') openReportModal(d);
-            if (aksi === 'view') openViewModal(d);
-            if (aksi === 'hapus') confirmDelete(d.id);
-        }
-
-        document.addEventListener('click', e => {
-            if (!e.target.closest('#aksiMenu')) closeAksiMenu();
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeAksiMenu();
-        });
-        window.addEventListener('scroll', closeAksiMenu, true);
-        window.addEventListener('resize', closeAksiMenu);
-
         // ====== VIEW ======
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         // '2026-10-01' -> '1 Oktober 2026'
@@ -1171,8 +1102,11 @@
             const jenis = [];
             if (Number(d.maintenance)) jenis.push('Maintenance');
             if (Number(d.perpindahan_perangkat)) jenis.push('Perpindahan Perangkat');
+            if (Number(d.gangguan)) jenis.push('Gangguan');
             set('v_jenis', jenis.join(', '));
             set('v_tanggal_report', tglIndo((d.tanggal_report || d.created_at || '').substring(0, 10)));
+            set('v_waktu_kendala', d.waktu_kendala ? tglIndo(d.waktu_kendala.substring(0, 10)) + ' ' + d.waktu_kendala.substring(11, 16) : '');
+            set('v_waktu_resolved', d.waktu_resolved ? tglIndo(d.waktu_resolved.substring(0, 10)) + ' ' + d.waktu_resolved.substring(11, 19) : '');
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             const st = document.getElementById('v_status');
@@ -1225,12 +1159,31 @@
             document.getElementById('r_no_tiket').value = d.no_tiket || '';
             document.getElementById('r_maintenance').checked = !!Number(d.maintenance);
             document.getElementById('r_perpindahan_perangkat').checked = !!Number(d.perpindahan_perangkat);
+            document.getElementById('r_gangguan').checked = !!Number(d.gangguan);
+            document.getElementById('r_waktu_kendala').value = (d.waktu_kendala || '').replace(' ', 'T').substring(0, 16);
             document.getElementById('r_kendala').value = d.kendala || '';
             document.getElementById('r_action').value = d.action || '';
             document.getElementById('r_status').value = d.status || 'On Progress';
+            // Data lama tetap memakai waktu resolved yang tersimpan (2026-10-15 14:30:05 -> 2026-10-15T14:30:05)
+            document.getElementById('r_waktu_resolved').value = (d.waktu_resolved || '').replace(' ', 'T').substring(0, 19);
+            syncWaktuResolved();
 
             document.getElementById('reportModal').classList.remove('hidden');
         }
+
+        // Status Resolved: tampilkan Tanggal & Jam Resolved, isi otomatis dengan jam komputer (Windows) bila belum ada.
+        // Status lain: sembunyikan & kosongkan.
+        function syncWaktuResolved() {
+            const resolved = document.getElementById('r_status').value === 'Resolved';
+            const input = document.getElementById('r_waktu_resolved');
+            if (resolved && !input.value) {
+                const now = new Date();
+                input.value = new Date(now - now.getTimezoneOffset() * 60000).toISOString().substring(0, 19);
+            }
+            if (!resolved) input.value = '';
+            document.getElementById('r_waktu_resolved_wrap').classList.toggle('hidden', !resolved);
+        }
+        document.getElementById('r_status').addEventListener('change', syncWaktuResolved);
 
         function closeReportModal() {
             document.getElementById('reportModal').classList.add('hidden');
@@ -1238,7 +1191,7 @@
 
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_tanggal_report', 'r_nama', 'r_id_pelanggan', 'r_nama_pelanggan', 'r_alamat', 'r_odp_port', 'r_no_tiket', 'r_kendala', 'r_action', 'r_status']
+            const wajib = ['r_tanggal_report', 'r_nama', 'r_id_pelanggan', 'r_nama_pelanggan', 'r_alamat', 'r_odp_port', 'r_waktu_kendala', 'r_no_tiket', 'r_kendala', 'r_action', 'r_status']
                 .map(id => document.getElementById(id).value.trim());
 
             if (wajib.includes('')) {
@@ -1255,7 +1208,7 @@
 
         <?php
         // Gagal validasi di server: buka lagi pop up dengan isian terakhir
-        $oldKeys = ['id', 'tanggal_report', 'nama', 'id_pelanggan', 'nama_pelanggan', 'alamat', 'odp_port', 'maintenance', 'perpindahan_perangkat', 'kendala', 'no_tiket', 'action', 'status'];
+        $oldKeys = ['id', 'tanggal_report', 'nama', 'id_pelanggan', 'nama_pelanggan', 'alamat', 'odp_port', 'waktu_kendala', 'maintenance', 'perpindahan_perangkat', 'gangguan', 'kendala', 'no_tiket', 'action', 'status', 'waktu_resolved'];
         $oldData = [];
         foreach ($oldKeys as $k) {
             $oldData[$k] = old($k, null, false);
@@ -1504,13 +1457,18 @@
                 table.column(col).search(re, true, false).draw();
             }
             $('#filterStatus').on('change', function() {
-                filterColumn(12, this.value);
+                filterColumn(13, this.value);
+            });
+            // Jenis bisa lebih dari satu per baris: cocokkan salah satu jenis (data-search |Jenis1|Jenis2|)
+            $('#filterJenis').on('change', function() {
+                const re = this.value ? '\\|' + $.fn.dataTable.util.escapeRegex(this.value) + '\\|' : '';
+                table.column(8).search(re, true, false).draw();
             });
             $('#filterIdPelanggan').on('change', function() {
                 filterColumn(3, this.value);
             });
             $('#filterNoTiket').on('change', function() {
-                filterColumn(9, this.value);
+                filterColumn(10, this.value);
             });
 
             $('#customSearch').on('keyup', function() {

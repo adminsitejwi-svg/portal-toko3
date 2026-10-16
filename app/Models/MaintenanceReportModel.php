@@ -16,12 +16,15 @@ class MaintenanceReportModel extends BaseModel
         'nama_pelanggan',
         'alamat',
         'odp_port',
+        'waktu_kendala',
         'maintenance',
         'perpindahan_perangkat',
+        'gangguan',
         'kendala',
         'no_tiket',
         'action',
         'status',
+        'waktu_resolved',
         'created_at'
     ];
 

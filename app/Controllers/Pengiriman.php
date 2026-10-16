@@ -57,8 +57,15 @@ class Pengiriman extends BaseController
     public function save()
     {
         $reportId = $this->request->getPost('report_id');
-        if (! $this->reportModel->find($reportId)) {
+        $report = $this->reportModel->find($reportId);
+        if (! $report) {
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data report tidak ditemukan.');
+        }
+
+        // Kategori NOC Corp Dan Retail tidak memakai Pengiriman
+        if (! HistoryReportModel::adaPengiriman($report['kategori'] ?? null)) {
+            return redirect()->to(site_url('HistoryReport/gangguan/' . $reportId))
+                ->with('error', 'Pengiriman tidak tersedia untuk kategori ' . $report['kategori'] . '.');
         }
 
         $fields = $this->collectFields();

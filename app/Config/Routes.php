@@ -276,12 +276,67 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('MaintenanceReport/update', 'MaintenanceReport::update');
     $routes->get('MaintenanceReport/delete/(:num)', 'MaintenanceReport::delete/$1');
 
+    // Daily Report SAT Group (menu sendiri di sidebar): tab Tiket FO Loss
+    $routes->get('ReportSat', 'ReportSat::index');
+    $routes->get('ReportSat/create', 'ReportSat::create');
+    $routes->get('ReportSat/edit/(:num)', 'ReportSat::edit/$1');
+    $routes->post('ReportSat/save', 'ReportSat::save');
+    $routes->post('ReportSat/update', 'ReportSat::update');
+    $routes->get('ReportSat/delete/(:num)', 'ReportSat::delete/$1');
+
+    // Daily Report SAT Group: tab Resi Pengiriman
+    $routes->get('ResiPengiriman', 'ResiPengiriman::index');
+    $routes->get('ResiPengiriman/create', 'ResiPengiriman::create');
+    $routes->get('ResiPengiriman/edit/(:num)', 'ResiPengiriman::edit/$1');
+    $routes->post('ResiPengiriman/save', 'ResiPengiriman::save');
+    $routes->post('ResiPengiriman/update', 'ResiPengiriman::update');
+    $routes->get('ResiPengiriman/delete/(:num)', 'ResiPengiriman::delete/$1');
+
+    // Data Center (menu sendiri di sidebar)
+    $routes->get('DataCenter', 'DataCenter::index');
+    $routes->get('DataCenter/create', 'DataCenter::create');
+    $routes->get('DataCenter/edit/(:num)', 'DataCenter::edit/$1');
+    $routes->post('DataCenter/save', 'DataCenter::save');
+    $routes->post('DataCenter/update', 'DataCenter::update');
+    $routes->get('DataCenter/delete/(:num)', 'DataCenter::delete/$1');
+
+    // Data Interkoneksi (menu All NOC di sidebar)
+    $routes->get('Interkoneksi', 'Interkoneksi::index');
+    $routes->get('Interkoneksi/create', 'Interkoneksi::create');
+    $routes->get('Interkoneksi/edit/(:num)', 'Interkoneksi::edit/$1');
+    $routes->post('Interkoneksi/save', 'Interkoneksi::save');
+    $routes->post('Interkoneksi/update', 'Interkoneksi::update');
+    $routes->get('Interkoneksi/delete/(:num)', 'Interkoneksi::delete/$1');
+
+    // Devices Backbone (menu All NOC di sidebar)
+    $routes->get('DevicesBackbone', 'DevicesBackbone::index');
+    $routes->get('DevicesBackbone/create', 'DevicesBackbone::create');
+    $routes->get('DevicesBackbone/edit/(:num)', 'DevicesBackbone::edit/$1');
+    $routes->post('DevicesBackbone/save', 'DevicesBackbone::save');
+    $routes->post('DevicesBackbone/update', 'DevicesBackbone::update');
+    $routes->get('DevicesBackbone/delete/(:num)', 'DevicesBackbone::delete/$1');
+
+    // BTS (menu All NOC di sidebar)
+    $routes->get('Bts', 'Bts::index');
+    $routes->get('Bts/create', 'Bts::create');
+    $routes->get('Bts/edit/(:num)', 'Bts::edit/$1');
+    $routes->post('Bts/save', 'Bts::save');
+    $routes->post('Bts/update', 'Bts::update');
+    $routes->get('Bts/delete/(:num)', 'Bts::delete/$1');
+
+    // Data Pelanggan (menu All NOC di sidebar, beda dengan menu Pelanggan lama)
+    $routes->get('PelangganNoc', 'PelangganNoc::index');
+    $routes->get('PelangganNoc/create', 'PelangganNoc::create');
+    $routes->get('PelangganNoc/edit/(:num)', 'PelangganNoc::edit/$1');
+    $routes->post('PelangganNoc/save', 'PelangganNoc::save');
+    $routes->post('PelangganNoc/update', 'PelangganNoc::update');
+    $routes->get('PelangganNoc/delete/(:num)', 'PelangganNoc::delete/$1');
+    $routes->get('PelangganNoc/file/(:num)', 'PelangganNoc::file/$1');
+
     $routes->get('HistoryReport', 'HistoryReport::index');
     $routes->post('HistoryReport/save', 'HistoryReport::save');
     $routes->post('HistoryReport/update', 'HistoryReport::update');
     $routes->get('HistoryReport/delete/(:num)', 'HistoryReport::delete/$1');
-    // Detail (Shift Laporan) satu report
-    $routes->get('HistoryReport/laporan/(:num)', 'HistoryReport::laporan/$1');
 
     // Gangguan per report (tombol Settings di History Report)
     $routes->get('HistoryReport/gangguan/(:num)', 'Gangguan::index/$1');
@@ -313,4 +368,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('HistoryReport/aktivasi/save', 'Aktivasi::save');
     $routes->post('HistoryReport/aktivasi/update', 'Aktivasi::update');
     $routes->get('HistoryReport/aktivasi/delete/(:num)', 'Aktivasi::delete/$1');
+
+    $routes->get('Interkoneksi', 'Interkoneksi::index');
+    $routes->get('Interkoneksi/create', 'Interkoneksi::create');
+    $routes->get('Interkoneksi/edit/(:num)', 'Interkoneksi::edit/$1');
+    $routes->post('Interkoneksi/save', 'Interkoneksi::save');
+    $routes->post('Interkoneksi/update', 'Interkoneksi::update');
+    $routes->get('Interkoneksi/delete/(:num)', 'Interkoneksi::delete/$1');
 });

@@ -31,8 +31,16 @@ class Gangguan extends BaseController
             return redirect()->to(site_url('HistoryReport'))->with('error', 'Data report tidak ditemukan.');
         }
 
+        // Kategori NOC Corp Dan Retail tidak memakai Pengiriman (tab disembunyikan)
+        $adaPengiriman = HistoryReportModel::adaPengiriman($report['kategori'] ?? null);
+        $tab           = $this->request->getGet('tab');
+        if ($tab === 'pengiriman' && ! $adaPengiriman) {
+            $tab = null;
+        }
+
         $data = [
             'report'   => $report,
+            'adaPengiriman' => $adaPengiriman,
             'gangguan' => $this->gangguanModel
                 ->where('report_id', $reportId)
                 ->orderBy('id', 'DESC')
@@ -58,8 +66,8 @@ class Gangguan extends BaseController
                 ->orderBy('id', 'DESC')
                 ->findAll(),
             // Tab yang dibuka: ?tab=followup / pengiriman / maintenance / aktivasi / catatan setelah simpan/hapus
-            'activeTab'       => in_array($this->request->getGet('tab'), ['followup', 'pengiriman', 'maintenance', 'aktivasi', 'catatan'], true)
-                ? $this->request->getGet('tab')
+            'activeTab'       => in_array($tab, ['followup', 'pengiriman', 'maintenance', 'aktivasi', 'catatan'], true)
+                ? $tab
                 : 'gangguan',
             'pengirimanStatusOptions'  => PengirimanModel::STATUS,
             'maintenanceStatusOptions' => MaintenanceModel::STATUS,

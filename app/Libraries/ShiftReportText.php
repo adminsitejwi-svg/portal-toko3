@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use App\Models\CatatanModel;
+use App\Models\HistoryReportModel;
 
 /**
  * Menyusun teks "NOC SHIFT REPORT" untuk dicopy ke WhatsApp
@@ -59,12 +60,15 @@ class ShiftReportText
             '   • PIC: ' . self::v($r['pic']),
         ]));
 
-        self::section($lines, 'PENGIRIMAN PERANGKAT', self::items($data['pengiriman'] ?? [], static fn ($r, $no) => [
-            $no . '. ' . $r['grup'] . ' — ' . trim($r['customer']),
-            '   • Device: ' . self::v($r['device']),
-            '   • Status: ' . $r['status'] . ' | Resi: ' . self::v($r['tracking_resi']) . ' | ETA: ' . self::v($r['eta']),
-            '   • PIC: ' . self::v($r['pic']),
-        ]));
+        // Kategori NOC Corp Dan Retail tidak memakai Pengiriman: bagian ini tidak ditulis
+        if (HistoryReportModel::adaPengiriman($report['kategori'] ?? null)) {
+            self::section($lines, 'PENGIRIMAN PERANGKAT', self::items($data['pengiriman'] ?? [], static fn($r, $no) => [
+                $no . '. ' . $r['grup'] . ' — ' . trim($r['customer']),
+                '   • Device: ' . self::v($r['device']),
+                '   • Status: ' . $r['status'] . ' | Resi: ' . self::v($r['tracking_resi']) . ' | ETA: ' . self::v($r['eta']),
+                '   • PIC: ' . self::v($r['pic']),
+            ]));
+        }
 
         self::section($lines, 'MAINTENANCE', self::items($data['maintenance'] ?? [], static fn ($r, $no) => [
             $no . '. ' . $r['grup'] . ' — ' . trim($r['site']),
@@ -93,8 +97,8 @@ class ShiftReportText
         }), true);
 
         $lines[] = self::GARIS;
-        $lines[] = 'End of Shift Report';
-        $lines[] = 'NOC Control';
+        $lines[] = 'Best Regards';
+        $lines[] = 'NOC JWI GROUP';
 
         return implode("\n", $lines);
     }

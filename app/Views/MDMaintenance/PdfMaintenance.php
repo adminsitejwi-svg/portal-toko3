@@ -1,6 +1,7 @@
 <?php
 // Surat Maintenance versi PDF (dompdf), tampilan & kalimat sama dengan halaman View (ViewMaintenance.php).
 // $kopAtas / $kopBawah / $logo berupa data URI PNG dari App\Libraries\RfoPdf.
+// $kop: kop surat khusus perusahaan (jwi / flazz / norlec / rtiga) -> RFO/PdfKop.php, null = kop gelombang.
 $hari  = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -17,6 +18,17 @@ $baris = [
     'Closed Waktu' => $fmtWaktu($mt['waktu_selesai']),
     'Estimasi'     => $mt['estimasi'],
 ];
+
+// Perusahaan dengan kop surat khusus: tata letak sama dengan halaman View (RFO/PdfKop.php)
+if (! empty($kop)) {
+    echo view('RFO/PdfKop', compact('kop', 'baris', 'pembuka', 'penutup', 'petugas', 'namaTtd', 'logoKop', 'logoTtd', 'hiasan') + [
+        'nomor'      => $mt['maintenance_id'],
+        'perihal'    => 'Maintenance',
+        'perusahaan' => $mt['perusahaan'],
+    ]);
+
+    return;
+}
 ?>
 <!doctype html>
 <html lang="id">

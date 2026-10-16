@@ -43,6 +43,7 @@ class MaintenanceReport extends BaseController
             'nama_pelanggan' => 'required|max_length[255]',
             'alamat'         => 'required',
             'odp_port'       => 'required|max_length[255]',
+            'waktu_kendala'  => 'required|valid_date[Y-m-d H:i:s]',
             'kendala'        => 'required',
             'no_tiket'       => 'required|max_length[100]',
             'action'         => 'required',
@@ -54,6 +55,18 @@ class MaintenanceReport extends BaseController
     {
         $post = fn (string $k) => trim((string) $this->request->getPost($k));
 
+        // Input datetime-local (2026-10-15T14:30) disimpan sebagai datetime MySQL; nilai tidak valid dibiarkan agar gagal validasi
+        $waktuKendala = \DateTime::createFromFormat('!Y-m-d\TH:i', $post('waktu_kendala'));
+
+        // Waktu Resolved diisi otomatis oleh form dari jam komputer pengguna saat status diubah ke Resolved
+        // (2026-10-15T14:30:05). Jika kosong/tidak valid memakai jam server; status selain Resolved dikosongkan.
+        $waktuResolved = null;
+        if ($post('status') === 'Resolved') {
+            $wr = \DateTime::createFromFormat('!Y-m-d\TH:i:s', $post('waktu_resolved'))
+                ?: \DateTime::createFromFormat('!Y-m-d\TH:i', $post('waktu_resolved'));
+            $waktuResolved = ($wr ?: new \DateTime())->format('Y-m-d H:i:s');
+        }
+
         return [
             'tanggal_report'        => $post('tanggal_report'),
             'nama'                  => $post('nama'),
@@ -61,12 +74,15 @@ class MaintenanceReport extends BaseController
             'nama_pelanggan'        => $post('nama_pelanggan'),
             'alamat'                => $post('alamat'),
             'odp_port'              => $post('odp_port'),
+            'waktu_kendala'         => $waktuKendala ? $waktuKendala->format('Y-m-d H:i:s') : $post('waktu_kendala'),
             'maintenance'           => $this->request->getPost('maintenance') ? 1 : 0,
             'perpindahan_perangkat' => $this->request->getPost('perpindahan_perangkat') ? 1 : 0,
+            'gangguan'              => $this->request->getPost('gangguan') ? 1 : 0,
             'kendala'               => $post('kendala'),
             'no_tiket'              => $post('no_tiket'),
             'action'                => $post('action'),
             'status'                => $post('status'),
+            'waktu_resolved'        => $waktuResolved,
         ];
     }
 

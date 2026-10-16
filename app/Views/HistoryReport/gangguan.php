@@ -117,6 +117,7 @@
         .dropdown-menu.show {
             display: block;
         }
+
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -472,6 +473,7 @@
         .brand-text {
             font-size: 18px;
         }
+
         /* ===== SHIFT HANDOVER: header & tab ===== */
         .ho-eyebrow {
             font-size: 11px;
@@ -549,14 +551,37 @@
             color: #1e4fa3;
         }
 
-        .dark .ho-title { color: #e5e7eb; }
-        .dark .ho-pic { color: #cbd5e1; }
-        .dark .ho-tabs { background: rgba(255, 255, 255, .03); border-color: rgba(255, 255, 255, .08); }
-        .dark .ho-tab { color: #bfc8d6; }
+        .dark .ho-title {
+            color: #e5e7eb;
+        }
+
+        .dark .ho-pic {
+            color: #cbd5e1;
+        }
+
+        .dark .ho-tabs {
+            background: rgba(255, 255, 255, .03);
+            border-color: rgba(255, 255, 255, .08);
+        }
+
+        .dark .ho-tab {
+            color: #bfc8d6;
+        }
+
         .dark .ho-tab:hover,
-        .dark .ho-tab.active { background: #263240; border-color: rgba(255, 255, 255, .1); }
-        .dark .ho-tab.active { color: #7cb4ff; }
-        .dark .ho-count { background: rgba(255, 255, 255, .06); color: #bfc8d6; }
+        .dark .ho-tab.active {
+            background: #263240;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .dark .ho-tab.active {
+            color: #7cb4ff;
+        }
+
+        .dark .ho-count {
+            background: rgba(255, 255, 255, .06);
+            color: #bfc8d6;
+        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -681,6 +706,7 @@
                     </ul>
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">NOC Operation</li>
                 <li>
                     <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
@@ -704,6 +730,31 @@
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
                     </ul>
                 </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span class="flex-1">Report SAT Group</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
+                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
+                        <span class="flex-1">All NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                    </ul>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li>
@@ -723,7 +774,7 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                 <li>
+                <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
@@ -779,7 +830,7 @@
 
         <div class="p-6">
             <?php
-            $hm = static fn ($t) => $t ? substr($t, 0, 5) : '-';
+            $hm = static fn($t) => $t ? substr($t, 0, 5) : '-';
             $bulan = [1 => 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
             $tglPendek = static function ($t) use ($bulan) {
                 if (! $t) return '-';
@@ -852,6 +903,10 @@
                 'aktivasi'    => ['icon' => '⚡', 'label' => 'Aktivasi', 'count' => count($aktivasi)],
                 'catatan'     => ['icon' => '📌', 'label' => 'Catatan', 'count' => count($catatan)],
             ];
+            // Kategori NOC Corp Dan Retail tidak memakai Pengiriman: tab disembunyikan
+            if (($adaPengiriman ?? true) === false) {
+                unset($tabs['pengiriman']);
+            }
             ?>
 
             <!-- HEADER SHIFT HANDOVER -->
@@ -954,7 +1009,7 @@
                                                     onclick="openViewModal('gangguan', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1013,7 +1068,8 @@
                                     <?php foreach ($priorityOptions as $opt) : ?>
                                         <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
                                     <?php endforeach; ?>
-                                </select>                            </div>
+                                </select>
+                            </div>
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="custom-search">
                                     <input type="text" class="search-input" placeholder="search..." />
@@ -1053,7 +1109,7 @@
                                                     onclick="openViewModal('followup', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1073,7 +1129,8 @@
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['customer_site']); ?></td>
-                                            <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>                                            <td data-order="<?= esc($row['due_date'] ?? '') ?>"><?= $row['due_date'] ? date('d-m-Y', strtotime($row['due_date'])) : '-'; ?></td>
+                                            <td><span class="badge <?= $priorityBadge[$row['priority']] ?? 'badge-service' ?>"><?= esc($row['priority']); ?></span></td>
+                                            <td data-order="<?= esc($row['due_date'] ?? '') ?>"><?= $row['due_date'] ? date('d-m-Y', strtotime($row['due_date'])) : '-'; ?></td>
                                             <td class="whitespace-normal min-w-[140px]"><?= esc($row['pic']); ?></td>
                                             <?= $tdTeks($row['issue'], 'Issue', $row['customer_site']); ?>
                                             <?= $tdTeks($row['action'], 'Action / Next Step', $row['customer_site']); ?>
@@ -1149,7 +1206,7 @@
                                                     onclick="openViewModal('pengiriman', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1247,7 +1304,7 @@
                                                     onclick="openViewModal('maintenance', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1347,7 +1404,7 @@
                                                     onclick="openViewModal('aktivasi', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1391,12 +1448,14 @@
                             <div class="flex items-center gap-3 flex-wrap">
                                 <div class="length-area"></div>
                                 <!-- FILTER: data-col = indeks kolom tabel (cocok persis); pilihan sama dengan form catatan -->
-                                <?php foreach ([
-                                    [2, 'Group', $catatanGrupOptions],
-                                    [3, 'Kategori', $catatanKategoriOptions],
-                                    [4, 'Priority', $priorityOptions],
-                                    [5, 'Status', $catatanStatusOptions],
-                                ] as [$col, $label, $opsi]) : ?>
+                                <?php foreach (
+                                    [
+                                        [2, 'Group', $catatanGrupOptions],
+                                        [3, 'Kategori', $catatanKategoriOptions],
+                                        [4, 'Priority', $priorityOptions],
+                                        [5, 'Status', $catatanStatusOptions],
+                                    ] as [$col, $label, $opsi]
+                                ) : ?>
                                     <select class="filter-select col-filter" data-col="<?= $col ?>" title="Filter <?= $label ?>">
                                         <option value="">Semua <?= $label ?></option>
                                         <?php foreach ($opsi as $opt) : ?>
@@ -1444,7 +1503,7 @@
                                                     onclick="openViewModal('catatan', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                        <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i>
                                                 </button>
 
                                                 <button type="button"
@@ -1919,34 +1978,86 @@
             url.searchParams.set('tab', key);
             history.replaceState(null, '', url);
             // DataTables perlu hitung ulang lebar kolom setelah panel tampil
-            if (window.jQuery && $.fn.dataTable) $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            if (window.jQuery && $.fn.dataTable) $.fn.dataTable.tables({
+                visible: true,
+                api: true
+            }).columns.adjust();
         }
 
         // ====== POP UP VIEW (hanya baca) ======
         const VIEW_FIELDS = {
             gangguan: {
                 label: 'Gangguan',
-                fields: [['grup', 'Group'], ['sub_grup', 'Sub Group'], ['customer_site', 'Customer / Site'], ['cid_ticket', 'CID / Ticket'], ['status', 'Status'], ['priority', 'Priority'], ['gangguan', 'Gangguan / Problem'], ['tindakan', 'Tindakan'], ['next_action', 'Next Action / Handover'], ['pic', 'PIC']],
+                fields: [
+                    ['grup', 'Group'],
+                    ['sub_grup', 'Sub Group'],
+                    ['customer_site', 'Customer / Site'],
+                    ['cid_ticket', 'CID / Ticket'],
+                    ['status', 'Status'],
+                    ['priority', 'Priority'],
+                    ['gangguan', 'Gangguan / Problem'],
+                    ['tindakan', 'Tindakan'],
+                    ['next_action', 'Next Action / Handover'],
+                    ['pic', 'PIC']
+                ],
             },
             followup: {
                 label: 'Follow Up',
-                fields: [['grup', 'Group'], ['customer_site', 'Customer / Site'], ['priority', 'Priority'], ['due_date', 'Due Date'], ['pic', 'PIC'], ['issue', 'Issue'], ['action', 'Action / Next Step']],
+                fields: [
+                    ['grup', 'Group'],
+                    ['customer_site', 'Customer / Site'],
+                    ['priority', 'Priority'],
+                    ['due_date', 'Due Date'],
+                    ['pic', 'PIC'],
+                    ['issue', 'Issue'],
+                    ['action', 'Action / Next Step']
+                ],
             },
             pengiriman: {
                 label: 'Pengiriman',
-                fields: [['grup', 'Group'], ['customer', 'Customer'], ['device', 'Device'], ['tracking_resi', 'Tracking / Resi'], ['status', 'Status'], ['eta', 'ETA'], ['pic', 'PIC']],
+                fields: [
+                    ['grup', 'Group'],
+                    ['customer', 'Customer'],
+                    ['device', 'Device'],
+                    ['tracking_resi', 'Tracking / Resi'],
+                    ['status', 'Status'],
+                    ['eta', 'ETA'],
+                    ['pic', 'PIC']
+                ],
             },
             maintenance: {
                 label: 'Maintenance',
-                fields: [['grup', 'Group'], ['site', 'Site'], ['equipment', 'Equipment'], ['schedule', 'Schedule'], ['status', 'Status'], ['pic', 'PIC'], ['issue', 'Issue'], ['action', 'Action']],
+                fields: [
+                    ['grup', 'Group'],
+                    ['site', 'Site'],
+                    ['equipment', 'Equipment'],
+                    ['schedule', 'Schedule'],
+                    ['status', 'Status'],
+                    ['pic', 'PIC'],
+                    ['issue', 'Issue'],
+                    ['action', 'Action']
+                ],
             },
             aktivasi: {
                 label: 'Aktivasi',
-                fields: [['id_pelanggan', 'ID Pelanggan'], ['nama_pelanggan', 'Nama Pelanggan'], ['kapasitas_mbps', 'Kapasitas (Mbps)'], ['sn', 'SN'], ['tanggal_aktivasi', 'Tanggal Aktivasi']],
+                fields: [
+                    ['id_pelanggan', 'ID Pelanggan'],
+                    ['nama_pelanggan', 'Nama Pelanggan'],
+                    ['kapasitas_mbps', 'Kapasitas (Mbps)'],
+                    ['sn', 'SN'],
+                    ['tanggal_aktivasi', 'Tanggal Aktivasi']
+                ],
             },
             catatan: {
                 label: 'Catatan',
-                fields: [['grup', 'Group'], ['kategori', 'Kategori'], ['priority', 'Priority'], ['status', 'Status'], ['judul', 'Judul'], ['poin', 'Catatan']],
+                fields: [
+                    ['grup', 'Group'],
+                    ['kategori', 'Kategori'],
+                    ['priority', 'Priority'],
+                    ['status', 'Status'],
+                    ['judul', 'Judul'],
+                    ['poin', 'Catatan']
+                ],
             },
         };
 
@@ -1993,16 +2104,24 @@
         }
 
         const FORM_GANGGUAN = {
-            label: 'Gangguan', prefix: 'g_', modal: 'gangguanModal', form: 'gangguanForm',
-            title: 'gangguanModalTitle', submit: 'gangguanSubmit',
+            label: 'Gangguan',
+            prefix: 'g_',
+            modal: 'gangguanModal',
+            form: 'gangguanForm',
+            title: 'gangguanModalTitle',
+            submit: 'gangguanSubmit',
             urlSave: "<?= site_url('HistoryReport/gangguan/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/gangguan/update') ?>",
             fields: ['grup', 'sub_grup', 'customer_site', 'cid_ticket', 'status', 'priority', 'gangguan', 'tindakan', 'next_action', 'pic'],
             wajib: ['grup', 'customer_site', 'status', 'priority', 'gangguan', 'pic'],
         };
         const FORM_FOLLOW_UP = {
-            label: 'Follow Up', prefix: 'f_', modal: 'followUpModal', form: 'followUpForm',
-            title: 'followUpModalTitle', submit: 'followUpSubmit',
+            label: 'Follow Up',
+            prefix: 'f_',
+            modal: 'followUpModal',
+            form: 'followUpForm',
+            title: 'followUpModalTitle',
+            submit: 'followUpSubmit',
             urlSave: "<?= site_url('HistoryReport/followup/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/followup/update') ?>",
             fields: ['grup', 'customer_site', 'priority', 'due_date', 'pic', 'issue', 'action'],
@@ -2010,8 +2129,12 @@
         };
 
         const FORM_PENGIRIMAN = {
-            label: 'Pengiriman', prefix: 'p_', modal: 'pengirimanModal', form: 'pengirimanForm',
-            title: 'pengirimanModalTitle', submit: 'pengirimanSubmit',
+            label: 'Pengiriman',
+            prefix: 'p_',
+            modal: 'pengirimanModal',
+            form: 'pengirimanForm',
+            title: 'pengirimanModalTitle',
+            submit: 'pengirimanSubmit',
             urlSave: "<?= site_url('HistoryReport/pengiriman/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/pengiriman/update') ?>",
             fields: ['grup', 'customer', 'device', 'tracking_resi', 'status', 'eta', 'pic'],
@@ -2023,8 +2146,12 @@
         const openPengirimanModal = d => openFormModal(FORM_PENGIRIMAN, d);
 
         const FORM_MAINTENANCE = {
-            label: 'Maintenance', prefix: 'm_', modal: 'maintenanceModal', form: 'maintenanceForm',
-            title: 'maintenanceModalTitle', submit: 'maintenanceSubmit',
+            label: 'Maintenance',
+            prefix: 'm_',
+            modal: 'maintenanceModal',
+            form: 'maintenanceForm',
+            title: 'maintenanceModalTitle',
+            submit: 'maintenanceSubmit',
             urlSave: "<?= site_url('HistoryReport/maintenance/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/maintenance/update') ?>",
             fields: ['grup', 'site', 'equipment', 'schedule', 'status', 'pic', 'issue', 'action'],
@@ -2033,8 +2160,12 @@
         const openMaintenanceModal = d => openFormModal(FORM_MAINTENANCE, d);
 
         const FORM_AKTIVASI = {
-            label: 'Aktivasi', prefix: 'a_', modal: 'aktivasiModal', form: 'aktivasiForm',
-            title: 'aktivasiModalTitle', submit: 'aktivasiSubmit',
+            label: 'Aktivasi',
+            prefix: 'a_',
+            modal: 'aktivasiModal',
+            form: 'aktivasiForm',
+            title: 'aktivasiModalTitle',
+            submit: 'aktivasiSubmit',
             urlSave: "<?= site_url('HistoryReport/aktivasi/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/aktivasi/update') ?>",
             fields: ['id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'],
@@ -2068,8 +2199,12 @@
         }
 
         const FORM_CATATAN = {
-            label: 'Catatan', prefix: 'c_', modal: 'catatanModal', form: 'catatanForm',
-            title: 'catatanModalTitle', submit: 'catatanSubmit',
+            label: 'Catatan',
+            prefix: 'c_',
+            modal: 'catatanModal',
+            form: 'catatanForm',
+            title: 'catatanModalTitle',
+            submit: 'catatanSubmit',
             urlSave: "<?= site_url('HistoryReport/catatan/save') ?>",
             urlUpdate: "<?= site_url('HistoryReport/catatan/update') ?>",
             fields: ['grup', 'kategori', 'priority', 'status', 'judul'],
@@ -2147,7 +2282,9 @@
         }
 
         function isTableEmpty(table) {
-            return table.rows({ search: 'applied' }).data().length === 0;
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
         }
 
         function showEmptyExportAlert() {
@@ -2221,13 +2358,17 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
+                    setTimeout(() => {
+                        progressBar.style.width = "0%";
+                    }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => { alertBox.remove(); }, 500);
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
                 }, 3000);
             }
         });

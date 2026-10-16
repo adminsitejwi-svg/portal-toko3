@@ -50,23 +50,6 @@ class HistoryReport extends BaseController
         return view('HistoryReport/index', $data);
     }
 
-    // Halaman Detail (Shift Laporan) satu report, hanya baca (view di folder HistoryReport/laporan.php)
-    public function laporan($id)
-    {
-        $report = $this->reportModel->find($id);
-        if (! $report) {
-            return redirect()->to(site_url('HistoryReport'))->with('error', 'Data report tidak ditemukan.');
-        }
-
-        $anak = $this->handoverData([$report['id']])[$report['id']] ?? [];
-
-        return view('HistoryReport/laporan', [
-            'report'   => $report,
-            'anak'     => $anak,
-            'copyText' => ShiftReportText::build($report, $anak),
-        ]);
-    }
-
     /**
      * Data Shift Handover (gangguan, follow up, pengiriman, maintenance, catatan)
      * dikelompokkan per report_id, urut sesuai waktu input.

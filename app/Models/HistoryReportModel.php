@@ -30,6 +30,14 @@ class HistoryReportModel extends BaseModel
     /** Pilihan kategori laporan. */
     public const KATEGORI = ['NOC Corp Dan Retail', 'NOC Alfa Grup'];
 
+    /** Kategori tanpa data Pengiriman (card, tab Shift Handover & teks copy tidak menampilkannya). */
+    public const TANPA_PENGIRIMAN = ['NOC Corp Dan Retail'];
+
+    public static function adaPengiriman(?string $kategori): bool
+    {
+        return ! in_array($kategori, self::TANPA_PENGIRIMAN, true);
+    }
+
     /** Shift laporan => nomor shift di tabel jadwal_noc (Jadwal NOC). */
     public const SHIFT = [
         'Pagi'  => 1,

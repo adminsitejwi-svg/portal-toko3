@@ -131,6 +131,63 @@
         }
 
         /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
+        /* ===== TAB KATEGORI (gaya tab Master Data crm.jwi.id) ===== */
+        .kategori-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .kategori-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 12.5px;
+            color: #475569;
+            white-space: nowrap;
+            transition: background .15s, color .15s;
+        }
+
+        .kategori-tab i {
+            font-size: 14px;
+        }
+
+        .kategori-tab:hover {
+            background: #f3f4f6;
+            color: #1e293b;
+        }
+
+        .kategori-tab.active {
+            background: #eef0f3;
+            color: #94a3b8;
+            cursor: default;
+        }
+
+        .dark .kategori-tabs {
+            background: #263240;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .dark .kategori-tab {
+            color: #bfc8d6;
+        }
+
+        .dark .kategori-tab:hover,
+        .dark .kategori-tab.active {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .dark .kategori-tab.active {
+            color: #8996a4;
+        }
+
         .aksi-btn {
             width: 32px;
             height: 32px;
@@ -148,7 +205,7 @@
             color: #1e4fa3;
         }
 
-        :is(#aksiMenu, #statusMenu) {
+        #statusMenu {
             position: fixed;
             z-index: 1050;
             min-width: 190px;
@@ -159,7 +216,7 @@
             padding: 6px;
         }
 
-        :is(#aksiMenu, #statusMenu) .aksi-title {
+        #statusMenu .aksi-title {
             padding: 6px 12px 8px;
             font-size: 11px;
             font-weight: 700;
@@ -170,7 +227,7 @@
             margin-bottom: 4px;
         }
 
-        :is(#aksiMenu, #statusMenu) button {
+        #statusMenu button {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -182,37 +239,62 @@
             text-align: left;
         }
 
-        :is(#aksiMenu, #statusMenu) button i {
+        #statusMenu button i {
             font-size: 17px;
             color: #64748b;
         }
 
-        :is(#aksiMenu, #statusMenu) button:hover {
+        #statusMenu button:hover {
             background: #f3f4f6;
         }
 
-        :is(#aksiMenu, #statusMenu) button.danger,
-        :is(#aksiMenu, #statusMenu) button.danger i {
+        #statusMenu button.danger,
+        #statusMenu button.danger i {
             color: #dc2626;
         }
 
-        :is(#aksiMenu, #statusMenu) hr {
+        #statusMenu hr {
             margin: 4px 0;
             border-color: #f1f5f9;
         }
 
-        .dark :is(#aksiMenu, #statusMenu) { background: #263240; border-color: rgba(255, 255, 255, .1); }
-        .dark :is(#aksiMenu, #statusMenu) button { color: #bfc8d6; }
-        .dark :is(#aksiMenu, #statusMenu) button:hover { background: rgba(255, 255, 255, .05); }
+        .dark #statusMenu {
+            background: #263240;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .dark #statusMenu button {
+            color: #bfc8d6;
+        }
+
+        .dark #statusMenu button:hover {
+            background: rgba(255, 255, 255, .05);
+        }
 
         /* ===== CARD REKAP (bisa diklik) ===== */
-        .rekap-card { cursor: pointer; transition: transform .15s, box-shadow .15s; }
+        .rekap-card {
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+        }
+
         .rekap-card:hover,
-        .rekap-card:focus-visible { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, .1); outline: none; }
+        .rekap-card:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
+            outline: none;
+        }
 
         /* ===== MENU STATUS GANGGUAN (titik tiga di card Gangguan) ===== */
-        #statusMenu button { justify-content: space-between; }
-        #statusMenu button.active { background: #eef4ff; color: #1e4fa3; font-weight: 600; }
+        #statusMenu button {
+            justify-content: space-between;
+        }
+
+        #statusMenu button.active {
+            background: #eef4ff;
+            color: #1e4fa3;
+            font-weight: 600;
+        }
+
         #statusMenu .st-count {
             min-width: 26px;
             padding: 1px 8px;
@@ -222,8 +304,15 @@
             font-weight: 600;
             text-align: center;
         }
-        .dark #statusMenu button.active { background: rgba(4, 169, 245, .15); color: #7cc8f5; }
-        .dark #statusMenu .st-count { background: rgba(255, 255, 255, .08); }
+
+        .dark #statusMenu button.active {
+            background: rgba(4, 169, 245, .15);
+            color: #7cc8f5;
+        }
+
+        .dark #statusMenu .st-count {
+            background: rgba(255, 255, 255, .08);
+        }
 
         /* ===== JUMLAH PER GROUP ===== */
         .grup-count {
@@ -254,10 +343,22 @@
             font-size: 22px;
         }
 
-        .rekap-red { background: #fde8ec; }
-        .rekap-amber { background: #fdf3e3; }
-        .rekap-blue { background: #e3edfb; }
-        .rekap-green { background: #e7f8f1; }
+        .rekap-red {
+            background: #fde8ec;
+        }
+
+        .rekap-amber {
+            background: #fdf3e3;
+        }
+
+        .rekap-blue {
+            background: #e3edfb;
+        }
+
+        .rekap-green {
+            background: #e7f8f1;
+        }
+
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -707,6 +808,7 @@
                     </ul>
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">NOC Operation</li>
                 <li>
                     <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
@@ -730,6 +832,31 @@
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
                     </ul>
                 </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span class="flex-1">Report SAT Group</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
+                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
+                        <span class="flex-1">All NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                    </ul>
+                </li>
 
                 <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
                 <li>
@@ -749,7 +876,7 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                 <li>
+                <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
@@ -779,14 +906,6 @@
         <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
             <ul class="flex items-center gap-1">
                 <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
-                <li class="ml-2">
-                    <!-- filter Kategori Daily Report -->
-                    <select id="filterKategori" class="border rounded-lg px-3 py-2 text-sm bg-white dark:bg-[#263240] max-w-[200px]" title="Filter Kategori">
-                        <?php foreach ($kategoriOptions as $opt) : ?>
-                            <option value="<?= esc($opt, 'attr') ?>"><?= esc($opt) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </li>
             </ul>
 
             <ul class="flex items-center gap-1 ml-auto">
@@ -827,7 +946,7 @@
                 'Siang' => 'badge-pending',
                 'Malam' => 'badge-service',
             ];
-            $hm = static fn ($t) => $t ? substr($t, 0, 5) : '-';
+            $hm = static fn($t) => $t ? substr($t, 0, 5) : '-';
 
             // Card rekap per jenis data Shift Handover (jumlah dari database)
             $dataCards = [
@@ -839,10 +958,10 @@
             ?>
 
             <!-- REKAP PER JENIS DATA -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            <div id="rekapGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
                 <?php foreach ($dataCards as $key => $card) : ?>
                     <!-- klik card: buka Shift Handover report terbaru, tab sesuai card -->
-                    <div class="card mb-0 rekap-card" role="link" tabindex="0" title="Buka <?= esc($card['label'], 'attr') ?> report terbaru"
+                    <div class="card mb-0 rekap-card" data-jenis="<?= $key ?>" role="link" tabindex="0" title="Buka <?= esc($card['label'], 'attr') ?> report terbaru"
                         onclick="bukaRekapCard('<?= $key ?>')" onkeydown="if (event.key === 'Enter' && event.target === this) bukaRekapCard('<?= $key ?>')">
                         <div class="card-body">
                             <div class="flex items-center gap-4">
@@ -862,6 +981,19 @@
                             </div>
                         </div>
                     </div>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- TAB KATEGORI (seperti perpindahan Master Data di crm.jwi.id/Vendor) -->
+            <?php $kategoriIcon = ['NOC Corp Dan Retail' => 'ti-building', 'NOC Alfa Grup' => 'ti-building-store']; ?>
+            <input type="hidden" id="filterKategori" value="<?= esc($kategoriOptions[0] ?? '', 'attr') ?>">
+            <div class="kategori-tabs mb-6" role="tablist" aria-label="Kategori Daily Report">
+                <?php foreach ($kategoriOptions as $i => $opt) : ?>
+                    <button type="button" role="tab" class="kategori-tab<?= $i === 0 ? ' active' : '' ?>"
+                        aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"
+                        data-kategori="<?= esc($opt, 'attr') ?>" onclick="pilihKategori(this)">
+                        <i class="ti <?= $kategoriIcon[$opt] ?? 'ti-category' ?>"></i> <?= esc($opt) ?>
+                    </button>
                 <?php endforeach; ?>
             </div>
 
@@ -905,18 +1037,45 @@
                                     <?php foreach ($report as $row) : ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
-                                            <td>
-                                                <!-- semua aksi dalam satu menu titik tiga -->
+                                            <td data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                data-status="<?= array_sum($grupCount[$row['id']] ?? []) > 0 ? 'Completed' : 'Draft' ?>"
+                                                data-copy="<?= esc($copyText[$row['id']] ?? '', 'attr') ?>">
+                                                <!-- tombol aksi seperti halaman RFO; data baris ada di atribut <td> -->
                                                 <button type="button"
-                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                    data-settings="<?= site_url('HistoryReport/gangguan/' . $row['id']) ?>"
-                                                    data-laporan="<?= site_url('HistoryReport/laporan/' . $row['id']) ?>"
-                                                    data-status="<?= array_sum($grupCount[$row['id']] ?? []) > 0 ? 'Completed' : 'Draft' ?>"
-                                                    data-copy="<?= esc($copyText[$row['id']] ?? '', 'attr') ?>"
-                                                    onclick="toggleAksiMenu(event, this)"
-                                                    title="Aksi"
-                                                    class="aksi-btn">
-                                                    <i class="ti ti-dots-vertical"></i>
+                                                    onclick="openReportModal(JSON.parse(this.closest('td').dataset.row))"
+                                                    class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="ti ti-edit"></i>
+                                                </button>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger" title="Hapus">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    onclick="openViewModal(JSON.parse(this.closest('td').dataset.row), this.closest('td').dataset.status)"
+                                                    class="btn btn-sm btn-info" title="View">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
+
+                                                <a href="<?= site_url('HistoryReport/gangguan/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-info" title="Settings (Shift Handover)">
+                                                    <i class="ti ti-tool"></i>
+                                                </a>
+
+                                                <br>
+                                                <button type="button"
+                                                    onclick="duplikatReport(JSON.parse(this.closest('td').dataset.row))"
+                                                    class="btn btn-sm btn-success" title="Duplikat">
+                                                    <i class="ti ti-copy-plus"></i>
+                                                </button>
+
+                                                <button type="button"
+                                                    onclick="copyReport(this.closest('td').dataset.copy)"
+                                                    class="btn btn-sm btn-success" title="Copy">
+                                                    <i class="ti ti-copy"></i>
                                                 </button>
                                             </td>
                                             <td data-order="<?= esc($row['tanggal']) ?>"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
@@ -1095,84 +1254,26 @@
         </div>
     </div>
 
-    <!-- ====== MENU AKSI (titik tiga) ====== -->
-    <!-- Menu status (titik tiga di card rekap); isi dibuat JS sesuai card; memakai gaya #aksiMenu -->
+    <!-- Menu status (titik tiga di card rekap); isi dibuat JS sesuai card -->
     <div id="statusMenu" class="hidden" role="menu"></div>
 
-    <div id="aksiMenu" class="hidden" role="menu">
-        <div class="aksi-title">Aksi</div>
-        <button type="button" onclick="aksiRun('edit')"><i class="ti ti-edit"></i> Edit</button>
-        <button type="button" onclick="aksiRun('view')"><i class="ti ti-eye"></i> View</button>
-        <button type="button" onclick="aksiRun('detail')"><i class="ti ti-file-description"></i> Detail (Shift Laporan)</button>
-        <button type="button" onclick="aksiRun('duplikat')"><i class="ti ti-copy-plus"></i> Duplikat</button>
-        <button type="button" onclick="aksiRun('copy')"><i class="ti ti-copy"></i> Copy</button>
-        <button type="button" onclick="aksiRun('settings')"><i class="ti ti-tool"></i> Settings (Shift Handover)</button>
-        <hr>
-        <button type="button" onclick="aksiRun('hapus')" class="danger"><i class="ti ti-trash"></i> Hapus</button>
-    </div>
 
     <script>
-        // ====== MENU AKSI (titik tiga) ======
-        let aksiRow = null, aksiSettings = '', aksiCopy = '', aksiLaporan = '', aksiStatus = '', aksiOwner = null;
-
-        function toggleAksiMenu(e, btn) {
-            e.stopPropagation();
-            closeStatusMenu();
-            const menu = document.getElementById('aksiMenu');
-            if (aksiOwner === btn && !menu.classList.contains('hidden')) return closeAksiMenu();
-
-            closeAksiMenu();
-            aksiRow = JSON.parse(btn.dataset.row);
-            aksiSettings = btn.dataset.settings;
-            aksiCopy = btn.dataset.copy;
-            aksiLaporan = btn.dataset.laporan;
-            aksiStatus = btn.dataset.status;
-            aksiOwner = btn;
-            btn.classList.add('open');
-            menu.classList.remove('hidden');
-
-            // di bawah tombol; pindah ke atas / geser kiri jika mentok layar
-            const r = btn.getBoundingClientRect();
-            const mw = menu.offsetWidth, mh = menu.offsetHeight;
-            let top = r.bottom + 4, left = r.left;
-            if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
-            if (left + mw > window.innerWidth) left = window.innerWidth - mw - 8;
-            menu.style.top = top + 'px';
-            menu.style.left = left + 'px';
+        // ====== TAB KATEGORI ======
+        // Tandai tab aktif lalu ubah nilai #filterKategori; handler change-nya memfilter tabel & card rekap
+        function pilihKategori(tab) {
+            if (tab.classList.contains('active')) return;
+            document.querySelectorAll('.kategori-tab').forEach(t => {
+                t.classList.toggle('active', t === tab);
+                t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+            });
+            $('#filterKategori').val(tab.dataset.kategori).trigger('change');
         }
-
-        function closeAksiMenu() {
-            document.getElementById('aksiMenu').classList.add('hidden');
-            if (aksiOwner) aksiOwner.classList.remove('open');
-            aksiOwner = null;
-        }
-
-        function aksiRun(aksi) {
-            const d = aksiRow;
-            closeAksiMenu();
-            if (!d) return;
-            if (aksi === 'edit') openReportModal(d);
-            if (aksi === 'view') openViewModal(d, aksiStatus);
-            if (aksi === 'detail') window.location.href = aksiLaporan;
-            if (aksi === 'duplikat') duplikatReport(d);
-            if (aksi === 'copy') copyReport(aksiCopy);
-            if (aksi === 'settings') window.location.href = aksiSettings;
-            if (aksi === 'hapus') confirmDelete(d.id);
-        }
-
-        document.addEventListener('click', e => {
-            if (!e.target.closest('#aksiMenu')) closeAksiMenu();
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeAksiMenu();
-        });
-        window.addEventListener('scroll', closeAksiMenu, true);
-        window.addEventListener('resize', closeAksiMenu);
 
         // ====== STATUS PER CARD REKAP (titik tiga di card Gangguan/Follow Up/Pengiriman/Maintenance) ======
         // REKAP_STATUS: [jenis => [kategori => [status => jumlah]]]; ikut filter Kategori di header
         const REKAP_STATUS = <?= json_encode($rekapStatus) ?>;
-        const REKAP_MENU = <?= json_encode(array_map(static fn ($s) => ['judul' => $s[2], 'nilai' => $s[3]], $rekapStatusList)) ?>;
+        const REKAP_MENU = <?= json_encode(array_map(static fn($s) => ['judul' => $s[2], 'nilai' => $s[3]], $rekapStatusList)) ?>;
         const statusTerpilih = {}; // [jenis => status], '' = semua
         let statusMenuJenis = null;
 
@@ -1224,7 +1325,6 @@
             closeStatusMenu();
             if (!bukaUlang) return;
 
-            closeAksiMenu();
             statusMenuJenis = jenis;
             buildStatusMenu(jenis);
             btn.classList.add('open');
@@ -1232,8 +1332,10 @@
 
             // di bawah tombol, rata kanan; pindah ke atas jika mentok layar
             const r = btn.getBoundingClientRect();
-            const mw = menu.offsetWidth, mh = menu.offsetHeight;
-            let top = r.bottom + 4, left = Math.max(8, r.right - mw);
+            const mw = menu.offsetWidth,
+                mh = menu.offsetHeight;
+            let top = r.bottom + 4,
+                left = Math.max(8, r.right - mw);
             if (top + mh > window.innerHeight) top = Math.max(8, r.top - mh - 4);
             menu.style.top = top + 'px';
             menu.style.left = left + 'px';
@@ -1253,7 +1355,12 @@
             const kategori = document.getElementById('filterKategori').value;
             const id = REPORT_TERBARU[kategori];
             if (!id) {
-                Swal.fire({ icon: 'info', title: 'Belum Ada Report', text: 'Belum ada Daily Report untuk kategori ' + kategori + '.', confirmButtonColor: '#185a82' });
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Belum Ada Report',
+                    text: 'Belum ada Daily Report untuk kategori ' + kategori + '.',
+                    confirmButtonColor: '#185a82'
+                });
                 return;
             }
             window.location.href = URL_HANDOVER + id + (jenis === 'gangguan' ? '' : '?tab=' + jenis);
@@ -1285,7 +1392,12 @@
             const urutShift = ['Pagi', 'Siang', 'Malam'];
             const idx = urutShift.indexOf(d.shift);
             const shiftBaru = idx === -1 ? d.shift : urutShift[(idx + 1) % urutShift.length];
-            openReportModal({ ...d, id: '', tanggal: todayStr(), shift: shiftBaru });
+            openReportModal({
+                ...d,
+                id: '',
+                tanggal: todayStr(),
+                shift: shiftBaru
+            });
             isiJamShift(shiftBaru); // jam ikut shift baru, bukan jam baris asal
             document.getElementById('r_duplikat_dari').value = d.id;
             document.getElementById('reportModalTitle').textContent = 'Duplikat Daily Report';
@@ -1293,7 +1405,13 @@
 
         // Copy: salin "NOC SHIFT REPORT" (format WhatsApp, disusun di server) ke clipboard
         function copyReport(text) {
-            const done = () => Swal.fire({ icon: 'success', title: 'Tersalin', text: 'Report siap di-paste ke WhatsApp.', timer: 1500, showConfirmButton: false });
+            const done = () => Swal.fire({
+                icon: 'success',
+                title: 'Tersalin',
+                text: 'Report siap di-paste ke WhatsApp.',
+                timer: 1500,
+                showConfirmButton: false
+            });
             const fallback = () => {
                 // untuk akses lewat http non-localhost (clipboard API tidak tersedia)
                 const ta = document.createElement('textarea');
@@ -1304,7 +1422,11 @@
                 ta.select();
                 const ok = document.execCommand('copy');
                 ta.remove();
-                ok ? done() : Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data tidak dapat disalin.' });
+                ok ? done() : Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Data tidak dapat disalin.'
+                });
             };
 
             if (navigator.clipboard && window.isSecureContext) {
@@ -1480,7 +1602,9 @@
         }
 
         function isTableEmpty(table) {
-            return table.rows({ search: 'applied' }).data().length === 0;
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
         }
 
         function showEmptyExportAlert() {
@@ -1554,13 +1678,17 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
+                    setTimeout(() => {
+                        progressBar.style.width = "0%";
+                    }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => { alertBox.remove(); }, 500);
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
                 }, 3000);
             }
         });
@@ -1694,6 +1822,7 @@
             }).index();
             // Card rekap (gangguan, follow up, pengiriman, maintenance) per kategori
             const DATA_COUNT = <?= json_encode($dataCount) ?>;
+            const TANPA_PENGIRIMAN = <?= json_encode(\App\Models\HistoryReportModel::TANPA_PENGIRIMAN) ?>;
             $('#filterKategori').on('change', function() {
                 const v = this.value;
                 table.column(kategoriCol).search('^' + $.fn.dataTable.util.escapeRegex(v) + '$', true, false).draw();
@@ -1701,6 +1830,10 @@
                     this.textContent = (DATA_COUNT[v] || {})[this.dataset.rekap] || 0;
                 });
                 renderRekapStatus(); // card mengikuti status terpilih di menu titik tiga
+                // Kategori tanpa Pengiriman (NOC Corp Dan Retail): card Pengiriman disembunyikan, sisa card 3 kolom
+                const tanpaKirim = TANPA_PENGIRIMAN.includes(v);
+                $('.rekap-card[data-jenis="pengiriman"]').toggleClass('hidden', tanpaKirim);
+                $('#rekapGrid').toggleClass('xl:grid-cols-4', !tanpaKirim).toggleClass('xl:grid-cols-3', tanpaKirim);
             }).trigger('change'); // kategori pertama langsung terfilter saat halaman dibuka
 
             $('#customSearch').on('keyup', function() {

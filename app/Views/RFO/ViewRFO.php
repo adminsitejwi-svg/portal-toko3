@@ -324,6 +324,7 @@
                     </ul>
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">NOC Operation</li>
                 <li>
                     <a href="<?= site_url('RFO') ?>" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
@@ -345,6 +346,31 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span class="flex-1">Report SAT Group</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
+                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
+                        <span class="flex-1">All NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                     </ul>
                 </li>
 
@@ -431,6 +457,15 @@
         $tsGangguan  = strtotime($rfo['waktu_gangguan']);
         $hariTanggal = $hari[date('w', $tsGangguan)] . ', ' . date('j', $tsGangguan) . ' ' . $bulan[(int) date('n', $tsGangguan)] . ' ' . date('Y', $tsGangguan);
         $fmtWaktu    = static fn ($dt) => $dt ? date('d/m/Y H:i', strtotime($dt)) . ' WIB' : '-';
+
+        // Perusahaan dengan kop surat khusus (Kop Surat JWI.pdf, Kop Surat Flazznet.pdf);
+        // perusahaan lain tetap memakai kop gelombang
+        $kop = [
+            'PT JURAGAN WIFI INDONESIA'   => 'jwi',
+            'PT GENEZIS MITRA TECHNOLOGY' => 'flazz',
+            'PT NORLEC TELEKOMUNIKASI INDONESIA' => 'norlec',
+            'PT RTIGA GLOBAL MEDIA'       => 'rtiga',
+        ][$rfo['perusahaan']] ?? null;
         ?>
 
         <style>
@@ -547,6 +582,362 @@
                 margin-top: 38px;
             }
 
+            /* Logo perusahaan di bawah nama petugas NOC; file logo punya banyak ruang kosong,
+               jadi bingkai memotong sisa ruang (ukuran per perusahaan di bawah) */
+            .rfo-sign-logo {
+                width: 150px;
+                height: 40px;
+                margin-top: 12px;
+                overflow: hidden;
+            }
+
+            .rfo-sign-logo img {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                object-fit: contain;
+                object-position: left center;
+            }
+
+            .rfo-sign .rfo-sign-logo + .rfo-sign-org {
+                margin-top: 12px;
+            }
+
+            .rfo-paper--jwi .rfo-sign-logo {
+                height: 29px;
+            }
+
+            .rfo-paper--jwi .rfo-sign-logo img {
+                width: 160px;
+                height: auto;
+                margin: -27px 0 0 -4px;
+            }
+
+            .rfo-paper--flazz .rfo-sign-logo {
+                height: 30px;
+            }
+
+            .rfo-paper--flazz .rfo-sign-logo img {
+                width: 170px;
+                height: auto;
+                margin: -28px 0 0 -10px;
+            }
+
+            .rfo-paper--norlec .rfo-sign-logo {
+                height: 25px;
+            }
+
+            .rfo-paper--norlec .rfo-sign-logo img {
+                width: 169px;
+                height: auto;
+                margin: -11px 0 0 -7px;
+            }
+
+            .rfo-paper--rtiga .rfo-sign-logo {
+                height: 46px;
+            }
+
+            .rfo-paper--rtiga .rfo-sign-logo img {
+                width: 159px;
+                height: auto;
+                margin: -6px 0 0 -5px;
+            }
+
+            /* ===== Kop surat khusus per perusahaan (Kop Surat JWI.pdf, Kop Surat Flazznet.pdf) =====
+               Nomor/Lamp/Perihal kiri atas, logo kanan atas, alamat kantor di bawah */
+            .kop-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .kop-meta {
+                border-collapse: collapse;
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 1.2;
+            }
+
+            .kop-meta td {
+                padding: 0;
+                vertical-align: top;
+            }
+
+            .kop-meta td.rfo-colon {
+                padding-right: 8px;
+            }
+
+            /* File logo punya banyak ruang kosong; bingkai memotong sisa ruang agar logo pas */
+            .kop-logo {
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+
+            .kop-logo img {
+                max-width: none;
+            }
+
+            .rfo-paper--kop .rfo-body {
+                width: auto;
+                max-width: none;
+                margin-right: 80px;
+            }
+
+            .rfo-paper--kop .rfo-table td:first-child {
+                width: 170px;
+                white-space: nowrap;
+            }
+
+            /* --- JWI: api oranye kanan bawah --- */
+            .rfo-paper--jwi .kop-head {
+                padding: 58px 14px 0 119px;
+            }
+
+            .rfo-paper--jwi .kop-meta {
+                margin-top: 40px;
+                font-size: 16px;
+            }
+
+            .rfo-paper--jwi .kop-meta td:first-child {
+                width: 96px;
+            }
+
+            .rfo-paper--jwi .kop-logo {
+                width: 320px;
+                height: 62px;
+            }
+
+            .rfo-paper--jwi .kop-logo img {
+                width: 342px;
+                margin: -57px 0 0 -8px;
+            }
+
+            .rfo-paper--jwi .rfo-body {
+                margin-left: 119px;
+                padding: 40px 0 200px;
+            }
+
+            /* --- Flazznet (PT Genezis Mitra Technology): pita hijau di bawah --- */
+            .rfo-paper--flazz .kop-head {
+                padding: 46px 102px 0 90px;
+            }
+
+            .rfo-paper--flazz .kop-meta {
+                margin-top: 54px;
+                font-size: 15px;
+            }
+
+            .rfo-paper--flazz .kop-meta td:first-child {
+                width: 93px;
+            }
+
+            .rfo-paper--flazz .kop-logo {
+                width: 205px;
+                height: 41px;
+            }
+
+            .rfo-paper--flazz .kop-logo img {
+                width: 232px;
+                margin: -38px 0 0 -14px;
+            }
+
+            .rfo-paper--flazz .rfo-body {
+                margin-left: 90px;
+                padding: 40px 0 170px;
+            }
+
+            .flazz-foot {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 125px;
+                padding-top: 14px;
+                background: #9BBB59;
+                color: #000;
+                text-align: center;
+                font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+                font-size: 13px;
+                line-height: 1.35;
+            }
+
+            .flazz-foot .flazz-pt {
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .flazz-foot .flazz-web {
+                margin-top: 8px;
+            }
+
+            /* --- Sprintnet (PT Norlec Telekomunikasi Indonesia): logo S abu-biru kanan bawah --- */
+            .rfo-paper--norlec .kop-head {
+                padding: 47px 119px 0 94px;
+            }
+
+            .rfo-paper--norlec .kop-meta {
+                margin-top: 54px;
+                font-size: 15px;
+            }
+
+            .rfo-paper--norlec .kop-meta td:first-child {
+                width: 93px;
+            }
+
+            .rfo-paper--norlec .kop-logo {
+                width: 240px;
+                height: 40px;
+            }
+
+            .rfo-paper--norlec .kop-logo img {
+                width: 271px;
+                margin: -17px 0 0 -11px;
+            }
+
+            .rfo-paper--norlec .rfo-body {
+                margin-left: 94px;
+                padding: 40px 0 200px;
+            }
+
+            /* Logo S (public/Logo-footer/LOGO-S.png) pudar & keabuan, terpotong tepi kanan & bawah kertas */
+            .norlec-s {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 230px;
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            .norlec-s img {
+                position: absolute;
+                left: 295px;
+                top: 0;
+                width: 810px;
+                max-width: none;
+                filter: grayscale(.85);
+                opacity: .5;
+                mix-blend-mode: multiply;
+            }
+
+            .norlec-foot {
+                position: absolute;
+                left: 94px;
+                bottom: 49px;
+                font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+                font-size: 13.5px;
+                line-height: 1.4;
+                color: #000;
+            }
+
+            /* --- Rnet (PT Rtiga Global Media): logo kanan atas di atas garis abu tebal --- */
+            .rfo-paper--rtiga .kop-head {
+                flex-direction: column-reverse;
+                align-items: stretch;
+                padding: 20px 49px 0 46px;
+            }
+
+            .rfo-paper--rtiga .kop-head::before {
+                content: "";
+                position: absolute;
+                top: 92px;
+                left: 33px;
+                right: 37px;
+                height: 5px;
+                background: linear-gradient(#6b6b6b, #4a4a4a);
+            }
+
+            .rfo-paper--rtiga .kop-meta {
+                align-self: flex-start;
+                margin-top: 46px;
+                font-size: 15px;
+            }
+
+            .rfo-paper--rtiga .kop-meta td:first-child {
+                width: 93px;
+            }
+
+            /* Hanya tanda "rnet" (tanpa tulisan RTIGA GLOBAL MEDIA) seperti pada kop asli */
+            .rfo-paper--rtiga .kop-logo {
+                align-self: flex-end;
+                width: 190px;
+                height: 58px;
+            }
+
+            .rfo-paper--rtiga .kop-logo img {
+                width: 202px;
+                margin: -8px 0 0 -6px;
+            }
+
+            .rfo-paper--rtiga .rfo-body {
+                margin-left: 46px;
+                margin-right: 46px;
+                padding: 40px 0 170px;
+            }
+
+            .rtiga-foot {
+                position: absolute;
+                left: 46px;
+                bottom: 56px;
+                font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+                font-size: 15px;
+                line-height: 1.45;
+                color: #000;
+            }
+
+            .jwi-foot sup {
+                font-size: 7px;
+                line-height: 0;
+            }
+
+            /* Logo api (public/Logo-footer/LOGO-API.png) besar & pudar di kanan bawah,
+               sebagian terpotong tepi kertas seperti pada kop asli */
+            .jwi-flame {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 230px;
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            .jwi-flame img {
+                position: absolute;
+                left: 330px;
+                top: -61px;
+                width: 820px;
+                max-width: none;
+                opacity: .65;
+                mix-blend-mode: multiply;
+            }
+
+            .jwi-foot {
+                position: absolute;
+                left: 58px;
+                bottom: 26px;
+                display: flex;
+                gap: 32px;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 10.5px;
+                font-weight: 700;
+                line-height: 1.3;
+                color: #111;
+            }
+
+            .jwi-foot .jwi-pt {
+                font-size: 12.5px;
+                margin-bottom: 2px;
+            }
+
+            .jwi-foot .jwi-office {
+                font-size: 13px;
+            }
+
+            .jwi-foot .jwi-col2 {
+                padding-top: 22px;
+            }
+
             /* ===== PRINT: hanya kertas surat yang dicetak, pas 1 halaman A4 =====
                Margin halaman 0 agar gelombang kop menempel ke tepi atas & bawah kertas */
             @page {
@@ -609,7 +1000,31 @@
             </div>
 
             <!-- KERTAS SURAT RFO -->
-            <div class="rfo-paper">
+            <div class="rfo-paper<?= $kop ? ' rfo-paper--kop rfo-paper--' . $kop : '' ?>">
+                <?php if ($kop) : ?>
+                <div class="kop-head">
+                    <table class="kop-meta">
+                        <tr>
+                            <td>Nomor</td>
+                            <td class="rfo-colon">:</td>
+                            <td><?= esc($rfo['rfo_id']) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Lamp</td>
+                            <td class="rfo-colon">:</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Perihal</td>
+                            <td class="rfo-colon">:</td>
+                            <td>RFO</td>
+                        </tr>
+                    </table>
+                    <?php if (!empty($rfo['logo'])) : ?>
+                        <div class="kop-logo"><img src="<?= base_url($rfo['logo']) ?>" alt="Logo <?= esc($rfo['perusahaan']) ?>"></div>
+                    <?php endif; ?>
+                </div>
+                <?php else : ?>
                 <svg class="rfo-wave rfo-wave-top" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
                     <defs>
                         <linearGradient id="rfoWaveTop" x1="0" x2="1" y1="0" y2="0">
@@ -629,6 +1044,7 @@
                     <?php endif; ?>
                     <div class="rfo-id"><?= esc($rfo['rfo_id']) ?></div>
                 </div>
+                <?php endif; ?>
 
                 <div class="rfo-body">
                     <div class="rfo-greet">Kepada Pelanggan Yth,</div>
@@ -680,11 +1096,58 @@
                         <?php if (!empty($petugas)) : ?>
                             <span><?= esc(implode(' / ', $petugas)) ?></span>
                         <?php endif; ?>
+                        <?php if (!empty($rfo['logo'])) : ?>
+                            <div class="rfo-sign-logo"><img src="<?= base_url($rfo['logo']) ?>" alt="Logo <?= esc($rfo['perusahaan']) ?>"></div>
+                        <?php endif; ?>
                         <span class="rfo-sign-org">Network Operation Center</span>
                         <span><?= esc($namaTtd) ?></span>
                     </div>
                 </div>
 
+                <?php if ($kop === 'flazz') : ?>
+                <!-- Pita hijau + alamat kantor (Kop Surat Flazznet.pdf) -->
+                <div class="flazz-foot">
+                    <div class="flazz-pt">PT Genezis Mitra Technology</div>
+                    <div>MTH Square, Jl. Letjen M.T. Haryono No.Kav 10 office Lt. 1 No. 0125, RT.6/RW.12, Bidara Cina,</div>
+                    <div>Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13330</div>
+                    <div class="flazz-web">www.flazznet.id</div>
+                </div>
+                <?php elseif ($kop === 'norlec') : ?>
+                <!-- Logo S kanan bawah + alamat kantor (norlec.pdf) -->
+                <div class="norlec-s" aria-hidden="true"><img src="<?= base_url('Logo-footer/LOGO-S.png') ?>" alt=""></div>
+                <div class="norlec-foot">
+                    <div>PT Juragan Wifi Indonesia</div>
+                    <div>MTH Square Lantai 2 No.0219</div>
+                    <div>Jl. MT Haryono Kav 10 Bidara Cina Jatinegara</div>
+                    <div>Jakarta Timur DKI Jakarta 13330</div>
+                </div>
+                <?php elseif ($kop === 'rtiga') : ?>
+                <!-- Alamat kantor kiri bawah (kop surat rnet.pdf) -->
+                <div class="rtiga-foot">
+                    <div>PT Juragan Wifi Indonesia (RNET)</div>
+                    <div>MTH Square Lantai 3A No.12</div>
+                    <div>Jl. MT Haryono Kav 10 Bidara Cina Jatinegara</div>
+                    <div>Jakarta Timur DKI Jakarta 13330</div>
+                </div>
+                <?php elseif ($kop === 'jwi') : ?>
+                <!-- Api kanan bawah + alamat kantor (Kop Surat JWI.pdf) -->
+                <div class="jwi-flame" aria-hidden="true"><img src="<?= base_url('Logo-footer/LOGO-API.png') ?>" alt=""></div>
+                <div class="jwi-foot">
+                    <div>
+                        <div class="jwi-pt">PT. JURAGAN WIFI INDONESIA</div>
+                        <div class="jwi-office">Head Office</div>
+                        <div>MTH Square 2<sup>nd</sup> Floor No. 219</div>
+                        <div>Jl. MT. Haryono Kav 10, Jakarta Timur 13330</div>
+                        <div>Telp +62 21 5011 2225 - www.speednet.id</div>
+                    </div>
+                    <div class="jwi-col2">
+                        <div class="jwi-office">Branch Cirebon</div>
+                        <div>Jl. Pangeran Walangsungsang, Sukadana,</div>
+                        <div>Kec. Pabuaran, Kab. Cirebon, Jawa Barat 45188</div>
+                        <div>Telp +62 21 5011 2225 - www.speednet.id</div>
+                    </div>
+                </div>
+                <?php else : ?>
                 <svg class="rfo-wave rfo-wave-bottom" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
                     <defs>
                         <linearGradient id="rfoWaveBottom" x1="0" x2="1" y1="0" y2="0">
@@ -697,6 +1160,7 @@
                     <path d="M360,148 C540,112 680,86 800,84 V98 C660,104 520,134 360,148 Z" fill="url(#rfoWaveBottom)" />
                     <path d="M590,152 C680,128 750,116 800,114 V136 C740,138 670,144 590,152 Z" fill="<?= esc($warnaKop[2], 'attr') ?>" />
                 </svg>
+                <?php endif; ?>
             </div>
         </div>
     </div>

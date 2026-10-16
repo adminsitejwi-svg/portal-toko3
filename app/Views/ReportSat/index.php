@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>Laporan Shift</title>
+    <title>Tiket FO Loss</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -118,81 +118,6 @@
             display: block;
         }
 
-        /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
-        .aksi-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #5b6b7f;
-        }
-
-        .aksi-btn:hover,
-        .aksi-btn.open {
-            background: #eef1f5;
-            color: #1e4fa3;
-        }
-
-        #aksiMenu {
-            position: fixed;
-            z-index: 1050;
-            min-width: 190px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
-            padding: 6px;
-        }
-
-        #aksiMenu .aksi-title {
-            padding: 6px 12px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: #94a3b8;
-            border-bottom: 1px solid #f1f5f9;
-            margin-bottom: 4px;
-        }
-
-        #aksiMenu button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #3b4754;
-            text-align: left;
-        }
-
-        #aksiMenu button i {
-            font-size: 17px;
-            color: #64748b;
-        }
-
-        #aksiMenu button:hover {
-            background: #f3f4f6;
-        }
-
-        #aksiMenu button.danger,
-        #aksiMenu button.danger i {
-            color: #dc2626;
-        }
-
-        #aksiMenu hr {
-            margin: 4px 0;
-            border-color: #f1f5f9;
-        }
-
-        .dark #aksiMenu { background: #263240; border-color: rgba(255, 255, 255, .1); }
-        .dark #aksiMenu button { color: #bfc8d6; }
-        .dark #aksiMenu button:hover { background: rgba(255, 255, 255, .05); }
-
         /* ===== JUMLAH PER GROUP ===== */
         .grup-count {
             display: inline-block;
@@ -222,10 +147,22 @@
             font-size: 22px;
         }
 
-        .rekap-red { background: #fde8ec; }
-        .rekap-amber { background: #fdf3e3; }
-        .rekap-blue { background: #e3edfb; }
-        .rekap-green { background: #e7f8f1; }
+        .rekap-red {
+            background: #fde8ec;
+        }
+
+        .rekap-amber {
+            background: #fdf3e3;
+        }
+
+        .rekap-blue {
+            background: #e3edfb;
+        }
+
+        .rekap-green {
+            background: #e7f8f1;
+        }
+
         .submenu {
             max-height: 0;
             overflow: hidden;
@@ -381,6 +318,29 @@
 
         .dataTables_filter {
             display: none;
+        }
+
+        /* ===== FILTER DROPDOWN ===== */
+        .filter-select {
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: #3b4754;
+            background: #fff;
+            outline: none;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #04a9f5;
+        }
+
+        .dark .filter-select {
+            background: #263240;
+            color: #bfc8d6;
+            border-color: rgba(255, 255, 255, .1);
         }
 
         .custom-search {
@@ -551,40 +511,57 @@
         .brand-text {
             font-size: 18px;
         }
-        /* ===== HALAMAN SHIFT LAPORAN ===== */
-        .lp-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1d6fd8; }
-        .lp-title { font-size: 24px; font-weight: 700; color: #1f2937; line-height: 1.3; }
-        .lp-sub { font-size: 12px; color: #6b7280; margin-top: 4px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-        .lp-pic { font-weight: 700; text-transform: uppercase; color: #4b5563; }
+        /* ===== TOMBOL AKSI IKON (seperti crm.jwi.id/Vendor) ===== */
+        .aksi-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-        .lp-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid #e3e8ee; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 500; color: #3b4754; }
-        .lp-btn:hover { background: #f8fafc; }
-        .lp-btn-primary { background: #2563eb; border-color: #2563eb; color: #fff; }
-        .lp-btn-primary:hover { background: #1d4ed8; }
+        .aksi-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background .15s, color .15s;
+        }
 
-        .lp-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; background: #f8fafc; border: 1px solid #e5e9f0; border-radius: 12px; }
-        .lp-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #4b5563; }
-        .lp-chip:hover { background: #fff; box-shadow: 0 2px 8px rgba(15, 23, 42, .08); }
-        .lp-count { min-width: 22px; padding: 2px 7px; border-radius: 6px; background: #eef1f5; color: #4b5563; font-size: 12px; text-align: center; }
+        .aksi-view {
+            background: #e8f4fd;
+            color: #0ea5e9;
+        }
 
-        .lp-sec-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
-        .lp-empty { padding: 18px; border: 1px dashed #e2e8f0; border-radius: 10px; text-align: center; font-size: 13px; color: #94a3b8; }
+        .aksi-view:hover {
+            background: #0ea5e9;
+            color: #fff;
+        }
 
-        .lp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .lp-table th { background: #f8fafc; color: #5b6b7f; font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e9f0; white-space: nowrap; }
-        .lp-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; white-space: pre-line; min-width: 90px; }
-        .lp-table tbody tr:hover { background: #fafbfc; }
+        .aksi-edit {
+            background: #eaf0fd;
+            color: #2563eb;
+        }
 
-        .dark .lp-title { color: #e5e7eb; }
-        .dark .lp-pic { color: #cbd5e1; }
-        .dark .lp-btn { background: #263240; border-color: rgba(255, 255, 255, .1); color: #bfc8d6; }
-        .dark .lp-chips { background: rgba(255, 255, 255, .03); border-color: rgba(255, 255, 255, .08); }
-        .dark .lp-chip { color: #bfc8d6; }
-        .dark .lp-chip:hover { background: #263240; }
-        .dark .lp-count { background: rgba(255, 255, 255, .06); color: #bfc8d6; }
-        .dark .lp-table th { background: rgba(255, 255, 255, .04); color: #bfc8d6; border-color: rgba(255, 255, 255, .08); }
-        .dark .lp-table td { border-color: rgba(255, 255, 255, .06); }
+        .aksi-edit:hover {
+            background: #2563eb;
+            color: #fff;
+        }
 
+        .aksi-hapus {
+            background: #fdecec;
+            color: #dc2626;
+        }
+
+        .aksi-hapus:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .dark .aksi-view { background: rgba(14, 165, 233, .15); }
+        .dark .aksi-edit { background: rgba(37, 99, 235, .18); }
+        .dark .aksi-hapus { background: rgba(220, 38, 38, .18); }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -709,6 +686,7 @@
                     </ul>
                 </li>
                 <li><a href="<?= site_url('Map') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white"><span class="pc-micon w-5"><i class="ti ti-map-pin"></i></span><span>Lokasi</span></a></li>
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">NOC Operation</li>
                 <li>
                     <a href="<?= site_url('RFO') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-alert"></i></span>
@@ -722,7 +700,7 @@
                     </a>
                 </li>
                 <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
                         <span class="flex-1">Report NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -730,6 +708,31 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
+                        <span class="flex-1">Report SAT Group</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
+                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                    </ul>
+                </li>
+                <li class="hasmenu">
+                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
+                        <span class="flex-1">All NOC</span>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
+                    </a>
+                    <ul class="submenu bg-black/20">
+                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                     </ul>
                 </li>
 
@@ -751,7 +754,7 @@
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
-                 <li>
+                <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
                         class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
@@ -806,220 +809,267 @@
         </header>
 
         <div class="p-6">
-            <?php
-            $hm = static fn ($t) => $t ? substr($t, 0, 5) : '-';
-            $tgl = static fn ($t) => $t ? date('d-m-Y', strtotime($t)) : '-';
-            $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            $ts = strtotime($report['tanggal']);
-            $tanggalPanjang = date('j', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts);
-            $v = static fn ($x) => trim((string) $x) === '' ? '-' : esc($x);
+            <!-- breadcrumb (tampilan seperti halaman Master Data crm.jwi.id/Vendor) -->
+            <div class="flex items-center justify-between mb-6">
+                <h5 class="font-medium text-lg">Tiket FO Loss</h5>
+                <a href="<?= site_url('ReportSat/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                    <i class="ti ti-plus"></i> Tambah
+                </a>
+            </div>
 
-            // Badge warna (sama dengan halaman Shift Handover)
-            $badge = [
-                'High' => 'badge-due', 'Medium' => 'badge-pending', 'Low' => 'badge-service',
-                'Resolved' => 'badge-paid', 'On Progress' => 'badge-service', 'Monitoring' => 'badge-pending', 'Down' => 'badge-due', 'Pending' => 'badge-pending',
-                'Requested' => 'badge-pending', 'Shipped' => 'badge-service', 'In Transit' => 'badge-service', 'Received' => 'badge-paid', 'Installed' => 'badge-paid', 'Closed' => 'badge-paid',
-                'Planned' => 'badge-service', 'Done' => 'badge-paid',
-                'Open' => 'badge-pending',
-                'Info' => 'badge-service', 'Note' => 'badge-pending', 'Recurring' => 'badge-paid',
-            ];
-            $b = static fn ($x) => '<span class="badge ' . ($badge[$x] ?? 'badge-service') . '">' . esc($x) . '</span>';
+            <div class="card">
+                <div class="card-body">
 
-            $bagian = [
-                'gangguan'    => ['icon' => '🚨', 'label' => 'Gangguan / Incident'],
-                'followup'    => ['icon' => '🔔', 'label' => 'Follow Up'],
-                'pengiriman'  => ['icon' => '📦', 'label' => 'Pengiriman Perangkat'],
-                'maintenance' => ['icon' => '🛠️', 'label' => 'Maintenance'],
-                'aktivasi'    => ['icon' => '⚡', 'label' => 'Aktivasi'],
-                'catatan'     => ['icon' => '📌', 'label' => 'Catatan'],
-            ];
-            $total = 0;
-            foreach ($bagian as $k => $_) {
-                $total += count($anak[$k] ?? []);
-            }
-            ?>
-
-            <!-- HEADER LAPORAN -->
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
-                <div class="flex items-start gap-3">
-                    <a href="<?= site_url('HistoryReport') ?>" title="Kembali" class="mt-5 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5">
-                        <i class="ti ti-arrow-left text-xl"></i>
-                    </a>
-                    <div>
-                        <div class="lp-eyebrow">Shift Laporan</div>
-                        <h4 class="lp-title"><?= esc($report['shift']); ?> · <?= $tanggalPanjang ?></h4>
-                        <div class="lp-sub">
-                            <span class="lp-pic"><?= esc($report['pic_shift']); ?></span>
-                            · <?= $hm($report['jam_mulai']); ?>–<?= $hm($report['jam_selesai']); ?>
-                            ·
-                            <?php if ($total > 0) : ?>
-                                <span class="badge badge-paid"><i class="ti ti-circle-check mr-1"></i>Completed</span>
-                            <?php else : ?>
-                                <span class="badge badge-draft"><i class="ti ti-pencil mr-1"></i>Draft</span>
-                            <?php endif; ?>
+                    <!-- TOOLBAR -->
+                    <?php
+                    // Opsi filter: nilai unik dari data yang ada
+                    $opsiUnik = static function (array $rows, string $kolom): array {
+                        $nilai = array_unique(array_filter(array_map('trim', array_column($rows, $kolom)), 'strlen'));
+                        natcasesort($nilai);
+                        return $nilai;
+                    };
+                    $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                    ?>
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div id="lengthArea"></div>
+                            <!-- FILTER -->
+                            <select id="filterShift" class="filter-select" title="Filter Shift">
+                                <option value="">Semua Shift</option>
+                                <?php foreach ($shiftOptions as $sh) : ?>
+                                    <option value="Shift <?= esc($sh, 'attr') ?>">Shift <?= esc($sh) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="filterKategori" class="filter-select" title="Filter Kategori Toko">
+                                <option value="">Semua Kategori Toko</option>
+                                <?php foreach ($kategoriOptions as $kt) : ?>
+                                    <option value="<?= esc($kt, 'attr') ?>"><?= esc($kt) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="filterStatus" class="filter-select" title="Filter Status">
+                                <option value="">Semua Status</option>
+                                <?php foreach ($opsiUnik($report, 'status') as $st) : ?>
+                                    <option value="<?= esc($st, 'attr') ?>"><?= esc($st) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="custom-search">
+                                <input type="text" id="customSearch" placeholder="search..." />
+                                <button class="go-btn" type="button"></button>
+                            </div>
+                            <div id="exportArea"></div>
                         </div>
                     </div>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <button type="button" onclick="copyLaporan()" class="lp-btn"><i class="ti ti-copy"></i> Copy WhatsApp</button>
-                    <a href="<?= site_url('HistoryReport/gangguan/' . $report['id']) ?>" class="lp-btn lp-btn-primary"><i class="ti ti-tool"></i> Edit Data</a>
-                </div>
-            </div>
 
-            <!-- JUMLAH PER BAGIAN (klik untuk lompat ke bagiannya) -->
-            <div class="lp-chips mb-6">
-                <?php foreach ($bagian as $k => $s) : ?>
-                    <a href="#lp-<?= $k ?>" class="lp-chip">
-                        <span><?= $s['icon'] ?></span>
-                        <span><?= $s['label'] ?></span>
-                        <span class="lp-count"><?= count($anak[$k] ?? []) ?></span>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- RINGKASAN -->
-            <div class="card mb-6">
-                <div class="card-body">
-                    <h6 class="lp-sec-title">📝 Ringkasan</h6>
-                    <div class="whitespace-pre-line text-sm"><?= $v($report['ringkasan']) ?></div>
-                </div>
-            </div>
-
-            <?php
-            // Kolom tabel tiap bagian: judul kolom => fungsi isi sel
-            $kolom = [
-                'gangguan' => [
-                    'Group' => fn ($r) => esc($r['grup']),
-                    'Sub Group' => fn ($r) => $v($r['sub_grup']),
-                    'Customer / Site' => fn ($r) => $v($r['customer_site']),
-                    'CID / Ticket' => fn ($r) => $v($r['cid_ticket']),
-                    'Status' => fn ($r) => $b($r['status']),
-                    'Priority' => fn ($r) => $b($r['priority']),
-                    'Problem' => fn ($r) => $v($r['gangguan']),
-                    'Tindakan' => fn ($r) => $v($r['tindakan']),
-                    'Next Action / Handover' => fn ($r) => $v($r['next_action']),
-                    'PIC' => fn ($r) => $v($r['pic']),
-                ],
-                'followup' => [
-                    'Group' => fn ($r) => esc($r['grup']),
-                    'Customer / Site' => fn ($r) => $v($r['customer_site']),
-                    'Priority' => fn ($r) => $b($r['priority']),
-                    'Due Date' => fn ($r) => $tgl($r['due_date']),
-                    'PIC' => fn ($r) => $v($r['pic']),
-                    'Issue' => fn ($r) => $v($r['issue']),
-                    'Action / Next Step' => fn ($r) => $v($r['action']),
-                ],
-                'pengiriman' => [
-                    'Group' => fn ($r) => esc($r['grup']),
-                    'Customer' => fn ($r) => $v($r['customer']),
-                    'Device' => fn ($r) => $v($r['device']),
-                    'Tracking / Resi' => fn ($r) => $v($r['tracking_resi']),
-                    'Status' => fn ($r) => $b($r['status']),
-                    'ETA' => fn ($r) => $tgl($r['eta']),
-                    'PIC' => fn ($r) => $v($r['pic']),
-                ],
-                'maintenance' => [
-                    'Group' => fn ($r) => esc($r['grup']),
-                    'Site' => fn ($r) => $v($r['site']),
-                    'Equipment' => fn ($r) => $v($r['equipment']),
-                    'Schedule' => fn ($r) => $tgl($r['schedule']),
-                    'Status' => fn ($r) => $b($r['status']),
-                    'PIC' => fn ($r) => $v($r['pic']),
-                    'Issue' => fn ($r) => $v($r['issue']),
-                    'Action' => fn ($r) => $v($r['action']),
-                ],
-                'aktivasi' => [
-                    'ID Pelanggan' => fn ($r) => $v($r['id_pelanggan']),
-                    'Nama Pelanggan' => fn ($r) => $v($r['nama_pelanggan']),
-                    'Kapasitas (Mbps)' => fn ($r) => $v($r['kapasitas_mbps']),
-                    'SN' => fn ($r) => $v($r['sn']),
-                    'Tanggal Aktivasi' => fn ($r) => $tgl($r['tanggal_aktivasi']),
-                ],
-                'catatan' => [
-                    'Group' => fn ($r) => esc($r['grup']),
-                    'Kategori' => fn ($r) => $b($r['kategori']),
-                    'Priority' => fn ($r) => $b($r['priority']),
-                    'Status' => fn ($r) => $b($r['status']),
-                    'Judul' => fn ($r) => '<b>' . $v($r['judul']) . '</b>',
-                    // poin catatan bernomor, satu per baris
-                    'Catatan' => function ($r) {
-                        $out = [];
-                        foreach (\App\Models\CatatanModel::poin($r['catatan']) as $i => $p) {
-                            $out[] = ($i + 1) . '. ' . esc($p);
-                        }
-
-                        return implode("\n", $out);
-                    },
-                ],
-            ];
-            ?>
-
-            <!-- BAGIAN-BAGIAN LAPORAN -->
-            <?php foreach ($bagian as $k => $s) : ?>
-                <?php $rows = $anak[$k] ?? []; ?>
-                <div class="card mb-6" id="lp-<?= $k ?>">
-                    <div class="card-body">
-                        <h6 class="lp-sec-title">
-                            <?= $s['icon'] ?> <?= $s['label'] ?>
-                            <span class="lp-count"><?= count($rows) ?></span>
-                        </h6>
-
-                        <?php if (! $rows) : ?>
-                            <div class="lp-empty">Belum ada data <?= strtolower($s['label']) ?>.</div>
-                        <?php else : ?>
-                            <div class="table-scroll">
-                                <table class="lp-table">
-                                    <thead>
+                    <!-- TABLE -->
+                    <div class="table-scroll">
+                        <table id="reportTable" class="display nowrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Aksi</th>
+                                    <th>NOC On Duty</th>
+                                    <th>Shift</th>
+                                    <th>Kategori Toko</th>
+                                    <th>Kode Toko</th>
+                                    <th>Nama Toko</th>
+                                    <th>Alamat</th>
+                                    <th>Deskripsi Pekerjaan</th>
+                                    <th>Resi Pengiriman</th>
+                                    <th>Kendala</th>
+                                    <th>Action</th>
+                                    <th>Tanggal Report</th>
+                                    <th>Status</th>
+                                    <th>Noted</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($report)) : ?>
+                                    <?php $no = 1; ?>
+                                    <?php foreach ($report as $row) : ?>
+                                        <?php
+                                        // Tanggal report. Format: 1 Oktober 2026
+                                        $ts = !empty($row['tanggal_report']) ? strtotime($row['tanggal_report']) : false;
+                                        $tglReport = $ts ? date('j', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts) : '-';
+                                        ?>
                                         <tr>
-                                            <th>No</th>
-                                            <?php foreach (array_keys($kolom[$k]) as $judul) : ?>
-                                                <th><?= $judul ?></th>
-                                            <?php endforeach; ?>
+                                            <td><?= $no++; ?></td>
+                                            <td>
+                                                <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
+                                                <div class="aksi-group">
+                                                    <button type="button"
+                                                        data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                        onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                        class="aksi-icon aksi-view" title="View">
+                                                        <i class="ti ti-eye"></i>
+                                                    </button>
+                                                    <a href="<?= site_url('ReportSat/edit/' . $row['id']) ?>"
+                                                        class="aksi-icon aksi-edit" title="Edit">
+                                                        <i class="ti ti-edit"></i>
+                                                    </a>
+                                                    <button type="button"
+                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                        class="aksi-icon aksi-hapus" title="Hapus">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['noc_on_duty']); ?></td>
+                                            <td data-search="<?= esc('Shift ' . $row['shift'], 'attr') ?>">Shift <?= esc($row['shift']); ?></td>
+                                            <td><?= esc($row['kategori_toko']); ?></td>
+                                            <td class="col-bold"><?= esc($row['kode_toko']); ?></td>
+                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_toko']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['alamat']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['deskripsi_pekerjaan']); ?></td>
+                                            <td><?= esc($row['resi_pengiriman'] ?: '-'); ?></td>
+                                            <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['kendala']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[220px]"><?= esc($row['action']); ?></td>
+                                            <td data-order="<?= esc($row['tanggal_report'] ?? '', 'attr') ?>"><?= esc($tglReport); ?></td>
+                                            <td data-search="<?= esc($row['status'], 'attr') ?>"><?= esc($row['status']); ?></td>
+                                            <td class="whitespace-pre-line min-w-[200px]"><?= esc($row['noted'] ?: '-'); ?></td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($rows as $i => $r) : ?>
-                                            <tr>
-                                                <td><?= $i + 1 ?></td>
-                                                <?php foreach ($kolom[$k] as $isi) : ?>
-                                                    <td><?= $isi($r) ?></td>
-                                                <?php endforeach; ?>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+
                     </div>
+
                 </div>
-            <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== POP UP VIEW ====== -->
+    <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeViewModal()">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold">View Tiket FO Loss</h3>
+                <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <div class="text-gray-500">NOC On Duty</div>
+                    <div class="font-medium" id="v_noc_on_duty"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Shift</div>
+                    <div class="font-medium" id="v_shift"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Kategori Toko</div>
+                    <div class="font-medium" id="v_kategori_toko"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Kode Toko</div>
+                    <div class="font-medium" id="v_kode_toko"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Nama Toko</div>
+                    <div class="font-medium" id="v_nama_toko"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Alamat</div>
+                    <div class="font-medium whitespace-pre-line" id="v_alamat"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Deskripsi Pekerjaan</div>
+                    <div class="font-medium whitespace-pre-line" id="v_deskripsi_pekerjaan"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Resi Pengiriman</div>
+                    <div class="font-medium" id="v_resi_pengiriman"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Tanggal Report</div>
+                    <div class="font-medium" id="v_tanggal_report"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Kendala</div>
+                    <div class="font-medium whitespace-pre-line" id="v_kendala"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Action</div>
+                    <div class="font-medium whitespace-pre-line" id="v_action"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Status</div>
+                    <div class="font-medium" id="v_status"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Dibuat</div>
+                    <div class="font-medium" id="v_created"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Noted</div>
+                    <div class="font-medium whitespace-pre-line" id="v_noted"></div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Copy: teks "NOC SHIFT REPORT" (format WhatsApp) yang sama dengan tombol Copy di halaman History Report
-        const LAPORAN_TEXT = <?= json_encode($copyText, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
+        // ====== VIEW ======
+        const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        // '2026-10-01' -> '1 Oktober 2026'
+        const tglIndo = t => {
+            if (!t) return '-';
+            const [y, m, d] = t.split('-');
+            return Number(d) + ' ' + BULAN[Number(m) - 1] + ' ' + y;
+        };
 
-        function copyLaporan() {
-            const done = () => Swal.fire({ icon: 'success', title: 'Tersalin', text: 'Report siap di-paste ke WhatsApp.', timer: 1500, showConfirmButton: false });
-            const fallback = () => {
-                // untuk akses lewat http non-localhost (clipboard API tidak tersedia)
-                const ta = document.createElement('textarea');
-                ta.value = LAPORAN_TEXT;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                const ok = document.execCommand('copy');
-                ta.remove();
-                ok ? done() : Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data tidak dapat disalin.' });
-            };
+        function openViewModal(d) {
+            const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
+            ['noc_on_duty', 'kategori_toko', 'kode_toko', 'nama_toko', 'alamat', 'deskripsi_pekerjaan', 'resi_pengiriman', 'kendala', 'action', 'status', 'noted']
+                .forEach(k => set('v_' + k, d[k]));
+            set('v_shift', d.shift ? 'Shift ' + d.shift : '');
+            set('v_tanggal_report', d.tanggal_report ? tglIndo(d.tanggal_report.substring(0, 10)) : '');
+            set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(LAPORAN_TEXT).then(done, fallback);
-            } else {
-                fallback();
-            }
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.add('hidden');
+        }
+    </script>
+
+    <script>
+        // ====== DELETE ======
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: 'Data yang dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "<?= site_url('ReportSat/delete/') ?>" + id;
+                }
+            });
+        }
+
+        function isTableEmpty(table) {
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
+        }
+
+        function showEmptyExportAlert() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Kosong',
+                text: 'Tidak ada data yang bisa diexport.',
+                confirmButtonColor: '#04a9f5'
+            });
         }
     </script>
 
@@ -1084,15 +1134,166 @@
             if (alertBox) {
                 if (progressBar) {
                     progressBar.style.transition = "width 3s linear";
-                    setTimeout(() => { progressBar.style.width = "0%"; }, 100);
+                    setTimeout(() => {
+                        progressBar.style.width = "0%";
+                    }, 100);
                 }
                 setTimeout(() => {
                     alertBox.style.transition = "all .5s ease";
                     alertBox.style.opacity = "0";
                     alertBox.style.transform = "translate(-50%, -20px)";
-                    setTimeout(() => { alertBox.remove(); }, 500);
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
                 }, 3000);
             }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            const exportConfig = {
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data) {
+                            const tmp = document.createElement('div');
+                            tmp.innerHTML = data;
+                            return tmp.textContent.trim();
+                        }
+                    }
+                }
+            };
+
+            const table = $('#reportTable').DataTable({
+                pageLength: 10,
+                lengthMenu: [
+                    [10, 15, 25, 50, -1],
+                    [10, 15, 25, 50, "Semua"]
+                ],
+                order: [],
+                columnDefs: [{
+                    targets: [0, 1],
+                    orderable: false,
+                    searchable: false
+                }],
+                dom: "lBfrtip",
+                buttons: [{
+                    extend: 'collection',
+                    text: '<i class="ti ti-download"></i> Export',
+                    className: 'export-toggle',
+                    buttons: [{
+                            extend: 'copyHtml5',
+                            text: '<i class="ti ti-copy"></i> Copy',
+                            title: 'Data Tiket FO Loss',
+                            ...exportConfig,
+                            action: function(e, dt, button, config) {
+                                if (isTableEmpty(dt)) return showEmptyExportAlert();
+                                $.fn.dataTable.ext.buttons.copyHtml5.action.call(this, e, dt, button, config);
+                            }
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="ti ti-file-text"></i> Export CSV',
+                            title: 'Data Tiket FO Loss',
+                            ...exportConfig,
+                            action: function(e, dt, button, config) {
+                                if (isTableEmpty(dt)) return showEmptyExportAlert();
+                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(this, e, dt, button, config);
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
+                            title: 'Data Tiket FO Loss',
+                            ...exportConfig,
+                            action: function(e, dt, button, config) {
+                                if (isTableEmpty(dt)) return showEmptyExportAlert();
+                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                            }
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
+                            title: 'Data Tiket FO Loss',
+                            orientation: 'landscape',
+                            pageSize: 'A4',
+                            ...exportConfig,
+                            action: function(e, dt, button, config) {
+                                if (isTableEmpty(dt)) return showEmptyExportAlert();
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
+                            },
+                            customize: function(doc) {
+                                doc.styles.tableHeader = {
+                                    fillColor: '#04a9f5',
+                                    color: '#fff',
+                                    bold: true,
+                                    alignment: 'left'
+                                };
+                                doc.defaultStyle.fontSize = 10;
+                                doc.content[1].layout = {
+                                    hLineWidth: () => 0.5,
+                                    vLineWidth: () => 0.5,
+                                    hLineColor: () => '#e0e0e0',
+                                    vLineColor: () => '#e0e0e0'
+                                };
+                            }
+                        }
+                    ]
+                }],
+                language: {
+                    lengthMenu: "_MENU_",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    emptyTable: "Data Tiket FO Loss belum tersedia",
+                    zeroRecords: "Tidak ada data yang cocok dengan pencarian",
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next"
+                    }
+                }
+            });
+
+            table.on('draw.dt order.dt search.dt', function() {
+                let i = table.page.info().start;
+                table.column(0, {
+                    page: 'current',
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(function(cell) {
+                    cell.innerHTML = ++i;
+                });
+            });
+            table.draw();
+
+            $('#lengthArea').append($('.dataTables_length'));
+            $('#exportArea').append($('.dt-buttons'));
+
+            // ====== FILTER DROPDOWN (cocok persis pada kolom) ======
+            function filterColumn(col, value) {
+                const re = value ? '^' + $.fn.dataTable.util.escapeRegex(value) + '$' : '';
+                table.column(col).search(re, true, false).draw();
+            }
+            // Kolom: 3 Shift, 4 Kategori Toko, 13 Status
+            $('#filterShift').on('change', function() {
+                filterColumn(3, this.value);
+            });
+            $('#filterKategori').on('change', function() {
+                filterColumn(4, this.value);
+            });
+            $('#filterStatus').on('change', function() {
+                filterColumn(13, this.value);
+            });
+            $('#customSearch').on('keyup', function() {
+                table.search(this.value).draw();
+            });
+            $('.go-btn').on('click', function() {
+                table.search($('#customSearch').val()).draw();
+            });
+            $('#customSearch').on('keypress', function(e) {
+                if (e.which === 13) table.search(this.value).draw();
+            });
         });
     </script>
 

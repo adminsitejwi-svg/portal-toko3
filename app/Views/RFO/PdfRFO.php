@@ -1,6 +1,7 @@
 <?php
 // Surat RFO versi PDF (dompdf), tampilan & kalimat sama dengan halaman View (ViewRFO.php).
 // $kopAtas / $kopBawah / $logo berupa data URI PNG dari App\Libraries\RfoPdf.
+// $kop: kop surat khusus perusahaan (jwi / flazz / norlec / rtiga) -> RFO/PdfKop.php, null = kop gelombang.
 $hari  = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 $bulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -18,6 +19,17 @@ $baris = [
     'Tindakan'             => $rfo['action'],
     'Status'               => $rfo['status'],
 ];
+
+// Perusahaan dengan kop surat khusus: tata letak sama dengan halaman View (RFO/PdfKop.php)
+if (! empty($kop)) {
+    echo view('RFO/PdfKop', compact('kop', 'baris', 'pembuka', 'penutup', 'petugas', 'namaTtd', 'logoKop', 'logoTtd', 'hiasan') + [
+        'nomor'      => $rfo['rfo_id'],
+        'perihal'    => 'RFO',
+        'perusahaan' => $rfo['perusahaan'],
+    ]);
+
+    return;
+}
 ?>
 <!doctype html>
 <html lang="id">
@@ -112,6 +124,7 @@ $baris = [
         .org {
             margin-top: 10mm;
         }
+
     </style>
 </head>
 
