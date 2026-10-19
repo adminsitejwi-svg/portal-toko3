@@ -12,8 +12,8 @@ class DataCenterModel extends BaseModel
 
     protected $allowedFields = [
         'nama_dc',
-        'kode_dc',
-        'deskripsi',
+        'alamat_dc',
+        'lokasi_rak',
         'created_at'
     ];
 

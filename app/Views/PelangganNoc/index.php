@@ -569,65 +569,6 @@
             color: #8996a4;
         }
 
-        /* ===== TOMBOL AKSI IKON (seperti crm.jwi.id/Vendor) ===== */
-        .aksi-group {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .aksi-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: background .15s, color .15s;
-        }
-
-        .aksi-view {
-            background: #e8f4fd;
-            color: #0ea5e9;
-        }
-
-        .aksi-view:hover {
-            background: #0ea5e9;
-            color: #fff;
-        }
-
-        .aksi-edit {
-            background: #eaf0fd;
-            color: #2563eb;
-        }
-
-        .aksi-edit:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .aksi-hapus {
-            background: #fdecec;
-            color: #dc2626;
-        }
-
-        .aksi-hapus:hover {
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .dark .aksi-view {
-            background: rgba(14, 165, 233, .15);
-        }
-
-        .dark .aksi-edit {
-            background: rgba(37, 99, 235, .18);
-        }
-
-        .dark .aksi-hapus {
-            background: rgba(220, 38, 38, .18);
-        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -774,15 +715,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -799,6 +731,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -898,13 +831,13 @@
                                 <?php endforeach; ?>
                             </select>
                             <?php
-                            // Pilihan filter lokasi diambil dari lokasi penempatan yang sudah dipakai pelanggan
-                            $opsiLokasi = array_unique(array_filter(array_column($pelanggan, 'nama_dc')));
-                            natcasesort($opsiLokasi);
+                            // Pilihan filter vendor diambil dari vendor yang sudah dipakai pelanggan
+                            $opsiVendor = array_unique(array_column(array_merge([], ...array_column($pelanggan, 'vendor_detail')), 'nama_vendor'));
+                            natcasesort($opsiVendor);
                             ?>
-                            <select id="filterLokasi" class="filter-select" title="Filter Lokasi Penempatan">
-                                <option value="">Semua Lokasi</option>
-                                <?php foreach ($opsiLokasi as $l) : ?>
+                            <select id="filterVendor" class="filter-select" title="Filter Vendor">
+                                <option value="">Semua Vendor</option>
+                                <?php foreach ($opsiVendor as $l) : ?>
                                     <option value="<?= esc($l, 'attr') ?>"><?= esc($l) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -927,16 +860,11 @@
                                     <th>Aksi</th>
                                     <th>Nama Pelanggan</th>
                                     <th>BTS</th>
-                                    <th>IP Address</th>
                                     <th>Vendor</th>
-                                    <th>Kapasitas</th>
+                                    <th>IP Address</th>
                                     <th>Vlan ID</th>
+                                    <th>Kapasitas</th>
                                     <th>Detail Perangkat Pelanggan</th>
-                                    <th>Nama Perangkat</th>
-                                    <th>Type</th>
-                                    <th>SN</th>
-                                    <th>Jumlah</th>
-                                    <th>Lokasi Penempatan</th>
                                     <th>Topologi</th>
                                 </tr>
                             </thead>
@@ -944,41 +872,36 @@
                                 <?php if (!empty($pelanggan)) : ?>
                                     <?php $no = 1; ?>
                                     <?php foreach ($pelanggan as $row) : ?>
-                                        <?php $adaBts = $row['nama_bts'] !== null; ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
-                                                <div class="aksi-group">
-                                                    <button type="button"
-                                                        data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                        onclick="openViewModal(JSON.parse(this.dataset.row))"
-                                                        class="aksi-icon aksi-view" title="View">
-                                                        <i class="ti ti-eye"></i>
-                                                    </button>
-                                                    <a href="<?= site_url('PelangganNoc/edit/' . $row['id']) ?>"
-                                                        class="aksi-icon aksi-edit" title="Edit">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-                                                    <button type="button"
-                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                        class="aksi-icon aksi-hapus" title="Hapus">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
+                                                <a href="<?= site_url('PelangganNoc/edit/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-info" title="Lihat">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_pelanggan']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_bts'] ?? '-'); ?></td>
-                                            <td><?= esc($row['ip_address'] ?? '-'); ?></td>
-                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['vendors'] ? implode(', ', $row['vendors']) : '-'); ?></td>
-                                            <td><?= esc($row['kapasitas'] ?? '-'); ?></td>
-                                            <td><?= ! $adaBts ? '-' : ($row['vlan_id'] !== null ? esc($row['vlan_id']) : 'Tanpa VLAN'); ?></td>
-                                            <td class="whitespace-normal min-w-[220px]"><?= esc($row['detail_perangkat'] ?: '-'); ?></td>
-                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_perangkat'] ?? '-'); ?></td>
-                                            <td><?= esc($row['type'] ?? '-'); ?></td>
-                                            <td><?= esc($row['sn'] ?: '-'); ?></td>
-                                            <td><?= esc($row['jumlah'] ?? '-'); ?></td>
-                                            <td><?= esc($row['nama_dc'] ?? '-'); ?></td>
+                                            <!-- vendor, IP, VLAN & kapasitas dipisah koma dengan urutan yang sama (dipakai juga oleh filter vendor) -->
+                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['vendors'] ?: '-'); ?></td>
+                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['ip_address'] ?: '-'); ?></td>
+                                            <td class="whitespace-normal"><?= esc($row['vlan'] ?: '-'); ?></td>
+                                            <td class="whitespace-normal"><?= esc($row['kapasitas'] ?: '-'); ?></td>
+                                            <td class="whitespace-pre-line min-w-[240px]"><?= esc($row['perangkat_teks'] ?: '-'); ?></td>
                                             <td>
                                                 <?php if ($row['file_topologi']) : ?>
                                                     <a href="<?= site_url('PelangganNoc/file/' . $row['id']) ?>" target="_blank" rel="noopener"
@@ -1014,51 +937,17 @@
                     <div class="text-gray-500">Nama Pelanggan</div>
                     <div class="font-medium" id="v_nama_pelanggan"></div>
                 </div>
-                <div class="md:col-span-2 pt-2 border-t dark:border-white/10 font-semibold">BTS</div>
-                <div>
-                    <div class="text-gray-500">Nama BTS</div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">BTS</div>
                     <div class="font-medium" id="v_nama_bts"></div>
                 </div>
-                <div>
-                    <div class="text-gray-500">IP Address</div>
-                    <div class="font-medium" id="v_ip_address"></div>
-                </div>
-                <div>
+                <div class="md:col-span-2 pt-2 border-t dark:border-white/10">
                     <div class="text-gray-500">Vendor</div>
                     <div class="font-medium whitespace-pre-line" id="v_vendors"></div>
                 </div>
-                <div>
-                    <div class="text-gray-500">Kapasitas</div>
-                    <div class="font-medium" id="v_kapasitas"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Vlan ID</div>
-                    <div class="font-medium" id="v_vlan_id"></div>
-                </div>
                 <div class="md:col-span-2 pt-2 border-t dark:border-white/10">
                     <div class="text-gray-500">Detail Perangkat Pelanggan di Lokasi</div>
-                    <div class="font-medium whitespace-pre-line" id="v_detail_perangkat"></div>
-                </div>
-                <div class="md:col-span-2 pt-2 border-t dark:border-white/10 font-semibold">Devices Backbone</div>
-                <div>
-                    <div class="text-gray-500">Nama Perangkat</div>
-                    <div class="font-medium" id="v_nama_perangkat"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Type</div>
-                    <div class="font-medium" id="v_type"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">SN</div>
-                    <div class="font-medium" id="v_sn"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Jumlah</div>
-                    <div class="font-medium" id="v_jumlah"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Lokasi Penempatan</div>
-                    <div class="font-medium" id="v_nama_dc"></div>
+                    <div class="font-medium whitespace-pre-line" id="v_perangkat"></div>
                 </div>
                 <div class="md:col-span-2 pt-2 border-t dark:border-white/10">
                     <div class="text-gray-500">File Topologi</div>
@@ -1092,10 +981,16 @@
 
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = kosong(v) ? '-' : v;
-            ['nama_pelanggan', 'nama_bts', 'ip_address', 'kapasitas', 'detail_perangkat', 'nama_perangkat', 'type', 'sn', 'jumlah', 'nama_dc']
-            .forEach(k => set('v_' + k, d[k]));
-            set('v_vendors', (d.vendors || []).join('\n'));
-            set('v_vlan_id', kosong(d.nama_bts) ? '' : vlanTeks(d.vlan_id));
+            ['nama_pelanggan', 'nama_bts'].forEach(k => set('v_' + k, d[k]));
+            // Vendor beserta data lengkapnya dari Data Vendor + IP Address, VLAN & Kapasitas pelanggan
+            set('v_vendors', (d.vendor_detail || []).map(v => [
+                v.nama_vendor,
+                'PIC: ' + (v.nama_pic || '-') + ' (' + (v.telp_pic || '-') + ')',
+                'Email: ' + (v.email_pic || '-'),
+                'Alamat: ' + (v.alamat || '-'),
+                'IP Address: ' + v.ip_address + ' | VLAN: ' + vlanTeks(v.vlan_id) + ' | Kapasitas: ' + v.kapasitas,
+            ].join('\n')).join('\n\n'));
+            set('v_perangkat', d.perangkat_teks);
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             const topo = document.getElementById('v_topologi');
@@ -1351,13 +1246,16 @@
             $('#exportArea').append($('.dt-buttons'));
 
             // ====== FILTER DROPDOWN ======
-            // Cocokkan isi kolom secara utuh (kolom 3 = BTS, kolom 13 = Lokasi Penempatan)
-            const filterKolom = (sel, kolom) => $(sel).on('change', function() {
+            // BTS: cocokkan isi kolom 3 secara utuh
+            $('#filterBts').on('change', function() {
                 const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
-                table.column(kolom).search(re, true, false).draw();
+                table.column(3).search(re, true, false).draw();
             });
-            filterKolom('#filterBts', 3);
-            filterKolom('#filterLokasi', 13);
+            // Vendor: kolom 4 berisi "A, B, C" -> cocokkan satu nama vendor utuh
+            $('#filterVendor').on('change', function() {
+                const re = this.value ? '(^|, )' + $.fn.dataTable.util.escapeRegex(this.value) + '(,|$)' : '';
+                table.column(4).search(re, true, false).draw();
+            });
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();

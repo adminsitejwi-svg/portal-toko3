@@ -46,6 +46,7 @@ class DataExportService
         'd_report_sat'         => 'Tiket FO Loss',
         'd_resi_pengiriman'    => 'Resi Pengiriman',
         'md_data_center'       => 'Data Center',
+        'd_vendor'             => 'Data Vendor',
         'd_midi'             => 'Alfamidi',
         'd_lawson'           => 'Lawson',
         'd_alfamart'         => 'Alfamart',

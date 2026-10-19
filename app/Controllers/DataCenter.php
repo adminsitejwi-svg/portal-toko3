@@ -18,7 +18,7 @@ class DataCenter extends BaseController
     public function index()
     {
         return view('DataCenter/index', [
-            'dataCenter' => $this->dcModel->orderBy('kode_dc', 'ASC')->findAll(),
+            'dataCenter' => $this->dcModel->orderBy('nama_dc', 'ASC')->findAll(),
         ]);
     }
 
@@ -40,20 +40,12 @@ class DataCenter extends BaseController
         return view('DataCenter/EditFormDataCenter', ['row' => $row]);
     }
 
-    // $id diisi saat update agar kode milik data itu sendiri tidak dianggap duplikat
-    private function rules($id = null): array
+    private function rules(): array
     {
         return [
-            'nama_dc'   => 'required|max_length[255]',
-            'kode_dc'   => 'required|max_length[100]|is_unique[md_data_center.kode_dc,id,' . (int) $id . ']',
-            'deskripsi' => 'permit_empty',
-        ];
-    }
-
-    private function messages(): array
-    {
-        return [
-            'kode_dc' => ['is_unique' => 'Kode Data Center sudah dipakai.'],
+            'nama_dc'    => 'required|max_length[255]',
+            'alamat_dc'  => 'required',
+            'lokasi_rak' => 'required|max_length[255]',
         ];
     }
 
@@ -62,9 +54,9 @@ class DataCenter extends BaseController
         $post = fn (string $k) => trim((string) $this->request->getPost($k));
 
         return [
-            'nama_dc'   => $post('nama_dc'),
-            'kode_dc'   => $post('kode_dc'),
-            'deskripsi' => $post('deskripsi') ?: null,
+            'nama_dc'    => $post('nama_dc'),
+            'alamat_dc'  => $post('alamat_dc'),
+            'lokasi_rak' => $post('lokasi_rak'),
         ];
     }
 
@@ -73,7 +65,7 @@ class DataCenter extends BaseController
     {
         $fields = $this->collectFields();
 
-        if (! $this->validateData($fields, $this->rules(), $this->messages())) {
+        if (! $this->validateData($fields, $this->rules())) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode(' ', $this->validator->getErrors()));
@@ -96,7 +88,7 @@ class DataCenter extends BaseController
 
         $fields = $this->collectFields();
 
-        if (! $this->validateData($fields, $this->rules($id), $this->messages())) {
+        if (! $this->validateData($fields, $this->rules())) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode(' ', $this->validator->getErrors()));

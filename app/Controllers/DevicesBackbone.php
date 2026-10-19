@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\DataCenterModel;
 use App\Models\DevicesBackboneModel;
 
 // Halaman Devices Backbone (menu All NOC > Devices Backbone di sidebar)
@@ -19,20 +18,14 @@ class DevicesBackbone extends BaseController
     public function index()
     {
         return view('DevicesBackbone/index', [
-            'devices' => $this->dbbModel->withDataCenter(),
+            'devices' => $this->dbbModel->orderBy('nama_perangkat', 'ASC')->findAll(),
         ]);
-    }
-
-    // Pilihan dropdown Lokasi Penempatan (Data Center) di form tambah/edit
-    private function formData(): array
-    {
-        return ['dataCenter' => (new DataCenterModel())->orderBy('nama_dc', 'ASC')->findAll()];
     }
 
     // Halaman form tambah (view DevicesBackbone/FormDevicesBackbone.php)
     public function create()
     {
-        return view('DevicesBackbone/FormDevicesBackbone', $this->formData());
+        return view('DevicesBackbone/FormDevicesBackbone');
     }
 
     // Halaman form edit (view DevicesBackbone/EditFormDevicesBackbone.php)
@@ -44,7 +37,7 @@ class DevicesBackbone extends BaseController
             return redirect()->to(site_url('DevicesBackbone'))->with('error', 'Devices Backbone tidak ditemukan.');
         }
 
-        return view('DevicesBackbone/EditFormDevicesBackbone', $this->formData() + ['row' => $row]);
+        return view('DevicesBackbone/EditFormDevicesBackbone', ['row' => $row]);
     }
 
     private function rules(): array
@@ -54,7 +47,9 @@ class DevicesBackbone extends BaseController
             'type'           => 'required|max_length[255]',
             'sn'             => 'permit_empty|max_length[255]',
             'jumlah'         => 'required|is_natural_no_zero',
-            'data_center_id' => 'required|is_not_unique[md_data_center.id]',
+            'lokasi_penempatan' => 'required|max_length[255]',
+            'rak'               => 'permit_empty|max_length[100]',
+            'u'                 => 'permit_empty|max_length[50]',
         ];
     }
 
@@ -62,10 +57,6 @@ class DevicesBackbone extends BaseController
     {
         return [
             'jumlah'         => ['is_natural_no_zero' => 'Jumlah harus angka minimal 1.'],
-            'data_center_id' => [
-                'required'      => 'Lokasi Penempatan wajib dipilih.',
-                'is_not_unique' => 'Lokasi Penempatan tidak ditemukan di Data Center.',
-            ],
         ];
     }
 
@@ -78,7 +69,9 @@ class DevicesBackbone extends BaseController
             'type'           => $post('type'),
             'sn'             => $post('sn') ?: null,
             'jumlah'         => $post('jumlah'),
-            'data_center_id' => $post('data_center_id'),
+            'lokasi_penempatan' => $post('lokasi_penempatan'),
+            'rak'               => $post('rak') ?: null,
+            'u'                 => $post('u') ?: null,
         ];
     }
 

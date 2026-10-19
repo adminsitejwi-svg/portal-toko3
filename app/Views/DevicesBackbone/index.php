@@ -569,65 +569,6 @@
             color: #8996a4;
         }
 
-        /* ===== TOMBOL AKSI IKON (seperti crm.jwi.id/Vendor) ===== */
-        .aksi-group {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .aksi-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: background .15s, color .15s;
-        }
-
-        .aksi-view {
-            background: #e8f4fd;
-            color: #0ea5e9;
-        }
-
-        .aksi-view:hover {
-            background: #0ea5e9;
-            color: #fff;
-        }
-
-        .aksi-edit {
-            background: #eaf0fd;
-            color: #2563eb;
-        }
-
-        .aksi-edit:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .aksi-hapus {
-            background: #fdecec;
-            color: #dc2626;
-        }
-
-        .aksi-hapus:hover {
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .dark .aksi-view {
-            background: rgba(14, 165, 233, .15);
-        }
-
-        .dark .aksi-edit {
-            background: rgba(37, 99, 235, .18);
-        }
-
-        .dark .aksi-hapus {
-            background: rgba(220, 38, 38, .18);
-        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -774,15 +715,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -799,6 +731,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -907,7 +840,7 @@
                             </select>
                             <select id="filterLokasi" class="filter-select" title="Filter Lokasi Penempatan">
                                 <option value="">Semua Lokasi Penempatan</option>
-                                <?php foreach ($opsiFilter('nama_dc') as $v) : ?>
+                                <?php foreach ($opsiFilter('lokasi_penempatan') as $v) : ?>
                                     <option value="<?= esc($v, 'attr') ?>"><?= esc($v) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -933,6 +866,8 @@
                                     <th>SN</th>
                                     <th>Jumlah</th>
                                     <th>Lokasi Penempatan</th>
+                                    <th>Rak</th>
+                                    <th>U</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -942,30 +877,32 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
-                                                <div class="aksi-group">
-                                                    <button type="button"
-                                                        data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                        onclick="openViewModal(JSON.parse(this.dataset.row))"
-                                                        class="aksi-icon aksi-view" title="View">
-                                                        <i class="ti ti-eye"></i>
-                                                    </button>
-                                                    <a href="<?= site_url('DevicesBackbone/edit/' . $row['id']) ?>"
-                                                        class="aksi-icon aksi-edit" title="Edit">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-                                                    <button type="button"
-                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                        class="aksi-icon aksi-hapus" title="Hapus">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
+                                                <a href="<?= site_url('DevicesBackbone/edit/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-info" title="Lihat">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_perangkat']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['type']); ?></td>
                                             <td><?= esc($row['sn'] ?: '-'); ?></td>
                                             <td><?= esc($row['jumlah']); ?></td>
-                                            <td class="whitespace-normal min-w-[180px]"><?= esc($row['nama_dc'] ?: '-'); ?></td>
+                                            <td class="whitespace-normal min-w-[180px]"><?= esc($row['lokasi_penempatan'] ?: '-'); ?></td>
+                                            <td><?= esc($row['rak'] ?: '-'); ?></td>
+                                            <td><?= esc($row['u'] ?: '-'); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -1005,7 +942,15 @@
                 </div>
                 <div>
                     <div class="text-gray-500">Lokasi Penempatan</div>
-                    <div class="font-medium" id="v_nama_dc"></div>
+                    <div class="font-medium" id="v_lokasi_penempatan"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Rak</div>
+                    <div class="font-medium" id="v_rak"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">U</div>
+                    <div class="font-medium" id="v_u"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">Dibuat</div>
@@ -1019,10 +964,10 @@
     </div>
 
     <script>
-        // Isian form tambah/edit (data_center_id = Lokasi Penempatan, dipilih dari dropdown Data Center)
-        const FIELDS = ['nama_perangkat', 'type', 'sn', 'jumlah', 'data_center_id'];
-        // Yang ditampilkan di pop up view (nama_dc hasil join ke md_data_center)
-        const VIEW_FIELDS = ['nama_perangkat', 'type', 'sn', 'jumlah', 'nama_dc'];
+        // Isian form tambah/edit (Lokasi Penempatan, Rak & U diisi manual)
+        const FIELDS = ['nama_perangkat', 'type', 'sn', 'jumlah', 'lokasi_penempatan', 'rak', 'u'];
+        // Yang ditampilkan di pop up view
+        const VIEW_FIELDS = FIELDS;
 
         // ====== VIEW ======
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];

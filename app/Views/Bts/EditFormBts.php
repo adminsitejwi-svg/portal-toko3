@@ -161,7 +161,8 @@
             box-sizing: border-box;
         }
 
-        input[readonly] {
+        input[readonly],
+        textarea[readonly] {
             background: #f1f5f9;
         }
 
@@ -222,7 +223,8 @@
             color: #000 !important;
         }
 
-        html.dark .form-container input[readonly] {
+        html.dark .form-container input[readonly],
+        html.dark .form-container textarea[readonly] {
             color: #000 !important;
         }
     </style>
@@ -355,15 +357,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -380,6 +373,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -467,9 +461,15 @@
 
                     <?php
                     // Isian awal: input terakhir (gagal validasi) > data yang diedit > kosong
-                    $adaOld    = old('nama_bts', null, false) !== null;
-                    $vendors   = $adaOld ? (array) old('vendor', [], false) : ($row['vendors'] ?? []);
-                    $tanpaVlan = $adaOld ? (bool) old('tanpa_vlan', null, false) : (isset($row) && $row['vlan_id'] === null);
+                    $adaOld     = old('nama_bts', null, false) !== null;
+                    $vendorAwal = $adaOld
+                        ? array_values((array) old('vendor', [], false))
+                        : array_map(fn ($v) => [
+                            'vendor_id'  => $v['id'],
+                            'ip_address' => $v['ip_address'],
+                            'vlan_id'    => $v['vlan_id'],
+                            'tanpa_vlan' => $v['vlan_id'] === null,
+                        ], $row['vendor_detail'] ?? []);
                     ?>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 mt-5">
                         <div class="form-group">
@@ -477,33 +477,61 @@
                             <input type="text" name="nama_bts" id="r_nama_bts" maxlength="255" required placeholder="Masukkan Nama BTS" value="<?= esc(old('nama_bts', $row['nama_bts'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                         <div class="form-group">
-                            <label>IP Address <span style="color:red">*</span></label>
-                            <input type="text" name="ip_address" id="r_ip_address" maxlength="45" required placeholder="Contoh: 10.10.1.1" value="<?= esc(old('ip_address', $row['ip_address'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <label>Kapasitas <span style="color:red">*</span></label>
+                            <input type="text" name="kapasitas" id="r_kapasitas" maxlength="100" required placeholder="Contoh: 100 Mbps" value="<?= esc(old('kapasitas', $row['kapasitas'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
-                            <!-- satu baris per vendor; saran diambil dari menu Vendor, tetap bisa diketik manual -->
-                            <div id="vendorRows" class="space-y-2"></div>
-                            <datalist id="vendorList">
-                                <?php foreach ($saranVendor as $v) : ?>
-                                    <option value="<?= esc($v, 'attr') ?>"></option>
-                                <?php endforeach; ?>
-                            </datalist>
+                            <!-- satu blok per vendor: vendor dipilih dari menu Data Vendor (datanya tampil otomatis, tidak bisa diubah) + IP Address & VLAN milik vendor itu -->
+                            <div id="vendorRows" class="space-y-3"></div>
+                            <template id="vendorTemplate">
+                                <div class="isian-row border border-[#e3e8ee] rounded-lg p-3">
+                                    <div class="flex items-center gap-2">
+                                        <select name="vendor[__i__][vendor_id]" data-isi="vendor_id" onchange="isiVendor(this.closest('.isian-row'))" class="flex-1 w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <option value="">-- Pilih Vendor --</option>
+                                            <?php foreach ($dataVendor as $v) : ?>
+                                                <option value="<?= esc($v['id'], 'attr') ?>"><?= esc($v['nama_vendor']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button type="button" class="w-[46px] h-[46px] shrink-0 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-base" title="Hapus vendor" onclick="hapusVendor(this)"><i class="ti ti-trash"></i></button>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Nama PIC</div>
+                                            <input type="text" data-kolom="nama_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Telpon PIC</div>
+                                            <input type="text" data-kolom="telp_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Email PIC</div>
+                                            <input type="text" data-kolom="email_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div class="md:col-span-3">
+                                            <div class="text-xs text-gray-500 mb-1">Alamat</div>
+                                            <textarea data-kolom="alamat" rows="2" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">IP Address <span style="color:red">*</span></div>
+                                            <input type="text" name="vendor[__i__][ip_address]" data-isi="ip_address" maxlength="45" placeholder="Contoh: 10.10.1.1" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Vlan ID <span style="color:red">*</span></div>
+                                            <input type="number" name="vendor[__i__][vlan_id]" data-isi="vlan_id" min="1" max="4094" step="1" placeholder="1 - 4094" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none disabled:bg-gray-100">
+                                            <label class="inline-flex items-center gap-2 mt-2 text-sm font-normal">
+                                                <input type="checkbox" name="vendor[__i__][tanpa_vlan]" data-isi="tanpa_vlan" value="1" onchange="toggleVlan(this.closest('.isian-row'))"> Tanpa VLAN
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
                             <!-- w-auto/h-auto: tombol kecil, tidak ikut gaya tombol besar form -->
                             <button type="button" onclick="addVendorRow()" class="w-auto h-auto mt-2 px-3 py-2 text-sm font-medium bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg gap-1">
                                 <i class="ti ti-plus"></i> Tambah Vendor
                             </button>
-                        </div>
-                        <div class="form-group">
-                            <label>Kapasitas <span style="color:red">*</span></label>
-                            <input type="text" name="kapasitas" id="r_kapasitas" maxlength="100" required placeholder="Contoh: 100 Mbps" value="<?= esc(old('kapasitas', $row['kapasitas'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                        </div>
-                        <div class="form-group">
-                            <label>Vlan ID <span style="color:red">*</span></label>
-                            <input type="number" name="vlan_id" id="r_vlan_id" min="1" max="4094" step="1" placeholder="1 - 4094" value="<?= esc(old('vlan_id', $row['vlan_id'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none disabled:bg-gray-100">
-                            <label class="inline-flex items-center gap-2 mt-2 text-sm font-normal">
-                                <input type="checkbox" name="tanpa_vlan" id="r_tanpa_vlan" value="1" onchange="toggleVlan()" <?= $tanpaVlan ? 'checked' : '' ?>> Tanpa VLAN
-                            </label>
                         </div>
                     </div>
 
@@ -571,49 +599,68 @@
     </script>
 
     <script>
-        // ====== VENDOR (bisa lebih dari 1) ======
-        function addVendorRow(value) {
-            const row = document.createElement('div');
-            row.className = 'vendor-row flex items-center gap-2';
-            row.innerHTML = '<input type="text" name="vendor[]" list="vendorList" maxlength="255" placeholder="Masukkan Nama Vendor" class="flex-1 w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">' +
-                '<button type="button" class="w-[46px] h-[46px] shrink-0 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-base" title="Hapus vendor" onclick="removeVendorRow(this)"><i class="ti ti-trash"></i></button>';
-            row.querySelector('input').value = value || '';
+        // ====== VENDOR (bisa lebih dari 1, dipilih dari Data Vendor; tiap vendor punya IP Address & VLAN) ======
+        // Data Vendor (menu All NOC > Data Vendor), key = id vendor
+        const DATA_VENDOR = <?= json_encode((object) array_column($dataVendor, null, 'id'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        let nomorBaris = 0;
+
+        // Isi data vendor (tidak bisa diubah) sesuai vendor yang dipilih di blok itu
+        function isiVendor(row) {
+            const v = DATA_VENDOR[row.querySelector('[data-isi="vendor_id"]').value] || {};
+            row.querySelectorAll('[data-kolom]').forEach(el => el.value = v[el.dataset.kolom] || '');
+        }
+
+        // Tanpa VLAN dicentang -> Vlan ID di blok itu dikosongkan & dikunci
+        function toggleVlan(row) {
+            const vlan = row.querySelector('[data-isi="vlan_id"]');
+            vlan.disabled = row.querySelector('[data-isi="tanpa_vlan"]').checked;
+            if (vlan.disabled) vlan.value = '';
+        }
+
+        function isiBaris(row, isi) {
+            row.querySelector('[data-isi="vendor_id"]').value = isi.vendor_id || '';
+            row.querySelector('[data-isi="ip_address"]').value = isi.ip_address || '';
+            row.querySelector('[data-isi="vlan_id"]').value = isi.vlan_id ?? '';
+            row.querySelector('[data-isi="tanpa_vlan"]').checked = !!isi.tanpa_vlan;
+            isiVendor(row);
+            toggleVlan(row);
+        }
+
+        function addVendorRow(isi) {
+            const row = document.getElementById('vendorTemplate').content.firstElementChild.cloneNode(true);
+            const n = nomorBaris++;
+            row.querySelectorAll('[name]').forEach(el => el.name = el.name.replace('__i__', n));
             document.getElementById('vendorRows').appendChild(row);
+            isiBaris(row, isi || {});
         }
 
-        // Minimal tersisa 1 baris vendor (baris terakhir hanya dikosongkan)
-        function removeVendorRow(btn) {
-            const rows = document.querySelectorAll('#vendorRows .vendor-row');
-            if (rows.length > 1) btn.closest('.vendor-row').remove();
-            else rows[0].querySelector('input').value = '';
+        // Minimal tersisa 1 blok vendor (blok terakhir hanya dikosongkan)
+        function hapusVendor(btn) {
+            const row = btn.closest('.isian-row');
+            if (document.querySelectorAll('#vendorRows .isian-row').length > 1) row.remove();
+            else isiBaris(row, {});
         }
 
-        // ====== VLAN / TANPA VLAN ======
-        function toggleVlan() {
-            const tanpa = document.getElementById('r_tanpa_vlan').checked;
-            const input = document.getElementById('r_vlan_id');
-            input.disabled = tanpa;
-            input.required = !tanpa;
-            if (tanpa) input.value = '';
-        }
-
-        // Isian awal vendor (minimal 1 baris) & status VLAN
-        const vendorAwal = <?= json_encode(array_values(array_filter(array_map('strval', $vendors), 'strlen')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-        (vendorAwal.length ? vendorAwal : ['']).forEach(v => addVendorRow(v));
-        toggleVlan();
+        // Isian awal (minimal 1 blok vendor)
+        const vendorAwal = <?= json_encode(array_values($vendorAwal), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        (vendorAwal.length ? vendorAwal : [{}]).forEach(v => addVendorRow(v));
 
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_nama_bts', 'r_ip_address', 'r_kapasitas'].map(id => document.getElementById(id).value.trim());
-            const adaVendor = [...document.querySelectorAll('#vendorRows input')].some(i => i.value.trim() !== '');
-            const vlanKosong = !document.getElementById('r_tanpa_vlan').checked && document.getElementById('r_vlan_id').value.trim() === '';
+            const wajib = ['r_nama_bts', 'r_kapasitas'].map(id => document.getElementById(id).value.trim());
+            // tiap blok vendor wajib: vendor, IP Address, dan Vlan ID (atau Tanpa VLAN)
+            const vendorKurang = [...document.querySelectorAll('#vendorRows .isian-row')].some(row => {
+                const isi = k => row.querySelector('[data-isi="' + k + '"]').value.trim();
+                return isi('vendor_id') === '' || isi('ip_address') === '' ||
+                    (!row.querySelector('[data-isi="tanpa_vlan"]').checked && isi('vlan_id') === '');
+            });
 
-            if (wajib.includes('') || !adaVendor || vlanKosong) {
+            if (wajib.includes('') || vendorKurang) {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
-                    text: 'Semua field bertanda * wajib diisi (minimal 1 vendor, Vlan ID atau centang Tanpa VLAN).',
+                    text: 'Semua field bertanda * wajib diisi (tiap vendor: pilih vendor, IP Address, dan Vlan ID atau centang Tanpa VLAN).',
                     confirmButtonColor: '#185a82'
                 });
                 return false;

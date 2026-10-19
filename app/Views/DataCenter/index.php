@@ -569,65 +569,6 @@
             color: #8996a4;
         }
 
-        /* ===== TOMBOL AKSI IKON (seperti crm.jwi.id/Vendor) ===== */
-        .aksi-group {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .aksi-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: background .15s, color .15s;
-        }
-
-        .aksi-view {
-            background: #e8f4fd;
-            color: #0ea5e9;
-        }
-
-        .aksi-view:hover {
-            background: #0ea5e9;
-            color: #fff;
-        }
-
-        .aksi-edit {
-            background: #eaf0fd;
-            color: #2563eb;
-        }
-
-        .aksi-edit:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .aksi-hapus {
-            background: #fdecec;
-            color: #dc2626;
-        }
-
-        .aksi-hapus:hover {
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .dark .aksi-view {
-            background: rgba(14, 165, 233, .15);
-        }
-
-        .dark .aksi-edit {
-            background: rgba(37, 99, 235, .18);
-        }
-
-        .dark .aksi-hapus {
-            background: rgba(220, 38, 38, .18);
-        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -774,15 +715,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -799,6 +731,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -892,13 +825,13 @@
                             <div id="lengthArea"></div>
                             <!-- FILTER -->
                             <?php
-                            $kodeDc = array_unique(array_filter(array_map('trim', array_column($dataCenter, 'kode_dc')), 'strlen'));
-                            natcasesort($kodeDc);
+                            $namaDc = array_unique(array_filter(array_map('trim', array_column($dataCenter, 'nama_dc')), 'strlen'));
+                            natcasesort($namaDc);
                             ?>
-                            <select id="filterKode" class="filter-select" title="Filter Kode Data Center">
-                                <option value="">Semua Kode Data Center</option>
-                                <?php foreach ($kodeDc as $kode) : ?>
-                                    <option value="<?= esc($kode, 'attr') ?>"><?= esc($kode) ?></option>
+                            <select id="filterNama" class="filter-select" title="Filter Nama Data Center">
+                                <option value="">Semua Data Center</option>
+                                <?php foreach ($namaDc as $nama) : ?>
+                                    <option value="<?= esc($nama, 'attr') ?>"><?= esc($nama) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -919,8 +852,8 @@
                                     <th>No</th>
                                     <th>Aksi</th>
                                     <th>Nama Data Center</th>
-                                    <th>Kode Data Center</th>
-                                    <th>Deskripsi</th>
+                                    <th>Lokasi Data Center (Alamat)</th>
+                                    <th>Lokasi Rak</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -930,28 +863,28 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
-                                                <div class="aksi-group">
-                                                    <button type="button"
-                                                        data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                        onclick="openViewModal(JSON.parse(this.dataset.row))"
-                                                        class="aksi-icon aksi-view" title="View">
-                                                        <i class="ti ti-eye"></i>
-                                                    </button>
-                                                    <a href="<?= site_url('DataCenter/edit/' . $row['id']) ?>"
-                                                        class="aksi-icon aksi-edit" title="Edit">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-                                                    <button type="button"
-                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                        class="aksi-icon aksi-hapus" title="Hapus">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
+                                                <a href="<?= site_url('DataCenter/edit/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-info" title="Lihat">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td class="whitespace-normal min-w-[200px]"><?= esc($row['nama_dc']); ?></td>
-                                            <td class="col-bold"><?= esc($row['kode_dc']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[300px]"><?= esc($row['deskripsi'] ?: '-'); ?></td>
+                                            <td class="whitespace-pre-line min-w-[300px]"><?= esc($row['alamat_dc'] ?: '-'); ?></td>
+                                            <td class="col-bold"><?= esc($row['lokasi_rak'] ?: '-'); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -978,12 +911,12 @@
                     <div class="font-medium" id="v_nama_dc"></div>
                 </div>
                 <div>
-                    <div class="text-gray-500">Kode Data Center</div>
-                    <div class="font-medium" id="v_kode_dc"></div>
+                    <div class="text-gray-500">Lokasi Rak</div>
+                    <div class="font-medium" id="v_lokasi_rak"></div>
                 </div>
                 <div class="md:col-span-2">
-                    <div class="text-gray-500">Deskripsi</div>
-                    <div class="font-medium whitespace-pre-line" id="v_deskripsi"></div>
+                    <div class="text-gray-500">Lokasi Data Center (Alamat)</div>
+                    <div class="font-medium whitespace-pre-line" id="v_alamat_dc"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">Dibuat</div>
@@ -1008,7 +941,7 @@
 
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
-            ['nama_dc', 'kode_dc', 'deskripsi'].forEach(k => set('v_' + k, d[k]));
+            ['nama_dc', 'alamat_dc', 'lokasi_rak'].forEach(k => set('v_' + k, d[k]));
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             document.getElementById('viewModal').classList.remove('hidden');
@@ -1251,10 +1184,10 @@
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
 
-            // ====== FILTER DROPDOWN (cocok persis pada kolom 3 Kode Data Center) ======
-            $('#filterKode').on('change', function() {
+            // ====== FILTER DROPDOWN (cocok persis pada kolom 2 Nama Data Center) ======
+            $('#filterNama').on('change', function() {
                 const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
-                table.column(3).search(re, true, false).draw();
+                table.column(2).search(re, true, false).draw();
             });
 
             $('#customSearch').on('keyup', function() {

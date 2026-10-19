@@ -135,6 +135,7 @@ if (! function_exists('activity_label_action')) {
                 'd_report_sat'         => 'Tiket FO Loss',
                 'd_resi_pengiriman'    => 'Resi Pengiriman',
                 'md_data_center'       => 'Data Center',
+                'd_vendor'             => 'Data Vendor',
                 'repot_noc'            => 'Report NOC',
                 'aktivasi_ripot'       => 'Aktivasi Report',
                 'login'                => 'Pengguna',

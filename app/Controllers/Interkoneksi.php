@@ -23,10 +23,24 @@ class Interkoneksi extends BaseController
         ]);
     }
 
-    // Pilihan dropdown Data Center di form tambah/edit
+    // Pilihan dropdown Sumber di form tambah/edit
+    public const SUMBER = [
+        'PT. Juragan Wifi Indonesia',
+        'PT. Genezis Mitra Technology',
+        'PT. Norlec Technologi Indonesia',
+    ];
+
+    // Pilihan dropdown Status di form tambah/edit
+    public const STATUS = ['Active', 'Terminate'];
+
+    // Pilihan dropdown Data Center, Sumber & Status di form tambah/edit
     private function formData(): array
     {
-        return ['dataCenter' => (new DataCenterModel())->orderBy('kode_dc', 'ASC')->findAll()];
+        return [
+            'dataCenter' => (new DataCenterModel())->orderBy('nama_dc', 'ASC')->findAll(),
+            'opsiSumber' => self::SUMBER,
+            'opsiStatus' => self::STATUS,
+        ];
     }
 
     // Halaman form tambah (view Interkoneksi/FormInterkoneksi.php)
@@ -54,10 +68,10 @@ class Interkoneksi extends BaseController
             'kode_interkoneksi' => 'required|max_length[100]|is_unique[d_interkoneksi.kode_interkoneksi,id,' . (int) $id . ']',
             'customer'          => 'required|max_length[255]',
             'data_center_id'    => 'required|is_not_unique[md_data_center.id]',
-            'sumber'          => 'required|max_length[255]',
+            'sumber'            => 'required|in_list[' . implode(',', self::SUMBER) . ']',
             'tujuan'            => 'required|max_length[255]',
             'label_kabel'       => 'permit_empty|max_length[255]',
-            'status'            => 'permit_empty|max_length[100]',
+            'status'            => 'permit_empty|in_list[' . implode(',', self::STATUS) . ']',
             'note'              => 'permit_empty',
         ];
     }

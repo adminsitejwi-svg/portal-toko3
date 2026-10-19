@@ -29,10 +29,10 @@ class InterkoneksiModel extends BaseModel
     // Nonaktifkan updated_at
     protected $updatedField  = '';
 
-    // Data interkoneksi + nama & kode data center (diambil dari md_data_center)
+    // Data interkoneksi + nama data center & lokasi rak (diambil dari md_data_center)
     public function withDataCenter(): array
     {
-        return $this->select('d_interkoneksi.*, dc.nama_dc, dc.kode_dc')
+        return $this->select('d_interkoneksi.*, dc.nama_dc, dc.lokasi_rak')
             ->join('md_data_center dc', 'dc.id = d_interkoneksi.data_center_id', 'left')
             ->orderBy('d_interkoneksi.kode_interkoneksi', 'ASC')
             ->findAll();

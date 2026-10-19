@@ -355,15 +355,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -380,6 +371,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -479,13 +471,18 @@
                             <select name="data_center_id" id="r_data_center_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                 <option value="">-- Pilih Data Center --</option>
                                 <?php foreach ($dataCenter as $dc) : ?>
-                                    <option value="<?= esc($dc['id'], 'attr') ?>" <?= (string) old('data_center_id', $row['data_center_id'] ?? '', false) === (string) $dc['id'] ? 'selected' : '' ?>><?= esc($dc['kode_dc'] . ' - ' . $dc['nama_dc']) ?></option>
+                                    <option value="<?= esc($dc['id'], 'attr') ?>" <?= (string) old('data_center_id', $row['data_center_id'] ?? '', false) === (string) $dc['id'] ? 'selected' : '' ?>><?= esc($dc['nama_dc'] . ($dc['lokasi_rak'] ? ' - ' . $dc['lokasi_rak'] : '')) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Sumber <span style="color:red">*</span></label>
-                            <input type="text" name="sumber" id="r_sumber" maxlength="255" required placeholder="Masukkan Sumber" value="<?= esc(old('sumber', $row['sumber'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <select name="sumber" id="r_sumber" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <option value="">-- Pilih Sumber --</option>
+                                <?php foreach ($opsiSumber as $sumber) : ?>
+                                    <option value="<?= esc($sumber, 'attr') ?>" <?= old('sumber', $row['sumber'] ?? '', false) === $sumber ? 'selected' : '' ?>><?= esc($sumber) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Tujuan <span style="color:red">*</span></label>
@@ -497,7 +494,12 @@
                         </div>
                         <div class="form-group">
                             <label>Status</label>
-                            <input type="text" name="status" id="r_status" maxlength="100" placeholder="Masukkan Status" value="<?= esc(old('status', $row['status'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <select name="status" id="r_status" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <option value="">-- Pilih Status --</option>
+                                <?php foreach ($opsiStatus as $status) : ?>
+                                    <option value="<?= esc($status, 'attr') ?>" <?= old('status', $row['status'] ?? '', false) === $status ? 'selected' : '' ?>><?= esc($status) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Note</label>

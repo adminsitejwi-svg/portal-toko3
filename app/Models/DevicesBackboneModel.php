@@ -15,7 +15,9 @@ class DevicesBackboneModel extends BaseModel
         'type',
         'sn',
         'jumlah',
-        'data_center_id',
+        'lokasi_penempatan',
+        'rak',
+        'u',
         'created_at'
     ];
 
@@ -25,13 +27,4 @@ class DevicesBackboneModel extends BaseModel
 
     // Nonaktifkan updated_at
     protected $updatedField  = '';
-
-    // Data devices + nama data center sebagai lokasi penempatan (diambil dari md_data_center)
-    public function withDataCenter(): array
-    {
-        return $this->select('d_devices_backbone.*, dc.nama_dc')
-            ->join('md_data_center dc', 'dc.id = d_devices_backbone.data_center_id', 'left')
-            ->orderBy('d_devices_backbone.nama_perangkat', 'ASC')
-            ->findAll();
-    }
 }

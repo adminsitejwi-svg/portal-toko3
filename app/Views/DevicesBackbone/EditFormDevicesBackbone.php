@@ -355,15 +355,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -380,6 +371,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -484,12 +476,15 @@
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Lokasi Penempatan <span style="color:red">*</span></label>
-                            <select name="data_center_id" id="r_data_center_id" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                <option value="">-- Pilih Lokasi Penempatan --</option>
-                                <?php foreach ($dataCenter as $dc) : ?>
-                                    <option value="<?= esc($dc['id'], 'attr') ?>" <?= (string) old('data_center_id', $row['data_center_id'] ?? '', false) === (string) $dc['id'] ? 'selected' : '' ?>><?= esc($dc['nama_dc']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="text" name="lokasi_penempatan" id="r_lokasi_penempatan" maxlength="255" required placeholder="Masukkan Lokasi Penempatan" value="<?= esc(old('lokasi_penempatan', $row['lokasi_penempatan'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        </div>
+                        <div class="form-group">
+                            <label>Rak</label>
+                            <input type="text" name="rak" id="r_rak" maxlength="100" placeholder="Masukkan Rak" value="<?= esc(old('rak', $row['rak'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        </div>
+                        <div class="form-group">
+                            <label>U</label>
+                            <input type="text" name="u" id="r_u" maxlength="50" placeholder="Masukkan U" value="<?= esc(old('u', $row['u'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                     </div>
 
@@ -559,7 +554,7 @@
     <script>
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_nama_perangkat', 'r_type', 'r_jumlah', 'r_data_center_id'].map(id => document.getElementById(id).value.trim());
+            const wajib = ['r_nama_perangkat', 'r_type', 'r_jumlah', 'r_lokasi_penempatan'].map(id => document.getElementById(id).value.trim());
 
             if (wajib.includes('')) {
                 e.preventDefault();

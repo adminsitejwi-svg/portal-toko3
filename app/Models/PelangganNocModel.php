@@ -13,8 +13,6 @@ class PelangganNocModel extends BaseModel
     protected $allowedFields = [
         'nama_pelanggan',
         'bts_id',
-        'detail_perangkat',
-        'devices_backbone_id',
         'file_topologi',
         'file_topologi_asli',
         'created_at'
@@ -27,24 +25,51 @@ class PelangganNocModel extends BaseModel
     // Nonaktifkan updated_at
     protected $updatedField  = '';
 
-    // Data pelanggan + data BTS (IP, kapasitas, vlan, vendors) + data Devices Backbone (dengan lokasi penempatan)
-    public function withRelasi(): array
+    // Data pelanggan + nama BTS + vendor & detail perangkatnya ($id diisi = hanya pelanggan itu)
+    // vendor_detail: per vendor berisi data lengkap dari Data Vendor (d_vendor) + IP Address, VLAN & Kapasitas pelanggan;
+    // vendors, ip_address, vlan, kapasitas: teks per vendor digabung ", " (urutan sama dengan vendor);
+    // perangkat: daftar detail perangkat, perangkat_teks: satu baris per perangkat
+    public function withRelasi(?int $id = null): array
     {
-        $rows = $this->select('d_pelanggan_noc.*, b.nama_bts, b.ip_address, b.kapasitas, b.vlan_id,
-                d.nama_perangkat, d.type, d.sn, d.jumlah, dc.nama_dc')
-            ->join('d_bts b', 'b.id = d_pelanggan_noc.bts_id', 'left')
-            ->join('d_devices_backbone d', 'd.id = d_pelanggan_noc.devices_backbone_id', 'left')
-            ->join('md_data_center dc', 'dc.id = d.data_center_id', 'left')
-            ->orderBy('d_pelanggan_noc.nama_pelanggan', 'ASC')
-            ->findAll();
+        $builder = $this->select('d_pelanggan_noc.*, b.nama_bts')
+            ->join('d_bts b', 'b.id = d_pelanggan_noc.bts_id', 'left');
+        if ($id !== null) {
+            $builder->where('d_pelanggan_noc.id', $id);
+        }
+        $rows = $builder->orderBy('d_pelanggan_noc.nama_pelanggan', 'ASC')->findAll();
 
-        $vendors = [];
-        foreach ((new BtsVendorModel())->orderBy('id', 'ASC')->findAll() as $v) {
-            $vendors[$v['bts_id']][] = $v['vendor'];
+        $vendorModel = (new PelangganNocVendorModel())
+            ->select('d_pelanggan_noc_vendor.pelanggan_id, d_pelanggan_noc_vendor.ip_address, d_pelanggan_noc_vendor.vlan_id,
+                d_pelanggan_noc_vendor.kapasitas, v.id, v.nama_vendor, v.alamat, v.nama_pic, v.telp_pic, v.email_pic')
+            ->join('d_vendor v', 'v.id = d_pelanggan_noc_vendor.vendor_id');
+        $perangkatModel = new PelangganNocPerangkatModel();
+        if ($id !== null) {
+            $vendorModel->where('d_pelanggan_noc_vendor.pelanggan_id', $id);
+            $perangkatModel->where('pelanggan_id', $id);
+        }
+
+        $vendors = $perangkat = [];
+        foreach ($vendorModel->orderBy('d_pelanggan_noc_vendor.id', 'ASC')->findAll() as $r) {
+            $vendors[$r['pelanggan_id']][] = $r;
+        }
+        foreach ($perangkatModel->orderBy('id', 'ASC')->findAll() as $r) {
+            $perangkat[$r['pelanggan_id']][] = $r;
         }
 
         foreach ($rows as &$row) {
-            $row['vendors'] = $vendors[$row['bts_id']] ?? [];
+            $detail = $vendors[$row['id']] ?? [];
+
+            $row['vendor_detail']  = $detail;
+            $row['vendors']        = implode(', ', array_column($detail, 'nama_vendor'));
+            $row['ip_address']     = implode(', ', array_column($detail, 'ip_address'));
+            $row['vlan']           = implode(', ', array_map(fn ($v) => $v['vlan_id'] ?? 'Tanpa VLAN', $detail));
+            $row['kapasitas']      = implode(', ', array_column($detail, 'kapasitas'));
+            $row['perangkat']      = $perangkat[$row['id']] ?? [];
+            $row['perangkat_teks'] = implode("\n", array_map(
+                fn ($p) => implode(' ', array_filter([$p['merk'], $p['jenis'], $p['type']], fn ($s) => (string) $s !== ''))
+                    . ($p['sn'] ? ' (SN ' . $p['sn'] . ')' : '') . ' x' . $p['jumlah'],
+                $row['perangkat']
+            ));
         }
 
         return $rows;

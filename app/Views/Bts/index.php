@@ -569,65 +569,6 @@
             color: #8996a4;
         }
 
-        /* ===== TOMBOL AKSI IKON (seperti crm.jwi.id/Vendor) ===== */
-        .aksi-group {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .aksi-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: background .15s, color .15s;
-        }
-
-        .aksi-view {
-            background: #e8f4fd;
-            color: #0ea5e9;
-        }
-
-        .aksi-view:hover {
-            background: #0ea5e9;
-            color: #fff;
-        }
-
-        .aksi-edit {
-            background: #eaf0fd;
-            color: #2563eb;
-        }
-
-        .aksi-edit:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .aksi-hapus {
-            background: #fdecec;
-            color: #dc2626;
-        }
-
-        .aksi-hapus:hover {
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .dark .aksi-view {
-            background: rgba(14, 165, 233, .15);
-        }
-
-        .dark .aksi-edit {
-            background: rgba(37, 99, 235, .18);
-        }
-
-        .dark .aksi-hapus {
-            background: rgba(220, 38, 38, .18);
-        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -774,15 +715,6 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-history"></i></span>
-                        <span class="flex-1">Report SAT Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
                         <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
                     </ul>
@@ -799,6 +731,7 @@
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
+                        <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
@@ -938,24 +871,24 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
-                                                <div class="aksi-group">
-                                                    <button type="button"
-                                                        data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                        onclick="openViewModal(JSON.parse(this.dataset.row))"
-                                                        class="aksi-icon aksi-view" title="View">
-                                                        <i class="ti ti-eye"></i>
-                                                    </button>
-                                                    <a href="<?= site_url('Bts/edit/' . $row['id']) ?>"
-                                                        class="aksi-icon aksi-edit" title="Edit">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-                                                    <button type="button"
-                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                        class="aksi-icon aksi-hapus" title="Hapus">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
+                                                <a href="<?= site_url('Bts/edit/' . $row['id']) ?>"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
+
+                                                <button type="button"
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="ti ti-trash"></i>
+                                                </button>
+
+                                                <br>
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                    class="btn btn-sm btn-info" title="Lihat">
+                                                    <i class="ti ti-eye"></i>
+                                                </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_bts']); ?></td>
                                             <td><?= esc($row['ip_address']); ?></td>
@@ -1031,7 +964,14 @@
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
             FIELDS.forEach(k => set('v_' + k, d[k]));
-            set('v_vendors', (d.vendors || []).join('\n'));
+            // Vendor beserta data lengkapnya dari Data Vendor + IP Address & VLAN-nya
+            set('v_vendors', (d.vendor_detail || []).map(v => [
+                v.nama_vendor,
+                'PIC: ' + (v.nama_pic || '-') + ' (' + (v.telp_pic || '-') + ')',
+                'Email: ' + (v.email_pic || '-'),
+                'Alamat: ' + (v.alamat || '-'),
+                'IP Address: ' + v.ip_address + ' | VLAN: ' + (v.vlan_id === null ? 'Tanpa VLAN' : v.vlan_id),
+            ].join('\n')).join('\n\n'));
             set('v_vlan_id', d.vlan_id === null || d.vlan_id === undefined ? 'Tanpa VLAN' : d.vlan_id);
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
@@ -1281,9 +1221,9 @@
                 const re = this.value ? '(^|, )' + $.fn.dataTable.util.escapeRegex(this.value) + '(,|$)' : '';
                 table.column(4).search(re, true, false).draw();
             });
-            // VLAN: kolom 6 berisi angka atau "Tanpa VLAN"
+            // VLAN: kolom 6 berisi angka ("10, 20" jika lebih dari 1) atau "Tanpa VLAN"
             $('#filterVlan').on('change', function() {
-                const re = this.value === 'tanpa' ? '^Tanpa VLAN$' : (this.value === 'pakai' ? '^\\d+$' : '');
+                const re = this.value === 'tanpa' ? '^Tanpa VLAN$' : (this.value === 'pakai' ? '^\\d' : '');
                 table.column(6).search(re, true, false).draw();
             });
 

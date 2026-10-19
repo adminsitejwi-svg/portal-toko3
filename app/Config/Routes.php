@@ -335,6 +335,14 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('PelangganNoc/delete/(:num)', 'PelangganNoc::delete/$1');
     $routes->get('PelangganNoc/file/(:num)', 'PelangganNoc::file/$1');
 
+    // Data Vendor (menu All NOC di sidebar, beda dengan menu Vendor Non Celullar)
+    $routes->get('VendorNoc', 'VendorNoc::index');
+    $routes->get('VendorNoc/create', 'VendorNoc::create');
+    $routes->get('VendorNoc/edit/(:num)', 'VendorNoc::edit/$1');
+    $routes->post('VendorNoc/save', 'VendorNoc::save');
+    $routes->post('VendorNoc/update', 'VendorNoc::update');
+    $routes->get('VendorNoc/delete/(:num)', 'VendorNoc::delete/$1');
+
     $routes->get('HistoryReport', 'HistoryReport::index');
     $routes->post('HistoryReport/save', 'HistoryReport::save');
     $routes->post('HistoryReport/update', 'HistoryReport::update');
