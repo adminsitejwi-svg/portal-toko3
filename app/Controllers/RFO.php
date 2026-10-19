@@ -96,6 +96,7 @@ class RFO extends BaseController
             'petugas' => ! empty($rfo['petugas']) ? [$rfo['petugas']] : array_column(
                 (new JadwalModel())->where('tanggal', date('Y-m-d', strtotime($rfo['waktu_gangguan'])))
                     ->where('nama !=', '')
+                    ->where('shift !=', 4) // yang Off tidak ikut
                     ->orderBy('shift', 'ASC')
                     ->findAll(),
                 'nama'

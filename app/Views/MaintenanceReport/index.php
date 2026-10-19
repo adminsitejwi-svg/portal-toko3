@@ -995,7 +995,7 @@
                     <!-- Muncul & terisi otomatis (jam komputer) saat status diubah ke Resolved -->
                     <div class="md:col-span-2 hidden" id="r_waktu_resolved_wrap">
                         <label class="text-sm font-medium">Tanggal &amp; Jam Resolved</label>
-                        <input type="datetime-local" step="1" name="waktu_resolved" id="r_waktu_resolved" readonly class="w-full border rounded-lg p-3" style="background:#f1f5f9">
+                        <input type="datetime-local" step="1" name="waktu_resolved" id="r_waktu_resolved" readonly class="w-full border rounded-lg p-3 bg-[#f1f5f9] dark:bg-white/10 dark:text-white dark:[color-scheme:dark]">
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 mt-6">

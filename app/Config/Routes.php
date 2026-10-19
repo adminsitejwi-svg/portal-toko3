@@ -229,6 +229,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Calendar/events',    'Calendar::events');
     $routes->post('Calendar/save',     'Calendar::save');
     $routes->post('Calendar/delete/(:num)', 'Calendar::delete/$1');
+    $routes->post('Calendar/import',   'Calendar::import');
     $routes->get('Calendar/notes',  'Calendar::notes');
     $routes->post('Calendar/notes', 'Calendar::notes');
 
@@ -236,6 +237,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Piket/events',         'Piket::events');
     $routes->post('Piket/save',          'Piket::save');
     $routes->post('Piket/delete/(:num)', 'Piket::delete/$1');
+    $routes->post('Piket/import',        'Piket::import');
 
 
     $routes->get('InventoryKantor', 'InventoryKantor::index');

@@ -461,7 +461,10 @@
         <div class="p-4 sm:p-6">
             <div class="flex items-center justify-between mb-4 gap-3">
                 <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white">Jadwal Shift</h4>
-                <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+                <div class="flex items-center gap-2">
+                    <button class="btn2 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1" id="btnImport"><i class="ti ti-file-import text-[15px]"></i> Import</button>
+                    <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+                </div>
             </div>
 
             <div class="flex flex-col xl:flex-row gap-4 items-start">
@@ -528,10 +531,9 @@
                 <div>
                     <label class="f-label">Shift</label>
                     <select class="f-input" id="shift" required>
-                        <option value="1">Shift 1</option>
-                        <option value="2">Shift 2</option>
-                        <option value="3">Shift 3</option>
-                        <option value="4">Off</option>
+                        <?php foreach ($label as $k => $v) : ?>
+                            <option value="<?= $k ?>"><?= esc($v) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div>
@@ -556,6 +558,38 @@
 
     </div>
 
+    <!-- ================= MODAL IMPORT EXCEL ================= -->
+    <div id="modalImport" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
+        <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
+                <h5 class="font-semibold text-[#2b3540] dark:text-white">Import Jadwal Shift</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideImport()">&times;</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div>
+                    <label class="f-label">File Excel (.xlsx / .xls)</label>
+                    <input type="file" class="f-input" id="fileImport" accept=".xlsx,.xls">
+                   
+                </div>
+                <div>
+                    <label class="f-label">Jika bulan tersebut sudah ada data</label>
+                    <label class="flex items-start gap-2 text-[13px] mb-1.5 cursor-pointer">
+                        <input type="radio" name="modeImport" value="ganti" class="mt-0.5" checked>
+                        <span><b>Ganti</b> &mdash; hapus semua jadwal shift di bulan itu, lalu isi dari file</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-[13px] cursor-pointer">
+                        <input type="radio" name="modeImport" value="tambah" class="mt-0.5">
+                        <span><b>Tambahkan</b> &mdash; data lama tetap, nama yang sudah punya jadwal di tanggal itu dilewati</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-gray-100 dark:border-white/10">
+                <button type="button" class="btn2 bg-gray-100 hover:bg-gray-200 text-gray-700" onclick="hideImport()">Batal</button>
+                <button type="button" class="btn2 bg-green-600 hover:bg-green-700 text-white" id="btnProsesImport">Import</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.getElementById('shift').addEventListener('change', function() {
             document.getElementById('warna').value = SHIFT_WARNA[this.value] || '#04a9f5';
@@ -564,18 +598,8 @@
 
         const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const SHIFT_LABEL = {
-            1: 'Shift 1',
-            2: 'Shift 2',
-            3: 'Shift 3',
-            4: 'Off'
-        };
-        const SHIFT_WARNA = {
-            1: '#92D050', // Shift 1 - hijau
-            2: '#FFFF00', // Shift 2 - kuning
-            3: '#00B0F0', // Shift 3 - biru
-            4: '#FF0000' // Off      - merah
-        };
+        const SHIFT_LABEL = <?= json_encode($label) ?>; // 1-3 shift, 4 Off, 5 HO
+        const SHIFT_WARNA = <?= json_encode($warna) ?>; // hijau, kuning, biru, merah, ungu
 
         function ymd(d) {
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -646,7 +670,7 @@
                     box.className = 'ev-box';
                     const s = arg.event.extendedProps.shift;
                     box.style.background = arg.event.extendedProps.warna || '#04a9f5';
-                    box.textContent = (s == 4 ? '0' : s);
+                    box.textContent = (s == 4 ? '0' : (s == 5 ? 'H' : s));
                     box.title = SHIFT_LABEL[s] + ' - ' + arg.event.extendedProps.nama;
                     return {
                         domNodes: [box]
@@ -950,6 +974,88 @@
                     showFlash('error', 'Tidak bisa menghapus.');
                 }
             });
+        });
+
+        // ---- import excel ----
+        function hideImport() {
+            const m = document.getElementById('modalImport');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+        document.getElementById('modalImport').addEventListener('click', function(e) {
+            if (e.target === this) hideImport();
+        });
+        document.getElementById('btnImport').addEventListener('click', function() {
+            document.getElementById('fileImport').value = '';
+            document.querySelector('input[name="modeImport"][value="ganti"]').checked = true;
+            const m = document.getElementById('modalImport');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        });
+
+        document.getElementById('btnProsesImport').addEventListener('click', async function() {
+            const file = document.getElementById('fileImport').files[0];
+            if (!file) {
+                showFlash('error', 'Pilih file Excel terlebih dahulu.');
+                return;
+            }
+            const mode = document.querySelector('input[name="modeImport"]:checked').value;
+            if (mode === 'ganti') {
+                const r = await Swal.fire({
+                    title: 'Ganti jadwal shift?',
+                    text: 'Semua jadwal shift di bulan yang ada di file akan dihapus lalu diisi ulang dari file.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#16a34a',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, import',
+                    cancelButtonText: 'Batal'
+                });
+                if (!r.isConfirmed) return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            const body = new FormData();
+            body.append('file_import', file);
+            body.append('mode', mode);
+            const c = getCsrf();
+            if (c) body.append(c.key, c.val);
+
+            try {
+                const res = await fetch(BASE + '/import', {
+                    method: 'POST',
+                    body: body
+                });
+                const json = await res.json().catch(() => ({}));
+                if (res.ok && json.status === 'ok') {
+                    hideImport();
+                    goToDate(json.awal);
+                    Calendar.refetchEvents();
+                    let msg = json.masuk + ' jadwal ' + json.bulan + ' berhasil diimport';
+                    if (json.dilewati) msg += ', ' + json.dilewati + ' dilewati (sudah ada)';
+                    showFlash('success', msg);
+                    // kode yang tidak dikenali dilaporkan supaya bisa dicek manual
+                    if (json.tidakDikenal && json.tidakDikenal.length) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Sebagian sel dilewati',
+                            html: 'Kode shift tidak dikenali:<br><div class="text-left text-[13px] mt-2">' +
+                                json.tidakDikenal.map(escapeHtml).join('<br>') + '</div>',
+                            confirmButtonColor: '#04a9f5'
+                        });
+                    }
+                } else {
+                    showFlash('error', json.message || 'Import gagal.');
+                }
+            } catch (e) {
+                showFlash('error', 'Import gagal, coba lagi.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Import';
+            }
         });
 
         // ---- shell dashboard ----

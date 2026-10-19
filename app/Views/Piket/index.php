@@ -227,6 +227,13 @@
             }
         }
 
+        /* dark mode: teks panel Petugas Piket jadi putih */
+        html.dark #panelTitle,
+        html.dark #panelList,
+        html.dark #panelList * {
+            color: #fff !important;
+        }
+
         /* swatch warna custom: bulat, mengikuti ukuran input */
         input[type="color"].clr-round {
             -webkit-appearance: none;
@@ -439,6 +446,7 @@
                     <button type="button" id="btnNotePiket" title="Aturan piket" class="text-orange-500 hover:text-orange-600 leading-none">
                         <i class="ti ti-alert-circle text-[22px]"></i>
                     </button>
+                    <button class="btn2 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1" id="btnImport"><i class="ti ti-file-import text-[15px]"></i> Import</button>
                     <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Piket</button>
                 </div>
             </div>
@@ -466,7 +474,7 @@
                 <!-- KANAN: panel detail -->
                 <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
                     <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
-                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Petugas Piket</div>
+                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2" id="panelTitle">Petugas Piket</div>
                     <div id="panelList">
                         <div class="text-gray-400 text-sm py-2">Memuat&hellip;</div>
                     </div>
@@ -528,15 +536,62 @@
         </div>
     </div>
 
+    <!-- ================= MODAL IMPORT EXCEL ================= -->
+    <div id="modalImport" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
+        <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
+                <h5 class="font-semibold text-[#2b3540] dark:text-white">Import Jadwal Piket</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideImport()">&times;</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div>
+                    <label class="f-label">File Excel (.xlsx / .xls)</label>
+                    <input type="file" class="f-input" id="fileImport" accept=".xlsx,.xls">
+                    
+                </div>
+                <div>
+                    <label class="f-label">Jika bulan tersebut sudah ada data</label>
+                    <label class="flex items-start gap-2 text-[13px] mb-1.5 cursor-pointer">
+                        <input type="radio" name="modeImport" value="ganti" class="mt-0.5" checked>
+                        <span><b>Ganti</b> &mdash; hapus semua piket di bulan itu, lalu isi dari file</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-[13px] cursor-pointer">
+                        <input type="radio" name="modeImport" value="tambah" class="mt-0.5">
+                        <span><b>Tambahkan</b> &mdash; data lama tetap, baris yang sama dilewati</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-gray-100 dark:border-white/10">
+                <button type="button" class="btn2 bg-gray-100 hover:bg-gray-200 text-gray-700" onclick="hideImport()">Batal</button>
+                <button type="button" class="btn2 bg-green-600 hover:bg-green-700 text-white" id="btnProsesImport">Import</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const BASE = "<?= site_url('Piket') ?>";
         const PIKET_LABEL = <?= json_encode($label) ?>;
         const PIKET_WARNA = <?= json_encode($warna) ?>; // 1 oranye, 2 kuning, 3 hijau
 
+        // keterangan default per piket
+        const PIKET_KETERANGAN = <?= json_encode($keterangan) ?>;
+
         function setSwatch() {
             document.getElementById('piketSwatch').style.background = PIKET_WARNA[document.getElementById('piket').value] || '#04a9f5';
         }
-        document.getElementById('piket').addEventListener('change', setSwatch);
+
+        // isi keterangan otomatis; teks yang diketik sendiri tidak ditimpa
+        function setKeteranganDefault() {
+            const ket = document.getElementById('keterangan');
+            const cur = ket.value.trim();
+            if (cur === '' || Object.values(PIKET_KETERANGAN).includes(cur)) {
+                ket.value = PIKET_KETERANGAN[document.getElementById('piket').value] || '';
+            }
+        }
+        document.getElementById('piket').addEventListener('change', function() {
+            setSwatch();
+            setKeteranganDefault();
+        });
 
         // Nama: pilih dari data shift, atau "Isi Manual" -> tampilkan input teks
         function toggleNamaManual() {
@@ -802,6 +857,7 @@
             document.getElementById('piket').value = d.piket || '1';
             setSwatch();
             document.getElementById('keterangan').value = d.keterangan || '';
+            if (!d.id) setKeteranganDefault();
             document.getElementById('modalTitle').textContent = d.id ? 'Edit Piket' : 'Tambah Piket';
             document.getElementById('btnHapus').classList.toggle('hidden', !d.id);
             showModal();
@@ -860,6 +916,78 @@
                     showFlash('error', 'Tidak bisa menghapus.');
                 }
             });
+        });
+
+        // ---- import excel ----
+        function hideImport() {
+            const m = document.getElementById('modalImport');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+        document.getElementById('modalImport').addEventListener('click', function(e) {
+            if (e.target === this) hideImport();
+        });
+        document.getElementById('btnImport').addEventListener('click', function() {
+            document.getElementById('fileImport').value = '';
+            document.querySelector('input[name="modeImport"][value="ganti"]').checked = true;
+            const m = document.getElementById('modalImport');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        });
+
+        document.getElementById('btnProsesImport').addEventListener('click', async function() {
+            const file = document.getElementById('fileImport').files[0];
+            if (!file) {
+                showFlash('error', 'Pilih file Excel terlebih dahulu.');
+                return;
+            }
+            const mode = document.querySelector('input[name="modeImport"]:checked').value;
+            if (mode === 'ganti') {
+                const r = await Swal.fire({
+                    title: 'Ganti data piket?',
+                    text: 'Semua piket di bulan yang ada di file akan dihapus lalu diisi ulang dari file.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#16a34a',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, import',
+                    cancelButtonText: 'Batal'
+                });
+                if (!r.isConfirmed) return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            const body = new FormData();
+            body.append('file_import', file);
+            body.append('mode', mode);
+            const c = getCsrf();
+            if (c) body.append(c.key, c.val);
+
+            try {
+                const res = await fetch(BASE + '/import', {
+                    method: 'POST',
+                    body: body
+                });
+                const json = await res.json().catch(() => ({}));
+                if (res.ok && json.status === 'ok') {
+                    hideImport();
+                    goToDate(json.awal);
+                    Calendar.refetchEvents();
+                    let msg = json.masuk + ' piket ' + json.bulan + ' berhasil diimport';
+                    if (json.dilewati) msg += ', ' + json.dilewati + ' dilewati (sudah ada)';
+                    showFlash('success', msg);
+                } else {
+                    showFlash('error', json.message || 'Import gagal.');
+                }
+            } catch (e) {
+                showFlash('error', 'Import gagal, coba lagi.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Import';
+            }
         });
 
         // ---- shell dashboard ----
