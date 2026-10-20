@@ -234,6 +234,21 @@
             color: #fff !important;
         }
 
+        /* dark mode kalender: disamakan dengan halaman Shift */
+        /* header hari (Min-Sab): latar header FullCalendar default putih, ikut warna kartu */
+        html.dark #Calendar {
+            --fc-page-bg-color: transparent;
+        }
+
+        html.dark #Calendar .fc-col-header-cell-cushion {
+            color: #c3c6d8 !important;
+        }
+
+        /* blok hari ini: biru transparan, bukan biru muda terang */
+        html.dark #Calendar .fc-day-today {
+            background: rgba(4, 169, 245, .18) !important;
+        }
+
         /* swatch warna custom: bulat, mengikuti ukuran input */
         input[type="color"].clr-round {
             -webkit-appearance: none;

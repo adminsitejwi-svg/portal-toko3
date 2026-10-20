@@ -1454,7 +1454,7 @@
             // Jenis bisa lebih dari satu per baris: cocokkan salah satu jenis (data-search |Jenis1|Jenis2|)
             $('#filterJenis').on('change', function() {
                 const re = this.value ? '\\|' + $.fn.dataTable.util.escapeRegex(this.value) + '\\|' : '';
-                table.column(8).search(re, true, false).draw();
+                table.column(7).search(re, true, false).draw();
             });
             $('#filterIdPelanggan').on('change', function() {
                 filterColumn(3, this.value);

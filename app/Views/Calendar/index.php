@@ -209,7 +209,6 @@
 
         /* ===== MODE DARK: huruf pada data jadwal otomatis putih ===== */
         .dark #Calendar,
-        .dark #Calendar .fc-col-header-cell-cushion,
         .dark #Calendar .fc-daygrid-day-number,
         .dark #panelList,
         .dark #panelList span,
@@ -228,6 +227,15 @@
         .dark #Calendar .fc-theme-standard th,
         .dark #Calendar .fc-theme-standard .fc-scrollgrid {
             border-color: rgba(255, 255, 255, .12);
+        }
+
+        /* header hari (Min-Sab): latar header FullCalendar default putih, ikut warna kartu & huruf seperti Piket */
+        .dark #Calendar {
+            --fc-page-bg-color: transparent;
+        }
+
+        .dark #Calendar .fc-col-header-cell-cushion {
+            color: #c3c6d8 !important;
         }
 
         .dark #Calendar .fc-day-today {
