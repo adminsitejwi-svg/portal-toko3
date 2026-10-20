@@ -28,6 +28,7 @@ class PelangganNocModel extends BaseModel
     // Data pelanggan + nama BTS + vendor & detail perangkatnya ($id diisi = hanya pelanggan itu)
     // vendor_detail: per vendor berisi nama & Note vendor dari Data Vendor (d_vendor);
     // vendors: nama vendor digabung ", "; ip_bts: daftar IP Address BTS pelanggan (dari d_bts_vendor, tanpa duplikat);
+    // bts_detail: IP Address, Kapasitas & Vlan ID per vendor BTS (satu baris per vendor, untuk kolom bertumpuk di index);
     // perangkat: daftar detail perangkat, perangkat_teks: satu baris per perangkat
     public function withRelasi(?int $id = null): array
     {
@@ -56,13 +57,14 @@ class PelangganNocModel extends BaseModel
             $perangkat[$r['pelanggan_id']][] = $r;
         }
 
-        $ipBts  = [];
+        $ipBts  = $btsDetail = [];
         $btsIds = array_filter(array_unique(array_column($rows, 'bts_id')));
         if ($btsIds) {
-            $ipRows = (new BtsVendorModel())->select('bts_id, ip_address')
+            $ipRows = (new BtsVendorModel())->select('bts_id, ip_address, kapasitas, vlan_id')
                 ->whereIn('bts_id', $btsIds)->orderBy('id', 'ASC')->findAll();
             foreach ($ipRows as $r) {
                 $ipBts[$r['bts_id']][$r['ip_address']] = $r['ip_address'];
+                $btsDetail[$r['bts_id']][] = $r;
             }
         }
 
@@ -72,6 +74,7 @@ class PelangganNocModel extends BaseModel
             $row['vendor_detail']  = $detail;
             $row['vendors']        = implode(', ', array_column($detail, 'nama_vendor'));
             $row['ip_bts']         = array_values($ipBts[$row['bts_id']] ?? []);
+            $row['bts_detail']     = $btsDetail[$row['bts_id']] ?? [];
             $row['perangkat']      = $perangkat[$row['id']] ?? [];
             $row['perangkat_teks'] = implode("\n", array_map(
                 fn ($p) => implode(' ', array_filter([$p['merk'], $p['jenis'], $p['type']], fn ($s) => (string) $s !== ''))

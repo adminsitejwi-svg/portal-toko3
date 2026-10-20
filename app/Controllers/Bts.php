@@ -53,8 +53,7 @@ class Bts extends BaseController
     private function rules(): array
     {
         return [
-            'nama_bts'  => 'required|max_length[255]',
-            'kapasitas' => 'required|max_length[100]',
+            'nama_bts' => 'required|max_length[255]',
         ];
     }
 
@@ -63,8 +62,7 @@ class Bts extends BaseController
         $post = fn (string $k) => trim((string) $this->request->getPost($k));
 
         return [
-            'nama_bts'  => $post('nama_bts'),
-            'kapasitas' => $post('kapasitas'),
+            'nama_bts' => $post('nama_bts'),
         ];
     }
 

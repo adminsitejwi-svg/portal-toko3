@@ -582,6 +582,37 @@
             background: rgba(255, 255, 255, .06);
             color: #bfc8d6;
         }
+
+        /* ===== TOMBOL AKSI DI TABEL: ikon + label, sama dengan Daily Report (semua tab) ===== */
+        .ho-table .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 92px;
+            margin: 2px 0;
+            padding: 3px 10px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        .ho-table .btn i {
+            font-size: 16px;
+        }
+
+        .ho-table .btn:hover {
+            background: #f3f4f6;
+        }
+
+        .dark .ho-table .btn {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark .ho-table .btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -1000,7 +1031,7 @@
                                                     onclick="openViewModal('gangguan', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1008,14 +1039,15 @@
                                                     onclick="openGangguanModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/gangguan/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
@@ -1100,7 +1132,7 @@
                                                     onclick="openViewModal('followup', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1108,14 +1140,15 @@
                                                     onclick="openFollowUpModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/followup/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
@@ -1197,7 +1230,7 @@
                                                     onclick="openViewModal('pengiriman', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1205,14 +1238,15 @@
                                                     onclick="openPengirimanModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/pengiriman/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
@@ -1295,7 +1329,7 @@
                                                     onclick="openViewModal('maintenance', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1303,14 +1337,15 @@
                                                     onclick="openMaintenanceModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/maintenance/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>
@@ -1395,7 +1430,7 @@
                                                     onclick="openViewModal('aktivasi', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1403,14 +1438,15 @@
                                                     onclick="openAktivasiModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/aktivasi/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <!-- data-search: nilai tanpa spasi tepi, dicocokkan persis oleh filter dropdown -->
@@ -1494,7 +1530,7 @@
                                                     onclick="openViewModal('catatan', JSON.parse(this.dataset.row))"
                                                     title="View"
                                                     class="btn btn-sm">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <button type="button"
@@ -1502,14 +1538,15 @@
                                                     onclick="openCatatanModal(JSON.parse(this.dataset.row))"
                                                     title="Edit"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
+                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/catatan/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['grup']); ?></td>

@@ -12,7 +12,6 @@ class BtsModel extends BaseModel
 
     protected $allowedFields = [
         'nama_bts',
-        'kapasitas',
         'created_at'
     ];
 

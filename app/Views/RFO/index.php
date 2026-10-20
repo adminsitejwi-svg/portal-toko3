@@ -452,6 +452,37 @@
         .brand-text {
             font-size: 18px;
         }
+
+        /* ===== TOMBOL AKSI DI TABEL: ikon + label, sama dengan Daily Report ===== */
+        #rfoTable .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 92px;
+            margin: 2px 0;
+            padding: 3px 10px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        #rfoTable .btn i {
+            font-size: 16px;
+        }
+
+        #rfoTable .btn:hover {
+            background: #f3f4f6;
+        }
+
+        .dark #rfoTable .btn {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark #rfoTable .btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -777,25 +808,25 @@
                                             <td>
                                                 <a href="<?= site_url('RFO/edit/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </a>
 
                                                 <button type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
                                                 <br>
                                                 <a href="<?= site_url('RFO/view/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-info" title="Lihat / Print">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </a>
 
                                                 <button type="button"
                                                     onclick="openEmailModal(<?= $row['id'] ?>, '<?= esc($row['rfo_id'], 'js') ?>', '<?= esc(\App\Models\RFOModel::EMAIL_NOC[$row['perusahaan']] ?? '', 'js') ?>')"
                                                     class="btn btn-sm btn-success" title="Kirim Email">
-                                                    <i class="ti ti-mail"></i>
+                                                    <i class="ti ti-mail"></i> <span>Email</span>
                                                 </button>
                                             </td>
                                             <td class="font-medium"><?= esc($row['rfo_id']); ?></td>

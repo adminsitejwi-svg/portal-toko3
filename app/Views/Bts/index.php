@@ -569,6 +569,36 @@
             color: #8996a4;
         }
 
+
+        /* ===== TOMBOL AKSI DI TABEL: ikon + label, sama dengan Daily Report ===== */
+        #reportTable .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 92px;
+            margin: 2px 0;
+            padding: 3px 10px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        #reportTable .btn i {
+            font-size: 16px;
+        }
+
+        #reportTable .btn:hover {
+            background: #f3f4f6;
+        }
+
+        .dark #reportTable .btn {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark #reportTable .btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -857,8 +887,9 @@
                                     <th>No</th>
                                     <th>Aksi</th>
                                     <th>Nama BTS</th>
-                                    <th>IP Address</th>
                                     <th>Vendor</th>
+                                    <th>Note</th>
+                                    <th>IP Address</th>
                                     <th>Kapasitas</th>
                                     <th>Vlan ID</th>
                                 </tr>
@@ -870,21 +901,26 @@
                                     $tumpuk = static fn (array $isi) => implode('<br>', array_map('esc', $isi)); ?>
                                     <?php foreach ($bts as $row) : ?>
                                         <?php
-                                        $ipList   = $row['ip_address'] !== '' ? explode(', ', $row['ip_address']) : [];
-                                        $vlanList = $row['vlan_id'] !== null ? explode(', ', $row['vlan_id']) : ['Tanpa VLAN'];
+                                        // Satu baris per vendor: Vendor, Note, IP Address, Kapasitas & Vlan ID ditumpuk sejajar (tidak digabung/dedup)
+                                        $det        = $row['vendor_detail'];
+                                        $vendorList = array_column($det, 'nama_vendor');
+                                        $noteList   = array_map(fn ($v) => trim(preg_replace('/\s+/', ' ', (string) $v['vendor_note'])) ?: '-', $det);
+                                        $ipList     = array_map(fn ($v) => (string) $v['ip_address'] !== '' ? $v['ip_address'] : '-', $det);
+                                        $kapList    = array_map(fn ($v) => (string) $v['kapasitas'] !== '' ? $v['kapasitas'] : '-', $det);
+                                        $vlanList   = array_map(fn ($v) => $v['vlan_id'] === null ? 'Tanpa VLAN' : (string) $v['vlan_id'], $det);
                                         ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
                                                 <a href="<?= site_url('Bts/edit/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </a>
 
                                                 <button type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
                                                 <br>
@@ -892,15 +928,16 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal(JSON.parse(this.dataset.row))"
                                                     class="btn btn-sm btn-info" title="Lihat">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_bts']); ?></td>
-                                            <td data-search="<?= esc($row['ip_address'], 'attr') ?>"><?= $ipList ? $tumpuk($ipList) : '-'; ?></td>
-                                            <!-- data-search: vendor dipisah koma (dipakai filter vendor), tampilan ditumpuk ke bawah -->
-                                            <td class="whitespace-normal min-w-[200px]" data-search="<?= esc(implode(', ', $row['vendors']), 'attr') ?>"><?= $row['vendors'] ? $tumpuk($row['vendors']) : '-'; ?></td>
-                                            <td><?= esc($row['kapasitas']); ?></td>
-                                            <td data-search="<?= esc(implode(', ', $vlanList), 'attr') ?>"><?= $tumpuk($vlanList); ?></td>
+                                            <!-- data-search: nilai dipisah koma (dipakai filter & pencarian), tampilan ditumpuk ke bawah per vendor -->
+                                            <td class="min-w-[160px]" data-search="<?= esc(implode(', ', $vendorList), 'attr') ?>"><?= $det ? $tumpuk($vendorList) : '-'; ?></td>
+                                            <td class="min-w-[200px]" data-search="<?= esc(implode(', ', $noteList), 'attr') ?>"><?= $det ? $tumpuk($noteList) : '-'; ?></td>
+                                            <td data-search="<?= esc(implode(', ', $ipList), 'attr') ?>"><?= $det ? $tumpuk($ipList) : '-'; ?></td>
+                                            <td data-search="<?= esc(implode(', ', $kapList), 'attr') ?>"><?= $det ? $tumpuk($kapList) : '-'; ?></td>
+                                            <td data-search="<?= esc(implode(', ', $vlanList), 'attr') ?>"><?= $det ? $tumpuk($vlanList) : '-'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -922,21 +959,13 @@
                 <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
+                <div class="md:col-span-2">
                     <div class="text-gray-500">Nama BTS</div>
                     <div class="font-medium" id="v_nama_bts"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">IP Address</div>
-                    <div class="font-medium" id="v_ip_address"></div>
                 </div>
                 <div class="md:col-span-2">
                     <div class="text-gray-500">Vendor</div>
                     <div class="font-medium whitespace-pre-line" id="v_vendors"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Kapasitas</div>
-                    <div class="font-medium" id="v_kapasitas"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">Vlan ID</div>
@@ -955,7 +984,7 @@
 
     <script>
         // Isian teks form tambah/edit (vendor & vlan diatur terpisah)
-        const FIELDS = ['nama_bts', 'ip_address', 'kapasitas'];
+        const FIELDS = ['nama_bts'];
 
         // ====== VIEW ======
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -1220,15 +1249,15 @@
             $('#exportArea').append($('.dt-buttons'));
 
             // ====== FILTER DROPDOWN ======
-            // Vendor: kolom 4 berisi "A, B, C" -> cocokkan satu nama vendor utuh
+            // Vendor: kolom 3 berisi "A, B, C" -> cocokkan satu nama vendor utuh
             $('#filterVendor').on('change', function() {
                 const re = this.value ? '(^|, )' + $.fn.dataTable.util.escapeRegex(this.value) + '(,|$)' : '';
-                table.column(4).search(re, true, false).draw();
+                table.column(3).search(re, true, false).draw();
             });
-            // VLAN: kolom 6 berisi angka ("10, 20" jika lebih dari 1) atau "Tanpa VLAN"
+            // VLAN: kolom 7 berisi VLAN per vendor ("10, Tanpa VLAN") -> cocokkan salah satunya
             $('#filterVlan').on('change', function() {
-                const re = this.value === 'tanpa' ? '^Tanpa VLAN$' : (this.value === 'pakai' ? '^\\d' : '');
-                table.column(6).search(re, true, false).draw();
+                const re = this.value === 'tanpa' ? '(^|, )Tanpa VLAN(,|$)' : (this.value === 'pakai' ? '(^|, )\\d' : '');
+                table.column(7).search(re, true, false).draw();
             });
 
             $('#customSearch').on('keyup', function() {

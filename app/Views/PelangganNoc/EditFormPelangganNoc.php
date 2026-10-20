@@ -478,18 +478,20 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>IP Address BTS</label>
-                            <!-- lebih dari 1 IP: ditumpuk ke bawah (seperti kolom IP Address di Data BTS) -->
-                            <textarea id="a_ip_address" rows="1" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none resize-none" style="background:#f1f5f9"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Kapasitas BTS</label>
-                            <input type="text" id="a_kapasitas" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
-                        </div>
-                        <div class="form-group md:col-span-2">
-                            <label>Vlan ID BTS</label>
-                            <input type="text" id="a_vlan_id" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
+                        <!-- IP Address, Kapasitas & Vlan ID BTS: satu baris per vendor BTS (ditumpuk ke bawah, sejajar antar kolom) -->
+                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-4">
+                            <div class="form-group">
+                                <label>IP Address BTS</label>
+                                <textarea id="a_ip_address" rows="1" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white outline-none resize-none"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Kapasitas BTS</label>
+                                <textarea id="a_kapasitas" rows="1" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white outline-none resize-none"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Vlan ID BTS</label>
+                                <textarea id="a_vlan_id" rows="1" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white outline-none resize-none"></textarea>
+                            </div>
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
@@ -649,15 +651,21 @@
             return daftar;
         }
 
-        // Pilih BTS -> IP Address, Kapasitas, Vlan ID BTS terisi otomatis
+        // Pilih BTS -> IP Address, Kapasitas & Vlan ID BTS terisi otomatis
         function isiBts() {
             const b = BTS[document.getElementById('r_bts_id').value];
-            // IP BTS "a, b" -> satu IP per baris
-            const ipBts = document.getElementById('a_ip_address');
-            ipBts.value = b && !kosong(b.ip_address) ? b.ip_address.split(', ').join('\n') : '';
-            ipBts.rows = Math.max(1, ipBts.value.split('\n').length);
-            setVal('a_kapasitas', b && b.kapasitas);
-            setVal('a_vlan_id', b && (kosong(b.vlan_id) ? 'Tanpa VLAN' : b.vlan_id));
+            const det = b ? b.vendor_detail : [];
+            // Satu baris per vendor BTS: 2 vendor = 2 baris IP, Kapasitas & Vlan ID
+            const isi = {
+                a_ip_address: det.map(v => kosong(v.ip_address) ? '-' : v.ip_address),
+                a_kapasitas: det.map(v => kosong(v.kapasitas) ? '-' : v.kapasitas),
+                a_vlan_id: det.map(v => kosong(v.vlan_id) ? 'Tanpa VLAN' : v.vlan_id),
+            };
+            Object.entries(isi).forEach(([id, baris]) => {
+                const el = document.getElementById(id);
+                el.value = baris.join('\n');
+                el.rows = Math.max(1, baris.length);
+            });
         }
 
         // Ganti BTS -> pilihan vendor di tiap blok ikut diganti dengan vendor BTS itu

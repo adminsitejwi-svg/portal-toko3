@@ -472,13 +472,9 @@
                         ], $row['vendor_detail'] ?? []);
                     ?>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 mt-5">
-                        <div class="form-group">
+                        <div class="form-group md:col-span-2">
                             <label>Nama BTS <span style="color:red">*</span></label>
                             <input type="text" name="nama_bts" id="r_nama_bts" maxlength="255" required placeholder="Masukkan Nama BTS" value="<?= esc(old('nama_bts', $row['nama_bts'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                        </div>
-                        <div class="form-group">
-                            <label>Kapasitas <span style="color:red">*</span></label>
-                            <input type="text" name="kapasitas" id="r_kapasitas" maxlength="100" required value="<?= esc(old('kapasitas', $row['kapasitas'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
@@ -640,7 +636,7 @@
 
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_nama_bts', 'r_kapasitas'].map(id => document.getElementById(id).value.trim());
+            const wajib = ['r_nama_bts'].map(id => document.getElementById(id).value.trim());
             // tiap blok vendor wajib: vendor, IP Address, Kapasitas, dan Vlan ID (atau Tanpa VLAN)
             const vendorKurang = [...document.querySelectorAll('#vendorRows .isian-row')].some(row => {
                 const isi = k => row.querySelector('[data-isi="' + k + '"]').value.trim();

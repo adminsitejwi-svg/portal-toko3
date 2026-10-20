@@ -569,6 +569,36 @@
             color: #8996a4;
         }
 
+
+        /* ===== TOMBOL AKSI DI TABEL: ikon + label, sama dengan Daily Report ===== */
+        #reportTable .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 92px;
+            margin: 2px 0;
+            padding: 3px 10px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        #reportTable .btn i {
+            font-size: 16px;
+        }
+
+        #reportTable .btn:hover {
+            background: #f3f4f6;
+        }
+
+        .dark #reportTable .btn {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark #reportTable .btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -858,10 +888,13 @@
                                     <th>No</th>
                                     <th>Aksi</th>
                                     <th>Nama Pelanggan</th>
-                                    <th>BTS</th>
+                                    <th>PTP dari BTS</th>
                                     <th>IP Address BTS</th>
+                                    <th>Kapasitas BTS</th>
+                                    <th>Vlan ID BTS</th>
                                     <th>Vendor</th>
-                                    <th>Detail Perangkat Pelanggan</th>
+                                    <th>Note Vendor</th>
+                                    <th>Detail Perangkat Pelanggan di Lokasi</th>
                                     <th>Topologi</th>
                                 </tr>
                             </thead>
@@ -869,20 +902,35 @@
                                 <?php if (!empty($pelanggan)) : ?>
                                     <?php $no = 1; ?>
                                     <?php // lebih dari 1 nilai: ditumpuk ke bawah (seperti kolom IP Address di Data BTS)
-                                    $tumpuk = static fn (array $isi) => $isi ? implode('<br>', array_map('esc', $isi)) : '-'; ?>
+                                    $tumpuk = static fn(array $isi) => $isi ? implode('<br>', array_map('esc', $isi)) : '-'; ?>
                                     <?php foreach ($pelanggan as $row) : ?>
+                                        <?php
+                                        // Kolom bertumpuk: satu baris per vendor BTS / vendor pelanggan (sejajar antar kolom);
+                                        // detail perangkat digabung satu kolom, satu perangkat per baris (Merk Jenis Type (SN ..) xJumlah - Lokasi: ..)
+                                        $isi    = static fn ($v) => (string) $v !== '' ? (string) $v : '-';
+                                        $ambil  = static fn (array $daftar, string $k) => array_map(fn ($r) => $isi($r[$k] ?? ''), $daftar);
+                                        $btsDet = $row['bts_detail'];
+                                        $kolom  = [
+                                            'ip'     => $ambil($btsDet, 'ip_address'),
+                                            'kap'    => $ambil($btsDet, 'kapasitas'),
+                                            'vlan'   => array_map(fn ($r) => $r['vlan_id'] === null ? 'Tanpa VLAN' : (string) $r['vlan_id'], $btsDet),
+                                            'vendor' => $ambil($row['vendor_detail'], 'nama_vendor'),
+                                            'note'   => array_map(fn ($r) => $isi(trim(preg_replace('/\s+/', ' ', (string) $r['vendor_note']))), $row['vendor_detail']),
+                                            'perangkat' => $row['perangkat_teks'] !== '' ? explode("\n", $row['perangkat_teks']) : [],
+                                        ];
+                                        ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
                                                 <a href="<?= site_url('PelangganNoc/edit/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </a>
 
                                                 <button type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
                                                 <br>
@@ -890,16 +938,16 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal(JSON.parse(this.dataset.row))"
                                                     class="btn btn-sm btn-info" title="Lihat">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_pelanggan']); ?></td>
                                             <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_bts'] ?? '-'); ?></td>
-                                            <td class="whitespace-normal min-w-[130px]" data-search="<?= esc(implode(', ', $row['ip_bts']), 'attr') ?>"><?= $tumpuk($row['ip_bts']); ?></td>
-                                            <!-- data-search: vendor dipisah koma (dipakai filter vendor), tampilan ditumpuk ke bawah -->
-                                            <td class="whitespace-normal min-w-[160px]" data-search="<?= esc($row['vendors'], 'attr') ?>"><?= $tumpuk(array_column($row['vendor_detail'], 'nama_vendor')); ?></td>
-                                            <!-- satu perangkat per baris (pre-line kalah oleh class nowrap DataTables, jadi pakai <br>) -->
-                                            <td class="whitespace-normal min-w-[240px]"><?= $tumpuk($row['perangkat_teks'] !== '' ? explode("\n", $row['perangkat_teks']) : []); ?></td>
+                                            <!-- data-search: nilai dipisah koma (dipakai filter & pencarian), tampilan ditumpuk ke bawah dengan <br>
+                                                 (pre-line kalah oleh class nowrap DataTables) -->
+                                            <?php foreach ($kolom as $nilai) : ?>
+                                                <td data-search="<?= esc(implode(', ', $nilai), 'attr') ?>"><?= $tumpuk($nilai); ?></td>
+                                            <?php endforeach; ?>
                                             <td>
                                                 <?php if ($row['file_topologi']) : ?>
                                                     <a href="<?= site_url('PelangganNoc/file/' . $row['id']) ?>" target="_blank" rel="noopener"
@@ -1251,10 +1299,10 @@
                 const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
                 table.column(3).search(re, true, false).draw();
             });
-            // Vendor: kolom 5 (data-search) berisi "A, B, C" -> cocokkan satu nama vendor utuh
+            // Vendor: kolom 7 (data-search) berisi "A, B, C" -> cocokkan satu nama vendor utuh
             $('#filterVendor').on('change', function() {
                 const re = this.value ? '(^|, )' + $.fn.dataTable.util.escapeRegex(this.value) + '(,|$)' : '';
-                table.column(5).search(re, true, false).draw();
+                table.column(7).search(re, true, false).draw();
             });
 
             $('#customSearch').on('keyup', function() {

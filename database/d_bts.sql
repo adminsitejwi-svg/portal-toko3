@@ -3,7 +3,6 @@
 CREATE TABLE IF NOT EXISTS `d_bts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `nama_bts` varchar(255) NOT NULL,
-  `kapasitas` varchar(100) NOT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -34,3 +33,6 @@ CREATE TABLE IF NOT EXISTS `d_bts_vendor` (
 --   ADD COLUMN `ip_address` varchar(45) NOT NULL AFTER `vendor_id`,
 --   ADD COLUMN `vlan_id` smallint(5) unsigned DEFAULT NULL AFTER `ip_address`,
 --   ADD KEY `idx_vendor_id` (`vendor_id`);
+
+-- Untuk tabel d_bts lama yang masih punya kolom kapasitas (kapasitas kini hanya per vendor):
+-- ALTER TABLE `d_bts` DROP COLUMN `kapasitas`;
