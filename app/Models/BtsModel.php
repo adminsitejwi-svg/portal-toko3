@@ -24,7 +24,7 @@ class BtsModel extends BaseModel
     protected $updatedField  = '';
 
     // Data BTS + vendornya ($id diisi = hanya BTS itu)
-    // vendor_detail: per vendor berisi data lengkap dari Data Vendor (d_vendor) + IP Address & VLAN-nya;
+    // vendor_detail: per vendor berisi nama & Note vendor dari Data Vendor (d_vendor) + IP Address, Kapasitas & VLAN-nya;
     // vendors: nama vendor; ip_address & vlan_id: teks gabungan "a, b" (vlan_id NULL = Tanpa VLAN),
     // dipakai tabel BTS & halaman Data Pelanggan
     public function withVendors(?int $id = null): array
@@ -32,8 +32,8 @@ class BtsModel extends BaseModel
         $rows = ($id === null ? $this : $this->where('id', $id))->orderBy('nama_bts', 'ASC')->findAll();
 
         $vendorModel = (new BtsVendorModel())
-            ->select('d_bts_vendor.bts_id, d_bts_vendor.ip_address, d_bts_vendor.vlan_id,
-                v.id, v.nama_vendor, v.alamat, v.nama_pic, v.telp_pic, v.email_pic')
+            ->select('d_bts_vendor.bts_id, d_bts_vendor.ip_address, d_bts_vendor.kapasitas, d_bts_vendor.vlan_id,
+                v.id, v.nama_vendor, v.note AS vendor_note')
             ->join('d_vendor v', 'v.id = d_bts_vendor.vendor_id');
         if ($id !== null) {
             $vendorModel->where('d_bts_vendor.bts_id', $id);

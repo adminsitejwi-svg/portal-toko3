@@ -309,6 +309,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Interkoneksi/save', 'Interkoneksi::save');
     $routes->post('Interkoneksi/update', 'Interkoneksi::update');
     $routes->get('Interkoneksi/delete/(:num)', 'Interkoneksi::delete/$1');
+    $routes->get('Interkoneksi/file/(:num)', 'Interkoneksi::file/$1');
 
     // Devices Backbone (menu All NOC di sidebar)
     $routes->get('DevicesBackbone', 'DevicesBackbone::index');
@@ -385,4 +386,5 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Interkoneksi/save', 'Interkoneksi::save');
     $routes->post('Interkoneksi/update', 'Interkoneksi::update');
     $routes->get('Interkoneksi/delete/(:num)', 'Interkoneksi::delete/$1');
+    $routes->get('Interkoneksi/file/(:num)', 'Interkoneksi::file/$1');
 });

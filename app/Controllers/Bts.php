@@ -68,7 +68,7 @@ class Bts extends BaseController
         ];
     }
 
-    // Baris vendor dari input vendor[n][vendor_id|ip_address|vlan_id|tanpa_vlan] (baris yang kosong semua dibuang)
+    // Baris vendor dari input vendor[n][vendor_id|ip_address|kapasitas|vlan_id|tanpa_vlan] (baris yang kosong semua dibuang)
     private function collectVendors(): array
     {
         $rows = [];
@@ -78,13 +78,14 @@ class Bts extends BaseController
             $isi       = fn (string $k) => trim((string) ($input[$k] ?? ''));
             $tanpaVlan = ! empty($input['tanpa_vlan']);
 
-            if ($isi('vendor_id') === '' && $isi('ip_address') === '' && $isi('vlan_id') === '') {
+            if ($isi('vendor_id') === '' && $isi('ip_address') === '' && $isi('kapasitas') === '' && $isi('vlan_id') === '') {
                 continue;
             }
 
             $rows[] = [
                 'vendor_id'  => $isi('vendor_id'),
                 'ip_address' => $isi('ip_address'),
+                'kapasitas'  => $isi('kapasitas'),
                 'vlan_id'    => $tanpaVlan ? null : $isi('vlan_id'),
             ];
         }
@@ -116,6 +117,9 @@ class Bts extends BaseController
             if (! filter_var($v['ip_address'], FILTER_VALIDATE_IP)) {
                 $errors[] = $baris . ($v['ip_address'] === '' ? 'IP Address wajib diisi.' : 'IP Address tidak valid.');
             }
+            if ($v['kapasitas'] === '' || mb_strlen($v['kapasitas']) > 100) {
+                $errors[] = $baris . ($v['kapasitas'] === '' ? 'Kapasitas wajib diisi.' : 'Kapasitas maksimal 100 karakter.');
+            }
             if ($v['vlan_id'] !== null && (! ctype_digit($v['vlan_id']) || (int) $v['vlan_id'] < 1 || (int) $v['vlan_id'] > 4094)) {
                 $errors[] = $baris . ($v['vlan_id'] === '' ? 'Vlan ID wajib diisi, atau centang Tanpa VLAN.' : 'Vlan ID harus angka 1 - 4094.');
             }
@@ -124,7 +128,7 @@ class Bts extends BaseController
         return $errors ? implode(' ', $errors) : null;
     }
 
-    // Ganti seluruh vendor (beserta IP Address & VLAN-nya) milik BTS dengan isian baru
+    // Ganti seluruh vendor (beserta IP Address, Kapasitas & VLAN-nya) milik BTS dengan isian baru
     private function simpanVendors(int $btsId, array $vendors): void
     {
         $this->btsVendorModel->where('bts_id', $btsId)->delete();
@@ -134,6 +138,7 @@ class Bts extends BaseController
                 'bts_id'     => $btsId,
                 'vendor_id'  => (int) $v['vendor_id'],
                 'ip_address' => $v['ip_address'],
+                'kapasitas'  => $v['kapasitas'],
                 'vlan_id'    => $v['vlan_id'] === null ? null : (int) $v['vlan_id'],
             ]);
         }

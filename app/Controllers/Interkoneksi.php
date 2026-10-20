@@ -10,6 +10,17 @@ class Interkoneksi extends BaseController
 {
     protected $ikModel;
 
+    // Lokasi file dokumen (di luar public, diakses lewat Interkoneksi/file/{id})
+    private const UPLOAD_DIR = WRITEPATH . 'uploads/interkoneksi/';
+
+    // Ekstensi file dokumen yang boleh diupload => mime untuk ditampilkan
+    private const MIME = [
+        'pdf'  => 'application/pdf',
+        'png'  => 'image/png',
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+    ];
+
     public function __construct()
     {
         $this->ikModel = new InterkoneksiModel();
@@ -103,15 +114,72 @@ class Interkoneksi extends BaseController
         ];
     }
 
+    // Validasi field lalu file dokumen (file hanya divalidasi jika ada yang dipilih); kembalikan pesan error atau null
+    private function validasi(array $fields, $id = null): ?string
+    {
+        if (! $this->validateData($fields, $this->rules($id), $this->messages())) {
+            return implode(' ', $this->validator->getErrors());
+        }
+
+        $file = $this->request->getFile('file_dokumen');
+        if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+            // validate() (bukan validateData) agar rule file membaca file dari request
+            $ok = $this->validate([
+                'file_dokumen' => 'uploaded[file_dokumen]|max_size[file_dokumen,10240]'
+                    . '|ext_in[file_dokumen,' . implode(',', array_keys(self::MIME)) . ']',
+            ], [
+                'file_dokumen' => [
+                    'max_size' => 'File Dokumen maksimal 10 MB.',
+                    'ext_in'   => 'File Dokumen harus PDF, PNG, atau JPG.',
+                    'uploaded' => 'File Dokumen gagal diupload.',
+                ],
+            ]);
+            if (! $ok) {
+                return implode(' ', $this->validator->getErrors());
+            }
+        }
+
+        return null;
+    }
+
+    // Pindahkan file dokumen baru ke folder upload; kembalikan [nama_simpan, nama_asli] atau null
+    private function simpanFile(): ?array
+    {
+        $file = $this->request->getFile('file_dokumen');
+
+        if (! $file || ! $file->isValid() || $file->hasMoved()) {
+            return null;
+        }
+
+        if (! is_dir(self::UPLOAD_DIR)) {
+            mkdir(self::UPLOAD_DIR, 0755, true);
+        }
+
+        $ext  = strtolower($file->getClientExtension());
+        $nama = pathinfo($file->getRandomName(), PATHINFO_FILENAME) . '.' . $ext;
+        $file->move(self::UPLOAD_DIR, $nama);
+
+        return [$nama, $file->getClientName()];
+    }
+
+    private function hapusFile(?string $nama): void
+    {
+        if ($nama && is_file(self::UPLOAD_DIR . basename($nama))) {
+            unlink(self::UPLOAD_DIR . basename($nama));
+        }
+    }
+
     // Simpan data baru (POST Interkoneksi/save)
     public function save()
     {
         $fields = $this->collectFields();
 
-        if (! $this->validateData($fields, $this->rules(), $this->messages())) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode(' ', $this->validator->getErrors()));
+        if ($error = $this->validasi($fields)) {
+            return redirect()->back()->withInput()->with('error', $error);
+        }
+
+        if ($file = $this->simpanFile()) {
+            [$fields['file_dokumen'], $fields['file_dokumen_asli']] = $file;
         }
 
         $this->ikModel->insert($fields);
@@ -120,35 +188,74 @@ class Interkoneksi extends BaseController
             ->with('success', 'Data Interkoneksi berhasil ditambahkan.');
     }
 
-    // Update data (POST Interkoneksi/update)
+    // Update data (POST Interkoneksi/update); file lama diganti hanya jika upload file baru
     public function update()
     {
         $id = $this->request->getPost('id');
+        $old = $this->ikModel->find($id);
 
-        if (! $this->ikModel->find($id)) {
+        if (! $old) {
             return redirect()->to(site_url('Interkoneksi'))->with('error', 'Data Interkoneksi tidak ditemukan.');
         }
 
         $fields = $this->collectFields();
 
-        if (! $this->validateData($fields, $this->rules($id), $this->messages())) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode(' ', $this->validator->getErrors()));
+        if ($error = $this->validasi($fields, $id)) {
+            return redirect()->back()->withInput()->with('error', $error);
+        }
+
+        $fileLamaDihapus = false;
+        if ($file = $this->simpanFile()) {
+            [$fields['file_dokumen'], $fields['file_dokumen_asli']] = $file;
+            $fileLamaDihapus = true;
+        } elseif ($this->request->getPost('hapus_dokumen')) {
+            $fields['file_dokumen']      = null;
+            $fields['file_dokumen_asli'] = null;
+            $fileLamaDihapus             = true;
         }
 
         $this->ikModel->update($id, $fields);
+
+        if ($fileLamaDihapus) {
+            $this->hapusFile($old['file_dokumen']);
+        }
 
         return redirect()->to(site_url('Interkoneksi'))
             ->with('success', 'Data Interkoneksi berhasil diperbarui.');
     }
 
-    // Hapus data
+    // Hapus data (file dokumennya ikut dihapus)
     public function delete($id)
     {
-        $this->ikModel->delete($id);
+        $row = $this->ikModel->find($id);
+
+        if ($row) {
+            $this->ikModel->delete($id);
+            $this->hapusFile($row['file_dokumen']);
+        }
 
         return redirect()->to(site_url('Interkoneksi'))
             ->with('success', 'Data Interkoneksi berhasil dihapus.');
+    }
+
+    // Buka file dokumen (GET Interkoneksi/file/{id}): PDF & gambar tampil di browser
+    public function file($id)
+    {
+        $row  = $this->ikModel->find($id);
+        $path = $row && $row['file_dokumen'] ? self::UPLOAD_DIR . basename($row['file_dokumen']) : null;
+
+        if (! $path || ! is_file($path)) {
+            return $this->response->setStatusCode(404)->setBody('File tidak ditemukan.');
+        }
+
+        $ext       = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $namaUnduh = str_replace(['"', "\r", "\n"], '', $row['file_dokumen_asli'] ?: basename($path));
+
+        return $this->response
+            ->setHeader('Content-Type', self::MIME[$ext] ?? 'application/octet-stream')
+            ->setHeader('Content-Disposition', (isset(self::MIME[$ext]) ? 'inline' : 'attachment') . '; filename="' . $namaUnduh . '"')
+            ->setHeader('X-Content-Type-Options', 'nosniff')
+            ->setHeader('Cache-Control', 'no-store, no-cache')
+            ->setBody(file_get_contents($path));
     }
 }

@@ -44,17 +44,14 @@ class VendorNoc extends BaseController
     {
         return [
             'nama_vendor' => 'required|max_length[255]',
-            'alamat'      => 'permit_empty',
-            'nama_pic'    => 'required|max_length[255]',
-            'telp_pic'    => 'required|max_length[50]',
-            'email_pic'   => 'permit_empty|max_length[255]|valid_email',
+            'note'        => 'permit_empty|max_length[1000]',
         ];
     }
 
     private function messages(): array
     {
         return [
-            'email_pic' => ['valid_email' => 'Format Email PIC tidak valid.'],
+            'note' => ['max_length' => 'Note maksimal 1000 karakter.'],
         ];
     }
 
@@ -64,10 +61,7 @@ class VendorNoc extends BaseController
 
         return [
             'nama_vendor' => $post('nama_vendor'),
-            'alamat'      => $post('alamat') ?: null,
-            'nama_pic'    => $post('nama_pic'),
-            'telp_pic'    => $post('telp_pic'),
-            'email_pic'   => $post('email_pic') ?: null,
+            'note'        => $post('note') ?: null,
         ];
     }
 

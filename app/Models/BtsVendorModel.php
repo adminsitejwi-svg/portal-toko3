@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\BaseModel;
 
 // Vendor per BTS (menu All NOC > BTS), satu BTS bisa lebih dari 1 vendor
-// vendor_id: id dari d_vendor (menu All NOC > Data Vendor); tiap vendor punya IP Address & VLAN sendiri
+// vendor_id: id dari d_vendor (menu All NOC > Data Vendor); tiap vendor punya IP Address, Kapasitas & VLAN sendiri
 // vlan_id NULL berarti "Tanpa VLAN"
 class BtsVendorModel extends BaseModel
 {
@@ -16,6 +16,7 @@ class BtsVendorModel extends BaseModel
         'bts_id',
         'vendor_id',
         'ip_address',
+        'kapasitas',
         'vlan_id'
     ];
 }

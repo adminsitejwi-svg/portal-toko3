@@ -703,7 +703,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -715,8 +715,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -729,18 +728,10 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
-                </li>
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -752,6 +743,14 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -876,6 +875,7 @@
                                     <th>Label Kabel</th>
                                     <th>Status</th>
                                     <th>Note</th>
+                                    <th>Dokumen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -913,6 +913,16 @@
                                             <td><?= esc($row['label_kabel'] ?: '-'); ?></td>
                                             <td><?= esc($row['status'] ?: '-'); ?></td>
                                             <td class="whitespace-pre-line min-w-[250px]"><?= esc($row['note'] ?: '-'); ?></td>
+                                            <td>
+                                                <?php if ($row['file_dokumen']) : ?>
+                                                    <a href="<?= site_url('Interkoneksi/file/' . $row['id']) ?>" target="_blank" rel="noopener"
+                                                        class="text-blue-600 hover:underline inline-flex items-center gap-1" title="<?= esc($row['file_dokumen_asli'], 'attr') ?>">
+                                                        <i class="ti ti-paperclip"></i> Lihat
+                                                    </a>
+                                                <?php else : ?>
+                                                    -
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -970,6 +980,10 @@
                     <div class="text-gray-500">Note</div>
                     <div class="font-medium whitespace-pre-line" id="v_note"></div>
                 </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Dokumen</div>
+                    <div class="font-medium" id="v_dokumen"></div>
+                </div>
                 <div>
                     <div class="text-gray-500">Dibuat</div>
                     <div class="font-medium" id="v_created"></div>
@@ -1000,6 +1014,20 @@
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
             VIEW_FIELDS.forEach(k => set('v_' + k, d[k]));
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
+
+            // Link file dokumen (dibuka lewat Interkoneksi/file/{id})
+            const dok = document.getElementById('v_dokumen');
+            dok.textContent = '-';
+            if (d.file_dokumen) {
+                const a = document.createElement('a');
+                a.href = '<?= site_url('Interkoneksi/file/') ?>' + d.id;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.className = 'text-blue-600 hover:underline';
+                a.textContent = d.file_dokumen_asli || d.file_dokumen;
+                dok.replaceChildren(a);
+            }
+
 
             document.getElementById('viewModal').classList.remove('hidden');
         }

@@ -562,6 +562,66 @@
         .dark .aksi-view { background: rgba(14, 165, 233, .15); }
         .dark .aksi-edit { background: rgba(37, 99, 235, .18); }
         .dark .aksi-hapus { background: rgba(220, 38, 38, .18); }
+        /* ===== NAVBAR DAILY REPORT SAT GROUP (gaya tab kategori Daily Report) ===== */
+        .sat-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .sat-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 12.5px;
+            color: #475569;
+            white-space: nowrap;
+            transition: background .15s, color .15s;
+        }
+
+        .sat-tab i {
+            font-size: 14px;
+        }
+
+        .sat-tab:hover {
+            background: #f3f4f6;
+            color: #1e293b;
+        }
+
+        .sat-tab.active {
+            background: var(--ra-primary-soft, #eef0fd);
+            color: var(--ra-primary, #6777ef);
+            font-weight: 600;
+            box-shadow: inset 0 -2px 0 var(--ra-primary, #6777ef);
+            cursor: default;
+        }
+
+        .dark .sat-tabs {
+            background: #263240;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        .dark .sat-tab {
+            color: #bfc8d6;
+        }
+
+        .dark .sat-tab:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .dark .sat-tab.active {
+            background: rgba(103, 119, 239, .22);
+            color: #c7cdfb;
+            box-shadow: inset 0 -2px 0 #8f9cf5;
+        }
+
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -696,7 +756,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -708,8 +768,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -722,18 +781,10 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
-                </li>
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -745,6 +796,14 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -803,11 +862,17 @@
         <div class="p-6">
             <!-- breadcrumb (tampilan seperti halaman Master Data crm.jwi.id/Vendor) -->
             <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Tiket FO Loss</h5>
+                <h5 class="font-medium text-lg">Daily Report SAT Group</h5>
                 <a href="<?= site_url('ReportSat/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
                     <i class="ti ti-plus"></i> Tambah
                 </a>
             </div>
+
+            <!-- NAVBAR DAILY REPORT SAT GROUP: pindah halaman Tiket FO Loss / Resi Pengiriman -->
+            <nav class="sat-tabs mb-6" aria-label="Daily Report SAT Group">
+                <a href="<?= site_url('ReportSat') ?>" class="sat-tab active" aria-current="page"><i class="ti ti-ticket"></i> Tiket FO Loss</a>
+                <a href="<?= site_url('ResiPengiriman') ?>" class="sat-tab"><i class="ti ti-truck-delivery"></i> Resi Pengiriman</a>
+            </nav>
 
             <div class="card">
                 <div class="card-body">
@@ -825,6 +890,25 @@
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div class="flex items-center gap-3 flex-wrap">
                             <div id="lengthArea"></div>
+                            <?php
+                            // Filter Bulan: daftar bulan (YYYY-MM) dari tanggal report, terbaru di atas
+                            $namaBulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            $opsiBulan = [];
+                            foreach ($report ?? [] as $row) {
+                                $tgl = (string) ($row['tanggal_report'] ?? '');
+                                if ($tgl !== '') {
+                                    $opsiBulan[substr($tgl, 0, 7)] = $namaBulan[(int) substr($tgl, 5, 2)] . ' ' . substr($tgl, 0, 4);
+                                }
+                            }
+                            krsort($opsiBulan);
+                            ?>
+                            <select id="filterBulan" class="filter-select" title="Filter Bulan">
+                                <option value="">Semua Bulan</option>
+                                <?php foreach ($opsiBulan as $ym => $label) : ?>
+                                    <option value="<?= esc($ym) ?>"><?= esc($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
                             <!-- FILTER -->
                             <select id="filterShift" class="filter-select" title="Filter Shift">
                                 <option value="">Semua Shift</option>
@@ -885,7 +969,7 @@
                                         $ts = !empty($row['tanggal_report']) ? strtotime($row['tanggal_report']) : false;
                                         $tglReport = $ts ? date('j', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y', $ts) : '-';
                                         ?>
-                                        <tr>
+                                        <tr data-bulan="<?= esc(substr((string) ($row['tanggal_report'] ?? ''), 0, 7), 'attr') ?>">
                                             <td><?= $no++; ?></td>
                                             <td>
                                                 <!-- tombol aksi ikon seperti crm.jwi.id/Vendor: lihat, edit, hapus -->
@@ -1277,6 +1361,15 @@
             $('#filterStatus').on('change', function() {
                 filterColumn(13, this.value);
             });
+            // Filter Bulan: cocokkan data-bulan (YYYY-MM) di <tr>
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                const bulan = $('#filterBulan').val();
+                return settings.nTable.id !== 'reportTable' || !bulan || settings.aoData[dataIndex].nTr.dataset.bulan === bulan;
+            });
+            $('#filterBulan').on('change', function() {
+                table.draw();
+            });
+
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
             });

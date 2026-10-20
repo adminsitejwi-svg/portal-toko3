@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
-    <title>BTS</title>
+    <title>Data BTS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -703,7 +703,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -715,8 +715,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -729,18 +728,10 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
-                </li>
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -752,6 +743,14 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -810,7 +809,7 @@
         <div class="p-6">
             <!-- breadcrumb (tampilan seperti halaman crm.jwi.id/Vendor) -->
             <div class="flex items-center justify-between mb-4">
-                <h5 class="font-medium text-lg">BTS</h5>
+                <h5 class="font-medium text-lg">Data BTS</h5>
                 <a href="<?= site_url('Bts/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
                     <i class="ti ti-plus"></i> Tambah
                 </a>
@@ -867,7 +866,13 @@
                             <tbody>
                                 <?php if (!empty($bts)) : ?>
                                     <?php $no = 1; ?>
+                                    <?php // lebih dari 1 nilai: ditumpuk ke bawah (bukan dipisah koma ke samping)
+                                    $tumpuk = static fn (array $isi) => implode('<br>', array_map('esc', $isi)); ?>
                                     <?php foreach ($bts as $row) : ?>
+                                        <?php
+                                        $ipList   = $row['ip_address'] !== '' ? explode(', ', $row['ip_address']) : [];
+                                        $vlanList = $row['vlan_id'] !== null ? explode(', ', $row['vlan_id']) : ['Tanpa VLAN'];
+                                        ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td>
@@ -891,11 +896,11 @@
                                                 </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_bts']); ?></td>
-                                            <td><?= esc($row['ip_address']); ?></td>
-                                            <!-- vendor dipisah koma (dipakai juga oleh filter vendor) -->
-                                            <td class="whitespace-normal min-w-[200px]"><?= esc($row['vendors'] ? implode(', ', $row['vendors']) : '-'); ?></td>
+                                            <td data-search="<?= esc($row['ip_address'], 'attr') ?>"><?= $ipList ? $tumpuk($ipList) : '-'; ?></td>
+                                            <!-- data-search: vendor dipisah koma (dipakai filter vendor), tampilan ditumpuk ke bawah -->
+                                            <td class="whitespace-normal min-w-[200px]" data-search="<?= esc(implode(', ', $row['vendors']), 'attr') ?>"><?= $row['vendors'] ? $tumpuk($row['vendors']) : '-'; ?></td>
                                             <td><?= esc($row['kapasitas']); ?></td>
-                                            <td><?= $row['vlan_id'] !== null ? esc($row['vlan_id']) : 'Tanpa VLAN'; ?></td>
+                                            <td data-search="<?= esc(implode(', ', $vlanList), 'attr') ?>"><?= $tumpuk($vlanList); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -964,13 +969,11 @@
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
             FIELDS.forEach(k => set('v_' + k, d[k]));
-            // Vendor beserta data lengkapnya dari Data Vendor + IP Address & VLAN-nya
+            // Vendor beserta data lengkapnya dari Data Vendor + IP Address, Kapasitas & VLAN-nya
             set('v_vendors', (d.vendor_detail || []).map(v => [
                 v.nama_vendor,
-                'PIC: ' + (v.nama_pic || '-') + ' (' + (v.telp_pic || '-') + ')',
-                'Email: ' + (v.email_pic || '-'),
-                'Alamat: ' + (v.alamat || '-'),
-                'IP Address: ' + v.ip_address + ' | VLAN: ' + (v.vlan_id === null ? 'Tanpa VLAN' : v.vlan_id),
+                'Note Vendor: ' + (v.vendor_note || '-'),
+                'IP Address: ' + v.ip_address + ' | Kapasitas: ' + (v.kapasitas || '-') + ' | VLAN: ' + (v.vlan_id === null ? 'Tanpa VLAN' : v.vlan_id),
             ].join('\n')).join('\n\n'));
             set('v_vlan_id', d.vlan_id === null || d.vlan_id === undefined ? 'Tanpa VLAN' : d.vlan_id);
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
@@ -1103,7 +1106,8 @@
                     format: {
                         body: function(data) {
                             const tmp = document.createElement('div');
-                            tmp.innerHTML = data;
+                            // nilai yang ditumpuk (<br>) jadi baris baru di file export
+                            tmp.innerHTML = String(data).replace(/<br\s*\/?>/gi, '\n');
                             return tmp.textContent.trim();
                         }
                     }

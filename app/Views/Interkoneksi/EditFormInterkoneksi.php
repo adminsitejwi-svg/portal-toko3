@@ -343,7 +343,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -355,8 +355,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -369,22 +368,13 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
                 <!-- ====== MENU AKTIF: INVENTORY KANTOR ====== -->
-
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
-                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
@@ -395,6 +385,15 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -453,7 +452,7 @@
         <div class="p-6">
             <div class="form-container">
                 <h2>Edit Data Interkoneksi</h2>
-                <form action="<?= site_url('Interkoneksi/update') ?>" method="POST" id="reportForm">
+                <form action="<?= site_url('Interkoneksi/update') ?>" method="POST" enctype="multipart/form-data" id="reportForm">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= esc($row['id'], 'attr') ?>">
 
@@ -504,6 +503,21 @@
                         <div class="form-group md:col-span-2">
                             <label>Note</label>
                             <textarea name="note" id="r_note" rows="4" placeholder="Masukkan Note" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc(old('note', $row['note'] ?? '', false)) ?></textarea>
+                        </div>
+                        <div class="form-group md:col-span-2">
+                            <label>Dokumen <span class="text-gray-400 font-normal">(PDF, PNG, JPG - maks. 10 MB)</span></label>
+                            <input type="file" name="file_dokumen" id="r_file_dokumen" accept=".pdf,.png,.jpg,.jpeg" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <?php if (! empty($row['file_dokumen'])) : ?>
+                                <!-- saat edit: file yang sudah ada -->
+                                <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
+                                    <span class="text-gray-500">File saat ini:</span>
+                                    <a href="<?= site_url('Interkoneksi/file/' . $row['id']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1"><i class="ti ti-paperclip"></i> <?= esc($row['file_dokumen_asli'] ?: $row['file_dokumen']) ?></a>
+                                    <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                        <input type="checkbox" name="hapus_dokumen" value="1"> Hapus file
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -585,6 +599,25 @@
                 });
                 return false;
             }
+            // File dokumen (opsional): cek ekstensi & ukuran sebelum dikirim
+            const file = document.getElementById('r_file_dokumen').files[0];
+            if (file) {
+                const ext = file.name.split('.').pop().toLowerCase();
+                let pesan = '';
+                if (!['pdf', 'png', 'jpg', 'jpeg'].includes(ext)) pesan = 'File Dokumen harus PDF, PNG, atau JPG.';
+                else if (file.size > 10 * 1024 * 1024) pesan = 'File Dokumen maksimal 10 MB.';
+                if (pesan) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'File Tidak Valid',
+                        text: pesan,
+                        confirmButtonColor: '#185a82'
+                    });
+                    return false;
+                }
+            }
+
         });
     </script>
     <script>

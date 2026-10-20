@@ -345,7 +345,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -357,8 +357,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -371,22 +370,13 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
                 <!-- ====== MENU AKTIF: INVENTORY KANTOR ====== -->
-
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
-                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
@@ -397,6 +387,15 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -467,6 +466,7 @@
                         : array_map(fn ($v) => [
                             'vendor_id'  => $v['id'],
                             'ip_address' => $v['ip_address'],
+                            'kapasitas'  => $v['kapasitas'] ?? '',
                             'vlan_id'    => $v['vlan_id'],
                             'tanpa_vlan' => $v['vlan_id'] === null,
                         ], $row['vendor_detail'] ?? []);
@@ -478,7 +478,7 @@
                         </div>
                         <div class="form-group">
                             <label>Kapasitas <span style="color:red">*</span></label>
-                            <input type="text" name="kapasitas" id="r_kapasitas" maxlength="100" required placeholder="Contoh: 100 Mbps" value="<?= esc(old('kapasitas', $row['kapasitas'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <input type="text" name="kapasitas" id="r_kapasitas" maxlength="100" required value="<?= esc(old('kapasitas', $row['kapasitas'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
@@ -495,28 +495,20 @@
                                         </select>
                                         <button type="button" class="w-[46px] h-[46px] shrink-0 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-base" title="Hapus vendor" onclick="hapusVendor(this)"><i class="ti ti-trash"></i></button>
                                     </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                                    <div class="grid grid-cols-1 gap-2 mt-2">
                                         <div>
-                                            <div class="text-xs text-gray-500 mb-1">Nama PIC</div>
-                                            <input type="text" data-kolom="nama_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Telpon PIC</div>
-                                            <input type="text" data-kolom="telp_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Email PIC</div>
-                                            <input type="text" data-kolom="email_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        </div>
-                                        <div class="md:col-span-3">
-                                            <div class="text-xs text-gray-500 mb-1">Alamat</div>
-                                            <textarea data-kolom="alamat" rows="2" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                                            <div class="text-xs text-gray-500 mb-1">Note</div>
+                                            <textarea data-kolom="note" rows="2" readonly placeholder="Otomatis dari Note di Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                                         </div>
                                     </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">IP Address <span style="color:red">*</span></div>
-                                            <input type="text" name="vendor[__i__][ip_address]" data-isi="ip_address" maxlength="45" placeholder="Contoh: 10.10.1.1" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <input type="text" name="vendor[__i__][ip_address]" data-isi="ip_address" maxlength="45" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Kapasitas <span style="color:red">*</span></div>
+                                            <input type="text" name="vendor[__i__][kapasitas]" data-isi="kapasitas" maxlength="100" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                         </div>
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Vlan ID <span style="color:red">*</span></div>
@@ -620,6 +612,7 @@
         function isiBaris(row, isi) {
             row.querySelector('[data-isi="vendor_id"]').value = isi.vendor_id || '';
             row.querySelector('[data-isi="ip_address"]').value = isi.ip_address || '';
+            row.querySelector('[data-isi="kapasitas"]').value = isi.kapasitas || '';
             row.querySelector('[data-isi="vlan_id"]').value = isi.vlan_id ?? '';
             row.querySelector('[data-isi="tanpa_vlan"]').checked = !!isi.tanpa_vlan;
             isiVendor(row);
@@ -648,10 +641,10 @@
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             const wajib = ['r_nama_bts', 'r_kapasitas'].map(id => document.getElementById(id).value.trim());
-            // tiap blok vendor wajib: vendor, IP Address, dan Vlan ID (atau Tanpa VLAN)
+            // tiap blok vendor wajib: vendor, IP Address, Kapasitas, dan Vlan ID (atau Tanpa VLAN)
             const vendorKurang = [...document.querySelectorAll('#vendorRows .isian-row')].some(row => {
                 const isi = k => row.querySelector('[data-isi="' + k + '"]').value.trim();
-                return isi('vendor_id') === '' || isi('ip_address') === '' ||
+                return isi('vendor_id') === '' || isi('ip_address') === '' || isi('kapasitas') === '' ||
                     (!row.querySelector('[data-isi="tanpa_vlan"]').checked && isi('vlan_id') === '');
             });
 
@@ -660,7 +653,7 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
-                    text: 'Semua field bertanda * wajib diisi (tiap vendor: pilih vendor, IP Address, dan Vlan ID atau centang Tanpa VLAN).',
+                    text: 'Semua field bertanda * wajib diisi (tiap vendor: pilih vendor, IP Address, Kapasitas, dan Vlan ID atau centang Tanpa VLAN).',
                     confirmButtonColor: '#185a82'
                 });
                 return false;

@@ -16,6 +16,7 @@ class PelangganNocPerangkatModel extends BaseModel
         'jenis',
         'type',
         'sn',
-        'jumlah'
+        'jumlah',
+        'lokasi_penempatan'
     ];
 }

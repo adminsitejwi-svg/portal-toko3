@@ -343,7 +343,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -355,8 +355,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -369,22 +368,13 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
                 <!-- ====== MENU AKTIF: INVENTORY KANTOR ====== -->
-
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
-                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
@@ -395,6 +385,15 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -458,25 +457,13 @@
                     <input type="hidden" name="id" value="<?= esc($row['id'], 'attr') ?>">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 mt-5">
-                        <div class="form-group">
+                        <div class="form-group md:col-span-2">
                             <label>Nama Vendor <span style="color:red">*</span></label>
                             <input type="text" name="nama_vendor" id="r_nama_vendor" maxlength="255" required placeholder="Masukkan Nama Vendor" value="<?= esc(old('nama_vendor', $row['nama_vendor'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
-                        <div class="form-group">
-                            <label>Nama PIC <span style="color:red">*</span></label>
-                            <input type="text" name="nama_pic" id="r_nama_pic" maxlength="255" required placeholder="Masukkan Nama PIC" value="<?= esc(old('nama_pic', $row['nama_pic'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                        </div>
-                        <div class="form-group">
-                            <label>Telpon PIC <span style="color:red">*</span></label>
-                            <input type="text" name="telp_pic" id="r_telp_pic" maxlength="50" required placeholder="Masukkan Telpon PIC" value="<?= esc(old('telp_pic', $row['telp_pic'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                        </div>
-                        <div class="form-group">
-                            <label>Email PIC</label>
-                            <input type="email" name="email_pic" id="r_email_pic" maxlength="255" placeholder="Masukkan Email PIC" value="<?= esc(old('email_pic', $row['email_pic'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                        </div>
                         <div class="form-group md:col-span-2">
-                            <label>Alamat</label>
-                            <textarea name="alamat" id="r_alamat" rows="4" placeholder="Masukkan Alamat" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc(old('alamat', $row['alamat'] ?? '', false)) ?></textarea>
+                            <label>Note</label>
+                            <textarea name="note" id="r_note" rows="4" maxlength="1000" placeholder="Masukkan Note" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc(old('note', $row['note'] ?? '', false)) ?></textarea>
                         </div>
                     </div>
 
@@ -546,7 +533,7 @@
     <script>
         // ====== VALIDASI SEBELUM SUBMIT ======
         document.getElementById('reportForm').addEventListener('submit', function(e) {
-            const wajib = ['r_nama_vendor', 'r_nama_pic', 'r_telp_pic'].map(id => document.getElementById(id).value.trim());
+            const wajib = ['r_nama_vendor'].map(id => document.getElementById(id).value.trim());
 
             if (wajib.includes('')) {
                 e.preventDefault();

@@ -343,7 +343,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -355,8 +355,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -369,22 +368,13 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
                 </li>
 
                 <!-- ====== MENU AKTIF: INVENTORY KANTOR ====== -->
-
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
-                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
@@ -395,6 +385,15 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -466,27 +465,22 @@
                         $adaOld     = old('nama_pelanggan', null, false) !== null;
                         $vendorAwal = $adaOld
                             ? array_values((array) old('vendor', [], false))
-                            : array_map(fn ($v) => [
-                                'vendor_id'  => $v['id'],
-                                'ip_address' => $v['ip_address'],
-                                'vlan_id'    => $v['vlan_id'],
-                                'tanpa_vlan' => $v['vlan_id'] === null,
-                                'kapasitas'  => $v['kapasitas'],
-                            ], $row['vendor_detail'] ?? []);
+                            : array_map(fn ($v) => ['vendor_id' => $v['id']], $row['vendor_detail'] ?? []);
                         $perangkatAwal = $adaOld ? array_values((array) old('perangkat', [], false)) : ($row['perangkat'] ?? []);
                         ?>
                         <div class="form-group md:col-span-2">
-                            <label>BTS <span style="color:red">*</span></label>
+                            <label>PTP dari BTS <span style="color:red">*</span></label>
                             <select name="bts_id" id="r_bts_id" required onchange="gantiBts()" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                 <option value="">-- Pilih BTS --</option>
                                 <?php foreach ($bts as $b) : ?>
-                                    <option value="<?= $b['id'] ?>" <?= (string) old('bts_id', $row['bts_id'] ?? '', false) === (string) $b['id'] ? 'selected' : '' ?>><?= esc($b['nama_bts']) ?> (<?= esc($b['ip_address']) ?>)</option>
+                                    <option value="<?= $b['id'] ?>" <?= (string) old('bts_id', $row['bts_id'] ?? '', false) === (string) $b['id'] ? 'selected' : '' ?>><?= esc($b['nama_bts']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>IP Address BTS</label>
-                            <input type="text" id="a_ip_address" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
+                            <!-- lebih dari 1 IP: ditumpuk ke bawah (seperti kolom IP Address di Data BTS) -->
+                            <textarea id="a_ip_address" rows="1" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none resize-none" style="background:#f1f5f9"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Kapasitas BTS</label>
@@ -498,48 +492,17 @@
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
-                            <!-- satu blok per vendor: vendor dipilih dari vendor milik BTS (datanya tampil otomatis, tidak bisa diubah) + IP Address, VLAN & Kapasitas pelanggan -->
+                            <!-- satu blok per vendor: vendor dipilih dari vendor milik BTS + Note (otomatis dari Note vendor di Data Vendor) -->
                             <div id="vendorRows" class="space-y-3"></div>
                             <template id="vendorTemplate">
                                 <div class="isian-row border border-[#e3e8ee] rounded-lg p-3">
                                     <div class="flex items-center gap-2">
-                                        <select name="vendor[__i__][vendor_id]" data-isi="vendor_id" onchange="isiVendor(this.closest('.isian-row'))" class="flex-1 w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></select>
+                                        <select name="vendor[__i__][vendor_id]" data-isi="vendor_id" onchange="isiNoteVendor(this.closest('.isian-row'))" class="flex-1 w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></select>
                                         <button type="button" class="w-[46px] h-[46px] shrink-0 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-base" title="Hapus vendor" onclick="hapusBaris(this)"><i class="ti ti-trash"></i></button>
                                     </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Nama PIC</div>
-                                            <input type="text" data-kolom="nama_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Telpon PIC</div>
-                                            <input type="text" data-kolom="telp_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Email PIC</div>
-                                            <input type="text" data-kolom="email_pic" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
-                                        </div>
-                                        <div class="md:col-span-3">
-                                            <div class="text-xs text-gray-500 mb-1">Alamat</div>
-                                            <textarea data-kolom="alamat" rows="2" readonly placeholder="Otomatis dari Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">IP Address <span style="color:red">*</span></div>
-                                            <input type="text" name="vendor[__i__][ip_address]" data-isi="ip_address" maxlength="45" placeholder="Contoh: 10.10.1.1" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Vlan ID <span style="color:red">*</span></div>
-                                            <input type="number" name="vendor[__i__][vlan_id]" data-isi="vlan_id" min="1" max="4094" step="1" placeholder="1 - 4094" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none disabled:bg-gray-100">
-                                            <label class="inline-flex items-center gap-2 mt-2 text-sm font-normal">
-                                                <input type="checkbox" name="vendor[__i__][tanpa_vlan]" data-isi="tanpa_vlan" value="1" onchange="toggleVlan(this.closest('.isian-row'))"> Tanpa VLAN
-                                            </label>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 mb-1">Kapasitas <span style="color:red">*</span></div>
-                                            <input type="text" name="vendor[__i__][kapasitas]" data-isi="kapasitas" maxlength="100" placeholder="Contoh: 20 Mbps" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                                        </div>
+                                    <div class="mt-2">
+                                        <div class="text-xs text-gray-500 mb-1">Note</div>
+                                        <textarea data-kolom="vendor_note" rows="2" readonly placeholder="Otomatis dari Note di Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -554,18 +517,18 @@
                             <div id="perangkatRows" class="space-y-3"></div>
                             <template id="perangkatTemplate">
                                 <div class="isian-row flex items-end gap-2 border border-[#e3e8ee] rounded-lg p-3">
-                                    <div class="flex-1 grid grid-cols-1 md:grid-cols-5 gap-2">
+                                    <div class="flex-1 grid grid-cols-1 md:grid-cols-6 gap-2">
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Merk</div>
-                                            <input type="text" name="perangkat[__i__][merk]" data-isi="merk" maxlength="255" placeholder="Contoh: Mikrotik" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <input type="text" name="perangkat[__i__][merk]" data-isi="merk" maxlength="255" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                         </div>
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Jenis</div>
-                                            <input type="text" name="perangkat[__i__][jenis]" data-isi="jenis" maxlength="255" placeholder="Contoh: Router" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <input type="text" name="perangkat[__i__][jenis]" data-isi="jenis" maxlength="255" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                         </div>
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Type</div>
-                                            <input type="text" name="perangkat[__i__][type]" data-isi="type" maxlength="255" placeholder="Contoh: RB750" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <input type="text" name="perangkat[__i__][type]" data-isi="type" maxlength="255" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                         </div>
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">SN</div>
@@ -574,6 +537,10 @@
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Jumlah</div>
                                             <input type="number" name="perangkat[__i__][jumlah]" data-isi="jumlah" min="1" step="1" placeholder="1" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Lokasi Penempatan</div>
+                                            <input type="text" name="perangkat[__i__][lokasi_penempatan]" data-isi="lokasi_penempatan" maxlength="255" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                         </div>
                                     </div>
                                     <button type="button" class="w-[46px] h-[46px] shrink-0 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-base" title="Hapus perangkat" onclick="hapusBaris(this)"><i class="ti ti-trash"></i></button>
@@ -684,7 +651,10 @@
         // Pilih BTS -> IP Address, Kapasitas, Vlan ID BTS terisi otomatis
         function isiBts() {
             const b = BTS[document.getElementById('r_bts_id').value];
-            setVal('a_ip_address', b && b.ip_address);
+            // IP BTS "a, b" -> satu IP per baris
+            const ipBts = document.getElementById('a_ip_address');
+            ipBts.value = b && !kosong(b.ip_address) ? b.ip_address.split(', ').join('\n') : '';
+            ipBts.rows = Math.max(1, ipBts.value.split('\n').length);
             setVal('a_kapasitas', b && b.kapasitas);
             setVal('a_vlan_id', b && (kosong(b.vlan_id) ? 'Tanpa VLAN' : b.vlan_id));
         }
@@ -706,20 +676,13 @@
             Object.values(daftar).forEach(v => pilih.add(new Option(v.nama_vendor, v.id)));
             pilih.value = daftar[nilai] ? nilai : '';
             delete pilih.dataset.awal;
-            isiVendor(row);
+            isiNoteVendor(row);
         }
 
-        // Isi data vendor (tidak bisa diubah) sesuai vendor yang dipilih di blok itu
-        function isiVendor(row) {
+        // Note vendor (tidak bisa diubah) sesuai vendor yang dipilih, diambil dari data vendor milik BTS
+        function isiNoteVendor(row) {
             const v = vendorBts()[row.querySelector('[data-isi="vendor_id"]').value] || {};
-            row.querySelectorAll('[data-kolom]').forEach(el => el.value = v[el.dataset.kolom] || '');
-        }
-
-        // Tanpa VLAN dicentang -> Vlan ID di blok itu dikosongkan & dikunci
-        function toggleVlan(row) {
-            const vlan = row.querySelector('[data-isi="vlan_id"]');
-            vlan.disabled = row.querySelector('[data-isi="tanpa_vlan"]').checked;
-            if (vlan.disabled) vlan.value = '';
+            row.querySelectorAll('[data-kolom]').forEach(el => el.value = kosong(v[el.dataset.kolom]) ? '' : v[el.dataset.kolom]);
         }
 
         // Salin template blok/baris, beri nomor unik pada name="...[__i__]..." lalu isi nilainya
@@ -727,7 +690,7 @@
             const row = document.getElementById(idTemplate).content.firstElementChild.cloneNode(true);
             const n = nomorBaris++;
             row.querySelectorAll('[name]').forEach(el => el.name = el.name.replace('__i__', n));
-            row.querySelectorAll('input[data-isi]').forEach(el => {
+            row.querySelectorAll('input[data-isi], textarea[data-isi]').forEach(el => {
                 if (el.type === 'checkbox') el.checked = !!isi[el.dataset.isi] && isi[el.dataset.isi] !== '0';
                 else el.value = isi[el.dataset.isi] ?? '';
             });
@@ -740,7 +703,6 @@
             const row = tambahBaris('vendorTemplate', 'vendorRows', isi);
             row.querySelector('[data-isi="vendor_id"]').dataset.awal = isi.vendor_id ?? '';
             isiOpsiVendor(row);
-            toggleVlan(row);
         }
 
         function addPerangkatRow(isi) {
@@ -752,13 +714,10 @@
             const row = btn.closest('.isian-row');
             if (row.parentElement.children.length > 1) return row.remove();
 
-            row.querySelectorAll('input[data-isi]').forEach(el => el.type === 'checkbox' ? el.checked = false : el.value = '');
+            row.querySelectorAll('input[data-isi], textarea[data-isi]').forEach(el => el.type === 'checkbox' ? el.checked = false : el.value = '');
             const pilih = row.querySelector('select[data-isi]');
-            if (pilih) {
-                pilih.value = '';
-                isiVendor(row);
-                toggleVlan(row);
-            }
+            if (pilih) pilih.value = '';
+            row.querySelectorAll('[data-kolom]').forEach(el => el.value = '');
         }
 
         // Isian awal (minimal 1 blok vendor & 1 baris perangkat)
@@ -781,17 +740,14 @@
             };
 
             if (document.getElementById('r_nama_pelanggan').value.trim() === '' || document.getElementById('r_bts_id').value === '') {
-                return peringatan('Form Belum Lengkap', 'Nama Pelanggan dan BTS wajib diisi.');
+                return peringatan('Form Belum Lengkap', 'Nama Pelanggan dan PTP dari BTS wajib diisi.');
             }
 
-            // tiap blok vendor wajib: vendor, IP Address, Kapasitas, dan Vlan ID (atau Tanpa VLAN)
-            const vendorKurang = [...document.querySelectorAll('#vendorRows .isian-row')].some(row => {
-                const isi = k => row.querySelector('[data-isi="' + k + '"]').value.trim();
-                return isi('vendor_id') === '' || isi('ip_address') === '' || isi('kapasitas') === '' ||
-                    (!row.querySelector('[data-isi="tanpa_vlan"]').checked && isi('vlan_id') === '');
-            });
+            // tiap blok vendor wajib pilih vendor (Note boleh kosong)
+            const vendorKurang = [...document.querySelectorAll('#vendorRows .isian-row')].some(row =>
+                row.querySelector('[data-isi="vendor_id"]').value === '');
             if (vendorKurang) {
-                return peringatan('Form Belum Lengkap', 'Tiap vendor wajib diisi: pilih vendor, IP Address, Kapasitas, dan Vlan ID atau centang Tanpa VLAN.');
+                return peringatan('Form Belum Lengkap', 'Tiap blok vendor wajib memilih vendor.');
             }
 
             const file = document.getElementById('r_file_topologi').files[0];

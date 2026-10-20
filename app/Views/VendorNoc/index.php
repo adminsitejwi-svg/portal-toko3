@@ -214,7 +214,7 @@
             border-color: #37404c;
         }
 
-        /* Kolom PIC & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
+        /* Kolom Note & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
         #reportTable tbody td.whitespace-normal {
             white-space: normal !important;
         }
@@ -703,7 +703,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -715,8 +715,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -729,18 +728,10 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
-                </li>
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -752,6 +743,14 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -852,10 +851,7 @@
                                     <th>No</th>
                                     <th>Aksi</th>
                                     <th>Nama Vendor</th>
-                                    <th>Alamat</th>
-                                    <th>Nama PIC</th>
-                                    <th>Telpon PIC</th>
-                                    <th>Email PIC</th>
+                                    <th>Note</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -885,10 +881,7 @@
                                                 </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_vendor']); ?></td>
-                                            <td class="whitespace-pre-line min-w-[250px]"><?= esc($row['alamat'] ?: '-'); ?></td>
-                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['nama_pic'] ?: '-'); ?></td>
-                                            <td><?= esc($row['telp_pic'] ?: '-'); ?></td>
-                                            <td><?= esc($row['email_pic'] ?: '-'); ?></td>
+                                            <td class="whitespace-pre-line min-w-[300px]"><?= esc($row['note'] ?: '-'); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -914,21 +907,9 @@
                     <div class="text-gray-500">Nama Vendor</div>
                     <div class="font-medium" id="v_nama_vendor"></div>
                 </div>
-                <div>
-                    <div class="text-gray-500">Nama PIC</div>
-                    <div class="font-medium" id="v_nama_pic"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Telpon PIC</div>
-                    <div class="font-medium" id="v_telp_pic"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Email PIC</div>
-                    <div class="font-medium" id="v_email_pic"></div>
-                </div>
                 <div class="md:col-span-2">
-                    <div class="text-gray-500">Alamat</div>
-                    <div class="font-medium whitespace-pre-line" id="v_alamat"></div>
+                    <div class="text-gray-500">Note</div>
+                    <div class="font-medium whitespace-pre-line" id="v_note"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">Dibuat</div>
@@ -953,7 +934,7 @@
 
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
-            ['nama_vendor', 'alamat', 'nama_pic', 'telp_pic', 'email_pic'].forEach(k => set('v_' + k, d[k]));
+            ['nama_vendor', 'note'].forEach(k => set('v_' + k, d[k]));
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             document.getElementById('viewModal').classList.remove('hidden');

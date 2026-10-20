@@ -86,8 +86,8 @@ class PelangganNoc extends BaseController
     {
         return [
             'bts_id' => [
-                'required'      => 'BTS wajib dipilih.',
-                'is_not_unique' => 'BTS tidak ditemukan.',
+                'required'      => 'PTP dari BTS wajib dipilih.',
+                'is_not_unique' => 'PTP dari BTS tidak ditemukan.',
             ],
             'file_topologi' => [
                 'max_size' => 'File Topologi maksimal 10 MB.',
@@ -123,25 +123,22 @@ class PelangganNoc extends BaseController
                 continue;
             }
 
-            $row['tanpa_vlan'] = ! empty($input['tanpa_vlan']);
-            $rows[]            = $row;
+            $rows[] = $row;
         }
 
         return $rows;
     }
 
-    // Vendor pelanggan: vendor[n][vendor_id|ip_address|vlan_id|tanpa_vlan|kapasitas]
+    // Vendor pelanggan: vendor[n][vendor_id|note] (baris yang vendor & note-nya kosong dibuang)
     private function collectVendors(): array
     {
         return array_map(fn ($v) => [
-            'vendor_id'  => $v['vendor_id'],
-            'ip_address' => $v['ip_address'],
-            'vlan_id'    => $v['tanpa_vlan'] ? null : $v['vlan_id'],
-            'kapasitas'  => $v['kapasitas'],
-        ], $this->collectBaris('vendor', ['vendor_id', 'ip_address', 'vlan_id', 'kapasitas'], ['vendor_id', 'ip_address', 'vlan_id', 'kapasitas']));
+            'vendor_id' => $v['vendor_id'],
+            'note'      => $v['note'],
+        ], $this->collectBaris('vendor', ['vendor_id', 'note'], ['vendor_id', 'note']));
     }
 
-    // Detail perangkat: perangkat[n][merk|jenis|type|sn|jumlah] (jumlah kosong = 1)
+    // Detail perangkat: perangkat[n][merk|jenis|type|sn|jumlah|lokasi_penempatan] (jumlah kosong = 1)
     private function collectPerangkat(): array
     {
         return array_map(fn ($p) => [
@@ -150,7 +147,8 @@ class PelangganNoc extends BaseController
             'type'   => $p['type'],
             'sn'     => $p['sn'],
             'jumlah' => $p['jumlah'] === '' ? '1' : $p['jumlah'],
-        ], $this->collectBaris('perangkat', ['merk', 'jenis', 'type', 'sn', 'jumlah'], ['merk', 'jenis', 'type', 'sn']));
+            'lokasi_penempatan' => $p['lokasi_penempatan'],
+        ], $this->collectBaris('perangkat', ['merk', 'jenis', 'type', 'sn', 'jumlah', 'lokasi_penempatan'], ['merk', 'jenis', 'type', 'sn', 'lokasi_penempatan']));
     }
 
     // Validasi field + file (file hanya divalidasi jika ada yang dipilih) + vendor & perangkat
@@ -185,14 +183,8 @@ class PelangganNoc extends BaseController
             if (! isset($vendorBts[$v['vendor_id']])) {
                 $errors[] = $baris . 'pilih vendor dari vendor BTS yang dipilih.';
             }
-            if (! filter_var($v['ip_address'], FILTER_VALIDATE_IP)) {
-                $errors[] = $baris . ($v['ip_address'] === '' ? 'IP Address wajib diisi.' : 'IP Address tidak valid.');
-            }
-            if ($v['vlan_id'] !== null && (! ctype_digit($v['vlan_id']) || (int) $v['vlan_id'] < 1 || (int) $v['vlan_id'] > 4094)) {
-                $errors[] = $baris . ($v['vlan_id'] === '' ? 'Vlan ID wajib diisi, atau centang Tanpa VLAN.' : 'Vlan ID harus angka 1 - 4094.');
-            }
-            if ($v['kapasitas'] === '' || mb_strlen($v['kapasitas']) > 100) {
-                $errors[] = $baris . 'Kapasitas wajib diisi (maks. 100 karakter).';
+            if (mb_strlen($v['note']) > 1000) {
+                $errors[] = $baris . 'Note maksimal 1000 karakter.';
             }
         }
 
@@ -202,9 +194,9 @@ class PelangganNoc extends BaseController
             if (! ctype_digit($p['jumlah']) || (int) $p['jumlah'] < 1) {
                 $errors[] = $baris . 'Jumlah harus angka minimal 1.';
             }
-            foreach (['merk', 'jenis', 'type', 'sn'] as $k) {
+            foreach (['merk', 'jenis', 'type', 'sn', 'lokasi_penempatan'] as $k) {
                 if (mb_strlen($p[$k]) > 255) {
-                    $errors[] = $baris . 'Merk, Jenis, Type & SN maksimal 255 karakter.';
+                    $errors[] = $baris . 'Merk, Jenis, Type, SN & Lokasi Penempatan maksimal 255 karakter.';
                     break;
                 }
             }
@@ -223,9 +215,7 @@ class PelangganNoc extends BaseController
             $this->plgVendorModel->insert([
                 'pelanggan_id' => $pelangganId,
                 'vendor_id'    => (int) $v['vendor_id'],
-                'ip_address'   => $v['ip_address'],
-                'vlan_id'      => $v['vlan_id'] === null ? null : (int) $v['vlan_id'],
-                'kapasitas'    => $v['kapasitas'],
+                'note'         => $v['note'] !== '' ? $v['note'] : null,
             ]);
         }
         foreach ($perangkat as $p) {
@@ -236,6 +226,7 @@ class PelangganNoc extends BaseController
                 'type'         => $p['type'] ?: null,
                 'sn'           => $p['sn'] ?: null,
                 'jumlah'       => (int) $p['jumlah'],
+            'lokasi_penempatan' => $p['lokasi_penempatan'] ?: null,
             ]);
         }
     }

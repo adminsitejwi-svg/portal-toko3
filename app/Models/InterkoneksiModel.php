@@ -19,6 +19,8 @@ class InterkoneksiModel extends BaseModel
         'label_kabel',
         'status',
         'note',
+        'file_dokumen',
+        'file_dokumen_asli',
         'created_at'
     ];
 

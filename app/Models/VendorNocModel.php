@@ -12,10 +12,7 @@ class VendorNocModel extends BaseModel
 
     protected $allowedFields = [
         'nama_vendor',
-        'alamat',
-        'nama_pic',
-        'telp_pic',
-        'email_pic',
+        'note',
         'created_at'
     ];
 

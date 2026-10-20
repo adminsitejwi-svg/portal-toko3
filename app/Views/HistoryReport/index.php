@@ -130,6 +130,59 @@
             text-decoration: underline;
         }
 
+        /* ===== TOMBOL AKSI DI TABEL: ikon + label, warna netral seperti halaman lain ===== */
+        #reportTable .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 92px;
+            margin: 2px 0;
+            padding: 3px 10px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+        #reportTable .btn i {
+            font-size: 16px;
+        }
+
+        #reportTable .btn:hover {
+            background: #f3f4f6;
+        }
+
+        .dark #reportTable .btn {
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .dark #reportTable .btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        /* ===== FILTER DROPDOWN ===== */
+        .filter-select {
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: #3b4754;
+            background: #fff;
+            outline: none;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: #04a9f5;
+        }
+
+        .dark .filter-select {
+            background: #263240;
+            color: #bfc8d6;
+            border-color: rgba(255, 255, 255, .1);
+        }
+
         /* ===== MENU AKSI (titik tiga) — fixed agar tidak terpotong .table-scroll ===== */
         /* ===== TAB KATEGORI (gaya tab Master Data crm.jwi.id) ===== */
         .kategori-tabs {
@@ -165,8 +218,10 @@
         }
 
         .kategori-tab.active {
-            background: #eef0f3;
-            color: #94a3b8;
+            background: var(--ra-primary-soft, #eef0fd);
+            color: var(--ra-primary, #6777ef);
+            font-weight: 600;
+            box-shadow: inset 0 -2px 0 var(--ra-primary, #6777ef);
             cursor: default;
         }
 
@@ -179,13 +234,14 @@
             color: #bfc8d6;
         }
 
-        .dark .kategori-tab:hover,
-        .dark .kategori-tab.active {
+        .dark .kategori-tab:hover {
             background: rgba(255, 255, 255, .06);
         }
 
         .dark .kategori-tab.active {
-            color: #8996a4;
+            background: rgba(103, 119, 239, .22);
+            color: #c7cdfb;
+            box-shadow: inset 0 -2px 0 #8f9cf5;
         }
 
         .aksi-btn {
@@ -818,7 +874,7 @@
                 <li>
                     <a href="<?= site_url('MDMaintenance') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-tool"></i></span>
-                        <span>Maintenance</span>
+                        <span>Notifikasi Maintenance</span>
                     </a>
                 </li>
                 <li class="hasmenu">
@@ -830,8 +886,7 @@
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                         <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
-                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Tiket FO Loss</a></li>
-                        <li><a href="<?= site_url('ResiPengiriman') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Resi Pengiriman</a></li>
+                        <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -844,18 +899,10 @@
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
-                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">BTS</a></li>
+                        <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                     </ul>
-                </li>
-
-                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
-                <li>
-                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
-                        <span>Profile</span>
-                    </a>
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
@@ -867,6 +914,14 @@
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
                         <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
+                </li>
+
+                <li class="px-6 py-3 text-[11px] uppercase tracking-wide text-[#5b6b7f] font-semibold">Informasi</li>
+                <li>
+                    <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
+                        <span>Profile</span>
+                    </a>
                 </li>
                 <li>
                     <a href="<?= site_url('InventoryKantor') ?>"
@@ -994,7 +1049,28 @@
 
                     <!-- TOOLBAR -->
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                        <div id="lengthArea"></div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div id="lengthArea"></div>
+                            <?php
+                            // Filter Bulan: daftar bulan (YYYY-MM) dari tanggal report, terbaru di atas
+                            $namaBulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            $opsiBulan = [];
+                            foreach ($report ?? [] as $row) {
+                                $tgl = (string) ($row['tanggal'] ?? '');
+                                if ($tgl !== '') {
+                                    $opsiBulan[substr($tgl, 0, 7)] = $namaBulan[(int) substr($tgl, 5, 2)] . ' ' . substr($tgl, 0, 4);
+                                }
+                            }
+                            krsort($opsiBulan);
+                            ?>
+                            <select id="filterBulan" class="filter-select" title="Filter Bulan">
+                                <option value="">Semua Bulan</option>
+                                <?php foreach ($opsiBulan as $ym => $label) : ?>
+                                    <option value="<?= esc($ym) ?>"><?= esc($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        </div>
                         <div class="flex items-center gap-3 flex-wrap">
                             <div class="custom-search">
                                 <input type="text" id="customSearch" placeholder="search..." />
@@ -1027,7 +1103,7 @@
                                 <?php if (!empty($report)) : ?>
                                     <?php $no = 1; ?>
                                     <?php foreach ($report as $row) : ?>
-                                        <tr>
+                                        <tr data-bulan="<?= esc(substr((string) ($row['tanggal'] ?? ''), 0, 7), 'attr') ?>">
                                             <td><?= $no++; ?></td>
                                             <td data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                 data-status="<?= array_sum($grupCount[$row['id']] ?? []) > 0 ? 'Completed' : 'Draft' ?>"
@@ -1036,38 +1112,38 @@
                                                 <button type="button"
                                                     onclick="openReportModal(JSON.parse(this.closest('td').dataset.row))"
                                                     class="btn btn-sm btn-primary" title="Edit">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
                                                 <button type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger" title="Hapus">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
                                                 <br>
                                                 <button type="button"
                                                     onclick="openViewModal(JSON.parse(this.closest('td').dataset.row), this.closest('td').dataset.status)"
                                                     class="btn btn-sm btn-info" title="View">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                                 <a href="<?= site_url('HistoryReport/gangguan/' . $row['id']) ?>"
                                                     class="btn btn-sm btn-info" title="Settings (Shift Handover)">
-                                                    <i class="ti ti-tool"></i>
+                                                    <i class="ti ti-tool"></i> <span>Settings</span>
                                                 </a>
 
                                                 <br>
                                                 <button type="button"
                                                     onclick="duplikatReport(JSON.parse(this.closest('td').dataset.row))"
                                                     class="btn btn-sm btn-success" title="Duplikat">
-                                                    <i class="ti ti-copy-plus"></i>
+                                                    <i class="ti ti-copy-plus"></i> <span>Duplikat</span>
                                                 </button>
 
                                                 <button type="button"
                                                     onclick="copyReport(this.closest('td').dataset.copy)"
                                                     class="btn btn-sm btn-success" title="Copy">
-                                                    <i class="ti ti-copy"></i>
+                                                    <i class="ti ti-copy"></i> <span>Copy</span>
                                                 </button>
                                             </td>
                                             <td data-order="<?= esc($row['tanggal']) ?>"><?= date('d-m-Y', strtotime($row['tanggal'])); ?></td>
@@ -1827,6 +1903,15 @@
                 $('.rekap-card[data-jenis="pengiriman"]').toggleClass('hidden', tanpaKirim);
                 $('#rekapGrid').toggleClass('xl:grid-cols-4', !tanpaKirim).toggleClass('xl:grid-cols-3', tanpaKirim);
             }).trigger('change'); // kategori pertama langsung terfilter saat halaman dibuka
+
+            // Filter Bulan: cocokkan data-bulan (YYYY-MM) di <tr>
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                const bulan = $('#filterBulan').val();
+                return settings.nTable.id !== 'reportTable' || !bulan || settings.aoData[dataIndex].nTr.dataset.bulan === bulan;
+            });
+            $('#filterBulan').on('change', function() {
+                table.draw();
+            });
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();

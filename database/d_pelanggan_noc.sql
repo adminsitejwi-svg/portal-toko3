@@ -14,20 +14,22 @@ CREATE TABLE IF NOT EXISTS `d_pelanggan_noc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Vendor per pelanggan, vendor_id: id dari d_vendor (dipilih dari vendor milik BTS pelanggan)
--- ip_address, vlan_id & kapasitas milik pelanggan di vendor itu; vlan_id NULL berarti "Tanpa VLAN"
+-- note: catatan pelanggan untuk vendor itu (diisi manual di form)
+-- ip_address, vlan_id & kapasitas: data lama, tidak diisi lagi dari form; vlan_id NULL berarti "Tanpa VLAN"
 CREATE TABLE IF NOT EXISTS `d_pelanggan_noc_vendor` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pelanggan_id` int(11) unsigned NOT NULL,
   `vendor_id` int(11) unsigned NOT NULL,
-  `ip_address` varchar(45) NOT NULL,
+  `note` text DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
   `vlan_id` smallint(5) unsigned DEFAULT NULL,
-  `kapasitas` varchar(100) NOT NULL,
+  `kapasitas` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_pelanggan_id` (`pelanggan_id`),
   KEY `idx_vendor_id` (`vendor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Detail perangkat pelanggan di lokasi (diisi manual)
+-- Detail perangkat pelanggan di lokasi (diisi manual), lokasi_penempatan: tempat perangkat dipasang
 CREATE TABLE IF NOT EXISTS `d_pelanggan_noc_perangkat` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pelanggan_id` int(11) unsigned NOT NULL,
@@ -36,9 +38,19 @@ CREATE TABLE IF NOT EXISTS `d_pelanggan_noc_perangkat` (
   `type` varchar(255) DEFAULT NULL,
   `sn` varchar(255) DEFAULT NULL,
   `jumlah` int(11) unsigned NOT NULL DEFAULT 1,
+  `lokasi_penempatan` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_pelanggan_id` (`pelanggan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Note vendor; IP Address, Vlan ID & Kapasitas vendor tidak diisi lagi (database yang sudah ada):
+-- ALTER TABLE `d_pelanggan_noc_vendor`
+--   MODIFY `ip_address` varchar(45) DEFAULT NULL,
+--   MODIFY `kapasitas` varchar(100) DEFAULT NULL,
+--   ADD COLUMN `note` text DEFAULT NULL AFTER `vendor_id`;
+
+-- Lokasi Penempatan perangkat (database yang sudah ada):
+-- ALTER TABLE `d_pelanggan_noc_perangkat` ADD COLUMN `lokasi_penempatan` varchar(255) DEFAULT NULL AFTER `jumlah`;
 
 -- Untuk database yang tabelnya sudah dibuat dengan struktur lama (detail perangkat teks & Devices Backbone):
 -- ALTER TABLE `d_pelanggan_noc`
