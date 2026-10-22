@@ -8,7 +8,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Reset Password</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -255,7 +255,22 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         .vendor-card .custom-scroll {
             scrollbar-width: thin;
         }
+
+        /* tombol lihat password di dalam input */
+        .pw-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--rf-muted);
+        }
+
+        .pw-eye:hover {
+            color: #2f6bff;
+        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -446,83 +461,59 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             </ul>
         </header>
 
-        <div class="p-6 flex items-center justify-center" style="min-height:calc(100vh - 74px)">
-            <div class="card auth-card w-full max-w-md p-8">
-
-                <div class="flex flex-col items-center text-center mb-6">
-                    <div class="auth-icon mb-3"><i class="ti ti-lock-cog"></i></div>
-                    <h2 class="text-2xl font-bold">Reset Password</h2>
-                    <p class="text-sm text-gray-500 mt-1">Masukkan username dan password baru</p>
+        <div class="rfo-page p-6">
+            <div class="max-w-[760px] mx-auto">
+                <!-- JUDUL -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic is-blue"><i class="ti ti-lock-cog"></i></span>
+                        <div>
+                            <h1 class="rfo-title">Reset Password</h1>
+                            <p class="rfo-subtitle">Masukkan username dan password baru</p>
+                        </div>
+                    </div>
                 </div>
 
-
-
-                <form id="resetForm" action="<?= site_url('forgot-password/update') ?>" method="post" novalidate>
-
+                <form id="resetForm" action="<?= site_url('forgot-password/update') ?>" method="post" novalidate class="rfo-form">
                     <?= csrf_field() ?>
 
-                    <!-- error dari server (CodeIgniter) jika ada -->
-                    <?php if (session()->getFlashdata('error')) : ?>
-                        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-                            <?= esc(session()->getFlashdata('error')) ?>
+                    <div class="rfo-panel">
+                        <!-- error dari server (CodeIgniter) jika ada -->
+                        <?php if (session()->getFlashdata('error')) : ?>
+                            <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+                                <?= esc(session()->getFlashdata('error')) ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="rf-group">
+                            <label class="rf-label" for="username"><i class="ti ti-user"></i> Username</label>
+                            <input type="text" id="username" name="username" value="<?= old('username') ?>" placeholder="Masukkan username" class="rf-input">
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="username"></p>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="mb-4">
-                        <label class="block mb-2 font-medium">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value="<?= old('username') ?>"
-                            class="w-full border rounded-lg px-4 py-3">
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="username"></p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block mb-2 font-medium">Password Baru</label>
-                        <div class="relative">
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="w-full border rounded-lg px-4 py-3 pr-12">
-                            <button
-                                type="button"
-                                onclick="togglePassword('password','icon1')"
-                                class="absolute right-3 top-1/2 -translate-y-1/2">
-                                <i id="icon1" class="ti ti-eye"></i>
-                            </button>
+                        <div class="rf-group">
+                            <label class="rf-label" for="password"><i class="ti ti-lock" style="color:#d97706"></i> Password Baru</label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" placeholder="Masukkan password baru" class="rf-input pr-12">
+                                <button type="button" onclick="togglePassword('password','icon1')" class="pw-eye" title="Lihat / sembunyikan password">
+                                    <i id="icon1" class="ti ti-eye"></i>
+                                </button>
+                            </div>
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="password"></p>
                         </div>
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="password"></p>
-                    </div>
 
-                    <div class="mb-6">
-                        <label class="block mb-2 font-medium">Confirm Password Baru</label>
-                        <div class="relative">
-                            <input
-                                type="password"
-                                id="confirm_password"
-                                name="confirm_password"
-                                class="w-full border rounded-lg px-4 py-3 pr-12">
+                        <div class="rf-group">
+                            <label class="rf-label" for="confirm_password"><i class="ti ti-lock-check" style="color:#16a34a"></i> Confirm Password Baru</label>
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password baru" class="rf-input">
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="confirm_password"></p>
                         </div>
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="confirm_password"></p>
+
+                        <div class="rfo-actions">
+                            <button type="submit" class="rfo-btn rfo-btn-blue"><i class="ti ti-device-floppy"></i> Simpan Password Baru</button>
+                            <button type="button" onclick="window.location.href='<?= site_url('Profile') ?>'" class="rfo-btn rfo-btn-gray"><i class="ti ti-arrow-left"></i> Kembali</button>
+                        </div>
                     </div>
-
-                    <button
-                        type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg">
-                        Simpan Password Baru
-                    </button>
-
                 </form>
-                <div class="mt-3">
-                    <button type="button"
-                        onclick="window.location.href='<?= site_url('Profile') ?>'"
-                        class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-3 rounded-lg font-semibold transition">
-                        Kembali
-                    </button>
-                </div>
             </div>
         </div>
     </div>

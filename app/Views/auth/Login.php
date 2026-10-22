@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,80 +11,259 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-
     <?= view('partials/theme') ?>
     <style>
-        /* Halaman login gaya RuangAdmin (warna dari ruang.css) */
+        /* Halaman login (referensi: refensiLogin.png) */
+        /* latar: gambar jaringan (public/Logo/Background Login.jpg) + lapisan gelap tipis agar kartu tetap menonjol */
         body.login-page {
-            background: linear-gradient(135deg, #6777ef 0%, #5566e6 45%, #3f4bb8 100%) !important;
+            background:
+                linear-gradient(180deg, rgba(8, 18, 48, .25), rgba(8, 18, 48, .45)),
+                url("<?= base_url('Logo/Background%20Login.jpg') ?>") center / cover no-repeat fixed,
+                #0b1c45 !important;
         }
 
         html.dark body.login-page {
-            background: linear-gradient(135deg, #2b2f55 0%, #1f2238 60%, #1a1c28 100%) !important;
+            background:
+                linear-gradient(180deg, rgba(4, 10, 30, .55), rgba(4, 10, 30, .7)),
+                url("<?= base_url('Logo/Background%20Login.jpg') ?>") center / cover no-repeat fixed,
+                #071330 !important;
         }
 
         .login-card {
             background: var(--ra-card);
-            border-radius: .6rem;
-            box-shadow: 0 1rem 3rem rgba(15, 23, 42, .25);
+            border: 1px solid #eef1f8;
+            border-radius: 24px;
+            padding: 40px 38px 32px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
+        }
+
+        html.dark .login-card {
+            border-color: var(--ra-border);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .4);
         }
 
         .login-logo {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: var(--ra-primary-soft);
+            width: 92px;
+            height: 92px;
+            padding: 16px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #eef0ff, #e4ebff);
+            box-shadow: 0 10px 24px rgba(47, 107, 255, .15);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        html.dark .login-logo {
+            background: #eef0ff;
+        }
+
+        .login-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--ra-heading);
+        }
+
+        .login-sub {
+            margin-top: 6px;
+            font-size: 16px;
+            color: var(--ra-muted);
+        }
+
+        .login-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ra-heading);
+        }
+
         .login-input {
             width: 100%;
-            border: 1px solid #d1d3e2;
-            border-radius: .5rem;
-            padding: .8rem 1rem .8rem 2.75rem;
-            background: var(--ra-input);
+            height: 52px;
+            border: 1px solid #e3e8f4;
+            border-radius: 12px;
+            padding: 0 1rem 0 3rem;
+            font-size: 15px;
+            background: #f5f7fd;
             color: var(--ra-heading);
-            transition: border-color .15s, box-shadow .15s;
+            transition: border-color .15s, box-shadow .15s, background-color .15s;
         }
 
         html.dark .login-input {
+            background: var(--ra-input);
             border-color: var(--ra-border);
         }
 
         .login-input:focus {
             outline: none;
-            border-color: #a7b0f6;
-            box-shadow: 0 0 0 .2rem rgba(103, 119, 239, .25);
+            background: var(--ra-card);
+            border-color: #6d8dff;
+            box-shadow: 0 0 0 4px rgba(47, 107, 255, .12);
         }
 
         .login-icon {
             position: absolute;
-            left: 1rem;
+            left: 1.05rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--ra-muted);
-            font-size: 18px;
+            font-size: 20px;
+        }
+
+        .login-eye {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--ra-muted);
+        }
+
+        .login-eye:hover {
+            color: #2f6bff;
+        }
+
+        .login-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--ra-text);
+            cursor: pointer;
+        }
+
+        .login-check input {
+            width: 20px;
+            height: 20px;
+            accent-color: #3b5bff;
+            cursor: pointer;
         }
 
         .login-btn {
+            position: relative;
             width: 100%;
-            background: var(--ra-primary);
-            color: #fff;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 17px;
             font-weight: 700;
-            padding: .8rem;
-            border-radius: .5rem;
-            box-shadow: 0 .25rem .75rem rgba(103, 119, 239, .4);
-            transition: background .15s, transform .1s;
+            color: #fff;
+            background: linear-gradient(90deg, #3b5bff 0%, #5b6cff 50%, #3d7bff 100%);
+            box-shadow: 0 12px 26px rgba(59, 91, 255, .35);
+            transition: transform .15s, box-shadow .15s, filter .15s;
         }
 
         .login-btn:hover {
-            background: var(--ra-primary-dark);
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+            box-shadow: 0 16px 30px rgba(59, 91, 255, .42);
         }
 
         .login-btn:active {
             transform: translateY(1px);
+        }
+
+        .login-btn-arrow {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, .22);
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 26px 0 20px;
+            font-size: 13px;
+            color: var(--ra-muted);
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e6eaf3;
+        }
+
+        html.dark .login-divider::before,
+        html.dark .login-divider::after {
+            background: var(--ra-border);
+        }
+
+        .login-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 14px;
+            background: #f5f7fd;
+            border: 1px solid #eef1f8;
+        }
+
+        html.dark .login-info {
+            background: var(--ra-input);
+            border-color: var(--ra-border);
+        }
+
+        .login-info-ic {
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #3b5bff;
+            background: #e4e9ff;
+        }
+
+        html.dark .login-info-ic {
+            color: #a5b4fc;
+            background: rgba(59, 91, 255, .2);
+        }
+
+        .login-info b {
+            display: block;
+            font-size: 14px;
+            color: var(--ra-heading);
+        }
+
+        .login-info div span {
+            display: block;
+            margin-top: 2px;
+            font-size: 13px;
+            color: var(--ra-muted);
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 22px 24px;
+            }
+
+            .login-title {
+                font-size: 26px;
+            }
         }
     </style>
 </head>
@@ -130,35 +309,37 @@
 
     <?php endif; ?>
 
-    <div class="login-card w-full max-w-md p-8 sm:p-10">
+    <div class="login-card w-full max-w-[460px]">
 
         <!-- logo & judul -->
-        <div class="flex flex-col items-center text-center mb-8">
-            <div class="login-logo mb-4">
-                <i class="ti ti-building-store text-3xl" style="color: var(--ra-primary)"></i>
+        <div class="flex flex-col items-center text-center mb-7">
+            <div class="login-logo mb-5">
+                <img src="<?= base_url('Logo/RumahWifi-logo.png') ?>" alt="Logo JWI Group">
             </div>
-            <h1 class="text-2xl font-extrabold" style="color: var(--ra-heading)">Selamat Datang</h1>
-            <p class="text-sm mt-1" style="color: var(--ra-muted)">Sistem Operasional JWI Group</p>
+            <h1 class="login-title">Selamat Datang</h1>
+            <p class="login-sub">Sistem Operasional JWI Group</p>
         </div>
 
         <?php if (session()->getFlashdata('error')) : ?>
-            <div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-5 text-sm">
+            <div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-5 text-sm">
                 <i class="ti ti-alert-circle text-lg leading-5"></i>
                 <div><?= session()->getFlashdata('error') ?></div>
             </div>
         <?php endif; ?>
 
-        <form action="<?= site_url('login/auth') ?>" method="post">
+        <form action="<?= site_url('login/auth') ?>" method="post" id="loginForm">
 
             <?= csrf_field() ?>
 
-            <div class="mb-4">
-                <label class="block mb-2 text-sm font-bold" style="color: var(--ra-heading)">Username</label>
+            <div class="mb-5">
+                <label class="login-label" for="username">Username</label>
                 <div class="relative">
                     <i class="ti ti-user login-icon"></i>
                     <input
                         type="text"
+                        id="username"
                         name="username"
+                        value="<?= esc(old('username') ?? '') ?>"
                         class="login-input"
                         placeholder="Masukkan Username"
                         autocomplete="username"
@@ -167,8 +348,8 @@
                 </div>
             </div>
 
-            <div class="mb-6">
-                <label class="block mb-2 text-sm font-bold" style="color: var(--ra-heading)">Password</label>
+            <div class="mb-4">
+                <label class="login-label" for="password">Password</label>
                 <div class="relative">
                     <i class="ti ti-lock login-icon"></i>
                     <input
@@ -184,22 +365,36 @@
                         type="button"
                         onclick="togglePassword()"
                         title="Tampilkan / sembunyikan password"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-lg"
-                        style="color: var(--ra-muted)">
+                        class="login-eye">
                         <i id="eyeIcon" class="ti ti-eye"></i>
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="login-btn flex items-center justify-center gap-2">
-                <i class="ti ti-login-2 text-lg"></i> Login
+            <!-- ingat saya (hanya username, disimpan di browser) -->
+            <div class="flex items-center gap-3 mb-6">
+                <label class="login-check">
+                    <input type="checkbox" id="rememberMe">
+                    <span>Ingat saya</span>
+                </label>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <span class="flex items-center justify-center gap-2"><i class="ti ti-login-2 text-xl"></i> Login</span>
+                <span class="login-btn-arrow"><i class="ti ti-arrow-right"></i></span>
             </button>
 
         </form>
 
-        <p class="text-center text-xs mt-8" style="color: var(--ra-muted)">
-            &copy; <?= date('Y') ?> JWI Group &middot; NOC Control
-        </p>
+        <div class="login-divider"><span>atau</span></div>
+
+        <div class="login-info">
+            <span class="login-info-ic"><i class="ti ti-shield-check-filled"></i></span>
+            <div>
+                <b>Akses hanya untuk pengguna terdaftar</b>
+                <span>Pastikan akun Anda aman dan tidak dibagikan.</span>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -224,6 +419,31 @@
                 icon.classList.add('ti-eye');
             }
         }
+
+        // INGAT SAYA: hanya username yang disimpan di browser ini (password tidak pernah disimpan)
+        (function() {
+            const KEY = 'login_username';
+            const user = document.getElementById('username');
+            const cek = document.getElementById('rememberMe');
+            let saved = null;
+            try {
+                saved = localStorage.getItem(KEY);
+            } catch (e) {}
+            if (saved && !user.value) {
+                user.value = saved;
+                cek.checked = true;
+                user.removeAttribute('autofocus');
+                document.getElementById('password').focus();
+            } else if (saved) {
+                cek.checked = true;
+            }
+            document.getElementById('loginForm').addEventListener('submit', function() {
+                try {
+                    if (cek.checked) localStorage.setItem(KEY, user.value.trim());
+                    else localStorage.removeItem(KEY);
+                } catch (e) {}
+            });
+        })();
 
         document.addEventListener('DOMContentLoaded', function() {
 

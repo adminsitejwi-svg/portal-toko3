@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>Change Log</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <!-- Feather icons -->
@@ -228,31 +228,9 @@
             color: #cdd6e2;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
 
-        .badge-create {
-            background: #e6f9f3;
-            color: #0d9c79;
-        }
 
-        .badge-update {
-            background: #fff4d6;
-            color: #a9791c;
-        }
 
-        .badge-delete {
-            background: #fde8e6;
-            color: #d23b30;
-        }
 
         .table-chip {
             display: inline-block;
@@ -261,7 +239,6 @@
             background: #eef3f8;
             color: #37474f;
             font-size: 12px;
-            font-family: monospace;
         }
 
         .dark .table-chip {
@@ -269,73 +246,14 @@
             color: #cdd6e2;
         }
 
-        .btn-detail {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #04a9f5;
-            color: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-        }
 
-        .btn-detail:hover {
-            background: #0396e2;
-        }
 
-        .custom-search {
-            display: flex;
-            align-items: center;
-        }
 
-        .custom-search input {
-            border: 1px solid #d6dde6;
-            border-right: none;
-            border-radius: 8px 0 0 8px;
-            padding: 8px 12px;
-            font-size: 13px;
-            outline: none;
-        }
 
-        .dark .custom-search input {
-            background: #1f2a36;
-            border-color: #37404c;
-            color: #cdd6e2;
-        }
 
-        .custom-search .go-btn {
-            width: 38px;
-            height: 38px;
-            border: 1px solid #04a9f5;
-            background: #04a9f5;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-            position: relative;
-        }
 
-        .custom-search .go-btn::after {
-            content: "\f002";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            color: #fff;
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        table.dataTable thead th {
-            font-size: 13px;
-        }
 
-        table.dataTable tbody td {
-            font-size: 13px;
-            vertical-align: middle;
-        }
 
         .table-scroll {
             width: 100%;
@@ -347,18 +265,7 @@
             min-width: 880px;
         }
 
-        div.dt-buttons .dt-button {
-            background: #04a9f5;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-        }
 
-        div.dt-buttons .dt-button:hover {
-            background: #0396e2;
-        }
     </style>
     <style>
         /* sembunyikan search bawaan DataTables — pakai custom search saja */
@@ -367,59 +274,14 @@
         }
 
         /* ===== TABEL MODERN ===== */
-        #logTable {
-            width: 100% !important;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
 
-        #logTable thead th {
-            background: #f8fafc;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-            text-align: left;
-            padding: 14px 16px;
-            border-bottom: 1px solid #e8edf2;
-            white-space: nowrap;
-        }
 
-        .dark #logTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
 
-        #logTable tbody td {
-            padding: 13px 16px;
-            font-size: 13px;
-            color: #3b4754;
-            border-bottom: 1px solid #f1f4f7;
-            vertical-align: middle;
-        }
 
-        .dark #logTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
 
-        #logTable tbody tr {
-            transition: background .15s;
-        }
 
-        #logTable tbody tr:hover {
-            background: #f6fbff;
-        }
 
-        .dark #logTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
 
-        #logTable tbody tr:last-child td {
-            border-bottom: none;
-        }
 
         /* ===== Length & Pagination polish ===== */
         .dataTables_length select {
@@ -473,6 +335,22 @@
             font-size: 18px;
         }
     </style>
+    <style>
+        /* badge aksi Change Log mengikuti warna badge RFO */
+        .rfo-page .badge-create { color: #16a34a !important; background: #e6f8ee !important; }
+        .rfo-page .badge-update { color: #d97706 !important; background: #fff4e0 !important; }
+        .rfo-page .badge-delete { color: #ef4444 !important; background: #feecec !important; }
+        html.dark .rfo-page .badge-create { color: #86efac !important; background: rgba(34, 197, 94, .16) !important; }
+        html.dark .rfo-page .badge-update { color: #fcd34d !important; background: rgba(245, 158, 11, .16) !important; }
+        html.dark .rfo-page .badge-delete { color: #fca5a5 !important; background: rgba(239, 68, 68, .16) !important; }
+
+        .rfo-page .table-chip {
+            border-radius: 8px;
+            font-weight: 600;
+        }
+    </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
+    <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
     <?= view('partials/theme') ?>
 </head>
 
@@ -722,10 +600,16 @@
         </header>
 
         <!-- CONTENT -->
-        <div class="p-6">
-            <!-- breadcrumb -->
-            <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Change Log</h5>
+        <div class="rfo-page p-6">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-sky"><i class="ti ti-report-search"></i></span>
+                    <div>
+                        <h1 class="rfo-title">Change Log</h1>
+                        <p class="rfo-subtitle">Riwayat aktivitas tambah, ubah &amp; hapus data oleh pengguna</p>
+                    </div>
+                </div>
             </div>
 
 
@@ -736,19 +620,20 @@
                         <div id="lengthArea"></div>
                         <div class="flex items-center gap-3 flex-wrap">
                             <!-- Filter urutan baru / lama -->
-                            <select id="sortOrder" class="filter-input" style="min-width:130px;cursor:pointer">
+                            <select id="sortOrder" class="filter-select" title="Urutan data">
                                 <option value="desc">Terbaru</option>
                                 <option value="asc">Terlama</option>
                             </select>
-                            <div class="custom-search">
-                                <input type="text" id="customSearch" placeholder="search..." />
-                                <button class="go-btn" type="button"></button>
+                            <div class="rfo-search">
+                                <i class="ti ti-search"></i>
+                                <input type="text" id="customSearch" placeholder="Cari data..." />
                             </div>
+                            <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                             <div id="exportArea"></div>
                         </div>
                     </div>
                     <div class="table-scroll">
-                        <table id="logTable" class="display nowrap" style="width:100%">
+                        <table id="logTable" class="rfo-table display nowrap" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -787,7 +672,7 @@
                                             <td><span class="table-chip"><?= esc(activity_page_name($row['table_name'])) ?></span></td>
                                             <td><?= esc(activity_format_description($row['description'], $row['table_name'])) ?></td>
                                             <td>
-                                                <button type="button" class="btn-detail"
+                                                <button type="button" class="btn btn-sm btn-info btn-detail"
                                                     data-user="<?= esc($row['username'] ?? '-', 'attr') ?>"
                                                     data-action="<?= esc(activity_label_action($row['action']), 'attr') ?>"
                                                     data-table="<?= esc(activity_page_name($row['table_name']), 'attr') ?>"
@@ -796,7 +681,7 @@
                                                     data-desc="<?= esc(activity_format_description($row['description'], $row['table_name']), 'attr') ?>"
                                                     data-old='<?= esc($row['old_data'] ?? '', 'attr') ?>'
                                                     data-new='<?= esc($row['new_data'] ?? '', 'attr') ?>'>
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>Detail</span>
                                                 </button>
                                             </td>
                                         </tr>
@@ -1047,9 +932,6 @@
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
-            });
-            $('.go-btn').on('click', function() {
-                table.search($('#customSearch').val()).draw();
             });
             $('#customSearch').on('keypress', function(e) {
                 if (e.which === 13) table.search(this.value).draw();

@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>Toko Alfamidi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -427,6 +427,75 @@
         .brand-text {
             font-size: 18px;
         }
+
+        /* ===== TOMBOL AKSI DI TABEL: berwarna + hover ===== */
+        #mediaKoneksiTable .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 30px;
+            height: 30px;
+            margin: 2px 0;
+            padding: 0 7px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #fff;
+            transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
+        }
+
+        #mediaKoneksiTable .btn i {
+            font-size: 16px;
+        }
+
+        #mediaKoneksiTable .btn:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
+        }
+
+        #mediaKoneksiTable .btn-primary {
+            background: #3b82f6;
+        }
+
+        #mediaKoneksiTable .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        #mediaKoneksiTable .btn-danger {
+            background: #ef4444;
+        }
+
+        #mediaKoneksiTable .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        #mediaKoneksiTable .btn-info {
+            background: #0ea5e9;
+        }
+
+        #mediaKoneksiTable .btn-info:hover {
+            background: #0284c7;
+        }
+
+        #mediaKoneksiTable .btn-success {
+            background: #22c55e;
+        }
+
+        #mediaKoneksiTable .btn-success:hover {
+            background: #16a34a;
+        }
+
+        #mediaKoneksiTable .btn-warning {
+            background: #f59e0b;
+        }
+
+        #mediaKoneksiTable .btn-warning:hover {
+            background: #d97706;
+        }
+
     </style>
     <?= view('partials/theme') ?>
 </head>
@@ -752,13 +821,13 @@
                                                 <?php if (!empty($row['upload_lampiran'])): ?>
                                                     <button type="button"
                                                         onclick="previewLampiran('<?= esc($row['upload_lampiran'], 'js') ?>')"
-                                                        class="btn btn-sm"
+                                                        class="btn btn-sm btn-warning"
                                                         title="Lihat Lampiran">
                                                         <i class="ti ti-photo"></i>
                                                     </button>
                                                 <?php endif; ?>
                                                 <a href="<?= site_url('Alfamidi/view/' . $row['id']) ?>"
-                                                    class="btn btn-sm"
+                                                    class="btn btn-sm btn-info"
                                                     title="Lihat Detail">
                                                     <i class="ti ti-eye"></i>
                                                 </a>

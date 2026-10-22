@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?= csrf_meta() ?>
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Jadwal Shift</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -291,7 +291,54 @@
             border: 2px solid #e3e8ee;
             border-radius: 9999px;
         }
+
+        /* ===== KARTU KANAN (Jadwal Shift): kepala tetap, isi bisa di-scroll ===== */
+        @media (min-width: 1280px) {
+            .jadwal-panel {
+                position: sticky;
+                top: 94px;
+                max-height: calc(100vh - 200px);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .jadwal-body {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+                margin-right: -12px;
+                padding-right: 12px;
+            }
+        }
+
+        .jadwal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .jadwal-body::-webkit-scrollbar-track {
+            margin-bottom: 4px;
+            background: transparent;
+        }
+
+        .jadwal-body::-webkit-scrollbar-thumb {
+            border-radius: 8px;
+        }
+
+        /* kotak cari jadwal */
+        .jadwal-panel .rfo-search {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .jadwal-hasil-tgl {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #2f6bff;
+            margin-bottom: 4px;
+        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -457,18 +504,21 @@
         </header>
 
         <!-- ===== KONTEN: KALENDER ===== -->
-        <div class="p-4 sm:p-6">
-            <div class="flex items-center justify-between mb-4 gap-3">
-                <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white">Jadwal Shift</h4>
-                <div class="flex items-center gap-2">
-                    <button class="btn2 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1" id="btnImport"><i class="ti ti-file-import text-[15px]"></i> Import</button>
-                    <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Jadwal</button>
+        <div class="rfo-page p-4 sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic"><i class="ti ti-calendar-event"></i></span>
+                    <h1 class="rfo-title">Jadwal Shift</h1>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button class="rfo-btn rfo-btn-green" id="btnImport"><i class="ti ti-file-import"></i> Import</button>
+                    <button class="rfo-btn rfo-btn-blue" id="btnTambah"><i class="ti ti-plus"></i> Tambah Jadwal</button>
                 </div>
             </div>
 
             <div class="flex flex-col xl:flex-row gap-4 items-start">
                 <!-- KIRI: kalender -->
-                <div class="w-full xl:flex-1 min-w-0 bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-4">
+                <div class="w-full xl:flex-1 min-w-0 rfo-panel">
                     <div class="flex items-center justify-center gap-4 mb-3">
                         <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnPrev" title="Bulan sebelumnya">&lsaquo;</button>
                         <span class="text-[1.05rem] font-bold min-w-[120px] text-center text-[#202124] dark:text-white" id="calTitle">&mdash;</span>
@@ -487,10 +537,21 @@
                 </div>
 
                 <!-- KANAN: panel detail -->
-                <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
+                <aside class="w-full xl:w-[330px] xl:flex-none rfo-panel jadwal-panel">
 
-                    <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
-                    <div class="text-[.78rem] font-semibold text-gray-500 mb-2">Jadwal Shift</div>
+                    <!-- kepala kartu: tetap di tempat saat isi kartu di-scroll -->
+                    <div class="jadwal-head">
+                        <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
+                        <!-- cari jadwal di bulan yang sedang tampil (nama, shift, keterangan) -->
+                        <div class="rfo-search">
+                            <i class="ti ti-search"></i>
+                            <input type="text" id="panelSearch" placeholder="Cari nama, shift, keterangan..." autocomplete="off" />
+                        </div>
+                        <div class="text-[.78rem] font-semibold text-gray-500 mb-2" id="panelLabel">Jadwal Shift</div>
+                    </div>
+
+                    <!-- isi kartu: daftar jadwal & tanda (bisa di-scroll) -->
+                    <div class="jadwal-body">
                     <div id="panelList">
                         <div class="text-gray-400 text-sm py-2">Memuat&hellip;</div>
                     </div>
@@ -505,6 +566,7 @@
                             </div>
                             <div id="noteContainer" class="space-y-3"></div>
                         </div>
+                    </div>
                     </div>
                 </aside>
 
@@ -750,8 +812,59 @@
             if (cell) cell.classList.add('selected-day');
         }
 
+        // Hasil cari: semua jadwal yang dimuat kalender (bulan yang tampil), urut tanggal lalu shift
+        function renderSearch(q) {
+            const items = Calendar.getEvents()
+                .map(function(ev) {
+                    return Object.assign({
+                        id: ev.id,
+                        tanggal: ev.startStr
+                    }, ev.extendedProps);
+                })
+                .filter(function(it) {
+                    const teks = [it.nama, SHIFT_LABEL[it.shift], it.keterangan].join(' ').toLowerCase();
+                    return teks.indexOf(q) !== -1;
+                })
+                .sort(function(a, b) {
+                    return a.tanggal === b.tanggal ? a.shift - b.shift : (a.tanggal < b.tanggal ? -1 : 1);
+                });
+
+            document.getElementById('panelLabel').textContent = 'Hasil pencarian (' + items.length + ' jadwal di bulan ini)';
+            const box = document.getElementById('panelList');
+            if (!items.length) {
+                box.innerHTML = '<div class="text-gray-400 text-sm py-2">Tidak ada jadwal yang cocok.</div>';
+                return;
+            }
+            box.innerHTML = items.map(function(it) {
+                return '' +
+                    '<div class="rounded-lg border border-gray-100 p-3 mb-2.5 cursor-pointer hover:shadow-md transition" ' +
+                    'style="border-left:4px solid ' + it.warna + '" ' +
+                    'onclick="bukaHasilCari(\'' + it.tanggal + '\')">' +
+                    '<div class="jadwal-hasil-tgl">' + formatTanggal(it.tanggal) + '</div>' +
+                    '<div class="flex items-center gap-2">' +
+                    '<span class="w-3 h-3 rounded-full shrink-0" style="background:' + it.warna + '"></span>' +
+                    '<span class="font-semibold text-[#202124] text-[.92rem]">' + SHIFT_LABEL[it.shift] + ' - ' + escapeHtml(it.nama) + '</span>' +
+                    '</div>' +
+                    (it.keterangan ? '<div class="text-[.8rem] text-gray-500 mt-1.5 ml-5 leading-snug">' + escapeHtml(it.keterangan) + '</div>' : '') +
+                    '</div>';
+            }).join('');
+        }
+
+        // Klik hasil cari: kosongkan pencarian lalu buka tanggal tersebut di kalender
+        function bukaHasilCari(dateStr) {
+            document.getElementById('panelSearch').value = '';
+            goToDate(dateStr);
+        }
+
+        document.getElementById('panelSearch').addEventListener('input', function() {
+            renderPanel(selectedDate);
+        });
+
         function renderPanel(dateStr) {
             document.getElementById('panelDate').textContent = formatTanggal(dateStr);
+            const q = document.getElementById('panelSearch').value.trim().toLowerCase();
+            if (q) return renderSearch(q);
+            document.getElementById('panelLabel').textContent = 'Jadwal Shift';
             const items = Calendar.getEvents()
                 .filter(function(ev) {
                     return ev.startStr === dateStr;

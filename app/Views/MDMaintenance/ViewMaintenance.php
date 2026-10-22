@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>View Maintenance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -217,6 +217,7 @@
             font-size: 18px;
         }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -982,11 +983,11 @@
         <div class="p-6">
             <!-- TOOLBAR (tidak ikut tercetak) -->
             <div class="rfo-toolbar flex flex-wrap items-center justify-between gap-3">
-                <h5 class="font-medium text-lg whitespace-nowrap">View Maintenance</h5>
-                <div class="flex items-center gap-1.5">
-                    <a href="<?= site_url('MDMaintenance') ?>" class="inline-flex items-center gap-1 px-2.5 py-1 text-white rounded-md text-xs font-medium bg-gray-500 hover:bg-gray-600"><i class="ti ti-arrow-left"></i> Kembali</a>
-                    <a href="<?= site_url('MDMaintenance/edit/' . $mt['id']) ?>" class="inline-flex items-center gap-1 px-2.5 py-1 text-white rounded-md text-xs font-medium bg-amber-500 hover:bg-amber-600"><i class="ti ti-edit"></i> Edit</a>
-                    <a href="#" role="button" onclick="window.print(); return false;" class="inline-flex items-center gap-1 px-2.5 py-1 text-white rounded-md text-xs font-medium bg-blue-600 hover:bg-blue-700"><i class="ti ti-printer"></i> Print</a>
+                <h1 class="rfo-title whitespace-nowrap">View Maintenance</h1>
+                <div class="flex flex-wrap items-center gap-2">
+                    <a href="<?= site_url('MDMaintenance') ?>" class="rfo-btn rfo-btn-gray"><i class="ti ti-arrow-left"></i> Kembali</a>
+                    <a href="<?= site_url('MDMaintenance/edit/' . $mt['id']) ?>" class="rfo-btn rfo-btn-amber"><i class="ti ti-edit"></i> Edit</a>
+                    <a href="#" role="button" onclick="window.print(); return false;" class="rfo-btn rfo-btn-blue"><i class="ti ti-printer"></i> Print</a>
                 </div>
             </div>
 

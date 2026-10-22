@@ -1,0 +1,1072 @@
+/* =====================================================================
+ *  TAMPILAN HALAMAN RFO (index, riwayat email, form tambah & edit)
+ *  referensi: refensitampilan index.jpg
+ *
+ *  Dimuat di <head> setelah CSS halaman, sebelum partials/theme (ruang.css).
+ *  Aturan yang bentrok dengan ruang.css diberi !important.
+ * ===================================================================== */
+/* warna dasar (di :root agar pop up di luar .rfo-page ikut memakainya) */
+:root {
+    --rf-card: #ffffff;
+    --rf-border: #e8ecf5;
+    --rf-soft: #f5f7fc;
+    --rf-text: #3b4754;
+    --rf-head: #1f2a44;
+    --rf-muted: #7a869a;
+    --rf-shadow: 0 6px 24px rgba(31, 42, 68, .06);
+}
+
+html.dark {
+    --rf-card: var(--ra-card);
+    --rf-border: var(--ra-border);
+    --rf-soft: var(--ra-hover);
+    --rf-text: var(--ra-text);
+    --rf-head: var(--ra-heading);
+    --rf-muted: var(--ra-muted);
+    --rf-shadow: 0 6px 24px rgba(0, 0, 0, .25);
+}
+
+.rfo-page {
+    background: radial-gradient(1200px 400px at 0% 0%, rgba(124, 92, 255, .08), transparent 60%),
+        radial-gradient(900px 400px at 100% 0%, rgba(47, 107, 255, .07), transparent 60%);
+    min-height: calc(100vh - 74px);
+}
+
+html.dark .rfo-page {
+    background: radial-gradient(1200px 400px at 0% 0%, rgba(124, 92, 255, .10), transparent 60%),
+        radial-gradient(900px 400px at 100% 0%, rgba(47, 107, 255, .10), transparent 60%);
+}
+
+/* ----- judul halaman ----- */
+.rfo-title-ic {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 28px;
+    color: #fff;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, .35);
+}
+
+.rfo-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--rf-head);
+    line-height: 1.2;
+}
+
+.rfo-subtitle {
+    font-size: 14px;
+    color: var(--rf-muted);
+    margin-top: 2px;
+}
+
+.rfo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff !important;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.rfo-btn i {
+    font-size: 18px;
+}
+
+.rfo-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.rfo-btn-green {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 6px 16px rgba(22, 163, 74, .35);
+}
+
+.rfo-btn-blue {
+    background: linear-gradient(135deg, #4f8cff, #2f6bff);
+    box-shadow: 0 6px 16px rgba(47, 107, 255, .35);
+}
+
+/* ----- kartu statistik ----- */
+.rfo-stat {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--rf-border);
+    box-shadow: var(--rf-shadow);
+    overflow: hidden;
+    background: var(--rf-card);
+}
+
+.rfo-stat-blue { background: linear-gradient(135deg, #f3f7ff, var(--rf-card) 70%); }
+.rfo-stat-green { background: linear-gradient(135deg, #effcf4, var(--rf-card) 70%); }
+.rfo-stat-amber { background: linear-gradient(135deg, #fff8ec, var(--rf-card) 70%); }
+.rfo-stat-purple { background: linear-gradient(135deg, #f5f3ff, var(--rf-card) 70%); }
+
+html.dark .rfo-stat-blue { background: linear-gradient(135deg, rgba(59, 130, 246, .14), var(--rf-card) 70%); }
+html.dark .rfo-stat-green { background: linear-gradient(135deg, rgba(34, 197, 94, .12), var(--rf-card) 70%); }
+html.dark .rfo-stat-amber { background: linear-gradient(135deg, rgba(245, 158, 11, .12), var(--rf-card) 70%); }
+html.dark .rfo-stat-purple { background: linear-gradient(135deg, rgba(139, 92, 246, .14), var(--rf-card) 70%); }
+
+.rfo-stat-ic {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.rfo-stat-blue .rfo-stat-ic { color: #2f6bff; background: #dfe9ff; }
+.rfo-stat-green .rfo-stat-ic { color: #fff; background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 6px 14px rgba(22, 163, 74, .3); }
+.rfo-stat-amber .rfo-stat-ic { color: #fff; background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 6px 14px rgba(245, 158, 11, .3); }
+.rfo-stat-purple .rfo-stat-ic { color: #6d5dfc; background: #e7e4ff; }
+
+html.dark .rfo-stat-blue .rfo-stat-ic { background: rgba(47, 107, 255, .2); color: #8fb2ff; }
+html.dark .rfo-stat-purple .rfo-stat-ic { background: rgba(109, 93, 252, .2); color: #b4abff; }
+
+.rfo-stat-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rf-head);
+}
+
+.rfo-stat-green .rfo-stat-label { color: #16a34a; }
+.rfo-stat-amber .rfo-stat-label { color: #d97706; }
+.rfo-stat-purple .rfo-stat-label { color: #2f6bff; }
+
+.rfo-stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--rf-head);
+}
+
+.rfo-stat-note {
+    font-size: 12.5px;
+    color: var(--rf-muted);
+}
+
+.rfo-stat-chart {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 34px;
+    opacity: .35;
+}
+
+.rfo-stat-blue .rfo-stat-chart { color: #3b82f6; }
+.rfo-stat-green .rfo-stat-chart { color: #22c55e; }
+.rfo-stat-amber .rfo-stat-chart { color: #f59e0b; }
+.rfo-stat-purple .rfo-stat-chart { color: #8b5cf6; }
+
+/* ----- panel filter + tabel ----- */
+.rfo-panel {
+    background: var(--rf-card);
+    border: 1px solid var(--rf-border);
+    border-radius: 18px;
+    box-shadow: var(--rf-shadow);
+    padding: 22px 22px 18px;
+}
+
+/* select filter tanpa ikon (markup template lama) */
+.rfo-page .filter-select {
+    height: 42px;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    padding: 0 36px 0 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rf-text);
+    background-color: var(--rf-card);
+    outline: none;
+    cursor: pointer;
+    min-width: 180px;
+    max-width: 280px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.rfo-page input.filter-select {
+    cursor: text;
+    background-image: none;
+    padding-right: 14px;
+}
+
+.rfo-page .filter-select:focus {
+    border-color: #6d8dff !important;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .12);
+}
+
+/* kontrol (select, input, tombol) */
+.rfo-field {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.rfo-field > i {
+    position: absolute;
+    left: 12px;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.rfo-field .filter-select,
+.rfo-page .dataTables_length select {
+    height: 42px;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    padding: 0 36px 0 38px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rf-text);
+    background-color: var(--rf-card);
+    outline: none;
+    cursor: pointer;
+    width: 200px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.dataTables_length {
+    font-size: 0;
+}
+
+.rfo-page .dataTables_length select {
+    width: 76px;
+    padding-left: 14px;
+}
+
+.rfo-field .filter-select.is-wide {
+    width: 230px;
+}
+
+/* tema gelap menimpa background select DataTables, chevron dipasang ulang */
+html.dark .rfo-page .dataTables_wrapper .dataTables_length select {
+    background: var(--rf-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center !important;
+}
+
+.rfo-field .filter-select:focus,
+.rfo-page .dataTables_length select:focus,
+.rfo-search input:focus {
+    border-color: #6d8dff !important;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .12);
+}
+
+.dataTables_filter {
+    display: none;
+}
+
+.rfo-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 320px;
+    max-width: 100%;
+    height: 42px;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    background: var(--rf-card);
+    padding: 4px;
+}
+
+.rfo-search > i {
+    position: absolute;
+    left: 13px;
+    font-size: 17px;
+    color: var(--rf-muted);
+}
+
+.rfo-search input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0 !important;
+    outline: none;
+    background: transparent !important;
+    padding: 0 8px 0 32px;
+    font-size: 13px;
+    color: var(--rf-text);
+    box-shadow: none !important;
+}
+
+.rfo-search button {
+    height: 100%;
+    padding: 0 14px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #4f8cff, #2f6bff);
+    transition: filter .15s ease;
+}
+
+.rfo-search button:hover {
+    filter: brightness(1.08);
+}
+
+.rfo-ghost-btn,
+button.dt-button.export-toggle {
+    height: 42px;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--rf-border) !important;
+    background: var(--rf-card) !important;
+    color: var(--rf-text) !important;
+    font-size: 13px !important;
+    font-weight: 700;
+    margin: 0 !important;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+
+.rfo-ghost-btn i,
+button.dt-button.export-toggle i {
+    font-size: 16px;
+}
+
+.rfo-ghost-btn:hover,
+button.dt-button.export-toggle:hover {
+    border-color: #6d8dff !important;
+    color: #2f6bff !important;
+    background: var(--rf-soft) !important;
+}
+
+button.dt-button.export-toggle::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    margin-left: 6px;
+    padding-left: 10px;
+    border-left: 1px solid var(--rf-border);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;
+}
+
+div.dt-buttons {
+    display: inline-block;
+}
+
+button.dt-button.export-toggle .dt-button-down-arrow {
+    display: none !important;
+}
+
+div.dt-button-collection {
+    background: var(--rf-card) !important;
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .12) !important;
+    padding: 6px !important;
+    min-width: 180px;
+}
+
+div.dt-button-collection button.dt-button {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: transparent !important;
+    border: none !important;
+    color: var(--rf-text) !important;
+    padding: 8px 12px !important;
+    font-size: 13.5px !important;
+    border-radius: 8px !important;
+    margin: 0 !important;
+}
+
+div.dt-button-collection button.dt-button:hover {
+    background: var(--rf-soft) !important;
+}
+
+/* ----- tabel ----- */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--rf-border);
+    border-radius: 14px;
+}
+
+.table-scroll table {
+    min-width: 1400px;
+}
+
+.rfo-table.dataTable {
+    width: 100% !important;
+    border-collapse: collapse;
+    margin: 0 !important;
+}
+
+.rfo-table.dataTable thead th {
+    background: var(--rf-soft) !important;
+    color: var(--rf-head) !important;
+    font-weight: 700 !important;
+    font-size: 12.5px;
+    text-align: left;
+    padding: 14px 26px 14px 14px !important;
+    border-bottom: 1px solid var(--rf-border) !important;
+    white-space: nowrap;
+}
+
+.rfo-table.dataTable tbody td {
+    padding: 12px 14px !important;
+    font-size: 13px;
+    color: var(--rf-text) !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid var(--rf-border) !important;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.rfo-table.dataTable tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.rfo-table.dataTable tbody tr:hover {
+    background: var(--rf-soft) !important;
+}
+
+.rfo-table .rfo-id {
+    color: var(--rf-muted);
+    font-weight: 600;
+}
+
+.rfo-table .cell-ic {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rfo-table .cell-ic > i {
+    font-size: 16px;
+}
+
+.rfo-table .cell-clip {
+    display: inline-block;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* tombol aksi: lembut, warna penuh saat hover */
+.rfo-table .act {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 10px;
+    margin-right: 4px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.rfo-table .act i {
+    font-size: 14px;
+}
+
+.rfo-table .act:hover {
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.rfo-table .act-view { color: #2f6bff !important; background: #e8efff; }
+.rfo-table .act-edit { color: #6d5dfc !important; background: #efedff; }
+.rfo-table .act-del { color: #ef4444 !important; background: #feecec; }
+.rfo-table .act-email { color: #16a34a !important; background: #e6f8ee; }
+
+.rfo-table .act-view:hover { background: #2f6bff; box-shadow: 0 4px 10px rgba(47, 107, 255, .35); }
+.rfo-table .act-edit:hover { background: #6d5dfc; box-shadow: 0 4px 10px rgba(109, 93, 252, .35); }
+.rfo-table .act-del:hover { background: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, .35); }
+.rfo-table .act-email:hover { background: #16a34a; box-shadow: 0 4px 10px rgba(22, 163, 74, .35); }
+
+html.dark .rfo-table .act-view { background: rgba(47, 107, 255, .16); color: #8fb2ff !important; }
+html.dark .rfo-table .act-edit { background: rgba(109, 93, 252, .18); color: #b4abff !important; }
+html.dark .rfo-table .act-del { background: rgba(239, 68, 68, .16); color: #fca5a5 !important; }
+html.dark .rfo-table .act-email { background: rgba(34, 197, 94, .16); color: #86efac !important; }
+
+/* badge (impact, status, email) */
+.rb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+    text-align: left;
+    border: 0;
+}
+
+.rb i {
+    font-size: 14px;
+    flex: 0 0 auto;
+}
+
+/* impact boleh 2 baris bila panjang */
+.rb-wrap {
+    white-space: normal;
+    width: max-content;
+    max-width: 190px;
+}
+
+.rb-blue { color: #2f6bff; background: #e8efff; }
+.rb-red { color: #ef4444; background: #feecec; }
+.rb-amber { color: #d97706; background: #fff4e0; }
+.rb-purple { color: #6d5dfc; background: #efedff; }
+.rb-green { color: #16a34a; background: #e6f8ee; }
+
+html.dark .rb-blue { color: #8fb2ff; background: rgba(47, 107, 255, .16); }
+html.dark .rb-red { color: #fca5a5; background: rgba(239, 68, 68, .16); }
+html.dark .rb-amber { color: #fcd34d; background: rgba(245, 158, 11, .16); }
+html.dark .rb-purple { color: #b4abff; background: rgba(109, 93, 252, .18); }
+html.dark .rb-green { color: #86efac; background: rgba(34, 197, 94, .16); }
+
+
+.rb-sub {
+    font-size: 11px;
+    color: var(--rf-muted);
+    margin-top: 3px;
+    padding-left: 4px;
+}
+
+/* ----- info & pagination ----- */
+.rfo-footer .dataTables_info {
+    font-size: 13px;
+    color: var(--rf-text) !important;
+    padding-top: 0 !important;
+}
+
+.rfo-footer .dataTables_paginate {
+    padding-top: 0 !important;
+    font-size: 13px;
+}
+
+.rfo-footer .dataTables_paginate .paginate_button {
+    min-width: 38px;
+    height: 38px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px !important;
+    margin: 0 3px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--rf-border) !important;
+    background: var(--rf-card) !important;
+    color: var(--rf-text) !important;
+}
+
+.rfo-footer .dataTables_paginate .paginate_button:hover {
+    border-color: #6d8dff !important;
+    color: #2f6bff !important;
+    background: var(--rf-soft) !important;
+}
+
+.rfo-footer .dataTables_paginate .paginate_button.current,
+.rfo-footer .dataTables_paginate .paginate_button.current:hover {
+    background: linear-gradient(135deg, #4f8cff, #2f6bff) !important;
+    border-color: #2f6bff !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(47, 107, 255, .35);
+}
+
+.rfo-footer .dataTables_paginate .paginate_button.disabled,
+.rfo-footer .dataTables_paginate .paginate_button.disabled:hover {
+    color: var(--rf-muted) !important;
+    opacity: .55;
+    border-color: var(--rf-border) !important;
+    background: var(--rf-card) !important;
+}
+
+/* ----- tambahan: kartu merah, tombol abu-abu ----- */
+.rfo-stat-red { background: linear-gradient(135deg, #fff1f1, var(--rf-card) 70%); }
+html.dark .rfo-stat-red { background: linear-gradient(135deg, rgba(239, 68, 68, .12), var(--rf-card) 70%); }
+.rfo-stat-red .rfo-stat-ic { color: #fff; background: linear-gradient(135deg, #f87171, #ef4444); box-shadow: 0 6px 14px rgba(239, 68, 68, .3); }
+.rfo-stat-red .rfo-stat-label { color: #ef4444; }
+.rfo-stat-red .rfo-stat-chart { color: #ef4444; }
+
+.rfo-btn-amber {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, .35);
+}
+
+.rfo-btn-gray {
+    background: linear-gradient(135deg, #64748b, #475569);
+    box-shadow: 0 6px 16px rgba(71, 85, 105, .3);
+}
+
+.rfo-title-ic.is-green {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, .35);
+}
+
+.rfo-title-ic.is-blue {
+    background: linear-gradient(135deg, #4f8cff, #2f6bff);
+    box-shadow: 0 8px 20px rgba(47, 107, 255, .35);
+}
+
+.rfo-table a.rfo-link {
+    color: #2f6bff !important;
+    font-weight: 600;
+}
+
+.rfo-table a.rfo-link:hover {
+    text-decoration: underline;
+}
+
+/* =====================================================================
+ *  FORM TAMBAH / EDIT RFO
+ * ===================================================================== */
+
+.rfo-form .rf-group {
+    margin-bottom: 16px;
+}
+
+.rfo-form .rf-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rf-head);
+}
+
+.rfo-form .rf-label i {
+    font-size: 15px;
+    color: #2f6bff;
+}
+
+.rfo-form .rf-label .req {
+    color: #ef4444;
+}
+
+.rfo-form .rf-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 10px;
+    color: var(--rf-text) !important;
+    background-color: var(--rf-card) !important;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.rfo-form textarea.rf-input {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.rfo-form select.rf-input {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.rfo-form .rf-input:focus {
+    border-color: #6d8dff !important;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .12) !important;
+}
+
+.rfo-form .rf-input[readonly] {
+    background-color: var(--rf-soft) !important;
+    font-weight: 700;
+    color: var(--rf-head) !important;
+    cursor: default;
+}
+
+.rfo-form .rf-hint {
+    margin-top: 5px;
+    font-size: 11.5px;
+    color: var(--rf-muted);
+}
+
+.rfo-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px dashed var(--rf-border);
+    background: #fff;
+    margin-top: 10px;
+}
+
+.rfo-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rf-border);
+}
+
+.rfo-actions .rfo-btn {
+    flex: 1;
+    justify-content: center;
+    border: 0;
+    cursor: pointer;
+}
+
+.rfo-logo-box.hidden {
+    display: none;
+}
+
+.rfo-btn-red {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, .3);
+}
+
+.rfo-title-ic.is-amber {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, .35);
+}
+
+.rfo-title-ic.is-red {
+    background: linear-gradient(135deg, #fb7185, #ef4444);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, .35);
+}
+
+.rfo-title-ic.is-sky {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    box-shadow: 0 8px 20px rgba(14, 165, 233, .35);
+}
+
+/* =====================================================================
+ *  KULIT UMUM HALAMAN NOC OPERATION
+ *  Menata ulang markup template lama (.card, .btn, .badge, form-group)
+ *  tanpa mengubah struktur data halaman.
+ * ===================================================================== */
+
+/* panel = .card lama */
+.rfo-page .card {
+    background: var(--rf-card) !important;
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--rf-shadow) !important;
+    margin-bottom: 24px;
+}
+
+.rfo-page .card-body {
+    padding: 22px 22px 18px;
+}
+
+/* kartu yang sengaja tanpa jarak bawah (mis. kartu rekap dalam grid) */
+.rfo-page .card.mb-0 {
+    margin-bottom: 0;
+}
+
+/* kolom yang memang boleh turun baris */
+.rfo-table.dataTable tbody td.whitespace-normal {
+    white-space: normal !important;
+}
+
+.rfo-table.dataTable tbody td.whitespace-pre-line {
+    white-space: pre-line !important;
+}
+
+.rfo-table.dataTable tbody td.col-bold {
+    font-weight: 700;
+    color: var(--rf-head) !important;
+}
+
+/* tombol aksi lama (.btn) -> gaya lembut seperti halaman RFO */
+.rfo-table .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 10px;
+    margin: 2px 4px 2px 0;
+    border-radius: 8px;
+    border: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b !important;
+    background: #eef1f5;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.rfo-table .btn i {
+    font-size: 14px;
+}
+
+.rfo-table .btn:hover {
+    color: #fff !important;
+    background: #64748b;
+    transform: translateY(-1px);
+}
+
+.rfo-table .btn-info { color: #2f6bff !important; background: #e8efff; }
+.rfo-table .btn-primary { color: #6d5dfc !important; background: #efedff; }
+.rfo-table .btn-danger { color: #ef4444 !important; background: #feecec; }
+.rfo-table .btn-success { color: #16a34a !important; background: #e6f8ee; }
+.rfo-table .btn-warning { color: #d97706 !important; background: #fff4e0; }
+
+.rfo-table .btn-info:hover { background: #2f6bff; box-shadow: 0 4px 10px rgba(47, 107, 255, .35); }
+.rfo-table .btn-primary:hover { background: #6d5dfc; box-shadow: 0 4px 10px rgba(109, 93, 252, .35); }
+.rfo-table .btn-danger:hover { background: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, .35); }
+.rfo-table .btn-success:hover { background: #16a34a; box-shadow: 0 4px 10px rgba(22, 163, 74, .35); }
+.rfo-table .btn-warning:hover { background: #f59e0b; box-shadow: 0 4px 10px rgba(245, 158, 11, .35); }
+
+html.dark .rfo-table .btn { color: #b8c4dc !important; background: rgba(255, 255, 255, .06); }
+html.dark .rfo-table .btn-info { color: #8fb2ff !important; background: rgba(47, 107, 255, .16); }
+html.dark .rfo-table .btn-primary { color: #b4abff !important; background: rgba(109, 93, 252, .18); }
+html.dark .rfo-table .btn-danger { color: #fca5a5 !important; background: rgba(239, 68, 68, .16); }
+html.dark .rfo-table .btn-success { color: #86efac !important; background: rgba(34, 197, 94, .16); }
+html.dark .rfo-table .btn-warning { color: #fcd34d !important; background: rgba(245, 158, 11, .16); }
+html.dark .rfo-table .btn:hover { color: #fff !important; }
+
+/* badge lama -> gaya badge RFO */
+.rfo-page .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #2f6bff;
+    background: #e8efff;
+}
+
+.rfo-page .badge-paid { color: #16a34a !important; background: #e6f8ee !important; }
+.rfo-page .badge-pending { color: #d97706 !important; background: #fff4e0 !important; }
+.rfo-page .badge-due { color: #ef4444 !important; background: #feecec !important; }
+.rfo-page .badge-service { color: #2f6bff !important; background: #e8efff !important; }
+.rfo-page .badge-draft { color: #64748b !important; background: #eef1f5 !important; }
+
+html.dark .rfo-page .badge-paid { color: #86efac !important; background: rgba(34, 197, 94, .16) !important; }
+html.dark .rfo-page .badge-pending { color: #fcd34d !important; background: rgba(245, 158, 11, .16) !important; }
+html.dark .rfo-page .badge-due { color: #fca5a5 !important; background: rgba(239, 68, 68, .16) !important; }
+html.dark .rfo-page .badge-service { color: #8fb2ff !important; background: rgba(47, 107, 255, .16) !important; }
+html.dark .rfo-page .badge-draft { color: #b8c4dc !important; background: rgba(255, 255, 255, .08) !important; }
+
+/* form lama (form-group, label, input, tombol Simpan/Kembali) */
+.rfo-form .form-group {
+    margin-bottom: 16px;
+}
+
+.rfo-form .form-group > label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rf-head);
+}
+
+.rfo-form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),
+.rfo-form select,
+.rfo-form textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 10px !important;
+    color: var(--rf-text) !important;
+    background-color: var(--rf-card) !important;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.rfo-form select:not([multiple]) {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.rfo-form input:focus,
+.rfo-form select:focus,
+.rfo-form textarea:focus {
+    border-color: #6d8dff !important;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .12) !important;
+}
+
+.rfo-form input[readonly],
+.rfo-form textarea[readonly] {
+    background-color: var(--rf-soft) !important;
+    font-weight: 700;
+    color: var(--rf-head) !important;
+}
+
+.rfo-form .d-flex {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rf-border);
+}
+
+.rfo-form .d-flex > button {
+    flex: 1;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.rfo-form .d-flex > button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.rfo-form .d-flex > button[type="submit"] {
+    background: linear-gradient(135deg, #4f8cff, #2f6bff);
+    box-shadow: 0 6px 16px rgba(47, 107, 255, .35);
+}
+
+.rfo-form .d-flex > .btn-back {
+    background: linear-gradient(135deg, #64748b, #475569);
+    box-shadow: 0 6px 16px rgba(71, 85, 105, .3);
+}
+
+/* =====================================================================
+ *  POP UP FORM (modal tambah/edit) di halaman yang memuat rfo.css
+ * ===================================================================== */
+html [id$="Modal"] > div {
+    border-radius: 18px !important;
+    background: var(--rf-card) !important;
+    border: 1px solid var(--rf-border);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, .25) !important;
+}
+
+[id$="Modal"] label {
+    font-size: 13px;
+    font-weight: 700 !important;
+    color: var(--rf-head);
+}
+
+[id$="Modal"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),
+[id$="Modal"] select,
+[id$="Modal"] textarea {
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 10px !important;
+    background-color: var(--rf-card) !important;
+    color: var(--rf-text) !important;
+}
+
+[id$="Modal"] input:focus,
+[id$="Modal"] select:focus,
+[id$="Modal"] textarea:focus {
+    border-color: #6d8dff !important;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .12) !important;
+}
+
+[id$="Modal"] button[class*="bg-blue-6"],
+[id$="Modal"] button[class*="bg-emerald-6"],
+[id$="Modal"] button[class*="bg-green-6"],
+[id$="Modal"] button[class*="bg-gray-5"],
+[id$="Modal"] button[class*="bg-red-6"] {
+    border-radius: 10px !important;
+    font-weight: 700;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+[id$="Modal"] button[class*="bg-blue-6"] {
+    background-image: linear-gradient(135deg, #4f8cff, #2f6bff) !important;
+    box-shadow: 0 6px 16px rgba(47, 107, 255, .3) !important;
+}
+
+[id$="Modal"] button[class*="bg-emerald-6"],
+[id$="Modal"] button[class*="bg-green-6"] {
+    background-image: linear-gradient(135deg, #22c55e, #16a34a) !important;
+    box-shadow: 0 6px 16px rgba(22, 163, 74, .3);
+}
+
+[id$="Modal"] button[class*="bg-gray-5"] {
+    background-image: linear-gradient(135deg, #64748b, #475569) !important;
+}
+
+[id$="Modal"] button[class*="bg-red-6"] {
+    background-image: linear-gradient(135deg, #f87171, #ef4444) !important;
+}
+
+[id$="Modal"] button[class*="bg-"]:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+/* bar tab halaman (Daily Report, SAT Group, Shift Handover) mengikuti warna panel */
+.rfo-page .kategori-tabs,
+.rfo-page .sat-tabs,
+.rfo-page .ho-tabs {
+    background: var(--rf-card) !important;
+    border: 1px solid var(--rf-border) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--rf-shadow);
+}
+
+/* input yang ditandai salah oleh validasi halaman (kelas border-red-500) */
+.rfo-form .rf-input.border-red-500,
+.rfo-form input.border-red-500 {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, .12) !important;
+}
+
+/* kolom yang sedang diurutkan / baris selang-seling: tanpa bayangan abu-abu bawaan DataTables */
+table.rfo-table.dataTable tbody tr > .sorting_1,
+table.rfo-table.dataTable tbody tr > .sorting_2,
+table.rfo-table.dataTable tbody tr > .sorting_3,
+table.rfo-table.dataTable.stripe > tbody > tr.odd > *,
+table.rfo-table.dataTable.display > tbody > tr.odd > * {
+    box-shadow: none !important;
+}
+
+/* tabel belum diolah DataTables (sesaat setelah reload) disembunyikan agar tidak berkedip ke tampilan mentah */
+.rfo-page table.rfo-table:not(.dataTable) {
+    visibility: hidden;
+}

@@ -29,25 +29,39 @@
     --ra-shadow-lg: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
 }
 
+/* dark mode mengikuti warna navy sidebar */
 html.dark {
-    --ra-primary: #7b89f5;
-    --ra-primary-dark: #6777ef;
-    --ra-primary-soft: rgba(103, 119, 239, .16);
-    --ra-body: #1a1c28;
-    --ra-card: #242737;
-    --ra-text: #c3c6d8;
-    --ra-heading: #e6e8f2;
-    --ra-muted: #8d91ab;
-    --ra-border: #343850;
-    --ra-thead: #2c3044;
-    --ra-hover: #2a2e42;
-    --ra-sidebar: #1f2130;
-    --ra-sidebar-text: #aeb2c8;
-    --ra-sidebar-heading: #6c7090;
-    --ra-input: #1d2030;
-    --ra-shadow: 0 .125rem .35rem 0 rgba(0, 0, 0, .35);
-    --ra-shadow-lg: 0 .15rem 1.75rem 0 rgba(0, 0, 0, .45);
+    --ra-primary: #3d7bff;
+    --ra-primary-dark: #2f6bff;
+    --ra-primary-soft: rgba(61, 123, 255, .16);
+    --ra-body: #071330;
+    --ra-card: #0d1d42;
+    --ra-text: #bccae6;
+    --ra-heading: #eaf0ff;
+    --ra-muted: #8496c0;
+    --ra-border: #1c2f5c;
+    --ra-thead: #11244f;
+    --ra-hover: #13275a;
+    --ra-sidebar: #0b1c45;
+    --ra-sidebar-text: #c9d4ee;
+    --ra-sidebar-heading: #7f95c7;
+    --ra-input: #0a1838;
+    --ra-shadow: 0 .125rem .35rem 0 rgba(0, 0, 0, .4);
+    --ra-shadow-lg: 0 .15rem 1.75rem 0 rgba(0, 0, 0, .5);
     color-scheme: dark;
+}
+
+/* ---------- Palet navy sidebar + topbar (sama di mode terang & gelap) ---------- */
+:root {
+    --nv-bg-1: #0b1c45;
+    --nv-bg-2: #08163a;
+    --nv-bg-3: #061230;
+    --nv-line: rgba(110, 145, 225, .16);
+    --nv-text: #c9d4ee;
+    --nv-muted: #7f95c7;
+    --nv-hover: rgba(61, 123, 255, .14);
+    --nv-active-1: #2f6bff;
+    --nv-active-2: #3d8bff;
 }
 
 /* ---------- Dasar ---------- */
@@ -71,44 +85,62 @@ a {
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-    background: #3b3f57 !important;
+    background: #23396b !important;
 }
 
 /* Jalur scrollbar halaman: 74px teratas (setinggi topbar) diberi warna topbar,
    agar pojok kanan topbar tidak kosong saat halaman di-scroll */
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #5f70ee 0, #5f70ee 74px, var(--ra-body) 74px) !important;
+    background: linear-gradient(to bottom, var(--nv-bg-2) 0, var(--nv-bg-2) 74px, var(--ra-body) 74px) !important;
 }
 
-html.dark::-webkit-scrollbar-track,
-html.dark body::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #4553c4 0, #4553c4 74px, var(--ra-body) 74px) !important;
-}
-
-/* ---------- Sidebar (putih, brand biru) ---------- */
+/* ---------- Sidebar navy (referensi: refensi sidebar.jpg) ----------
+   Warna sama di mode terang & gelap. Logo, ikon judul kelompok dan
+   ikon menu berwarna ditambahkan oleh ruang.js. */
 #sidebar.pc-sidebar {
-    background: var(--ra-sidebar) !important;
-    color: var(--ra-sidebar-text) !important;
-    box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .1);
-    border-right: 1px solid var(--ra-border);
+    background:
+        radial-gradient(120% 45% at 0% 100%, rgba(37, 99, 235, .32) 0%, rgba(37, 99, 235, 0) 60%),
+        radial-gradient(80% 30% at 100% 0%, rgba(56, 189, 248, .10) 0%, rgba(56, 189, 248, 0) 70%),
+        linear-gradient(180deg, var(--nv-bg-1) 0%, var(--nv-bg-2) 45%, var(--nv-bg-3) 100%) !important;
+    color: var(--nv-text) !important;
+    border-right: 1px solid var(--nv-line);
+    box-shadow: 4px 0 24px rgba(3, 10, 30, .35);
 }
 
-/* area brand = kotak biru setinggi topbar */
+/* pola jaringan samar di bagian bawah */
+#sidebar.pc-sidebar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 340px;
+    pointer-events: none;
+    opacity: .55;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='264' height='340' viewBox='0 0 264 340'%3E%3Cg stroke='%233d7bff' stroke-opacity='.35' stroke-width='.8' fill='none'%3E%3Cpath d='M0 250 C60 210 110 290 170 245 S240 200 264 225'/%3E%3Cpath d='M0 280 C70 240 120 320 180 270 S245 235 264 255' stroke-opacity='.22'/%3E%3Cpath d='M20 120 L70 160 L130 135 L190 180 L245 150'/%3E%3Cpath d='M70 160 L95 215 L150 205 L190 180'/%3E%3Cpath d='M130 135 L150 205'/%3E%3C/g%3E%3Cg fill='%2360a5fa' fill-opacity='.55'%3E%3Ccircle cx='20' cy='120' r='1.8'/%3E%3Ccircle cx='70' cy='160' r='2.2'/%3E%3Ccircle cx='130' cy='135' r='1.8'/%3E%3Ccircle cx='190' cy='180' r='2.4'/%3E%3Ccircle cx='245' cy='150' r='1.8'/%3E%3Ccircle cx='95' cy='215' r='1.6'/%3E%3Ccircle cx='150' cy='205' r='2'/%3E%3C/g%3E%3C/svg%3E") no-repeat center bottom / 100% auto;
+}
+
+/* isi sidebar di atas pola (alert flash .fixed tidak disentuh) */
+#sidebar.pc-sidebar > div:not(.fixed) {
+    position: relative;
+    z-index: 1;
+}
+
+/* ----- brand ----- */
 #sidebar.pc-sidebar > div:first-child {
-    background: var(--ra-primary);
-    background-image: linear-gradient(180deg, #6777ef 10%, #5566e6 100%);
+    height: auto !important;
+    min-height: 74px;
+    padding: 16px 14px 14px 16px !important;
+    gap: 10px;
+    background: transparent;
 }
 
-html.dark #sidebar.pc-sidebar > div:first-child {
-    background-image: linear-gradient(180deg, #4d5bd1 10%, #3f4bb8 100%);
-}
-
-#sidebar.pc-sidebar > div:first-child a,
-#sidebar.pc-sidebar > div:first-child .brand-text {
-    color: #fff !important;
-    font-weight: 800;
-    letter-spacing: .02em;
+#sidebar.pc-sidebar > div:first-child > a {
+    flex: 1;
+    min-width: 0;
+    gap: 10px !important;
+    font-size: inherit !important;
 }
 
 /* judul website tidak diberi efek hover/sentuh (blok putih) */
@@ -122,109 +154,232 @@ html.dark #sidebar.pc-sidebar > div:first-child {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* judul kelompok menu */
-#sidebar.pc-sidebar li[class*="uppercase"] {
-    color: var(--ra-sidebar-heading) !important;
-    font-weight: 800 !important;
-    letter-spacing: .13em !important;
-    font-size: 10.5px !important;
-    padding-top: 1.1rem !important;
-    padding-bottom: .4rem !important;
-    border-top: 1px solid var(--ra-border);
-    margin-top: .35rem;
+#sidebar.pc-sidebar .brand-text {
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 1.2;
 }
 
-#sidebar.pc-sidebar ul > li[class*="uppercase"]:first-child {
+.ra-logo {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    padding: 5px;
+    display: inline-flex;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(47, 107, 255, .45);
+}
+
+.ra-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ra-brand {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.15;
+}
+
+.ra-brand small {
+    font-size: 12px;
+    font-weight: 600;
+    color: #b9c6e6;
+}
+
+.ra-brand b {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: .01em;
+    white-space: nowrap;
+}
+
+/* ----- judul kelompok menu: ikon + teks + garis ----- */
+#sidebar.pc-sidebar li[class*="uppercase"] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--nv-muted) !important;
+    font-weight: 800 !important;
+    letter-spacing: .1em !important;
+    font-size: 10.5px !important;
+    padding: 14px 18px 6px !important;
     border-top: 0;
     margin-top: 0;
 }
 
-/* link menu */
+#sidebar.pc-sidebar li[class*="uppercase"]::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(110, 145, 225, .45), rgba(110, 145, 225, 0));
+}
+
+#sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
+    font-size: 16px;
+    color: #8fa6d9;
+    letter-spacing: 0;
+}
+
+/* ----- link menu ----- */
 #sidebar.pc-sidebar a {
-    color: var(--ra-sidebar-text) !important;
+    color: var(--nv-text) !important;
+}
+
+/* jarak antar menu lewat padding li (margin link tidak collapse bila ada submenu) */
+#sidebar.pc-sidebar li:has(> .pc-link) {
+    padding: 2px 0;
 }
 
 #sidebar.pc-sidebar .pc-link {
+    position: relative;
     font-weight: 600;
-    margin: 1px 10px;
-    padding-left: 14px !important;
-    padding-right: 14px !important;
-    border-radius: .35rem;
+    font-size: 14px !important;
+    margin: 0 12px;
+    padding: 8px 12px 8px 14px !important;
+    gap: 14px !important;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
-#sidebar.pc-sidebar .pc-link .pc-micon,
+#sidebar.pc-sidebar .pc-link > span:not(.pc-micon) {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sidebar.pc-sidebar .pc-link .pc-micon {
+    width: 22px !important;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 18px;
+    color: #8fa6d9;
+}
+
+#sidebar.pc-sidebar .pc-link .pc-micon i {
+    font-size: 18px;
+}
+
 #sidebar.pc-sidebar .pc-link .arrow {
-    color: #b7b9cc;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    font-size: 15px;
+    color: #6f84b5 !important;
 }
 
 #sidebar.pc-sidebar a:hover,
 #sidebar.pc-sidebar .pc-link:hover {
-    color: var(--ra-primary) !important;
-    background: var(--ra-primary-soft);
+    color: #fff !important;
+    background: var(--nv-hover);
 }
 
-#sidebar.pc-sidebar .pc-link:hover .pc-micon {
-    color: var(--ra-primary);
+#sidebar.pc-sidebar .pc-link:hover .arrow {
+    color: #c9d4ee !important;
 }
 
 #sidebar.pc-sidebar .pc-link.active {
-    color: var(--ra-primary) !important;
-    background: var(--ra-primary-soft);
-    font-weight: 800;
+    color: #fff !important;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--nv-active-1) 0%, var(--nv-active-2) 100%);
+    border-color: rgba(147, 187, 255, .35);
+    box-shadow: 0 6px 18px rgba(47, 107, 255, .45), inset 0 1px 0 rgba(255, 255, 255, .18);
 }
 
-#sidebar.pc-sidebar .pc-link.active .pc-micon {
-    color: var(--ra-primary) !important;
+#sidebar.pc-sidebar .pc-link.active .pc-micon,
+#sidebar.pc-sidebar .pc-link.active .pc-micon i,
+#sidebar.pc-sidebar .pc-link.active .arrow {
+    color: #fff !important;
 }
 
-/* submenu = kotak putih bersudut seperti collapse RuangAdmin
-   (tertutup: max-height 0 dari CSS halaman, jadi kotaknya baru tampil saat .open) */
+/* submenu: panel transparan di atas navy
+   (tertutup: max-height 0 dari CSS halaman, jadi panelnya baru tampil saat .open) */
 #sidebar.pc-sidebar .submenu {
     background: transparent !important;
-    border-radius: .35rem;
+    border-radius: 10px;
     margin: 0 14px;
     transition: all .3s ease;
 }
 
 #sidebar.pc-sidebar .submenu.open {
-    background: var(--ra-card) !important;
-    border: 1px solid var(--ra-border);
+    background: rgba(255, 255, 255, .035) !important;
+    border: 1px solid var(--nv-line);
     margin: 4px 14px 8px;
     padding: 6px 0;
-    box-shadow: var(--ra-shadow);
 }
 
 #sidebar.pc-sidebar .submenu a {
-    padding-left: 18px !important;
-    margin: 0 6px;
-    border-radius: .3rem;
-    color: var(--ra-heading) !important;
+    position: relative;
+    padding-left: 40px !important;
+    margin: 1px 6px;
+    border-radius: 8px;
+    color: #b9c6e6 !important;
     font-size: 13px;
 }
 
-#sidebar.pc-sidebar .submenu a:hover {
-    background: var(--ra-hover) !important;
-    color: var(--ra-primary) !important;
+#sidebar.pc-sidebar .submenu a::before {
+    content: "";
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: #4a5f92;
 }
 
-/* ---------- Topbar (biru) ---------- */
-.pc-header {
-    background: var(--ra-primary) !important;
-    background-image: linear-gradient(90deg, #6777ef 0%, #5f70ee 100%) !important;
-    box-shadow: var(--ra-shadow-lg) !important;
-    color: #fff;
-}
-
-html.dark .pc-header {
-    background-image: linear-gradient(90deg, #4d5bd1 0%, #4553c4 100%) !important;
-}
-
-.pc-header .head-link {
+#sidebar.pc-sidebar .submenu a:hover,
+#sidebar.pc-sidebar .submenu a.ra-current {
+    background: rgba(61, 123, 255, .16) !important;
     color: #fff !important;
 }
 
+#sidebar.pc-sidebar .submenu a:hover::before,
+#sidebar.pc-sidebar .submenu a.ra-current::before {
+    background: #60a5fa;
+    box-shadow: 0 0 6px rgba(96, 165, 250, .9);
+}
+
+/* scrollbar menu */
+#sidebar.pc-sidebar ::-webkit-scrollbar {
+    width: 5px;
+}
+
+#sidebar.pc-sidebar ::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+#sidebar.pc-sidebar ::-webkit-scrollbar-thumb {
+    background: rgba(110, 145, 225, .28) !important;
+    border-radius: 4px;
+}
+
+/* ---------- Topbar navy (menyatu dengan sidebar) ---------- */
+.pc-header {
+    background: var(--nv-bg-2) !important;
+    background-image: linear-gradient(90deg, var(--nv-bg-2) 0%, var(--nv-bg-1) 100%) !important;
+    border-bottom: 1px solid var(--nv-line);
+    box-shadow: 0 4px 20px rgba(3, 10, 30, .25) !important;
+    color: #fff;
+}
+
+.pc-header .head-link {
+    color: #c9d4ee !important;
+    border-radius: 10px !important;
+}
+
 .pc-header .head-link:hover {
-    background: rgba(255, 255, 255, .15) !important;
+    color: #fff !important;
+    background: var(--nv-hover) !important;
 }
 
 /* dropdown user di topbar tetap putih dengan teks gelap */
@@ -233,6 +388,10 @@ html.dark .pc-header {
     background: var(--ra-card) !important;
     border-color: var(--ra-border) !important;
     box-shadow: var(--ra-shadow-lg) !important;
+}
+
+.pc-header .dropdown-menu > div:first-child {
+    background: linear-gradient(90deg, var(--nv-active-1), var(--nv-active-2)) !important;
 }
 
 /* ---------- Konten ---------- */
@@ -392,7 +551,7 @@ html.dark .hover\:bg-gray-100:hover {
 }
 
 html.dark .bg-gray-200 {
-    background-color: #33374d !important;
+    background-color: #1a2d5a !important;
 }
 
 html.dark .text-gray-900,
@@ -513,7 +672,7 @@ html.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 html.dark .stat-icon {
-    color: #3b3f57;
+    color: #1f3466;
 }
 
 /* ---------- Kartu form Register & Reset Password ---------- */
@@ -555,17 +714,18 @@ html.dark .stat-icon {
 .ra-theme-toggle {
     width: 40px;
     height: 40px;
-    border-radius: .35rem;
+    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    color: #fff;
+    color: #c9d4ee;
     cursor: pointer;
 }
 
 .ra-theme-toggle:hover {
-    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    background: var(--nv-hover);
 }
 
 /* versi melayang (halaman tanpa topbar, mis. login) */
@@ -577,10 +737,83 @@ html.dark .stat-icon {
     width: 44px;
     height: 44px;
     border-radius: 50%;
+    color: #fff;
     background: var(--ra-primary);
     box-shadow: var(--ra-shadow-lg);
 }
 
 .ra-theme-toggle.floating:hover {
     background: var(--ra-primary-dark);
+}
+
+/* ---------- Tanggal & jam WIB di topbar (ditambahkan ruang.js) ---------- */
+.ra-clock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 8px;
+    padding: 6px 14px 6px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--nv-line);
+    line-height: 1.2;
+}
+
+.ra-clock > i {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #8fb2ff;
+    background: rgba(61, 123, 255, .16);
+}
+
+.ra-clock b {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.ra-clock span {
+    display: block;
+    font-size: 11.5px;
+    color: #9fb0d6;
+}
+
+/* layar kecil: cukup jam saja */
+@media (max-width: 640px) {
+    .ra-clock {
+        padding: 6px 10px;
+    }
+
+    .ra-clock > i,
+    .ra-clock b {
+        display: none;
+    }
+}
+
+/* ---------- Tombol logout di topbar (pengganti pop up user, ditambahkan ruang.js) ---------- */
+.pc-header .ra-logout {
+    font-size: 21px;
+    border-radius: 10px !important;
+}
+
+.pc-header .ra-logout:hover {
+    color: #fff !important;
+    background: rgba(239, 68, 68, .85) !important;
+}
+
+/* ---------- Anti kedip saat reload ----------
+   html.ra-loading dipasang ruang.js di <head> dan dilepas setelah sidebar/topbar baru terpasang.
+   visibility (bukan display) agar ukuran tetap & layout tidak bergeser. */
+html.ra-loading #sidebar.pc-sidebar > div:first-child > a,
+html.ra-loading #sidebar.pc-sidebar li[class*="uppercase"],
+html.ra-loading #sidebar.pc-sidebar .pc-micon,
+html.ra-loading .pc-header ul.ml-auto {
+    visibility: hidden;
 }

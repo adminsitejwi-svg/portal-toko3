@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Pengguna</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -426,7 +426,22 @@
         .brand-text {
             font-size: 18px;
         }
+
+        /* tombol lihat password di dalam input */
+        .pw-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--rf-muted);
+        }
+
+        .pw-eye:hover {
+            color: #2f6bff;
+        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -646,91 +661,63 @@
             </ul>
         </header>
 
-        <div class="p-6 flex items-center justify-center min-h-[calc(100vh-74px)]">
-            <div class="card auth-card w-full max-w-md p-8">
-
-                <div class="flex flex-col items-center text-center mb-6">
-                    <div class="auth-icon mb-3"><i class="ti ti-user-plus"></i></div>
-                    <h2 class="text-2xl font-bold">Register User</h2>
-                    <p class="text-sm text-gray-500 mt-1">Tambahkan pengguna baru untuk mengakses sistem</p>
+        <div class="rfo-page p-6">
+            <div class="max-w-[760px] mx-auto">
+                <!-- JUDUL -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic"><i class="ti ti-user-plus"></i></span>
+                        <div>
+                            <h1 class="rfo-title">Register User</h1>
+                            <p class="rfo-subtitle">Tambahkan pengguna baru untuk mengakses sistem</p>
+                        </div>
+                    </div>
                 </div>
-                <hr>
 
-                <form id="registerForm" action="<?= site_url('register/save') ?>" method="post" novalidate>
-
+                <form id="registerForm" action="<?= site_url('register/save') ?>" method="post" novalidate class="rfo-form">
                     <?= csrf_field() ?>
                     <input type="hidden" name="from" value="<?= esc($from ?? '', 'attr') ?>">
-                    <!-- tampilkan error dari server (CodeIgniter) jika ada -->
-                    <?php if (session()->getFlashdata('errors')) : ?>
-                        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-                            <?php foreach (session()->getFlashdata('errors') as $err) : ?>
-                                <div><?= esc($err) ?></div>
-                            <?php endforeach; ?>
+
+                    <div class="rfo-panel">
+                        <!-- tampilkan error dari server (CodeIgniter) jika ada -->
+                        <?php if (session()->getFlashdata('errors')) : ?>
+                            <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+                                <?php foreach (session()->getFlashdata('errors') as $err) : ?>
+                                    <div><?= esc($err) ?></div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="rf-group">
+                            <label class="rf-label" for="username"><i class="ti ti-user"></i> Username</label>
+                            <input type="text" id="username" name="username" value="<?= old('username') ?>" placeholder="Masukkan username" class="rf-input">
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="username"></p>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="mb-4">
-                        <label class="block mb-2 font-medium mt-3">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value="<?= old('username') ?>"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Masukkan username">
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="username"></p>
-                    </div>
-
-
-
-                    <div class="mb-4">
-                        <label class="block mb-2 font-medium">Password</label>
-                        <div class="relative">
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="w-full border rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Masukkan password">
-                            <button
-                                type="button"
-                                onclick="togglePassword('password','iconPassword')"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-                                <i id="iconPassword" class="ti ti-eye"></i>
-                            </button>
+                        <div class="rf-group">
+                            <label class="rf-label" for="password"><i class="ti ti-lock" style="color:#d97706"></i> Password</label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" placeholder="Masukkan password" class="rf-input pr-12">
+                                <button type="button" onclick="togglePassword('password','iconPassword')" class="pw-eye" title="Lihat / sembunyikan password">
+                                    <i id="iconPassword" class="ti ti-eye"></i>
+                                </button>
+                            </div>
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="password"></p>
                         </div>
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="password"></p>
-                    </div>
 
-                    <div class="mb-6">
-                        <label class="block mb-2 font-medium">Confirm Password</label>
-                        <input
-                            type="password"
-                            id="confirm_password"
-                            name="confirm_password"
-                            class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Ulangi password">
-                        <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="confirm_password"></p>
-                    </div>
+                        <div class="rf-group">
+                            <label class="rf-label" for="confirm_password"><i class="ti ti-lock-check" style="color:#16a34a"></i> Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password" class="rf-input">
+                            <p class="error-msg text-red-500 text-sm mt-1 hidden" data-for="confirm_password"></p>
+                        </div>
 
-                    <button
-                        type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-                        Daftar
-                    </button>
-
-                    <div class="mt-3">
-                        <button type="button"
-                            onclick="window.location.href='<?= site_url('settings') ?>'"
-                            class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-3 rounded-lg font-semibold transition">
-                            Kembali
-                        </button>
+                        <div class="rfo-actions">
+                            <button type="submit" class="rfo-btn rfo-btn-blue"><i class="ti ti-user-plus"></i> Daftar</button>
+                            <button type="button" onclick="window.location.href='<?= site_url('settings') ?>'" class="rfo-btn rfo-btn-gray"><i class="ti ti-arrow-left"></i> Kembali</button>
+                        </div>
                     </div>
                 </form>
-
             </div>
-
-
         </div>
     </div>
 

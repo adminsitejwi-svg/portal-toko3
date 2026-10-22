@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?= csrf_meta() ?>
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Jadwal Piket</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -275,6 +275,7 @@
             border-radius: 9999px;
         }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -440,26 +441,29 @@
         </header>
 
         <!-- ===== KONTEN: KALENDER PIKET ===== -->
-        <div class="p-4 sm:p-6">
-            <div class="flex items-center justify-between mb-4 gap-3">
-                <h4 class="text-lg font-semibold text-[#2b3540] dark:text-white flex items-center gap-2">
-                    Jadwal Piket
-                    <button type="button" id="btnInfoPiket" title="Info piket" class="text-orange-500 hover:text-orange-600 leading-none">
-                        <i class="ti ti-alert-circle text-[22px]"></i>
-                    </button>
-                </h4>
-                <div class="flex items-center gap-2">
+        <div class="rfo-page p-4 sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-amber"><i class="ti ti-calendar-user"></i></span>
+                    <h1 class="rfo-title flex items-center gap-2">
+                        Jadwal Piket
+                        <button type="button" id="btnInfoPiket" title="Info piket" class="text-orange-500 hover:text-orange-600 leading-none">
+                            <i class="ti ti-alert-circle text-[22px]"></i>
+                        </button>
+                    </h1>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
                     <button type="button" id="btnNotePiket" title="Aturan piket" class="text-orange-500 hover:text-orange-600 leading-none">
                         <i class="ti ti-alert-circle text-[22px]"></i>
                     </button>
-                    <button class="btn2 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1" id="btnImport"><i class="ti ti-file-import text-[15px]"></i> Import</button>
-                    <button class="btn2 bg-primary-500 hover:bg-primary-600 text-white" id="btnTambah">+ Tambah Piket</button>
+                    <button class="rfo-btn rfo-btn-green" id="btnImport"><i class="ti ti-file-import"></i> Import</button>
+                    <button class="rfo-btn rfo-btn-blue" id="btnTambah"><i class="ti ti-plus"></i> Tambah Piket</button>
                 </div>
             </div>
 
             <div class="flex flex-col xl:flex-row gap-4 items-start">
                 <!-- KIRI: kalender -->
-                <div class="w-full xl:flex-1 min-w-0 bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-4">
+                <div class="w-full xl:flex-1 min-w-0 rfo-panel">
                     <div class="flex items-center justify-center gap-4 mb-3">
                         <button class="text-2xl leading-none text-gray-500 hover:text-primary-500 px-2 rounded" id="btnPrev" title="Bulan sebelumnya">&lsaquo;</button>
                         <span class="text-[1.05rem] font-bold min-w-[120px] text-center text-[#202124] dark:text-white" id="calTitle">&mdash;</span>
@@ -478,7 +482,7 @@
                 </div>
 
                 <!-- KANAN: panel detail -->
-                <aside class="w-full xl:w-[330px] xl:flex-none bg-white dark:bg-[#263240] rounded-xl shadow-[0_1px_20px_0_rgba(69,90,100,.08)] p-5">
+                <aside class="w-full xl:w-[330px] xl:flex-none rfo-panel">
                     <div class="text-[1.35rem] font-bold text-[#202124] dark:text-white mb-3" id="panelDate">&mdash;</div>
                     <div class="text-[.78rem] font-semibold text-gray-500 mb-2" id="panelTitle">Petugas Piket</div>
                     <div id="panelList">

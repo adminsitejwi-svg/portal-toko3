@@ -8,7 +8,7 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -274,7 +274,82 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
         .dark .card-head {
             border-color: #37404c;
         }
+
+        /* ===== KARTU PROFIL (gaya halaman RFO) ===== */
+        .profile-card {
+            text-align: center;
+            padding-top: 30px !important;
+        }
+
+        .profile-avatar {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            color: #fff;
+            background: linear-gradient(135deg, #8b5cf6, #2f6bff);
+            box-shadow: 0 10px 24px rgba(47, 107, 255, .35);
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--rf-head);
+        }
+
+        .profile-role {
+            margin-top: 8px;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--rf-border);
+        }
+
+        .profile-actions .rfo-btn {
+            justify-content: center;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--rf-border);
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--rf-head);
+        }
+
+        .profile-section i {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #6d5dfc;
+            background: #efedff;
+        }
+
+        html.dark .profile-section i {
+            color: #b4abff;
+            background: rgba(109, 93, 252, .18);
+        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -498,66 +573,58 @@ $tglGabung = !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['c
             </ul>
         </header>
 
-        <div class="p-6 max-w-[980px] mx-auto">
-            <!-- ===== FOTO PROFIL (ikon) ===== -->
-            <div class="card">
-                <div class="card-head">Halaman Profile</div>
-                <div class="card-body">
-                    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-                        <div class="avatar-icon">
-                            <i class="ti ti-user" style="font-size:44px"></i>
-                        </div>
+        <div class="rfo-page p-6">
+            <div class="max-w-[1100px] mx-auto">
+                <!-- JUDUL -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic"><i class="ti ti-user-circle"></i></span>
                         <div>
-                            <div>
-                                <div style="font-weight:600;font-size:16px;color:#2b3540"><?= esc($user['username']) ?></div>
-                                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-                                    <a href="<?= site_url('forgot-password') ?>"
-                                        style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#04a9f5;color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s"
-                                        onmouseover="this.style.background='#0396e2'"
-                                        onmouseout="this.style.background='#04a9f5'">
-                                        <i class="ti ti-lock"></i> Ubah Password
-                                    </a>
+                            <h1 class="rfo-title">Halaman Profile</h1>
+                            <p class="rfo-subtitle">Kelola akun dan keamanan login Anda</p>
+                        </div>
+                    </div>
+                </div>
 
-                                    <button type="button" onclick="konfirmasiHapusAkun()"
-                                        style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s"
-                                        onmouseover="this.style.background='#b91c1c'"
-                                        onmouseout="this.style.background='#dc2626'">
-                                        <i class="ti ti-trash"></i> Hapus Akun
-                                    </button>
-                                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <!-- ===== KARTU PROFIL ===== -->
+                    <div class="rfo-panel profile-card">
+                        <div class="profile-avatar"><i class="ti ti-user"></i></div>
+                        <div class="profile-name"><?= esc($user['username']) ?></div>
+                        <div class="profile-role"><span class="rb rb-green"><i class="ti ti-circle-check-filled"></i>Akun aktif</span></div>
+                        <div class="profile-actions">
+                            <a href="<?= site_url('forgot-password') ?>" class="rfo-btn rfo-btn-blue">
+                                <i class="ti ti-lock"></i> Ubah Password
+                            </a>
+                            <button type="button" onclick="konfirmasiHapusAkun()" class="rfo-btn rfo-btn-red">
+                                <i class="ti ti-trash"></i> Hapus Akun
+                            </button>
+                        </div>
+                    </div>
+                    <form id="formHapusAkun" action="<?= site_url('profile/delete') ?>" method="post" style="display:none">
+                        <?= csrf_field() ?>
+                    </form>
+
+                    <!-- ===== INFORMASI ===== -->
+                    <div class="rfo-panel rfo-form lg:col-span-2">
+                        <div class="profile-section"><i class="ti ti-id-badge-2"></i> Informasi Akun</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                            <div class="rf-group">
+                                <label class="rf-label"><i class="ti ti-user"></i> Username</label>
+                                <input type="text" class="rf-input" value="<?= esc($user['username']) ?>" readonly>
+                            </div>
+                            <div class="rf-group">
+                                <label class="rf-label"><i class="ti ti-calendar-event" style="color:#16a34a"></i> Bergabung Sejak</label>
+                                <input type="text" class="rf-input" value="<?= esc($tglGabung) ?>" readonly>
+                            </div>
+                            <div class="rf-group md:col-span-2 mb-0">
+                                <label class="rf-label"><i class="ti ti-lock-cog" style="color:#d97706"></i> Terakhir Ganti Password</label>
+                                <input type="text" id="pwChangedAt" class="rf-input" value="—" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <form id="formHapusAkun" action="<?= site_url('profile/delete') ?>" method="post" style="display:none">
-                <?= csrf_field() ?>
-            </form>
-            <!-- ===== INFORMASI ===== -->
-            <div class="card">
-                <div class="card-head">Informasi</div>
-                <div class="card-body">
-                    <div class="grid-2">
-                        <div>
-                            <label>Username</label>
-                            <input type="text" class="inp" value="<?= esc($user['username']) ?>" readonly>
-                        </div>
-                        <div>
-                            <label>Bergabung Sejak</label>
-                            <input type="text" class="inp" value="<?= esc($tglGabung) ?>" readonly>
-                        </div>
-                        <div class="col-full">
-                            <label>Terakhir Ganti Password</label>
-                            <input type="text" id="pwChangedAt" class="inp col-full" value="—" readonly>
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
         </div>
     </div>
     <script>

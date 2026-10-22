@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Type Perangkat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -426,6 +426,75 @@
         .brand-text {
             font-size: 18px;
         }
+
+        /* ===== TOMBOL AKSI DI TABEL: berwarna + hover ===== */
+        #jenisPerangkatTable .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 30px;
+            height: 30px;
+            margin: 2px 0;
+            padding: 0 7px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #fff;
+            transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
+        }
+
+        #jenisPerangkatTable .btn i {
+            font-size: 16px;
+        }
+
+        #jenisPerangkatTable .btn:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
+        }
+
+        #jenisPerangkatTable .btn-primary {
+            background: #3b82f6;
+        }
+
+        #jenisPerangkatTable .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        #jenisPerangkatTable .btn-danger {
+            background: #ef4444;
+        }
+
+        #jenisPerangkatTable .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        #jenisPerangkatTable .btn-info {
+            background: #0ea5e9;
+        }
+
+        #jenisPerangkatTable .btn-info:hover {
+            background: #0284c7;
+        }
+
+        #jenisPerangkatTable .btn-success {
+            background: #22c55e;
+        }
+
+        #jenisPerangkatTable .btn-success:hover {
+            background: #16a34a;
+        }
+
+        #jenisPerangkatTable .btn-warning {
+            background: #f59e0b;
+        }
+
+        #jenisPerangkatTable .btn-warning:hover {
+            background: #d97706;
+        }
+
     </style>
     <?= view('partials/theme') ?>
 </head>

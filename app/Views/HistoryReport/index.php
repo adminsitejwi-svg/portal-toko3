@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Daily Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -128,36 +128,6 @@
 
         .ringkasan-more:hover {
             text-decoration: underline;
-        }
-
-        /* ===== TOMBOL AKSI DI TABEL: ikon + label, warna netral seperti halaman lain ===== */
-        #reportTable .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            min-width: 92px;
-            margin: 2px 0;
-            padding: 3px 10px;
-            border: 1px solid #000;
-            border-radius: 6px;
-            font-size: 12.5px;
-            font-weight: 500;
-        }
-
-        #reportTable .btn i {
-            font-size: 16px;
-        }
-
-        #reportTable .btn:hover {
-            background: #f3f4f6;
-        }
-
-        .dark #reportTable .btn {
-            border-color: rgba(255, 255, 255, .12);
-        }
-
-        .dark #reportTable .btn:hover {
-            background: rgba(255, 255, 255, .06);
         }
 
         /* ===== FILTER DROPDOWN ===== */
@@ -370,21 +340,109 @@
             background: rgba(255, 255, 255, .08);
         }
 
-        /* ===== JUMLAH PER GROUP ===== */
+        /* ===== JUMLAH PER GROUP (kotak biru kecil) ===== */
         .grup-count {
-            display: inline-block;
-            min-width: 28px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            background: #f1f5f9;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 24px;
+            padding: 0 7px;
+            border-radius: 7px;
+            background: #eef1f5;
             color: #94a3b8;
-            font-weight: 600;
-            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .grup-count.has {
-            background: #e3edfb;
-            color: #1e4fa3;
+            background: #e8efff;
+            color: #2f6bff;
+        }
+
+        .dark .grup-count {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .dark .grup-count.has {
+            background: rgba(47, 107, 255, .18);
+            color: #8fb2ff;
+        }
+
+        /* ===== KARTU HEADER (judul + tab kategori) ===== */
+        .rfo-page .dr-head {
+            padding-bottom: 0;
+        }
+
+        .rfo-page .dr-head .dr-tabs {
+            margin: 18px -22px 0;
+            padding: 0 22px !important;
+            background: transparent !important;
+            border: 0 !important;
+            border-top: 1px solid var(--rf-border) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            gap: 6px;
+        }
+
+        .dr-head .kategori-tab {
+            padding: 12px 6px;
+            margin-right: 14px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--rf-muted);
+            background: transparent !important;
+            box-shadow: none;
+        }
+
+        .dr-head .kategori-tab:hover {
+            color: #2f6bff;
+        }
+
+        .dr-head .kategori-tab.active {
+            color: #2f6bff;
+            box-shadow: inset 0 -2px 0 #2f6bff;
+        }
+
+        /* ===== KARTU REKAP (gaya kartu statistik RFO) ===== */
+        .rekap-card.rfo-stat {
+            padding-right: 52px;
+        }
+
+        .rekap-card .rfo-stat-chart {
+            top: auto;
+            bottom: 16px;
+            transform: none;
+            font-size: 30px;
+        }
+
+        .dr-rekap-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .dr-rekap-st {
+            font-weight: 600;
+            color: var(--rf-muted);
+        }
+
+        /* ===== TOMBOL AKSI TABEL: ikon saja (nama tombol tampil saat kursor diarahkan) ===== */
+        #reportTable .btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            justify-content: center;
+            margin: 2px 2px 2px 0;
+        }
+
+        #reportTable .btn span {
+            display: none;
+        }
+
+        #reportTable .btn i {
+            font-size: 16px;
         }
 
         .grup-icon {
@@ -442,305 +500,12 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        #reportTable {
-            width: 100% !important;
-            border-collapse: collapse;
-        }
-
-        #reportTable thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
-        }
-
-        .dark #reportTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        /* Kolom PIC & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
-        #reportTable tbody td.whitespace-normal {
-            white-space: normal !important;
-        }
-
-        #reportTable tbody td.whitespace-pre-line {
-            white-space: pre-line !important;
-        }
-
-        #reportTable tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark #reportTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        #reportTable tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark #reportTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        #reportTable tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark #reportTable tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        .badge-service {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .badge-draft {
-            background: #eef1f5;
-            color: #64748b;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dataTables_filter {
-            display: none;
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-        }
-
-        .custom-search .go-btn:hover {
-            color: #04a9f5;
-        }
-
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
-        }
-
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
-        }
-
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
-        }
-
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
-        }
-
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
-        }
-
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
-        }
-
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
-        }
-
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
-        }
-
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
-        }
-
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
-        }
-
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
-        }
-
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-scroll table {
-            min-width: 760px;
-        }
-
         .brand-text {
             font-size: 18px;
         }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
+    <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
     <?= view('partials/theme') ?>
 </head>
 
@@ -977,13 +742,34 @@
             </ul>
         </header>
 
-        <div class="p-6">
-            <!-- breadcrumb -->
-            <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Daily Report</h5>
-                <button type="button" onclick="openReportModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
-                    <i class="ti ti-plus"></i> Tambah
-                </button>
+        <div class="rfo-page p-6">
+            <!-- KARTU HEADER: judul + tab kategori -->
+            <div class="rfo-panel dr-head mb-5">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic is-blue"><i class="ti ti-tool"></i></span>
+                        <div>
+                            <h1 class="rfo-title">Daily Report</h1>
+                            <p class="rfo-subtitle">Laporan aktivitas harian tim NOC</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openReportModal()" class="rfo-btn rfo-btn-blue">
+                        <i class="ti ti-plus"></i> Tambah
+                    </button>
+                </div>
+
+                <!-- TAB KATEGORI -->
+                <?php $kategoriIcon = ['NOC Corp Dan Retail' => 'ti-building', 'NOC Alfa Grup' => 'ti-building-store']; ?>
+                <input type="hidden" id="filterKategori" value="<?= esc($kategoriOptions[0] ?? '', 'attr') ?>">
+                <div class="kategori-tabs dr-tabs" role="tablist" aria-label="Kategori Daily Report">
+                    <?php foreach ($kategoriOptions as $i => $opt) : ?>
+                        <button type="button" role="tab" class="kategori-tab<?= $i === 0 ? ' active' : '' ?>"
+                            aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"
+                            data-kategori="<?= esc($opt, 'attr') ?>" onclick="pilihKategori(this)">
+                            <i class="ti <?= $kategoriIcon[$opt] ?? 'ti-category' ?>"></i> <?= esc($opt) ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
             </div>
 
             <?php
@@ -997,50 +783,35 @@
 
             // Card rekap per jenis data Shift Handover (jumlah dari database)
             $dataCards = [
-                'gangguan'    => ['label' => 'Gangguan', 'icon' => '🚨', 'color' => 'rekap-red'],
-                'followup'    => ['label' => 'Follow Up', 'icon' => '🔔', 'color' => 'rekap-amber'],
-                'pengiriman'  => ['label' => 'Pengiriman', 'icon' => '📦', 'color' => 'rekap-blue'],
-                'maintenance' => ['label' => 'Maintenance', 'icon' => '🛠️', 'color' => 'rekap-green'],
+                'gangguan'    => ['label' => 'Gangguan', 'icon' => 'ti-alert-triangle', 'color' => 'red', 'note' => 'Total gangguan'],
+                'followup'    => ['label' => 'Follow Up', 'icon' => 'ti-bell-ringing', 'color' => 'amber', 'note' => 'Total follow up'],
+                'pengiriman'  => ['label' => 'Pengiriman', 'icon' => 'ti-package', 'color' => 'blue', 'note' => 'Total pengiriman'],
+                'maintenance' => ['label' => 'Maintenance', 'icon' => 'ti-tool', 'color' => 'green', 'note' => 'Total maintenance'],
             ];
             ?>
 
             <!-- REKAP PER JENIS DATA -->
-            <div id="rekapGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            <div id="rekapGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
                 <?php foreach ($dataCards as $key => $card) : ?>
                     <!-- klik card: buka Shift Handover report terbaru, tab sesuai card -->
-                    <div class="card mb-0 rekap-card" data-jenis="<?= $key ?>" role="link" tabindex="0" title="Buka <?= esc($card['label'], 'attr') ?> report terbaru"
+                    <div class="rfo-stat rfo-stat-<?= $card['color'] ?> rekap-card" data-jenis="<?= $key ?>" role="link" tabindex="0" title="Buka <?= esc($card['label'], 'attr') ?> report terbaru"
                         onclick="bukaRekapCard('<?= $key ?>')" onkeydown="if (event.key === 'Enter' && event.target === this) bukaRekapCard('<?= $key ?>')">
-                        <div class="card-body">
-                            <div class="flex items-center gap-4">
-                                <div class="grup-icon <?= $card['color'] ?>"><?= $card['icon'] ?></div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-[12px] uppercase tracking-wide text-gray-500 font-semibold">
-                                        <?= $card['label'] ?>
-                                        <span data-rekap-label="<?= $key ?>" class="normal-case tracking-normal text-primary-500"></span>
-                                    </div>
-                                    <!-- angka diganti sesuai filter Kategori di header -->
-                                    <div class="text-2xl font-bold leading-tight" data-rekap="<?= $key ?>"><?= $dataCount[$kategoriOptions[0] ?? ''][$key] ?? 0 ?></div>
-                                </div>
-                                <!-- titik tiga: filter & hitung per status (follow up: priority) -->
-                                <button type="button" onclick="toggleStatusMenu(event, this, '<?= $key ?>')" title="<?= esc($rekapStatusList[$key][2] ?? '', 'attr') ?>" class="aksi-btn self-start shrink-0">
-                                    <i class="ti ti-dots-vertical"></i>
-                                </button>
+                        <span class="rfo-stat-ic"><i class="ti <?= $card['icon'] ?>"></i></span>
+                        <div class="flex-1 min-w-0">
+                            <div class="rfo-stat-label">
+                                <?= $card['label'] ?>
+                                <span data-rekap-label="<?= $key ?>" class="dr-rekap-st"></span>
                             </div>
+                            <!-- angka diganti sesuai filter Kategori di header -->
+                            <div class="rfo-stat-value" data-rekap="<?= $key ?>"><?= $dataCount[$kategoriOptions[0] ?? ''][$key] ?? 0 ?></div>
+                            <div class="rfo-stat-note"><?= $card['note'] ?></div>
                         </div>
+                        <i class="ti ti-chart-bar rfo-stat-chart"></i>
+                        <!-- titik tiga: filter & hitung per status (follow up: priority) -->
+                        <button type="button" onclick="toggleStatusMenu(event, this, '<?= $key ?>')" title="<?= esc($rekapStatusList[$key][2] ?? '', 'attr') ?>" class="aksi-btn dr-rekap-menu">
+                            <i class="ti ti-dots-vertical"></i>
+                        </button>
                     </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- TAB KATEGORI (seperti perpindahan Master Data di crm.jwi.id/Vendor) -->
-            <?php $kategoriIcon = ['NOC Corp Dan Retail' => 'ti-building', 'NOC Alfa Grup' => 'ti-building-store']; ?>
-            <input type="hidden" id="filterKategori" value="<?= esc($kategoriOptions[0] ?? '', 'attr') ?>">
-            <div class="kategori-tabs mb-6" role="tablist" aria-label="Kategori Daily Report">
-                <?php foreach ($kategoriOptions as $i => $opt) : ?>
-                    <button type="button" role="tab" class="kategori-tab<?= $i === 0 ? ' active' : '' ?>"
-                        aria-selected="<?= $i === 0 ? 'true' : 'false' ?>"
-                        data-kategori="<?= esc($opt, 'attr') ?>" onclick="pilihKategori(this)">
-                        <i class="ti <?= $kategoriIcon[$opt] ?? 'ti-category' ?>"></i> <?= esc($opt) ?>
-                    </button>
                 <?php endforeach; ?>
             </div>
 
@@ -1072,17 +843,18 @@
 
                         </div>
                         <div class="flex items-center gap-3 flex-wrap">
-                            <div class="custom-search">
-                                <input type="text" id="customSearch" placeholder="search..." />
-                                <button class="go-btn" type="button"></button>
+                            <div class="rfo-search">
+                                <i class="ti ti-search"></i>
+                                <input type="text" id="customSearch" placeholder="Cari data..." />
                             </div>
+                            <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                             <div id="exportArea"></div>
                         </div>
                     </div>
 
                     <!-- TABLE -->
                     <div class="table-scroll">
-                        <table id="reportTable" class="display nowrap" style="width:100%">
+                        <table id="reportTable" class="rfo-table display nowrap" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -1121,7 +893,6 @@
                                                     <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="openViewModal(JSON.parse(this.closest('td').dataset.row), this.closest('td').dataset.status)"
                                                     class="btn btn-sm btn-info" title="View">
@@ -1133,7 +904,6 @@
                                                     <i class="ti ti-tool"></i> <span>Settings</span>
                                                 </a>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="duplikatReport(JSON.parse(this.closest('td').dataset.row))"
                                                     class="btn btn-sm btn-success" title="Duplikat">
@@ -1260,47 +1030,63 @@
 
     <!-- ====== POP UP VIEW (data d_report) ====== -->
     <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeViewModal()">
-        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-xl font-bold">View Daily Report</h3>
-                <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
+        <!-- tampilan sama dengan pop up Detail Data di Master Data, tanpa ID -->
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col">
+
+            <!-- Header biru -->
+            <div class="flex justify-between items-center bg-primary-500 text-white px-5 py-3">
+                <h3 class="font-semibold flex items-center gap-2">
+                    Detail Data Daily Report
+                </h3>
+                <button type="button" onclick="closeViewModal()">
+                    <i class="ti ti-x text-xl"></i>
+                </button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <div class="text-gray-500">Tanggal</div>
-                    <div class="font-medium" id="v_tanggal"></div>
+
+            <div class="p-6 overflow-y-auto">
+
+                <!-- Keterangan ringkas -->
+                <div class="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 mb-5">
+                    <p class="text-xs text-gray-500 mb-1">Keterangan</p>
+                    <p class="text-sm font-medium" id="v_ringkas">-</p>
                 </div>
-                <div>
-                    <div class="text-gray-500">Shift</div>
-                    <div class="font-medium" id="v_shift"></div>
+
+                <!-- Detail data -->
+                <div class="border rounded-lg divide-y">
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Tanggal</span>
+                        <span class="font-medium text-right" id="v_tanggal">-</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Shift</span>
+                        <span class="font-medium text-right" id="v_shift">-</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Kategori</span>
+                        <span class="font-medium text-right" id="v_kategori">-</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">PIC Shift</span>
+                        <span class="font-medium text-right" id="v_pic_shift">-</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Periode</span>
+                        <span class="font-medium text-right" id="v_periode">-</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm items-center">
+                        <span class="text-gray-500">Status</span>
+                        <span><span id="v_status" class="badge"></span></span>
+                    </div>
+                    <div class="px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Ringkasan / Keterangan</span>
+                        <p class="font-medium whitespace-pre-line mt-1" id="v_ringkasan">-</p>
+                    </div>
+                    <div class="flex justify-between px-4 py-2.5 text-sm">
+                        <span class="text-gray-500">Created At</span>
+                        <span class="font-medium text-right" id="v_created">-</span>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-gray-500">Kategori</div>
-                    <div class="font-medium" id="v_kategori"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">PIC Shift</div>
-                    <div class="font-medium" id="v_pic_shift"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Periode</div>
-                    <div class="font-medium" id="v_periode"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Status</div>
-                    <div><span id="v_status" class="badge"></span></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Dibuat</div>
-                    <div class="font-medium" id="v_created"></div>
-                </div>
-                <div class="md:col-span-2">
-                    <div class="text-gray-500">Ringkasan / Keterangan</div>
-                    <div class="font-medium whitespace-pre-line" id="v_ringkasan"></div>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+
             </div>
         </div>
     </div>
@@ -1506,6 +1292,9 @@
 
         // View: tampilkan data report (d_report) di pop up
         function openViewModal(d, status) {
+            // ringkas tanpa ID (beda dengan Master Data yang menampilkan ID)
+            document.getElementById('v_ringkas').textContent =
+                'Daily Report ' + (d.kategori || '-') + ' · ' + tglIndo(d.tanggal) + ' · Shift ' + (d.shift || '-');
             document.getElementById('v_tanggal').textContent = tglIndo(d.tanggal);
             document.getElementById('v_shift').textContent = d.shift || '-';
             document.getElementById('v_kategori').textContent = d.kategori || '-';
@@ -1857,14 +1646,14 @@
                 }],
                 language: {
                     lengthMenu: "_MENU_",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    infoEmpty: "Showing 0 to 0 of 0 entries",
-                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    infoEmpty: "Menampilkan 0 - 0 dari 0 data",
+                    infoFiltered: "(disaring dari _MAX_ data)",
                     emptyTable: "Data daily report belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
-                        previous: "Previous",
-                        next: "Next"
+                        previous: "Sebelumnya",
+                        next: "Selanjutnya"
                     }
                 }
             });
@@ -1915,9 +1704,6 @@
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
-            });
-            $('.go-btn').on('click', function() {
-                table.search($('#customSearch').val()).draw();
             });
             $('#customSearch').on('keypress', function(e) {
                 if (e.which === 13) table.search(this.value).draw();

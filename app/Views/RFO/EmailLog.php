@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Riwayat Email RFO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -145,314 +145,11 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        #rfoTable {
-            width: 100% !important;
-            border-collapse: collapse;
-        }
-
-        #rfoTable thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
-        }
-
-        .dark #rfoTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        #rfoTable tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark #rfoTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        #rfoTable tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark #rfoTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        #rfoTable tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark #rfoTable tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        .badge-service {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dataTables_filter {
-            display: none;
-        }
-
-        /* ===== FILTER DROPDOWN ===== */
-        .filter-select {
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 12px;
-            font-size: 13px;
-            color: #3b4754;
-            background: #fff;
-            outline: none;
-            max-width: 100%;
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dark .filter-select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: rgba(255, 255, 255, .1);
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-        }
-
-        .custom-search .go-btn:hover {
-            color: #04a9f5;
-        }
-
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
-        }
-
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
-        }
-
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
-        }
-
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
-        }
-
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
-        }
-
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
-        }
-
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
-        }
-
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
-        }
-
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
-        }
-
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
-        }
-
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
-        }
-
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-scroll table {
-            min-width: 760px;
-        }
-
         .brand-text {
             font-size: 18px;
         }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -689,107 +386,179 @@
             </ul>
         </header>
 
-        <div class="p-6">
-            <!-- breadcrumb -->
-            <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Riwayat Email RFO</h5>
-                <a href="<?= site_url('RFO') ?>" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
-                    <i class="ti ti-arrow-left"></i> Kembali ke RFO
-                </a>
-            </div>
-
+        <div class="rfo-page p-6">
             <?php
-            // Badge warna per status pengiriman
-            $statusBadge = [
-                'Terkirim' => 'badge-paid',
-                'Gagal'    => 'badge-due',
-            ];
             $fmt = static fn ($dt) => $dt ? date('d-m-Y H:i', strtotime($dt)) : '-';
+
+            // Badge per status pengiriman: [kelas warna, ikon]
+            $statusBadge = [
+                'Terkirim' => ['rb-green', 'ti-send'],
+                'Gagal'    => ['rb-red', 'ti-alert-circle'],
+            ];
+
+            // Ringkasan untuk kartu statistik
+            $total    = count($log);
+            $terkirim = count(array_filter($log, static fn ($r) => $r['status'] === 'Terkirim'));
+            $gagal    = count(array_filter($log, static fn ($r) => $r['status'] === 'Gagal'));
+            $hariIni  = date('Y-m-d');
+            $jmlHari  = count(array_filter($log, static fn ($r) => substr((string) $r['created_at'], 0, 10) === $hariIni));
             ?>
 
-            <div class="card">
-                <div class="card-body">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-green"><i class="ti ti-mail"></i></span>
+                    <h1 class="rfo-title">Riwayat Email RFO</h1>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="<?= site_url('RFO') ?>" class="rfo-btn rfo-btn-blue">
+                        <i class="ti ti-arrow-left"></i> Kembali ke RFO
+                    </a>
+                </div>
+            </div>
 
-                    <!-- TOOLBAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <!-- KARTU STATISTIK -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+                <div class="rfo-stat rfo-stat-blue">
+                    <span class="rfo-stat-ic"><i class="ti ti-mail"></i></span>
+                    <div>
+                        <div class="rfo-stat-label">Total Email</div>
+                        <div class="rfo-stat-value"><?= $total ?></div>
+                        <div class="rfo-stat-note">Riwayat keseluruhan</div>
+                    </div>
+                    <i class="ti ti-chart-bar rfo-stat-chart"></i>
+                </div>
+                <div class="rfo-stat rfo-stat-green">
+                    <span class="rfo-stat-ic"><i class="ti ti-check"></i></span>
+                    <div>
+                        <div class="rfo-stat-label">Terkirim</div>
+                        <div class="rfo-stat-value"><?= $terkirim ?></div>
+                        <div class="rfo-stat-note"><?= $total ? round($terkirim / $total * 100) : 0 ?>% dari total</div>
+                    </div>
+                    <i class="ti ti-chart-bar rfo-stat-chart"></i>
+                </div>
+                <div class="rfo-stat rfo-stat-red">
+                    <span class="rfo-stat-ic"><i class="ti ti-alert-triangle"></i></span>
+                    <div>
+                        <div class="rfo-stat-label">Gagal</div>
+                        <div class="rfo-stat-value"><?= $gagal ?></div>
+                        <div class="rfo-stat-note">Perlu dikirim ulang</div>
+                    </div>
+                    <i class="ti ti-chart-bar rfo-stat-chart"></i>
+                </div>
+                <div class="rfo-stat rfo-stat-purple">
+                    <span class="rfo-stat-ic"><i class="ti ti-calendar-event"></i></span>
+                    <div>
+                        <div class="rfo-stat-label">Hari Ini</div>
+                        <div class="rfo-stat-value"><?= $jmlHari ?></div>
+                        <div class="rfo-stat-note">Email dikirim hari ini</div>
+                    </div>
+                    <i class="ti ti-chart-bar rfo-stat-chart"></i>
+                </div>
+            </div>
+
+            <!-- FILTER + TABEL -->
+            <div class="rfo-panel">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+                    <div>
                         <div class="flex items-center gap-3 flex-wrap">
                             <div id="lengthArea"></div>
-                            <!-- FILTER -->
-                            <select id="filterStatus" class="filter-select" title="Filter Status">
-                                <option value="">Semua Status</option>
-                                <option value="Terkirim">Terkirim</option>
-                                <option value="Gagal">Gagal</option>
-                            </select>
-                            <select id="filterRfoId" class="filter-select" title="Filter RFO ID">
-                                <option value="">Semua RFO ID</option>
-                                <?php foreach (array_unique(array_filter(array_column($log, 'kode_rfo'))) as $kode) : ?>
-                                    <option value="<?= esc($kode) ?>"><?= esc($kode) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <div class="custom-search">
-                                <input type="text" id="customSearch" placeholder="search..." />
-                                <button class="go-btn" type="button"></button>
-                            </div>
-                            <div id="exportArea"></div>
-                        </div>
-                    </div>
-
-                    <!-- TABLE -->
-                    <div class="table-scroll">
-                        <table id="emailTable" class="display nowrap" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Waktu Kirim</th>
-                                    <th>RFO ID</th>
-                                    <th>Perusahaan</th>
-                                    <th>Dari</th>
-                                    <th>Kepada</th>
-                                    <th>CC</th>
-                                    <th>Subjek</th>
-                                    <th>Lampiran</th>
-                                    <th>Status</th>
-                                    <th class="no-export">Body Email</th>
-                                    <th>Dikirim Oleh</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($log)) : ?>
-                                    <?php $no = 1; ?>
-                                    <?php foreach ($log as $row) : ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $fmt($row['created_at']); ?></td>
-                                            <td class="font-medium">
-                                                <?php if (!empty($row['kode_rfo'])) : ?>
-                                                    <a href="<?= site_url('RFO/view/' . $row['rfo_id']) ?>" class="text-blue-600 hover:underline" title="Lihat surat RFO"><?= esc($row['kode_rfo']); ?></a>
-                                                <?php else : ?>
-                                                    <span class="text-gray-400">(RFO dihapus)</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= esc($row['perusahaan'] ?? '-'); ?></td>
-                                            <td><?= esc($row['dari'] ?? 'noc@jwi.id'); ?></td>
-                                            <td class="whitespace-normal min-w-[180px]"><?= esc($row['kepada']); ?></td>
-                                            <td class="whitespace-normal min-w-[140px]"><?= esc($row['cc'] ?: '-'); ?></td>
-                                            <td class="whitespace-normal min-w-[200px]"><?= esc($row['subjek']); ?></td>
-                                            <td class="whitespace-normal min-w-[160px]"><?= esc($row['lampiran'] ?: '-'); ?></td>
-                                            <!-- Pesan error (status Gagal) tampil saat kursor diarahkan ke status -->
-                                            <td><span class="badge <?= $statusBadge[$row['status']] ?? 'badge-service' ?>" title="<?= esc(trim($row['pesan_error'] ?? ''), 'attr') ?>"><?= esc($row['status']); ?></span></td>
-                                            <td>
-                                                <button type="button" onclick="lihatBody(<?= (int) $row['id'] ?>, '<?= esc($row['kode_rfo'] ?? '', 'js') ?>')" class="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2.5 py-1 text-xs text-white hover:bg-blue-700"><i class="ti ti-mail-opened"></i> Lihat</button>
-                                            </td>
-                                            <td><?= esc($row['dikirim_oleh'] ?? '-'); ?></td>
-                                        </tr>
+                            <label class="rfo-field">
+                                <i class="ti ti-circle-check-filled" style="color:#16a34a"></i>
+                                <select id="filterStatus" class="filter-select" title="Filter Status">
+                                    <option value="">Semua Status</option>
+                                    <option value="Terkirim">Terkirim</option>
+                                    <option value="Gagal">Gagal</option>
+                                </select>
+                            </label>
+                            <label class="rfo-field">
+                                <i class="ti ti-tag" style="color:#6d5dfc"></i>
+                                <select id="filterRfoId" class="filter-select" title="Filter RFO ID">
+                                    <option value="">Semua RFO ID</option>
+                                    <?php foreach (array_unique(array_filter(array_column($log, 'kode_rfo'))) as $kode) : ?>
+                                        <option value="<?= esc($kode) ?>"><?= esc($kode) ?></option>
                                     <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-
+                                </select>
+                            </label>
+                        </div>
                     </div>
-
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <div class="rfo-search">
+                            <i class="ti ti-search"></i>
+                            <input type="text" id="customSearch" placeholder="Cari RFO ID, perusahaan, penerima, subjek..." />
+                        </div>
+                        <button type="button" id="btnReset" class="rfo-ghost-btn"><i class="ti ti-refresh"></i> Reset</button>
+                        <div id="exportArea"></div>
+                    </div>
                 </div>
+
+                <!-- TABLE -->
+                <div class="table-scroll">
+                    <table id="emailTable" class="rfo-table display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Waktu Kirim</th>
+                                <th>RFO ID</th>
+                                <th>Perusahaan</th>
+                                <th>Dari</th>
+                                <th>Kepada</th>
+                                <th>CC</th>
+                                <th>Subjek</th>
+                                <th>Lampiran</th>
+                                <th>Status</th>
+                                <th class="no-export">Body Email</th>
+                                <th>Dikirim Oleh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($log)) : ?>
+                                <?php $no = 1; ?>
+                                <?php foreach ($log as $row) : ?>
+                                    <?php [$stKelas, $stIkon] = $statusBadge[$row['status']] ?? ['rb-blue', 'ti-info-circle']; ?>
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td data-order="<?= esc($row['created_at'] ?? '') ?>">
+                                            <span class="cell-ic"><i class="ti ti-calendar" style="color:#2f6bff"></i><?= $fmt($row['created_at']); ?></span>
+                                        </td>
+                                        <td data-search="<?= esc($row['kode_rfo'] ?? '') ?>">
+                                            <?php if (!empty($row['kode_rfo'])) : ?>
+                                                <a href="<?= site_url('RFO/view/' . $row['rfo_id']) ?>" class="rfo-link" title="Lihat surat RFO"><?= esc($row['kode_rfo']); ?></a>
+                                            <?php else : ?>
+                                                <span class="rfo-id">(RFO dihapus)</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <span class="cell-ic"><i class="ti ti-building-skyscraper" style="color:#2f6bff"></i><?= esc($row['perusahaan'] ?? '-'); ?></span>
+                                        </td>
+                                        <td><?= esc($row['dari'] ?? 'noc@jwi.id'); ?></td>
+                                        <td><span class="cell-clip" title="<?= esc($row['kepada'], 'attr') ?>"><?= esc($row['kepada']); ?></span></td>
+                                        <td><span class="cell-clip" title="<?= esc($row['cc'] ?? '', 'attr') ?>"><?= esc($row['cc'] ?: '-'); ?></span></td>
+                                        <td><span class="cell-clip" title="<?= esc($row['subjek'], 'attr') ?>"><?= esc($row['subjek']); ?></span></td>
+                                        <td>
+                                            <?php if (!empty($row['lampiran'])) : ?>
+                                                <span class="cell-ic"><i class="ti ti-file-type-pdf" style="color:#ef4444"></i><span class="cell-clip" title="<?= esc($row['lampiran'], 'attr') ?>"><?= esc($row['lampiran']); ?></span></span>
+                                            <?php else : ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <!-- Pesan error (status Gagal) tampil saat kursor diarahkan ke status -->
+                                        <td data-search="<?= esc($row['status']) ?>">
+                                            <span class="rb <?= $stKelas ?>" title="<?= esc(trim($row['pesan_error'] ?? ''), 'attr') ?>"><i class="ti <?= $stIkon ?>"></i><?= esc($row['status']); ?></span>
+                                        </td>
+                                        <td>
+                                            <button type="button" onclick="lihatBody(<?= (int) $row['id'] ?>, '<?= esc($row['kode_rfo'] ?? '', 'js') ?>')" class="act act-view"><i class="ti ti-mail-opened"></i> Lihat</button>
+                                        </td>
+                                        <td>
+                                            <span class="cell-ic"><i class="ti ti-user" style="color:#6d5dfc"></i><?= esc($row['dikirim_oleh'] ?? '-'); ?></span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emailFooter" class="rfo-footer flex flex-wrap items-center justify-between gap-3 mt-4"></div>
             </div>
         </div>
     </div>
@@ -999,14 +768,14 @@
                 }],
                 language: {
                     lengthMenu: "_MENU_",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    infoEmpty: "Showing 0 to 0 of 0 entries",
-                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    infoEmpty: "Menampilkan 0 - 0 dari 0 data",
+                    infoFiltered: "(disaring dari _MAX_ data)",
                     emptyTable: "Belum ada email RFO yang dikirim",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
-                        previous: "Previous",
-                        next: "Next"
+                        previous: "Sebelumnya",
+                        next: "Selanjutnya"
                     }
                 }
             });
@@ -1025,6 +794,7 @@
 
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
+            $('#emailFooter').append($('.dataTables_info'), $('.dataTables_paginate'));
 
             // ====== FILTER DROPDOWN (cocok persis pada kolom) ======
             function filterColumn(col, value) {
@@ -1041,11 +811,14 @@
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
             });
-            $('.go-btn').on('click', function() {
-                table.search($('#customSearch').val()).draw();
-            });
             $('#customSearch').on('keypress', function(e) {
                 if (e.which === 13) table.search(this.value).draw();
+            });
+
+            // Reset: kosongkan semua filter & pencarian
+            $('#btnReset').on('click', function() {
+                $('#filterStatus, #filterRfoId, #customSearch').val('');
+                table.search('').columns().search('').draw();
             });
         });
     </script>

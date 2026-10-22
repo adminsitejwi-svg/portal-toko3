@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Form Data Pelanggan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -116,116 +116,11 @@
             }
         }
 
-        /* ===== FORM ===== */
-        .form-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-            width: 100%;
-            max-width: 1000px;
-            margin: 20px auto;
-        }
-
-        h2 {
-            text-align: center;
-            color: #185a82;
-            font-size: 42px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 35px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #185a82;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #185a82;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[readonly] {
-            background: #f1f5f9;
-        }
-
-        button {
-            width: 100%;
-            height: 55px;
-            border: none;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .d-flex {
-            display: flex;
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .d-flex button {
-            flex: 1;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #185a82, #2196f3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(24, 90, 130, 0.3);
-        }
-
-        button[type="submit"]:hover {
-            box-shadow: 0 8px 25px rgba(24, 90, 130, 0.4);
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
-        }
-
-        .btn-back:hover {
-            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        }
-
         .brand-text {
             font-size: 18px;
         }
-
-        /* Dark mode: kotak form tetap putih, jadi judul dan teks ID dibuat hitam agar terbaca */
-        html.dark .form-container h2 {
-            color: #000 !important;
-        }
-
-        html.dark .form-container input[readonly] {
-            color: #000 !important;
-        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -449,9 +344,19 @@
             </ul>
         </header>
 
-        <div class="p-6">
-            <div class="form-container">
-                <h2>Form Data Pelanggan</h2>
+        <div class="rfo-page p-6">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-blue"><i class="ti ti-file-plus"></i></span>
+                    <h1 class="rfo-title">Form Data Pelanggan</h1>
+                </div>
+                <a href="<?= site_url('PelangganNoc') ?>" class="rfo-btn rfo-btn-gray">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
+            </div>
+
+            <div class="rfo-panel rfo-form">
                 <form action="<?= site_url('PelangganNoc/save') ?>" method="POST" enctype="multipart/form-data" id="reportForm">
                     <?= csrf_field() ?>
 
@@ -570,8 +475,8 @@
                     </div>
 
                     <div class="d-flex">
-                        <button type="submit">Simpan</button>
-                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('PelangganNoc') ?>'">Kembali</button>
+                        <button type="submit"><i class="ti ti-device-floppy"></i> Simpan</button>
+                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('PelangganNoc') ?>'"><i class="ti ti-arrow-left"></i> Kembali</button>
                     </div>
                 </form>
             </div>

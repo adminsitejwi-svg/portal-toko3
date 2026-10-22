@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Inventory Kantor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -145,291 +145,12 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        #invTable {
-            width: 100% !important;
-            border-collapse: collapse;
-        }
-
-        #invTable thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
-        }
-
-        .dark #invTable thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        #invTable tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark #invTable tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        #invTable tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark #invTable tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        #invTable tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark #invTable tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        .badge-service {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dataTables_filter {
-            display: none;
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-        }
-
-        .custom-search .go-btn:hover {
-            color: #04a9f5;
-        }
-
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
-        }
-
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
-        }
-
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
-        }
-
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
-        }
-
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
-        }
-
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
-        }
-
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
-        }
-
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
-        }
-
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
-        }
-
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
-        }
-
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
-        }
-
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-scroll table {
-            min-width: 760px;
-        }
-
         .brand-text {
             font-size: 18px;
         }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
+    <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
     <?= view('partials/theme') ?>
 </head>
 
@@ -666,11 +387,14 @@
             </ul>
         </header>
 
-        <div class="p-6">
-            <!-- breadcrumb -->
-            <div class="flex items-center justify-between mb-6">
-                <h5 class="font-medium text-lg">Inventory dan stok barang kantor lantai 2</h5>
-                <a href="<?= site_url('InventoryKantor/create') ?>" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+        <div class="rfo-page p-6">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-amber"><i class="ti ti-package"></i></span>
+                    <h1 class="rfo-title">Inventory dan stok barang kantor lantai 2</h1>
+                </div>
+                <a href="<?= site_url('InventoryKantor/create') ?>" class="rfo-btn rfo-btn-blue">
                     <i class="ti ti-plus"></i> Tambah
                 </a>
             </div>
@@ -682,17 +406,18 @@
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div id="lengthArea"></div>
                         <div class="flex items-center gap-3 flex-wrap">
-                            <div class="custom-search">
-                                <input type="text" id="customSearch" placeholder="search..." />
-                                <button class="go-btn" type="button"></button>
+                            <div class="rfo-search">
+                                <i class="ti ti-search"></i>
+                                <input type="text" id="customSearch" placeholder="Cari data..." />
                             </div>
+                            <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                             <div id="exportArea"></div>
                         </div>
                     </div>
 
                     <!-- TABLE -->
                     <div class="table-scroll">
-                        <table id="invTable" class="display nowrap" style="width:100%">
+                        <table id="invTable" class="rfo-table display nowrap" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -723,21 +448,20 @@
                                                         '<?= esc($row['keterangan'], 'js') ?>'
                                                     )"
                                                     class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
                                                 <button
                                                     type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="openDetailModal(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-info">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
                                             </td>
                                             <td><?= esc($row['nama_barang']); ?></td>
@@ -1137,14 +861,14 @@
                 }],
                 language: {
                     lengthMenu: "_MENU_",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    infoEmpty: "Showing 0 to 0 of 0 entries",
-                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    infoEmpty: "Menampilkan 0 - 0 dari 0 data",
+                    infoFiltered: "(disaring dari _MAX_ data)",
                     emptyTable: "Data inventory belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
-                        previous: "Previous",
-                        next: "Next"
+                        previous: "Sebelumnya",
+                        next: "Selanjutnya"
                     }
                 }
             });
@@ -1166,9 +890,6 @@
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
-            });
-            $('.go-btn').on('click', function() {
-                table.search($('#customSearch').val()).draw();
             });
             $('#customSearch').on('keypress', function(e) {
                 if (e.which === 13) table.search(this.value).draw();

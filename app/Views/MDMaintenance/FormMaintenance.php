@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Form Maintenance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -116,116 +116,11 @@
             }
         }
 
-        /* ===== FORM ===== */
-        .form-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-            width: 100%;
-            max-width: 1000px;
-            margin: 20px auto;
-        }
-
-        h2 {
-            text-align: center;
-            color: #185a82;
-            font-size: 42px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 35px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #185a82;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #185a82;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[readonly] {
-            background: #f1f5f9;
-        }
-
-        button {
-            width: 100%;
-            height: 55px;
-            border: none;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .d-flex {
-            display: flex;
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .d-flex button {
-            flex: 1;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #185a82, #2196f3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(24, 90, 130, 0.3);
-        }
-
-        button[type="submit"]:hover {
-            box-shadow: 0 8px 25px rgba(24, 90, 130, 0.4);
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
-        }
-
-        .btn-back:hover {
-            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        }
-
         .brand-text {
             font-size: 18px;
         }
-
-        /* Dark mode: kotak form tetap putih, jadi judul dan teks ID dibuat hitam agar terbaca */
-        html.dark .form-container h2 {
-            color: #000 !important;
-        }
-
-        html.dark .form-container input[readonly] {
-            color: #000 !important;
-        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -449,64 +344,80 @@
             </ul>
         </header>
 
-        <div class="p-6">
-            <div class="form-container">
-                <h2>Form Maintenance</h2>
-                <form action="<?= site_url('MDMaintenance/save') ?>" method="POST" id="mtForm">
-                    <?= csrf_field() ?>
+        <div class="rfo-page p-6">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-blue"><i class="ti ti-file-plus"></i></span>
+                    <div>
+                        <h1 class="rfo-title">Tambah Maintenance</h1>
+                        <p class="rfo-subtitle">Isi data maintenance untuk membuat notifikasi Maintenance baru</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="<?= site_url('MDMaintenance') ?>" class="rfo-btn rfo-btn-gray">
+                        <i class="ti ti-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
 
-                    <div class="form-group mt-5">
-                        <label>Maintenance ID</label>
-                        <input type="text" value="<?= esc($nextId) ?>" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
+            <form action="<?= site_url('MDMaintenance/save') ?>" method="POST" id="mtForm" class="rfo-form">
+                <?= csrf_field() ?>
+
+                <div class="rfo-panel">
+                    <div class="rf-group">
+                        <label class="rf-label"><i class="ti ti-hash" style="color:#6d5dfc"></i> Maintenance ID</label>
+                        <input type="text" value="<?= esc($nextId) ?>" readonly class="rf-input">
                     </div>
 
-                    <div class="form-group">
-                        <label>Perusahaan / Logo <span style="color:red">*</span></label>
-                        <select name="perusahaan" id="perusahaan" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="perusahaan"><i class="ti ti-building-skyscraper"></i> Perusahaan / Logo <span class="req">*</span></label>
+                        <select name="perusahaan" id="perusahaan" required class="rf-input">
                             <option value="">-- Pilih Perusahaan --</option>
                             <?php foreach ($perusahaan as $nama => $logo) : ?>
                                 <option value="<?= esc($nama) ?>" data-logo="<?= base_url($logo) ?>" <?= old('perusahaan') === $nama ? 'selected' : '' ?>><?= esc($nama) ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <div id="logo_box" class="mt-3 border border-[#e3e8ee] rounded-lg bg-white p-3 flex items-center justify-center hidden">
+                        <div id="logo_box" class="rfo-logo-box hidden">
                             <img id="logo_preview" src="" alt="logo perusahaan" class="h-20 w-auto max-w-full object-contain">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Hari / Tanggal <span style="color:red">*</span></label>
-                        <input type="date" name="tanggal" id="tanggal" required value="<?= esc(old('tanggal', null, false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="tanggal"><i class="ti ti-calendar"></i> Hari / Tanggal <span class="req">*</span></label>
+                        <input type="date" name="tanggal" id="tanggal" required value="<?= esc(old('tanggal', null, false)) ?>" class="rf-input">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label>Waktu Awal Maintenance <span style="color:red">*</span></label>
-                            <input type="time" name="waktu_mulai" id="waktu_mulai" required value="<?= esc(old('waktu_mulai', null, false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        <div class="rf-group">
+                            <label class="rf-label" for="waktu_mulai"><i class="ti ti-clock"></i> Waktu Awal Maintenance <span class="req">*</span></label>
+                            <input type="time" name="waktu_mulai" id="waktu_mulai" required value="<?= esc(old('waktu_mulai', null, false)) ?>" class="rf-input">
                         </div>
-                        <div class="form-group">
-                            <label>Waktu Selesai Maintenance <span style="color:red">*</span></label>
-                            <input type="time" name="waktu_selesai" id="waktu_selesai" required value="<?= esc(old('waktu_selesai', null, false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        <div class="rf-group">
+                            <label class="rf-label" for="waktu_selesai"><i class="ti ti-clock-check" style="color:#16a34a"></i> Waktu Selesai Maintenance <span class="req">*</span></label>
+                            <input type="time" name="waktu_selesai" id="waktu_selesai" required value="<?= esc(old('waktu_selesai', null, false)) ?>" class="rf-input">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Estimasi <span style="color:red">*</span></label>
-                        <input type="text" name="estimasi" id="estimasi" required maxlength="150" placeholder="Masukkan Estimasi (mis. 2 jam)" value="<?= esc(old('estimasi', null, false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="estimasi"><i class="ti ti-hourglass" style="color:#d97706"></i> Estimasi <span class="req">*</span></label>
+                        <input type="text" name="estimasi" id="estimasi" required maxlength="150" placeholder="Masukkan Estimasi (mis. 2 jam)" value="<?= esc(old('estimasi', null, false)) ?>" class="rf-input">
                     </div>
 
-                    <div class="form-group">
-                        <label>Kegiatan <span style="color:red">*</span></label>
-                        <textarea name="kegiatan" id="kegiatan" rows="3" required placeholder="Masukkan Kegiatan" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc(old('kegiatan', null, false)) ?></textarea>
+                    <div class="rf-group">
+                        <label class="rf-label" for="kegiatan"><i class="ti ti-tool"></i> Kegiatan <span class="req">*</span></label>
+                        <textarea name="kegiatan" id="kegiatan" rows="3" required placeholder="Masukkan Kegiatan" class="rf-input"><?= esc(old('kegiatan', null, false)) ?></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Impact <span style="color:red">*</span></label>
-                        <textarea name="impact" id="impact" rows="2" required placeholder="Masukkan Impact" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc(old('impact', null, false)) ?></textarea>
+                    <div class="rf-group">
+                        <label class="rf-label" for="impact"><i class="ti ti-link" style="color:#ef4444"></i> Impact <span class="req">*</span></label>
+                        <textarea name="impact" id="impact" rows="2" required placeholder="Masukkan Impact" class="rf-input"><?= esc(old('impact', null, false)) ?></textarea>
+                        <p class="rf-hint">Contoh: Link Down, SITE DOWN, FO Loss, Drop core cut.</p>
                     </div>
 
-                    <div class="form-group">
-                        <label>Nama <span style="color:red">*</span></label>
-                        <select name="nama" id="nama" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="nama"><i class="ti ti-user" style="color:#6d5dfc"></i> Nama <span class="req">*</span></label>
+                        <select name="nama" id="nama" required class="rf-input">
                             <option value="">-- Pilih Nama (data shift NOC) --</option>
                             <?php foreach ($petugas as $nm) : ?>
                                 <option value="<?= esc($nm) ?>" <?= old('nama') === $nm ? 'selected' : '' ?>><?= esc($nm) ?></option>
@@ -514,12 +425,12 @@
                         </select>
                     </div>
 
-                    <div class="d-flex">
-                        <button type="submit">Simpan</button>
-                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('MDMaintenance') ?>'">Kembali</button>
+                    <div class="rfo-actions">
+                        <button type="submit" class="rfo-btn rfo-btn-blue"><i class="ti ti-device-floppy"></i> Simpan</button>
+                        <button type="button" class="rfo-btn rfo-btn-gray" onclick="window.location.href='<?= site_url('MDMaintenance') ?>'"><i class="ti ti-arrow-left"></i> Kembali</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -612,7 +523,7 @@
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
                     text: msg,
-                    confirmButtonColor: '#185a82'
+                    confirmButtonColor: '#2f6bff'
                 });
                 return false;
             }

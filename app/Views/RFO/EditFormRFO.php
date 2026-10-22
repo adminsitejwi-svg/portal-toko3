@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Edit RFO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -116,116 +116,11 @@
             }
         }
 
-        /* ===== FORM ===== */
-        .form-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-            width: 100%;
-            max-width: 1000px;
-            margin: 20px auto;
-        }
-
-        h2 {
-            text-align: center;
-            color: #185a82;
-            font-size: 42px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 35px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #185a82;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #185a82;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[readonly] {
-            background: #f1f5f9;
-        }
-
-        button {
-            width: 100%;
-            height: 55px;
-            border: none;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .d-flex {
-            display: flex;
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .d-flex button {
-            flex: 1;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #185a82, #2196f3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(24, 90, 130, 0.3);
-        }
-
-        button[type="submit"]:hover {
-            box-shadow: 0 8px 25px rgba(24, 90, 130, 0.4);
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-            box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
-        }
-
-        .btn-back:hover {
-            box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
-        }
-
         .brand-text {
             font-size: 18px;
         }
-
-        /* Dark mode: kotak form tetap putih, jadi judul dan teks ID dibuat hitam agar terbaca */
-        html.dark .form-container h2 {
-            color: #000 !important;
-        }
-
-        html.dark .form-container input[readonly] {
-            color: #000 !important;
-        }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <?= view('partials/theme') ?>
 </head>
 
@@ -456,69 +351,86 @@
         $toInput = static fn ($dt) => $dt ? date('Y-m-d\TH:i', strtotime($dt)) : '';
         ?>
 
-        <div class="p-6">
-            <div class="form-container">
-                <h2>Edit RFO (Reason For Outage)</h2>
-                <form action="<?= site_url('RFO/update') ?>" method="POST" id="rfoForm">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="id" value="<?= esc($rfo['id']) ?>">
+        <div class="rfo-page p-6">
+            <!-- JUDUL -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="rfo-title-ic is-blue"><i class="ti ti-edit"></i></span>
+                    <div>
+                        <h1 class="rfo-title">Edit RFO</h1>
+                        <p class="rfo-subtitle">Perbarui data RFO <?= esc($rfo['rfo_id']) ?></p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="<?= site_url('RFO') ?>" class="rfo-btn rfo-btn-gray">
+                        <i class="ti ti-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
 
-                    <div class="form-group mt-5">
-                        <label>RFO ID</label>
-                        <input type="text" value="<?= esc($rfo['rfo_id']) ?>" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] outline-none" style="background:#f1f5f9">
+            <form action="<?= site_url('RFO/update') ?>" method="POST" id="rfoForm" class="rfo-form">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= esc($rfo['id']) ?>">
+
+                <div class="rfo-panel">
+                    <div class="rf-group">
+                        <label class="rf-label"><i class="ti ti-hash" style="color:#6d5dfc"></i> RFO ID</label>
+                        <input type="text" value="<?= esc($rfo['rfo_id']) ?>" readonly class="rf-input">
                     </div>
 
-                    <div class="form-group">
-                        <label>Perusahaan / Logo <span style="color:red">*</span></label>
-                        <select name="perusahaan" id="perusahaan" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="perusahaan"><i class="ti ti-building-skyscraper"></i> Perusahaan / Logo <span class="req">*</span></label>
+                        <select name="perusahaan" id="perusahaan" required class="rf-input">
                             <option value="">-- Pilih Perusahaan --</option>
                             <?php foreach ($perusahaan as $nama => $logo) : ?>
                                 <option value="<?= esc($nama) ?>" data-logo="<?= base_url($logo) ?>" <?= $val('perusahaan', $rfo['perusahaan']) === $nama ? 'selected' : '' ?>><?= esc($nama) ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <div id="logo_box" class="mt-3 border border-[#e3e8ee] rounded-lg bg-white p-3 flex items-center justify-center hidden">
+                        <div id="logo_box" class="rfo-logo-box hidden">
                             <img id="logo_preview" src="" alt="logo perusahaan" class="h-20 w-auto max-w-full object-contain">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label>Waktu Gangguan <span style="color:red">*</span></label>
-                            <input type="datetime-local" name="waktu_gangguan" id="waktu_gangguan" required value="<?= esc($val('waktu_gangguan', $toInput($rfo['waktu_gangguan']))) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        <div class="rf-group">
+                            <label class="rf-label" for="waktu_gangguan"><i class="ti ti-calendar"></i> Waktu Gangguan <span class="req">*</span></label>
+                            <input type="datetime-local" name="waktu_gangguan" id="waktu_gangguan" required value="<?= esc($val('waktu_gangguan', $toInput($rfo['waktu_gangguan']))) ?>" class="rf-input">
                         </div>
-                        <div class="form-group">
-                            <label>Waktu Selesai Gangguan</label>
-                            <input type="datetime-local" name="waktu_selesai" id="waktu_selesai" value="<?= esc($val('waktu_selesai', $toInput($rfo['waktu_selesai']))) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        <div class="rf-group">
+                            <label class="rf-label" for="waktu_selesai"><i class="ti ti-calendar-check" style="color:#16a34a"></i> Waktu Selesai Gangguan</label>
+                            <input type="datetime-local" name="waktu_selesai" id="waktu_selesai" value="<?= esc($val('waktu_selesai', $toInput($rfo['waktu_selesai']))) ?>" class="rf-input">
+                            <p class="rf-hint">Kosongkan bila gangguan belum selesai.</p>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Penyebab / Jenis Gangguan <span style="color:red">*</span></label>
-                        <textarea name="penyebab" id="penyebab" rows="2" required placeholder="Masukkan Penyebab / Jenis Gangguan" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($val('penyebab', $rfo['penyebab'])) ?></textarea>
+                    <div class="rf-group">
+                        <label class="rf-label" for="penyebab"><i class="ti ti-zoom-question"></i> Penyebab / Jenis Gangguan <span class="req">*</span></label>
+                        <textarea name="penyebab" id="penyebab" rows="2" required placeholder="Masukkan Penyebab / Jenis Gangguan" class="rf-input"><?= esc($val('penyebab', $rfo['penyebab'])) ?></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Impact <span style="color:red">*</span></label>
-                        <textarea name="impact" id="impact" rows="2" required placeholder="Masukkan Impact" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($val('impact', $rfo['impact'])) ?></textarea>
+                    <div class="rf-group">
+                        <label class="rf-label" for="impact"><i class="ti ti-link" style="color:#ef4444"></i> Impact <span class="req">*</span></label>
+                        <textarea name="impact" id="impact" rows="2" required placeholder="Masukkan Impact" class="rf-input"><?= esc($val('impact', $rfo['impact'])) ?></textarea>
+                        <p class="rf-hint">Contoh: Link Down, SITE DOWN, FO Loss, Drop core cut.</p>
                     </div>
 
-                    <div class="form-group">
-                        <label>Action / Tindakan <span style="color:red">*</span></label>
-                        <textarea name="action" id="action" rows="3" required placeholder="Masukkan Action / Tindakan" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"><?= esc($val('action', $rfo['action'])) ?></textarea>
+                    <div class="rf-group">
+                        <label class="rf-label" for="action"><i class="ti ti-tool"></i> Action / Tindakan <span class="req">*</span></label>
+                        <textarea name="action" id="action" rows="3" required placeholder="Masukkan Action / Tindakan" class="rf-input"><?= esc($val('action', $rfo['action'])) ?></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Status <span style="color:red">*</span></label>
-                        <select name="status" id="status" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="status"><i class="ti ti-circle-check" style="color:#16a34a"></i> Status <span class="req">*</span></label>
+                        <select name="status" id="status" required class="rf-input">
                             <?php foreach (['On Progress', 'Monitoring', 'Pending', 'Resolved'] as $st) : ?>
                                 <option value="<?= $st ?>" <?= $val('status', $rfo['status']) === $st ? 'selected' : '' ?>><?= $st ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Nama Petugas NOC <span style="color:red">*</span></label>
-                        <select name="petugas" id="petugas" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                    <div class="rf-group">
+                        <label class="rf-label" for="petugas"><i class="ti ti-user" style="color:#6d5dfc"></i> Nama Petugas NOC <span class="req">*</span></label>
+                        <select name="petugas" id="petugas" required class="rf-input">
                             <option value="">-- Pilih Nama (data shift NOC) --</option>
                             <?php foreach ($petugas as $nm) : ?>
                                 <option value="<?= esc($nm) ?>" <?= $val('petugas', $rfo['petugas'] ?? '') === $nm ? 'selected' : '' ?>><?= esc($nm) ?></option>
@@ -526,12 +438,12 @@
                         </select>
                     </div>
 
-                    <div class="d-flex">
-                        <button type="submit">Update</button>
-                        <button type="button" class="btn-back" onclick="window.location.href='<?= site_url('RFO') ?>'">Kembali</button>
+                    <div class="rfo-actions">
+                        <button type="submit" class="rfo-btn rfo-btn-blue"><i class="ti ti-device-floppy"></i> Update</button>
+                        <button type="button" class="rfo-btn rfo-btn-gray" onclick="window.location.href='<?= site_url('RFO') ?>'"><i class="ti ti-arrow-left"></i> Kembali</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -622,7 +534,7 @@
                     icon: 'warning',
                     title: 'Form Belum Lengkap',
                     text: msg,
-                    confirmButtonColor: '#185a82'
+                    confirmButtonColor: '#2f6bff'
                 });
                 return false;
             }

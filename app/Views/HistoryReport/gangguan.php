@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('store.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
     <title>Shift Handover</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -145,39 +145,6 @@
             }
         }
 
-        /* ===== INVOICE-STYLE TABLE ===== */
-        table.ho-table {
-            width: 100% !important;
-            border-collapse: collapse;
-        }
-
-        table.ho-table thead th {
-            background: #f7f9fb;
-            color: #6b7785;
-            font-weight: 500;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px 16px;
-            border-top: 1px solid #edf0f3;
-            border-bottom: 1px solid #edf0f3;
-            white-space: nowrap;
-        }
-
-        .dark table.ho-table thead th {
-            background: #2b3543;
-            color: #9fb0c2;
-            border-color: #37404c;
-        }
-
-        /* Kolom PIC & ringkasan boleh turun baris (kelas nowrap DataTables menimpanya) */
-        table.ho-table tbody td.whitespace-normal {
-            white-space: normal !important;
-        }
-
-        table.ho-table tbody td.whitespace-pre-line {
-            white-space: pre-line !important;
-        }
-
         /* Link "Selengkapnya" di kolom teks panjang */
         .ringkasan-more {
             color: #04a9f5;
@@ -188,286 +155,6 @@
 
         .ringkasan-more:hover {
             text-decoration: underline;
-        }
-
-        table.ho-table tbody td {
-            padding: 16px;
-            font-size: 14px;
-            color: #3b4754;
-            border-bottom: 1px solid #f0f2f5;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .dark table.ho-table tbody td {
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        table.ho-table tbody tr:hover {
-            background: #fafbfc;
-        }
-
-        .dark table.ho-table tbody tr:hover {
-            background: rgba(255, 255, 255, .03);
-        }
-
-        table.ho-table tbody td.col-bold {
-            font-weight: 600;
-            color: #2b3540;
-        }
-
-        .dark table.ho-table tbody td.col-bold {
-            color: #e7eaf0;
-        }
-
-        /* status badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .badge-paid {
-            background: #e7f8f1;
-            color: #1aae6f;
-        }
-
-        .badge-pending {
-            background: #fdf3e3;
-            color: #d89a16;
-        }
-
-        .badge-due {
-            background: #ffd2dc;
-            color: #ff0000;
-        }
-
-        .badge-service {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        /* ===== LENGTH (Show) DROPDOWN ===== */
-        .dataTables_length {
-            font-size: 0;
-        }
-
-        .dataTables_length select {
-            font-size: 13px;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 32px 9px 14px;
-            color: #3b4754;
-            outline: none;
-            background: #fff;
-            min-width: 130px;
-            cursor: pointer;
-        }
-
-        .dark .dataTables_length select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .dataTables_length select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dataTables_filter {
-            display: none;
-        }
-
-        /* ===== FILTER DROPDOWN ===== */
-        .filter-select {
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 12px;
-            font-size: 13px;
-            color: #3b4754;
-            background: #fff;
-            outline: none;
-            max-width: 100%;
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            border-color: #04a9f5;
-        }
-
-        .dark .filter-select {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: rgba(255, 255, 255, .1);
-        }
-
-        .custom-search {
-            position: relative;
-            width: 240px;
-            max-width: 100%;
-        }
-
-        .custom-search input {
-            width: 100%;
-            border: 1px solid #e3e8ee;
-            border-radius: 8px;
-            padding: 9px 44px 9px 14px;
-            font-size: 13px;
-            outline: none;
-            color: #3b4754;
-            background: #fff;
-        }
-
-        .dark .custom-search input {
-            background: #263240;
-            color: #bfc8d6;
-            border-color: #37404c;
-        }
-
-        .custom-search input:focus {
-            border-color: #04a9f5;
-        }
-
-        .custom-search .go-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            color: #8a95a1;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-        }
-
-        .custom-search .go-btn:hover {
-            color: #04a9f5;
-        }
-
-        /* ===== PAGINATION ===== */
-        .dataTables_paginate {
-            font-size: 13px;
-            margin-top: 1rem;
-        }
-
-        .dataTables_paginate .paginate_button {
-            padding: 5px 11px !important;
-            margin: 0 3px !important;
-            border-radius: 6px !important;
-            border: none !important;
-            color: #5b6b7f !important;
-            background: transparent !important;
-        }
-
-        .dataTables_paginate .paginate_button.current {
-            background: #04a9f5 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_paginate .paginate_button:hover {
-            background: #f0f2f5 !important;
-            color: #3b4754 !important;
-        }
-
-        .dataTables_paginate .paginate_button.current:hover {
-            background: #0396e2 !important;
-            color: #fff !important;
-        }
-
-        .dataTables_info {
-            font-size: 13px;
-            color: #8a95a1;
-            margin-top: 1rem;
-        }
-
-        /* ===== EXPORT DROPDOWN ===== */
-        div.dt-buttons {
-            display: inline-block;
-        }
-
-        button.dt-button.export-toggle {
-            background: #fff !important;
-            border: 1px solid #e3e8ee !important;
-            color: #5b6b7f !important;
-            border-radius: 8px !important;
-            padding: 9px 16px !important;
-            font-size: 13px !important;
-            display: inline-flex !important;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            min-width: 130px;
-            justify-content: center;
-        }
-
-        .dark button.dt-button.export-toggle {
-            background: #263240 !important;
-            color: #bfc8d6 !important;
-            border-color: #37404c !important;
-        }
-
-        button.dt-button.export-toggle:hover {
-            border-color: #04a9f5 !important;
-            color: #04a9f5 !important;
-        }
-
-        div.dt-button-collection {
-            background: #fff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 8px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-            padding: 6px !important;
-            min-width: 170px;
-        }
-
-        .dark div.dt-button-collection {
-            background: #263240 !important;
-            border-color: #37404c !important;
-        }
-
-        div.dt-button-collection button.dt-button {
-            display: flex !important;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            text-align: left;
-            background: transparent !important;
-            border: none !important;
-            color: #3b4754 !important;
-            padding: 8px 12px !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
-            margin: 0 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button {
-            color: #ffffff !important;
-        }
-
-        div.dt-button-collection button.dt-button:hover {
-            background: #f1f5f9 !important;
-        }
-
-        .dark div.dt-button-collection button.dt-button:hover {
-            background: rgba(255, 255, 255, .05) !important;
-        }
-
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-scroll table {
-            min-width: 760px;
         }
 
         .brand-text {
@@ -551,6 +238,78 @@
             color: #1e4fa3;
         }
 
+        /* ===== KARTU HEADER: tab bergaris bawah di dalam kartu ===== */
+        .rfo-page .ho-head {
+            padding-bottom: 0;
+        }
+
+        .rfo-page .ho-head .ho-tabs {
+            margin: 18px -22px 0;
+            padding: 0 22px !important;
+            gap: 6px;
+            background: transparent !important;
+            border: 0 !important;
+            border-top: 1px solid var(--rf-border) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .rfo-page .ho-head .ho-tab {
+            padding: 12px 6px;
+            margin-right: 14px;
+            border: 0;
+            border-radius: 0;
+            color: var(--rf-muted);
+            background: transparent !important;
+            box-shadow: none;
+        }
+
+        .rfo-page .ho-head .ho-tab:hover {
+            color: #2f6bff;
+        }
+
+        .rfo-page .ho-head .ho-tab.active {
+            color: #2f6bff;
+            box-shadow: inset 0 -2px 0 #2f6bff;
+        }
+
+        .rfo-page .ho-head .ho-count {
+            border-radius: 7px;
+            font-weight: 700;
+        }
+
+        .rfo-page .ho-head .ho-tab.active .ho-count {
+            background: #e8efff;
+            color: #2f6bff;
+        }
+
+        .dark .rfo-page .ho-head .ho-count {
+            background: rgba(255, 255, 255, .06);
+            color: #b8c4dc;
+        }
+
+        .dark .rfo-page .ho-head .ho-tab.active .ho-count {
+            background: rgba(47, 107, 255, .18);
+            color: #8fb2ff;
+        }
+
+        /* ===== TOMBOL AKSI TABEL: ikon saja (nama tombol tampil saat kursor diarahkan) ===== */
+        .rfo-page .ho-table .btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            justify-content: center;
+            margin: 2px 2px 2px 0;
+        }
+
+        .rfo-page .ho-table .btn span {
+            display: none;
+        }
+
+        .rfo-page .ho-table .btn i {
+            font-size: 16px;
+        }
+
         .dark .ho-title {
             color: #e5e7eb;
         }
@@ -583,37 +342,9 @@
             color: #bfc8d6;
         }
 
-        /* ===== TOMBOL AKSI DI TABEL: ikon + label, sama dengan Daily Report (semua tab) ===== */
-        .ho-table .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            min-width: 92px;
-            margin: 2px 0;
-            padding: 3px 10px;
-            border: 1px solid #000;
-            border-radius: 6px;
-            font-size: 12.5px;
-            font-weight: 500;
-        }
-
-        .ho-table .btn i {
-            font-size: 16px;
-        }
-
-        .ho-table .btn:hover {
-            background: #f3f4f6;
-        }
-
-        .dark .ho-table .btn {
-            border-color: rgba(255, 255, 255, .12);
-        }
-
-        .dark .ho-table .btn:hover {
-            background: rgba(255, 255, 255, .06);
-        }
-
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
+    <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
     <?= view('partials/theme') ?>
 </head>
 
@@ -850,7 +581,7 @@
             </ul>
         </header>
 
-        <div class="p-6">
+        <div class="rfo-page p-6">
             <?php
             $hm = static fn($t) => $t ? substr($t, 0, 5) : '-';
             $bulan = [1 => 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -931,33 +662,36 @@
             }
             ?>
 
-            <!-- HEADER SHIFT HANDOVER -->
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
-                <div class="flex items-start gap-3">
-                    <a href="<?= site_url('HistoryReport') ?>" title="Kembali" class="mt-5 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5">
-                        <i class="ti ti-arrow-left text-xl"></i>
-                    </a>
-                    <div>
-                        <div class="ho-eyebrow">Shift Handover</div>
-                        <h4 class="ho-title"><?= esc($report['shift']); ?> · <?= $tglPendek($report['tanggal']); ?></h4>
-                        <div class="ho-sub">
-                            <span class="ho-pic"><?= esc($report['pic_shift']); ?></span>
-                            · <?= $hm($report['jam_mulai']); ?>–<?= $hm($report['jam_selesai']); ?>
+            <!-- KARTU HEADER SHIFT HANDOVER: judul + tab -->
+            <div class="rfo-panel ho-head mb-5">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic is-blue"><i class="ti ti-clipboard-text"></i></span>
+                        <div>
+                            <div class="ho-eyebrow">Shift Handover</div>
+                            <h1 class="rfo-title"><?= esc($report['shift']); ?> · <?= $tglPendek($report['tanggal']); ?></h1>
+                            <div class="ho-sub">
+                                <span class="ho-pic"><?= esc($report['pic_shift']); ?></span>
+                                · <?= $hm($report['jam_mulai']); ?>–<?= $hm($report['jam_selesai']); ?>
+                            </div>
                         </div>
                     </div>
+                    <a href="<?= site_url('HistoryReport') ?>" class="rfo-btn rfo-btn-gray">
+                        <i class="ti ti-arrow-left"></i> Kembali
+                    </a>
                 </div>
-            </div>
 
-            <!-- TAB -->
-            <div class="ho-tabs mb-6" role="tablist">
-                <?php foreach ($tabs as $key => $t) : ?>
-                    <button type="button" role="tab" data-tab="<?= $key ?>" onclick="switchTab('<?= $key ?>')"
-                        class="ho-tab <?= $activeTab === $key ? 'active' : '' ?>">
-                        <span><?= $t['icon'] ?></span>
-                        <span><?= $t['label'] ?></span>
-                        <span class="ho-count"><?= $t['count'] ?></span>
-                    </button>
-                <?php endforeach; ?>
+                <!-- TAB -->
+                <div class="ho-tabs" role="tablist">
+                    <?php foreach ($tabs as $key => $t) : ?>
+                        <button type="button" role="tab" data-tab="<?= $key ?>" onclick="switchTab('<?= $key ?>')"
+                            class="ho-tab <?= $activeTab === $key ? 'active' : '' ?>">
+                            <span><?= $t['icon'] ?></span>
+                            <span><?= $t['label'] ?></span>
+                            <span class="ho-count"><?= $t['count'] ?></span>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
             </div>
 
             <!-- ====== PANEL GANGGUAN ====== -->
@@ -990,12 +724,13 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openGangguanModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openGangguanModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1003,7 +738,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="gangguanTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="gangguanTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1030,7 +765,7 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal('gangguan', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1042,7 +777,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/gangguan/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -1094,12 +828,13 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openFollowUpModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openFollowUpModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1107,7 +842,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="followUpTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="followUpTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1131,7 +866,7 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal('followup', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1143,7 +878,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/followup/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -1192,12 +926,13 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openPengirimanModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openPengirimanModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1205,7 +940,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="pengirimanTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="pengirimanTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1229,7 +964,7 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal('pengiriman', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1241,7 +976,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/pengiriman/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -1290,12 +1024,13 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openMaintenanceModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openMaintenanceModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1303,7 +1038,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="maintenanceTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="maintenanceTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1328,7 +1063,7 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal('maintenance', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1340,7 +1075,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/maintenance/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -1394,12 +1128,13 @@
                                 <?php endforeach; ?>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openAktivasiModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openAktivasiModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1407,7 +1142,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="aktivasiTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="aktivasiTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1429,7 +1164,7 @@
                                                     data-row="<?= esc(json_encode($row), 'attr') ?>"
                                                     onclick="openViewModal('aktivasi', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1441,7 +1176,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/aktivasi/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -1492,12 +1226,13 @@
                                 <?php endforeach; ?>
                             </div>
                             <div class="flex items-center gap-3 flex-wrap">
-                                <div class="custom-search">
-                                    <input type="text" class="search-input" placeholder="search..." />
-                                    <button class="go-btn" type="button"></button>
+                                <div class="rfo-search">
+                                    <i class="ti ti-search"></i>
+                                    <input type="text" class="search-input" placeholder="Cari data..." />
                                 </div>
+                                <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                                 <div class="export-area"></div>
-                                <button type="button" onclick="openCatatanModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                                <button type="button" onclick="openCatatanModal()" class="rfo-btn rfo-btn-blue">
                                     <i class="ti ti-plus"></i> Tambah
                                 </button>
                             </div>
@@ -1505,7 +1240,7 @@
 
                         <!-- TABLE -->
                         <div class="table-scroll">
-                            <table id="catatanTable" class="ho-table display nowrap" style="width:100%">
+                            <table id="catatanTable" class="ho-table rfo-table display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -1529,7 +1264,7 @@
                                                     data-row="<?= esc(json_encode($row + ['poin' => $poin]), 'attr') ?>"
                                                     onclick="openViewModal('catatan', JSON.parse(this.dataset.row))"
                                                     title="View"
-                                                    class="btn btn-sm">
+                                                    class="btn btn-sm btn-info">
                                                     <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
@@ -1541,7 +1276,6 @@
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
                                                 </button>
 
-                                                <br>
                                                 <button type="button"
                                                     onclick="confirmDelete('<?= site_url('HistoryReport/catatan/delete/' . $row['id']) ?>')"
                                                     title="Hapus"
@@ -2484,14 +2218,14 @@
                     }],
                     language: {
                         lengthMenu: "_MENU_",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        infoEmpty: "Showing 0 to 0 of 0 entries",
-                        infoFiltered: "(filtered from _MAX_ total entries)",
+                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                        infoEmpty: "Menampilkan 0 - 0 dari 0 data",
+                        infoFiltered: "(disaring dari _MAX_ data)",
                         emptyTable: emptyText,
                         zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                         paginate: {
-                            previous: "Previous",
-                            next: "Next"
+                            previous: "Sebelumnya",
+                            next: "Selanjutnya"
                         }
                     }
                 });
@@ -2516,9 +2250,6 @@
                 const $search = $panel.find('.search-input');
                 $search.on('keyup', function() {
                     table.search(this.value).draw();
-                });
-                $panel.find('.go-btn').on('click', function() {
-                    table.search($search.val()).draw();
                 });
                 $search.on('keypress', function(e) {
                     if (e.which === 13) table.search(this.value).draw();
