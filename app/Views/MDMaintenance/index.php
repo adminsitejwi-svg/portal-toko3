@@ -428,15 +428,34 @@
                 if ($st === 'Terkirim') $terkirim++;
                 if ($st === 'Belum Dikirim') $belum++;
             }
+
+            // Kartu yang diklik: ?tampil=terjadwal | belum-dikirim (selain itu: semua Maintenance)
+            $tampilOpsi = [
+                'terjadwal'     => ['Maintenance Terjadwal', static fn ($r) => (string) $r['tanggal'] >= $hariIni],
+                'belum-dikirim' => ['Maintenance Belum Dikirim', static fn ($r) => ($statusEmail[$r['id']]['status'] ?? 'Belum Dikirim') === 'Belum Dikirim'],
+            ];
+            $tampil  = service('request')->getGet('tampil');
+            $tampil  = isset($tampilOpsi[$tampil]) ? $tampil : '';
+            $mtTabel = $tampil ? array_values(array_filter($maintenance, $tampilOpsi[$tampil][1])) : $maintenance;
             ?>
 
             <!-- JUDUL -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-4">
                     <span class="rfo-title-ic is-red"><i class="ti ti-bell"></i></span>
-                    <h1 class="rfo-title">Notifikasi Maintenance</h1>
+                    <div>
+                        <h1 class="rfo-title">Notifikasi Maintenance</h1>
+                        <?php if ($tampil) : ?>
+                            <p class="rfo-subtitle">Menampilkan: <b><?= $tampilOpsi[$tampil][0] ?></b> (<?= count($mtTabel) ?> data)</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
+                    <?php if ($tampil) : ?>
+                        <a href="<?= site_url('MDMaintenance') ?>" class="rfo-btn rfo-btn-gray">
+                            <i class="ti ti-list"></i> Semua Maintenance
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= site_url('MDMaintenance/email-log') ?>" class="rfo-btn rfo-btn-green">
                         <i class="ti ti-mail"></i> Riwayat Email
                     </a>
@@ -448,7 +467,7 @@
 
             <!-- KARTU STATISTIK -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
-                <div class="rfo-stat rfo-stat-blue">
+                <a href="<?= site_url('MDMaintenance') ?>" class="rfo-stat rfo-stat-blue rfo-stat-link<?= $tampil === '' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-tool"></i></span>
                     <div>
                         <div class="rfo-stat-label">Total Maintenance</div>
@@ -456,8 +475,8 @@
                         <div class="rfo-stat-note">Data keseluruhan</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-green">
+                </a>
+                <a href="<?= site_url('MDMaintenance') . '?tampil=terjadwal' ?>" class="rfo-stat rfo-stat-green rfo-stat-link<?= $tampil === 'terjadwal' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-calendar-check"></i></span>
                     <div>
                         <div class="rfo-stat-label">Terjadwal</div>
@@ -465,8 +484,8 @@
                         <div class="rfo-stat-note">Hari ini &amp; mendatang</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-amber">
+                </a>
+                <a href="<?= site_url('MDMaintenance') . '?tampil=belum-dikirim' ?>" class="rfo-stat rfo-stat-amber rfo-stat-link<?= $tampil === 'belum-dikirim' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-hourglass-high"></i></span>
                     <div>
                         <div class="rfo-stat-label">Belum Dikirim</div>
@@ -474,8 +493,8 @@
                         <div class="rfo-stat-note">Menunggu kirim</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-purple">
+                </a>
+                <a href="<?= site_url('MDMaintenance/email-log') . '?tampil=terkirim' ?>" class="rfo-stat rfo-stat-purple rfo-stat-link" title="Buka Riwayat Email Maintenance">
                     <span class="rfo-stat-ic"><i class="ti ti-send"></i></span>
                     <div>
                         <div class="rfo-stat-label">Terkirim</div>
@@ -483,7 +502,7 @@
                         <div class="rfo-stat-note">Email telah dikirim</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
+                </a>
             </div>
 
             <!-- FILTER + TABEL -->
@@ -514,7 +533,7 @@
                                 <i class="ti ti-tag" style="color:#6d5dfc"></i>
                                 <select id="filterMtId" class="filter-select is-wide" title="Filter Maintenance ID">
                                     <option value="">Semua Maintenance ID</option>
-                                    <?php foreach ($maintenance as $row) : ?>
+                                    <?php foreach ($mtTabel as $row) : ?>
                                         <option value="<?= esc($row['maintenance_id']) ?>"><?= esc($row['maintenance_id']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
@@ -551,9 +570,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($maintenance)) : ?>
+                            <?php if (!empty($mtTabel)) : ?>
                                 <?php $no = 1; ?>
-                                <?php foreach ($maintenance as $row) : ?>
+                                <?php foreach ($mtTabel as $row) : ?>
                                     <?php
                                     [$impKelas, $impIkon] = $impactBadge($row['impact']);
                                     // Status kirim email terakhir; data-search dipakai filter (cocok persis)

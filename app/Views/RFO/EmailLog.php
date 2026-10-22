@@ -402,15 +402,35 @@
             $gagal    = count(array_filter($log, static fn ($r) => $r['status'] === 'Gagal'));
             $hariIni  = date('Y-m-d');
             $jmlHari  = count(array_filter($log, static fn ($r) => substr((string) $r['created_at'], 0, 10) === $hariIni));
+
+            // Kartu yang diklik: ?tampil=terkirim | gagal | hari-ini (selain itu: semua riwayat)
+            $tampilOpsi = [
+                'terkirim' => ['Email Terkirim', static fn ($r) => $r['status'] === 'Terkirim'],
+                'gagal'    => ['Email Gagal', static fn ($r) => $r['status'] === 'Gagal'],
+                'hari-ini' => ['Email Hari Ini', static fn ($r) => substr((string) $r['created_at'], 0, 10) === $hariIni],
+            ];
+            $tampil   = service('request')->getGet('tampil');
+            $tampil   = isset($tampilOpsi[$tampil]) ? $tampil : '';
+            $logTabel = $tampil ? array_values(array_filter($log, $tampilOpsi[$tampil][1])) : $log;
             ?>
 
             <!-- JUDUL -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-4">
                     <span class="rfo-title-ic is-green"><i class="ti ti-mail"></i></span>
-                    <h1 class="rfo-title">Riwayat Email RFO</h1>
+                    <div>
+                        <h1 class="rfo-title">Riwayat Email RFO</h1>
+                        <?php if ($tampil) : ?>
+                            <p class="rfo-subtitle">Menampilkan: <b><?= $tampilOpsi[$tampil][0] ?></b> (<?= count($logTabel) ?> data)</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
+                    <?php if ($tampil) : ?>
+                        <a href="<?= site_url('RFO/email-log') ?>" class="rfo-btn rfo-btn-gray">
+                            <i class="ti ti-list"></i> Semua Riwayat
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= site_url('RFO') ?>" class="rfo-btn rfo-btn-blue">
                         <i class="ti ti-arrow-left"></i> Kembali ke RFO
                     </a>
@@ -419,7 +439,7 @@
 
             <!-- KARTU STATISTIK -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
-                <div class="rfo-stat rfo-stat-blue">
+                <a href="<?= site_url('RFO/email-log') ?>" class="rfo-stat rfo-stat-blue rfo-stat-link<?= $tampil === '' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-mail"></i></span>
                     <div>
                         <div class="rfo-stat-label">Total Email</div>
@@ -427,8 +447,8 @@
                         <div class="rfo-stat-note">Riwayat keseluruhan</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-green">
+                </a>
+                <a href="<?= site_url('RFO/email-log') . '?tampil=terkirim' ?>" class="rfo-stat rfo-stat-green rfo-stat-link<?= $tampil === 'terkirim' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-check"></i></span>
                     <div>
                         <div class="rfo-stat-label">Terkirim</div>
@@ -436,8 +456,8 @@
                         <div class="rfo-stat-note"><?= $total ? round($terkirim / $total * 100) : 0 ?>% dari total</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-red">
+                </a>
+                <a href="<?= site_url('RFO/email-log') . '?tampil=gagal' ?>" class="rfo-stat rfo-stat-red rfo-stat-link<?= $tampil === 'gagal' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-alert-triangle"></i></span>
                     <div>
                         <div class="rfo-stat-label">Gagal</div>
@@ -445,8 +465,8 @@
                         <div class="rfo-stat-note">Perlu dikirim ulang</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-purple">
+                </a>
+                <a href="<?= site_url('RFO/email-log') . '?tampil=hari-ini' ?>" class="rfo-stat rfo-stat-purple rfo-stat-link<?= $tampil === 'hari-ini' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-calendar-event"></i></span>
                     <div>
                         <div class="rfo-stat-label">Hari Ini</div>
@@ -454,7 +474,7 @@
                         <div class="rfo-stat-note">Email dikirim hari ini</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
+                </a>
             </div>
 
             <!-- FILTER + TABEL -->
@@ -475,7 +495,7 @@
                                 <i class="ti ti-tag" style="color:#6d5dfc"></i>
                                 <select id="filterRfoId" class="filter-select" title="Filter RFO ID">
                                     <option value="">Semua RFO ID</option>
-                                    <?php foreach (array_unique(array_filter(array_column($log, 'kode_rfo'))) as $kode) : ?>
+                                    <?php foreach (array_unique(array_filter(array_column($logTabel, 'kode_rfo'))) as $kode) : ?>
                                         <option value="<?= esc($kode) ?>"><?= esc($kode) ?></option>
                                     <?php endforeach; ?>
                                 </select>
@@ -512,9 +532,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($log)) : ?>
+                            <?php if (!empty($logTabel)) : ?>
                                 <?php $no = 1; ?>
-                                <?php foreach ($log as $row) : ?>
+                                <?php foreach ($logTabel as $row) : ?>
                                     <?php [$stKelas, $stIkon] = $statusBadge[$row['status']] ?? ['rb-blue', 'ti-info-circle']; ?>
                                     <tr>
                                         <td><?= $no++; ?></td>

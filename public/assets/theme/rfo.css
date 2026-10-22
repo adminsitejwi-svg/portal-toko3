@@ -1070,3 +1070,20 @@ table.rfo-table.dataTable.display > tbody > tr.odd > * {
 .rfo-page table.rfo-table:not(.dataTable) {
     visibility: hidden;
 }
+
+/* kartu statistik yang bisa diklik (mis. halaman RFO) */
+a.rfo-stat-link {
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+a.rfo-stat-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(31, 42, 68, .12);
+}
+
+a.rfo-stat-link.is-active {
+    border-color: #6d8dff;
+    box-shadow: 0 0 0 3px rgba(47, 107, 255, .18), var(--rf-shadow);
+}

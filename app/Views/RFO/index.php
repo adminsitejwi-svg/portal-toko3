@@ -435,15 +435,34 @@
             }
             $persenResolved = $total ? round($resolved / $total * 100) : 0;
 
+            // Kartu yang diklik: ?tampil=resolved | belum-dikirim (selain itu: semua RFO)
+            $tampilOpsi = [
+                'resolved'      => ['RFO Resolved', static fn ($r) => $r['status'] === 'Resolved'],
+                'belum-dikirim' => ['RFO Belum Dikirim', static fn ($r) => ($statusEmail[$r['id']]['status'] ?? 'Belum Dikirim') === 'Belum Dikirim'],
+            ];
+            $tampil   = service('request')->getGet('tampil');
+            $tampil   = isset($tampilOpsi[$tampil]) ? $tampil : '';
+            $rfoTabel = $tampil ? array_values(array_filter($rfo, $tampilOpsi[$tampil][1])) : $rfo;
+
             ?>
 
             <!-- JUDUL -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-4">
                     <span class="rfo-title-ic"><i class="ti ti-file-alert"></i></span>
-                    <h1 class="rfo-title">RFO (Reason For Outage)</h1>
+                    <div>
+                        <h1 class="rfo-title">RFO (Reason For Outage)</h1>
+                        <?php if ($tampil) : ?>
+                            <p class="rfo-subtitle">Menampilkan: <b><?= $tampilOpsi[$tampil][0] ?></b> (<?= count($rfoTabel) ?> data)</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
+                    <?php if ($tampil) : ?>
+                        <a href="<?= site_url('RFO') ?>" class="rfo-btn rfo-btn-gray">
+                            <i class="ti ti-list"></i> Semua RFO
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= site_url('RFO/email-log') ?>" class="rfo-btn rfo-btn-green">
                         <i class="ti ti-mail"></i> Riwayat Email
                     </a>
@@ -455,7 +474,7 @@
 
             <!-- KARTU STATISTIK -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
-                <div class="rfo-stat rfo-stat-blue">
+                <a href="<?= site_url('RFO') ?>" class="rfo-stat rfo-stat-blue rfo-stat-link<?= $tampil === '' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-file-text"></i></span>
                     <div>
                         <div class="rfo-stat-label">Total RFO</div>
@@ -463,8 +482,8 @@
                         <div class="rfo-stat-note">Data keseluruhan</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-green">
+                </a>
+                <a href="<?= site_url('RFO') . '?tampil=resolved' ?>" class="rfo-stat rfo-stat-green rfo-stat-link<?= $tampil === 'resolved' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-check"></i></span>
                     <div>
                         <div class="rfo-stat-label">Resolved</div>
@@ -472,8 +491,8 @@
                         <div class="rfo-stat-note"><?= $persenResolved ?>% dari total</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-amber">
+                </a>
+                <a href="<?= site_url('RFO') . '?tampil=belum-dikirim' ?>" class="rfo-stat rfo-stat-amber rfo-stat-link<?= $tampil === 'belum-dikirim' ? ' is-active' : '' ?>">
                     <span class="rfo-stat-ic"><i class="ti ti-hourglass-high"></i></span>
                     <div>
                         <div class="rfo-stat-label">Belum Dikirim</div>
@@ -481,8 +500,8 @@
                         <div class="rfo-stat-note">Menunggu kirim</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
-                <div class="rfo-stat rfo-stat-purple">
+                </a>
+                <a href="<?= site_url('RFO/email-log') . '?tampil=terkirim' ?>" class="rfo-stat rfo-stat-purple rfo-stat-link" title="Buka Riwayat Email RFO">
                     <span class="rfo-stat-ic"><i class="ti ti-send"></i></span>
                     <div>
                         <div class="rfo-stat-label">Terkirim</div>
@@ -490,7 +509,7 @@
                         <div class="rfo-stat-note">Email telah dikirim</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
-                </div>
+                </a>
             </div>
 
             <!-- FILTER + TABEL -->
@@ -521,7 +540,7 @@
                                 <i class="ti ti-tag" style="color:#6d5dfc"></i>
                                 <select id="filterRfoId" class="filter-select" title="Filter RFO ID">
                                     <option value="">Semua RFO ID</option>
-                                    <?php foreach ($rfo as $row) : ?>
+                                    <?php foreach ($rfoTabel as $row) : ?>
                                         <option value="<?= esc($row['rfo_id']) ?>"><?= esc($row['rfo_id']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
@@ -557,9 +576,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($rfo)) : ?>
+                            <?php if (!empty($rfoTabel)) : ?>
                                 <?php $no = 1; ?>
-                                <?php foreach ($rfo as $row) : ?>
+                                <?php foreach ($rfoTabel as $row) : ?>
                                     <?php
                                     [$impKelas, $impIkon] = $impactBadge($row['impact']);
                                     [$stKelas, $stIkon]   = $statusBadge[$row['status']] ?? ['rb-blue', 'ti-info-circle'];

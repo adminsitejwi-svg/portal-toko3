@@ -817,3 +817,160 @@ html.ra-loading #sidebar.pc-sidebar .pc-micon,
 html.ra-loading .pc-header ul.ml-auto {
     visibility: hidden;
 }
+
+/* =====================================================================
+ *  SIDEBAR & TOPBAR MODE TERANG: putih
+ *  (mode gelap tetap navy, memakai aturan di atas)
+ * ===================================================================== */
+html:not(.dark) {
+    --nv-line: #e8ecf5;
+    --nv-text: #3b4754;
+    --nv-muted: #8a96ad;
+    --nv-hover: #eef3ff;
+}
+
+/* ----- sidebar ----- */
+html:not(.dark) #sidebar.pc-sidebar {
+    background: #ffffff !important;
+    color: var(--nv-text) !important;
+    border-right: 1px solid #e8ecf5;
+    box-shadow: 4px 0 24px rgba(31, 42, 68, .06);
+}
+
+html:not(.dark) #sidebar.pc-sidebar::before {
+    opacity: .18;
+}
+
+html:not(.dark) #sidebar.pc-sidebar > div:first-child a,
+html:not(.dark) #sidebar.pc-sidebar > div:first-child a:hover,
+html:not(.dark) #sidebar.pc-sidebar > div:first-child a:focus,
+html:not(.dark) #sidebar.pc-sidebar > div:first-child a:active,
+html:not(.dark) #sidebar.pc-sidebar .brand-text,
+html:not(.dark) .ra-brand b {
+    color: #1f2a44 !important;
+}
+
+html:not(.dark) .ra-brand small {
+    color: #8a96ad;
+}
+
+html:not(.dark) .ra-logo {
+    background: #eef3ff;
+    box-shadow: 0 4px 12px rgba(47, 107, 255, .18);
+}
+
+html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] {
+    color: #9aa6bd !important;
+}
+
+html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"]::after {
+    background: linear-gradient(90deg, #e3e8f2, rgba(227, 232, 242, 0));
+}
+
+html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
+    color: #9aa6bd;
+}
+
+html:not(.dark) #sidebar.pc-sidebar a {
+    color: #3b4754 !important;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .pc-link .arrow {
+    color: #9aa6bd !important;
+}
+
+html:not(.dark) #sidebar.pc-sidebar a:hover,
+html:not(.dark) #sidebar.pc-sidebar .pc-link:hover {
+    color: #2f6bff !important;
+    background: #eef3ff;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .pc-link:hover .arrow {
+    color: #2f6bff !important;
+}
+
+/* menu aktif tetap pil biru dengan teks putih */
+html:not(.dark) #sidebar.pc-sidebar .pc-link.active,
+html:not(.dark) #sidebar.pc-sidebar .pc-link.active:hover {
+    color: #fff !important;
+    background: linear-gradient(90deg, var(--nv-active-1) 0%, var(--nv-active-2) 100%);
+    box-shadow: 0 6px 16px rgba(47, 107, 255, .3), inset 0 1px 0 rgba(255, 255, 255, .18);
+}
+
+html:not(.dark) #sidebar.pc-sidebar .submenu.open {
+    background: #f6f8fd !important;
+    border-color: #e8ecf5;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .submenu a {
+    color: #55627a !important;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .submenu a::before {
+    background: #c3cbdb;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .submenu a:hover,
+html:not(.dark) #sidebar.pc-sidebar .submenu a.ra-current {
+    background: #e8efff !important;
+    color: #2f6bff !important;
+}
+
+html:not(.dark) #sidebar.pc-sidebar .submenu a:hover::before,
+html:not(.dark) #sidebar.pc-sidebar .submenu a.ra-current::before {
+    background: #2f6bff;
+    box-shadow: none;
+}
+
+html:not(.dark) #sidebar.pc-sidebar ::-webkit-scrollbar-thumb {
+    background: #d5dbe7 !important;
+}
+
+/* ----- topbar ----- */
+html:not(.dark) .pc-header {
+    background: #ffffff !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e8ecf5;
+    box-shadow: 0 4px 20px rgba(31, 42, 68, .06) !important;
+    color: #1f2a44;
+}
+
+html:not(.dark) .pc-header .head-link,
+html:not(.dark) .ra-theme-toggle:not(.floating) {
+    color: #55627a !important;
+}
+
+html:not(.dark) .pc-header .head-link:hover,
+html:not(.dark) .ra-theme-toggle:not(.floating):hover {
+    color: #2f6bff !important;
+    background: #eef3ff !important;
+}
+
+html:not(.dark) .pc-header .ra-logout:hover {
+    color: #fff !important;
+    background: rgba(239, 68, 68, .9) !important;
+}
+
+html:not(.dark) .ra-clock {
+    background: #f6f8fd;
+    border-color: #e8ecf5;
+}
+
+html:not(.dark) .ra-clock > i {
+    color: #2f6bff;
+    background: #e8efff;
+}
+
+html:not(.dark) .ra-clock b {
+    color: #1f2a44;
+}
+
+html:not(.dark) .ra-clock span {
+    color: #8a96ad;
+}
+
+/* jalur scrollbar halaman di samping topbar ikut putih */
+html:not(.dark)::-webkit-scrollbar-track,
+html:not(.dark) body::-webkit-scrollbar-track {
+    background: linear-gradient(to bottom, #ffffff 0, #ffffff 74px, var(--ra-body) 74px) !important;
+}
