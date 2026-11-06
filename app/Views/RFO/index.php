@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
+    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
+    <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
     <title>RFO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>

@@ -122,21 +122,21 @@ body::-webkit-scrollbar-track {
 }
 
 /* isi sidebar di atas pola (alert flash .fixed tidak disentuh) */
-#sidebar.pc-sidebar > div:not(.fixed) {
+#sidebar.pc-sidebar>div:not(.fixed) {
     position: relative;
     z-index: 1;
 }
 
 /* ----- brand ----- */
-#sidebar.pc-sidebar > div:first-child {
+#sidebar.pc-sidebar>div:first-child {
     height: auto !important;
     min-height: 74px;
-    padding: 16px 14px 14px 16px !important;
+    padding: 6px 14px 6px 16px !important;
     gap: 10px;
     background: transparent;
 }
 
-#sidebar.pc-sidebar > div:first-child > a {
+#sidebar.pc-sidebar>div:first-child>a {
     flex: 1;
     min-width: 0;
     gap: 10px !important;
@@ -144,10 +144,10 @@ body::-webkit-scrollbar-track {
 }
 
 /* judul website tidak diberi efek hover/sentuh (blok putih) */
-#sidebar.pc-sidebar > div:first-child a,
-#sidebar.pc-sidebar > div:first-child a:hover,
-#sidebar.pc-sidebar > div:first-child a:focus,
-#sidebar.pc-sidebar > div:first-child a:active {
+#sidebar.pc-sidebar>div:first-child a,
+#sidebar.pc-sidebar>div:first-child a:hover,
+#sidebar.pc-sidebar>div:first-child a:focus,
+#sidebar.pc-sidebar>div:first-child a:active {
     background: transparent !important;
     color: #fff !important;
     outline: none;
@@ -161,21 +161,28 @@ body::-webkit-scrollbar-track {
     line-height: 1.2;
 }
 
+/* Logo: ukuran kotak tetap, gambar menyesuaikan (aman untuk logo kotak maupun lebar) */
 .ra-logo {
     flex: 0 0 auto;
-    width: 44px;
-    height: 44px;
-    padding: 5px;
-    display: inline-flex;
-    border-radius: 12px;
-    background: #fff;
-    box-shadow: 0 4px 14px rgba(47, 107, 255, .45);
+    width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
 }
 
 .ra-logo img {
     width: 100%;
     height: 100%;
+    max-width: 100%;
     object-fit: contain;
+    display: block;
+    }
+    
+    /* teks logo berwarna navy: diberi pendar terang agar tetap terbaca di latar gelap */
+    html.dark .ra-logo img {
+        filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px rgba(255, 255, 255, .9)) drop-shadow(0 0 7px rgba(255, 255, 255, .4));
 }
 
 .ra-brand {
@@ -216,8 +223,9 @@ body::-webkit-scrollbar-track {
 #sidebar.pc-sidebar li[class*="uppercase"]::after {
     content: "";
     flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(110, 145, 225, .45), rgba(110, 145, 225, 0));
+    /* pakai border, bukan height: saat browser di-zoom garis 1px bisa hilang di sebagian judul */
+    border-top: 1px solid;
+    border-image: linear-gradient(90deg, rgba(110, 145, 225, .45), rgba(110, 145, 225, 0)) 1;
 }
 
 #sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
@@ -248,7 +256,7 @@ body::-webkit-scrollbar-track {
     transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
-#sidebar.pc-sidebar .pc-link > span:not(.pc-micon) {
+#sidebar.pc-sidebar .pc-link>span:not(.pc-micon) {
     flex: 1;
     min-width: 0;
     white-space: nowrap;
@@ -390,7 +398,7 @@ body::-webkit-scrollbar-track {
     box-shadow: var(--ra-shadow-lg) !important;
 }
 
-.pc-header .dropdown-menu > div:first-child {
+.pc-header .dropdown-menu>div:first-child {
     background: linear-gradient(90deg, var(--nv-active-1), var(--nv-active-2)) !important;
 }
 
@@ -530,7 +538,7 @@ table.dataTable tbody tr:hover {
 }
 
 /* ---------- Pop up (modal Tailwind) ---------- */
-[id$="Modal"] > div {
+[id$="Modal"]>div {
     border-radius: .5rem !important;
 }
 
@@ -559,7 +567,12 @@ html.dark .text-gray-800,
 html.dark .text-gray-700,
 html.dark .text-slate-800,
 html.dark .text-slate-700,
-html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6 {
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
     color: var(--ra-heading) !important;
 }
 
@@ -576,22 +589,61 @@ html.dark hr {
     border-color: var(--ra-border) !important;
 }
 
-html.dark .bg-red-50 { background-color: rgba(239, 68, 68, .12) !important; }
-html.dark .bg-green-50 { background-color: rgba(34, 197, 94, .12) !important; }
-html.dark .bg-yellow-50, html.dark .bg-amber-50 { background-color: rgba(245, 158, 11, .12) !important; }
-html.dark .bg-blue-50 { background-color: rgba(59, 130, 246, .12) !important; }
+html.dark .bg-red-50 {
+    background-color: rgba(239, 68, 68, .12) !important;
+}
 
-html.dark .badge-paid { background: rgba(26, 174, 111, .18) !important; }
-html.dark .badge-pending { background: rgba(216, 154, 22, .18) !important; }
-html.dark .badge-due { background: rgba(255, 0, 0, .16) !important; color: #ff7b7b !important; }
-html.dark .badge-service { background: rgba(25, 118, 210, .2) !important; color: #6fb1ff !important; }
+html.dark .bg-green-50 {
+    background-color: rgba(34, 197, 94, .12) !important;
+}
+
+html.dark .bg-yellow-50,
+html.dark .bg-amber-50 {
+    background-color: rgba(245, 158, 11, .12) !important;
+}
+
+html.dark .bg-blue-50 {
+    background-color: rgba(59, 130, 246, .12) !important;
+}
+
+html.dark .badge-paid {
+    background: rgba(26, 174, 111, .18) !important;
+}
+
+html.dark .badge-pending {
+    background: rgba(216, 154, 22, .18) !important;
+}
+
+html.dark .badge-due {
+    background: rgba(255, 0, 0, .16) !important;
+    color: #ff7b7b !important;
+}
+
+html.dark .badge-service {
+    background: rgba(25, 118, 210, .2) !important;
+    color: #6fb1ff !important;
+}
 
 /* ikon kartu rekap (History Report) */
-html.dark .grup-icon { background: var(--ra-primary-soft) !important; }
-html.dark .rekap-red { background: rgba(239, 68, 68, .16) !important; }
-html.dark .rekap-amber { background: rgba(245, 158, 11, .16) !important; }
-html.dark .rekap-blue { background: rgba(59, 130, 246, .16) !important; }
-html.dark .rekap-green { background: rgba(34, 197, 94, .16) !important; }
+html.dark .grup-icon {
+    background: var(--ra-primary-soft) !important;
+}
+
+html.dark .rekap-red {
+    background: rgba(239, 68, 68, .16) !important;
+}
+
+html.dark .rekap-amber {
+    background: rgba(245, 158, 11, .16) !important;
+}
+
+html.dark .rekap-blue {
+    background: rgba(59, 130, 246, .16) !important;
+}
+
+html.dark .rekap-green {
+    background: rgba(34, 197, 94, .16) !important;
+}
 
 /* DataTables kontrol */
 html.dark .dataTables_wrapper .dataTables_length select,
@@ -759,7 +811,7 @@ html.dark .stat-icon {
     line-height: 1.2;
 }
 
-.ra-clock > i {
+.ra-clock>i {
     width: 32px;
     height: 32px;
     border-radius: 9px;
@@ -791,7 +843,7 @@ html.dark .stat-icon {
         padding: 6px 10px;
     }
 
-    .ra-clock > i,
+        .ra-clock>i,
     .ra-clock b {
         display: none;
     }
@@ -811,7 +863,7 @@ html.dark .stat-icon {
 /* ---------- Anti kedip saat reload ----------
    html.ra-loading dipasang ruang.js di <head> dan dilepas setelah sidebar/topbar baru terpasang.
    visibility (bukan display) agar ukuran tetap & layout tidak bergeser. */
-html.ra-loading #sidebar.pc-sidebar > div:first-child > a,
+html.ra-loading #sidebar.pc-sidebar>div:first-child>a,
 html.ra-loading #sidebar.pc-sidebar li[class*="uppercase"],
 html.ra-loading #sidebar.pc-sidebar .pc-micon,
 html.ra-loading .pc-header ul.ml-auto {
@@ -909,19 +961,19 @@ html {
     }
 }
 
-.pc-container > * {
+.pc-container>* {
     animation: raContentIn .9s cubic-bezier(.16, 1, .3, 1) backwards;
 }
 
-.pc-container > :nth-child(2) {
+.pc-container> :nth-child(2) {
     animation-delay: .1s;
 }
 
-.pc-container > :nth-child(n+3) {
+.pc-container> :nth-child(n+3) {
     animation-delay: .2s;
 }
 
-html.ra-pageload:not(.ra-pageload-out) .pc-container > * {
+html.ra-pageload:not(.ra-pageload-out) .pc-container>* {
     animation-play-state: paused;
 }
 
@@ -957,7 +1009,7 @@ html.ra-pageload:not(.ra-pageload-out) .pc-container > * {
     animation: raModalBgIn .25s cubic-bezier(.4, 0, .2, 1);
 }
 
-.ra-modal > :first-child {
+.ra-modal> :first-child {
     animation: raModalBoxIn .4s cubic-bezier(.16, 1, .3, 1);
 }
 
@@ -967,7 +1019,7 @@ html.ra-pageload:not(.ra-pageload-out) .pc-container > * {
     animation: raModalBgOut .22s cubic-bezier(.4, 0, .2, 1) forwards;
 }
 
-.ra-modal.ra-modal-out > :first-child {
+.ra-modal.ra-modal-out> :first-child {
     animation: raModalBoxOut .22s cubic-bezier(.4, 0, .2, 1) forwards;
 }
 
@@ -981,9 +1033,9 @@ html.ra-pageload:not(.ra-pageload-out) .pc-container > * {
         scroll-behavior: auto;
     }
 
-    .pc-container > *,
+        .pc-container>*,
     .ra-modal,
-    .ra-modal > :first-child {
+        .ra-modal> :first-child {
         animation: none !important;
     }
 }
@@ -1011,10 +1063,10 @@ html:not(.dark) #sidebar.pc-sidebar::before {
     opacity: .18;
 }
 
-html:not(.dark) #sidebar.pc-sidebar > div:first-child a,
-html:not(.dark) #sidebar.pc-sidebar > div:first-child a:hover,
-html:not(.dark) #sidebar.pc-sidebar > div:first-child a:focus,
-html:not(.dark) #sidebar.pc-sidebar > div:first-child a:active,
+html:not(.dark) #sidebar.pc-sidebar>div:first-child a,
+html:not(.dark) #sidebar.pc-sidebar>div:first-child a:hover,
+html:not(.dark) #sidebar.pc-sidebar>div:first-child a:focus,
+html:not(.dark) #sidebar.pc-sidebar>div:first-child a:active,
 html:not(.dark) #sidebar.pc-sidebar .brand-text,
 html:not(.dark) .ra-brand b {
     color: #1f2a44 !important;
@@ -1024,17 +1076,12 @@ html:not(.dark) .ra-brand small {
     color: #8a96ad;
 }
 
-html:not(.dark) .ra-logo {
-    background: #eef3ff;
-    box-shadow: 0 4px 12px rgba(47, 107, 255, .18);
-}
-
 html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] {
     color: #9aa6bd !important;
 }
 
 html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"]::after {
-    background: linear-gradient(90deg, #e3e8f2, rgba(227, 232, 242, 0));
+    border-image: linear-gradient(90deg, #e3e8f2, rgba(227, 232, 242, 0)) 1;
 }
 
 html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
@@ -1126,7 +1173,7 @@ html:not(.dark) .ra-clock {
     border-color: #e8ecf5;
 }
 
-html:not(.dark) .ra-clock > i {
+html:not(.dark) .ra-clock>i {
     color: #2f6bff;
     background: #e8efff;
 }

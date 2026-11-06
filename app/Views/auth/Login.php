@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
+    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
+    <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -42,26 +44,22 @@
             box-shadow: 0 24px 60px rgba(0, 0, 0, .4);
         }
 
+        /* Logo tanpa kotak, menyatu dengan form */
         .login-logo {
-            width: 92px;
-            height: 92px;
-            padding: 16px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, #eef0ff, #e4ebff);
-            box-shadow: 0 10px 24px rgba(47, 107, 255, .15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        html.dark .login-logo {
-            background: #eef0ff;
+            position: relative;
+            width: 190px;
+            height: 134px;
         }
 
         .login-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        /* teks logo berwarna navy: diberi pendar terang agar tetap terbaca di kartu gelap */
+        html.dark .login-logo img {
+            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px rgba(255, 255, 255, .9)) drop-shadow(0 0 7px rgba(255, 255, 255, .4));
         }
 
         .login-title {
@@ -408,7 +406,7 @@
         <!-- logo & judul -->
         <div class="flex flex-col items-center text-center mb-7">
             <div class="login-logo mb-5">
-                <img src="<?= base_url('Logo/RumahWifi-logo.png') ?>" alt="Logo JWI Group">
+                <img src="<?= base_url('Logo/Logo-NOC-web.png') ?>" alt="Logo JWI Group">
             </div>
             <h1 class="login-title login-anim" style="--i:0">Selamat Datang</h1>
             <p class="login-sub login-anim" style="--i:1">Sistem Operasional JWI Group</p>

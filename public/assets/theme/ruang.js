@@ -153,10 +153,10 @@
     window.RuangTheme = { toggle: toggle, apply: apply, showLoader: showPageLoader, hideLoader: hidePageLoader };
 
     // ---- Sidebar navy: tambahan tampilan sesuai referensi (struktur menu tidak diubah) ----
-    // logo RumahWifi (public/Logo/RumahWifi-logo.png); alamat dihitung dari lokasi ruang.js (public/assets/theme/)
+    // logo NOC (public/Logo/Logo-NOC-web.png: Logo-NOC.png tanpa margin kosong); alamat dihitung dari lokasi ruang.js (public/assets/theme/)
     var scriptSrc = (document.currentScript && document.currentScript.src) || '';
     var PUBLIC_URL = scriptSrc.replace(/assets\/theme\/ruang\.js.*$/, '');
-    var LOGO = '<img src="' + PUBLIC_URL + 'Logo/RumahWifi-logo.png" alt="Logo JWI Group">';
+    var LOGO = '<img src="' + PUBLIC_URL + 'Logo/Logo-NOC-web.png" alt="Logo JWI Group">';
 
     // ikon & warna per menu (berdasarkan label menu)
     var MENU_ICON = {

@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="<?= base_url('favicon-rumahwifi.png') ?>?v=2">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
+    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
+    <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
     <title>Data Interkoneksi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -359,7 +361,20 @@
             background: var(--dc-color, #2f6bff);
         }
 
+        /* ===== KARTU KANAN: tabel bisa di-scroll di dalam card, header kolom tetap terlihat.
+           Tingginya diatur batasiTinggiTabel() agar scroll muncul setelah 10 baris ===== */
+        .rfo-page .table-scroll {
+            overflow: auto;
+        }
 
+        .rfo-page .table-scroll thead th {
+            /* !important: DataTables memberi position:relative pada kolom yang bisa diurutkan */
+            position: sticky !important;
+            top: 0;
+            z-index: 2;
+            /* border ikut hilang saat sticky pada border-collapse, jadi digambar dengan shadow */
+            box-shadow: inset 0 -1px 0 var(--rf-border);
+        }
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
@@ -1095,6 +1110,27 @@
                     cell.innerHTML = ++i;
                 });
             });
+
+            // ====== SCROLL TABEL: lebih dari 10 baris tampil = scroll di dalam card ======
+            // Dihitung dari baris yang sedang tampil, karena tingginya bisa berbeda (Note panjang)
+            const MAKS_BARIS = 10;
+
+            function batasiTinggiTabel() {
+                const area = document.querySelector('.rfo-page .table-scroll');
+                const baris = area.querySelectorAll('#reportTable tbody tr');
+                area.style.maxHeight = '';
+                if (baris.length > MAKS_BARIS) {
+                    const atas = area.querySelector('#reportTable thead').getBoundingClientRect().top;
+                    const bawah = baris[MAKS_BARIS - 1].getBoundingClientRect().bottom;
+                    // ditambah tebal border dan scrollbar horizontal area tabel
+                    area.style.maxHeight = Math.ceil(bawah - atas + area.offsetHeight - area.clientHeight) + 'px';
+                }
+                area.scrollTop = 0;
+            }
+            table.on('draw.dt', batasiTinggiTabel);
+            $(window).on('resize', batasiTinggiTabel);
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(batasiTinggiTabel);
+
             table.draw();
 
             $('#lengthArea').append($('.dataTables_length'));
