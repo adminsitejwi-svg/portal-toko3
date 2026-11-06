@@ -662,6 +662,7 @@
                     </a>
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('DataRakDC') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Rak DC</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
@@ -1680,6 +1681,19 @@
             // Card rekap (gangguan, follow up, pengiriman, maintenance) per kategori
             const DATA_COUNT = <?= json_encode($dataCount) ?>;
             const TANPA_PENGIRIMAN = <?= json_encode(\App\Models\HistoryReportModel::TANPA_PENGIRIMAN) ?>;
+
+            // Ingat tab kategori & halaman tabel terakhir (per tab browser), agar setelah
+            // tambah / edit / duplikat / hapus (halaman dimuat ulang) tidak kembali ke tab pertama & halaman 1
+            const STATE_KEY = 'dailyReport.state';
+            let stateAwal = null;
+            try {
+                stateAwal = JSON.parse(sessionStorage.getItem(STATE_KEY));
+            } catch (e) {}
+            const tabAwal = stateAwal && $('.kategori-tab').filter(function() {
+                return this.dataset.kategori === stateAwal.kategori;
+            })[0];
+            if (tabAwal) pilihKategori(tabAwal);
+
             $('#filterKategori').on('change', function() {
                 const v = this.value;
                 table.column(kategoriCol).search('^' + $.fn.dataTable.util.escapeRegex(v) + '$', true, false).draw();
@@ -1691,7 +1705,7 @@
                 const tanpaKirim = TANPA_PENGIRIMAN.includes(v);
                 $('.rekap-card[data-jenis="pengiriman"]').toggleClass('hidden', tanpaKirim);
                 $('#rekapGrid').toggleClass('xl:grid-cols-4', !tanpaKirim).toggleClass('xl:grid-cols-3', tanpaKirim);
-            }).trigger('change'); // kategori pertama langsung terfilter saat halaman dibuka
+            }).trigger('change'); // kategori aktif (terakhir dipakai / pertama) langsung terfilter saat halaman dibuka
 
             // Filter Bulan: cocokkan data-bulan (YYYY-MM) di <tr>
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
@@ -1708,6 +1722,28 @@
             $('#customSearch').on('keypress', function(e) {
                 if (e.which === 13) table.search(this.value).draw();
             });
+
+            // kembalikan jumlah baris & halaman terakhir (dibatasi ke halaman terakhir yang ada)
+            if (stateAwal) {
+                if (stateAwal.len && table.page.len() !== stateAwal.len) {
+                    table.page.len(stateAwal.len).draw();
+                    $('.dataTables_length select').val(stateAwal.len);
+                }
+                const maxHal = Math.max(table.page.info().pages - 1, 0);
+                table.page(Math.min(stateAwal.page || 0, maxHal)).draw(false);
+            }
+            // simpan setiap kali tabel berubah (pindah tab kategori, halaman, jumlah baris)
+            const simpanState = function() {
+                try {
+                    sessionStorage.setItem(STATE_KEY, JSON.stringify({
+                        kategori: $('#filterKategori').val(),
+                        page: table.page(),
+                        len: table.page.len()
+                    }));
+                } catch (e) {}
+            };
+            table.on('draw.dt', simpanState);
+            simpanState();
         });
     </script>
 

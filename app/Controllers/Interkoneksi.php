@@ -31,6 +31,8 @@ class Interkoneksi extends BaseController
     {
         return view('Interkoneksi/index', [
             'interkoneksi' => $this->ikModel->withDataCenter(),
+            // daftar Data Center untuk kartu kategori di kiri tabel (filter per data center)
+            'dataCenter'   => (new DataCenterModel())->orderBy('nama_dc', 'ASC')->findAll(),
         ]);
     }
 

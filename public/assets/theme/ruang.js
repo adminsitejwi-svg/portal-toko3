@@ -57,7 +57,100 @@
     }
     setTimeout(ready, 3000);
 
-    window.RuangTheme = { toggle: toggle, apply: apply };
+    // ---- Layar "Memuat halaman" (lihat ruang.css: html.ra-pageload) ----
+    // Tampil sejak <head> sampai halaman selesai dimuat, lalu memudar.
+    // Tampil lagi saat pindah halaman (klik link / kirim form), agar ada tanda sedang memuat.
+    var pageTimer = null;
+    function showPageLoader() {
+        clearTimeout(pageTimer);
+        root.classList.remove('ra-pageload-out');
+        root.classList.add('ra-pageload', 'ra-pageload-leave');
+        // pengaman: kalau ternyata tidak pindah halaman (mis. unduhan), tutup sendiri
+        pageTimer = setTimeout(hidePageLoader, 10000);
+    }
+    function hidePageLoader() {
+        clearTimeout(pageTimer);
+        if (!root.classList.contains('ra-pageload')) return;
+        root.classList.add('ra-pageload-out');
+        pageTimer = setTimeout(function () {
+            root.classList.remove('ra-pageload', 'ra-pageload-out', 'ra-pageload-leave');
+        }, 650);
+    }
+    root.classList.add('ra-pageload');
+    pageTimer = setTimeout(hidePageLoader, 8000);
+    window.addEventListener('load', hidePageLoader);
+    // kembali lewat tombol Back (halaman dari cache browser): jangan biarkan loader menempel
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) hidePageLoader();
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.hasAttribute('download') || a.hasAttribute('data-no-loader')) return;
+        if (a.target && a.target !== '_self') return;
+        var href = a.getAttribute('href');
+        if (!href || href.charAt(0) === '#' || /^(javascript|mailto|tel):/i.test(href)) return;
+        var url;
+        try {
+            url = new URL(a.href, location.href);
+        } catch (err) {
+            return;
+        }
+        if (url.origin !== location.origin) return;
+        // link ke bagian di halaman yang sama
+        if (url.pathname === location.pathname && url.search === location.search && url.hash) return;
+        // file PDF/unduhan tidak mengganti halaman
+        if (/\/pdf\/|\.(pdf|xlsx?|csv|zip|docx?)$/i.test(url.pathname)) return;
+        showPageLoader();
+    });
+
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (form.target && form.target !== '_self') return;
+        if (form.hasAttribute('data-no-loader')) return;
+        // tunggu skrip lain (validasi/AJAX) memutuskan; kalau dibatalkan, loader tidak tampil
+        setTimeout(function () {
+            if (!e.defaultPrevented) showPageLoader();
+        }, 0);
+    });
+
+    // ---- Animasi pop up (form Tambah / Edit / View) — lihat ruang.css: .ra-modal ----
+    // Pop up = div.fixed.inset-0 yang tersembunyi saat halaman dibuka. Muncul: CSS (animasi jalan
+    // setiap kali display berubah dari none). Tutup: saat halaman menambah class "hidden",
+    // class itu ditahan sebentar agar animasi keluar sempat jalan, lalu dipasang lagi.
+    var MODAL_OUT_MS = 220;
+    function watchModal(el) {
+        el.classList.add('ra-modal');
+        el._raOpen = false;
+        new MutationObserver(function () {
+            if (el._raClosing) return;
+            var hidden = el.classList.contains('hidden');
+            if (!hidden) {
+                el._raOpen = true;
+                return;
+            }
+            if (!el._raOpen) return;
+            el._raClosing = true;
+            el.classList.remove('hidden');
+            el.classList.add('ra-modal-out');
+            setTimeout(function () {
+                el.classList.add('hidden');
+                el.classList.remove('ra-modal-out');
+                el._raOpen = false;
+                el._raClosing = false;
+            }, MODAL_OUT_MS);
+        }).observe(el, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var list = document.querySelectorAll('div.fixed.inset-0');
+        for (var i = 0; i < list.length; i++) {
+            if (getComputedStyle(list[i]).display === 'none') watchModal(list[i]);
+        }
+    });
+
+    window.RuangTheme = { toggle: toggle, apply: apply, showLoader: showPageLoader, hideLoader: hidePageLoader };
 
     // ---- Sidebar navy: tambahan tampilan sesuai referensi (struktur menu tidak diubah) ----
     // logo RumahWifi (public/Logo/RumahWifi-logo.png); alamat dihitung dari lokasi ruang.js (public/assets/theme/)

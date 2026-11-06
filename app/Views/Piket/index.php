@@ -379,6 +379,7 @@
                     </a>
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('DataRakDC') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Rak DC</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
@@ -390,11 +391,11 @@
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
                         <span class="flex-1">Jadwal NOC</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform" style="transform: rotate(90deg)"></i>
+                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
-                    <ul class="submenu open bg-black/20">
+                    <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('Calendar') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Shift</a></li>
-                        <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white text-white font-semibold">Piket</a></li>
+                        <li><a href="<?= site_url('Piket') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Piket</a></li>
                     </ul>
                 </li>
 

@@ -251,6 +251,114 @@
             color: #8996a4;
         }
 
+        /* ===== KARTU KIRI: kategori Data Center (gaya kartu Jadwal Shift) ===== */
+        @media (min-width: 1280px) {
+            .dc-panel {
+                position: sticky;
+                top: 94px;
+                max-height: calc(100vh - 120px);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .dc-body {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+                margin-right: -12px;
+                padding-right: 12px;
+            }
+        }
+
+        @media (max-width: 1279px) {
+            .dc-body {
+                max-height: 320px;
+                overflow-y: auto;
+            }
+        }
+
+        .dc-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dc-panel .rfo-search {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .dc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--rf-border);
+            border-left: 4px solid var(--dc-color, #2f6bff);
+            border-radius: 10px;
+            background: var(--rf-card);
+            cursor: pointer;
+            transition: box-shadow .2s, background-color .2s, border-color .2s;
+        }
+
+        .dc-item.hidden {
+            display: none;
+        }
+
+        .dc-item:hover {
+            box-shadow: 0 6px 16px rgba(31, 42, 68, .08);
+        }
+
+        .dc-item.active {
+            background: var(--rf-soft);
+            border-color: var(--dc-color, #2f6bff);
+            box-shadow: 0 0 0 1px var(--dc-color, #2f6bff) inset;
+        }
+
+        .dc-dot {
+            flex: 0 0 auto;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dc-color, #2f6bff);
+        }
+
+        .dc-name {
+            display: block;
+            font-size: .9rem;
+            font-weight: 600;
+            color: var(--rf-head);
+            line-height: 1.25;
+        }
+
+        .dc-sub {
+            display: block;
+            margin-top: 2px;
+            font-size: .76rem;
+            color: var(--rf-muted);
+        }
+
+        .dc-count {
+            flex: 0 0 auto;
+            margin-left: auto;
+            min-width: 30px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--rf-muted);
+            background: var(--rf-soft);
+        }
+
+        .dc-item.active .dc-count,
+        .dc-count.has {
+            color: #fff;
+            background: var(--dc-color, #2f6bff);
+        }
+
 
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
@@ -411,6 +519,7 @@
                     </a>
                     <ul class="submenu bg-black/20">
                         <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
+                        <li><a href="<?= site_url('DataRakDC') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Rak DC</a></li>
                         <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
@@ -503,7 +612,46 @@
                 </a>
             </div>
 
-            <div class="card">
+            <?php
+            // Jumlah data interkoneksi per data center (untuk angka di kartu kiri)
+            $jumlahDc = array_count_values(array_map('strval', array_column($interkoneksi, 'data_center_id')));
+            // warna penanda tiap data center (bergantian sesuai urutan)
+            $warnaDc = ['#2f6bff', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#14b8a6'];
+            ?>
+            <div class="flex flex-col xl:flex-row gap-6 items-start">
+                <!-- KIRI: kategori Data Center (klik = filter tabel) -->
+                <aside class="w-full xl:w-[300px] xl:flex-none rfo-panel dc-panel">
+                    <div class="dc-head">
+                        <div class="flex items-center gap-2 text-[1.1rem] font-bold text-[#202124] dark:text-white mb-3">
+                            <i class="ti ti-building-warehouse text-[#2f6bff]"></i> Data Center
+                        </div>
+                        <div class="rfo-search">
+                            <i class="ti ti-search"></i>
+                            <input type="text" id="dcSearch" placeholder="Cari data center..." autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <div class="dc-body" id="dcList">
+                        <?php foreach ($dataCenter as $i => $dc) : ?>
+                            <?php $n = $jumlahDc[(string) $dc['id']] ?? 0; ?>
+                            <button type="button" class="dc-item" data-dc="<?= (int) $dc['id'] ?>"
+                                data-cari="<?= esc(strtolower($dc['nama_dc'] . ' ' . $dc['lokasi_rak'] . ' ' . $dc['alamat_dc']), 'attr') ?>"
+                                style="--dc-color:<?= $warnaDc[$i % count($warnaDc)] ?>">
+                                <span class="dc-dot"></span>
+                                <span class="min-w-0">
+                                    <span class="dc-name"><?= esc($dc['nama_dc']) ?></span>
+                                    <span class="dc-sub"><?= esc($dc['lokasi_rak'] ? 'Rak ' . $dc['lokasi_rak'] : ($dc['alamat_dc'] ?: '-')) ?></span>
+                                </span>
+                                <span class="dc-count <?= $n ? 'has' : '' ?>"><?= $n ?></span>
+                            </button>
+                        <?php endforeach; ?>
+
+                        <div id="dcEmpty" class="hidden text-gray-400 text-sm py-2">Data center tidak ditemukan.</div>
+                    </div>
+                </aside>
+
+                <!-- KANAN: tabel -->
+            <div class="card w-full xl:flex-1 min-w-0">
                 <div class="card-body">
 
                     <!-- TOOLBAR -->
@@ -522,12 +670,6 @@
                             <select id="filterCustomer" class="filter-select" title="Filter Customer">
                                 <option value="">Semua Customer</option>
                                 <?php foreach ($opsiFilter('customer') as $v) : ?>
-                                    <option value="<?= esc($v, 'attr') ?>"><?= esc($v) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <select id="filterDataCenter" class="filter-select" title="Filter Nama Data Center">
-                                <option value="">Semua Data Center</option>
-                                <?php foreach ($opsiFilter('nama_dc') as $v) : ?>
                                     <option value="<?= esc($v, 'attr') ?>"><?= esc($v) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -571,7 +713,7 @@
                                 <?php if (!empty($interkoneksi)) : ?>
                                     <?php $no = 1; ?>
                                     <?php foreach ($interkoneksi as $row) : ?>
-                                        <tr>
+                                        <tr data-dc="<?= (int) $row['data_center_id'] ?>">
                                             <td><?= $no++; ?></td>
                                             <td>
                                                 <a href="<?= site_url('Interkoneksi/edit/' . $row['id']) ?>"
@@ -620,6 +762,7 @@
                     </div>
 
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -957,14 +1100,50 @@
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
 
-            // ====== FILTER DROPDOWN (cocok persis: kolom 3 Customer, kolom 4 Nama Data Center, kolom 9 Status) ======
+            // ====== FILTER DROPDOWN (cocok persis: kolom 3 Customer, kolom 9 Status) ======
             const filterKolom = (sel, col) => $(sel).on('change', function() {
                 const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
                 table.column(col).search(re, true, false).draw();
             });
             filterKolom('#filterCustomer', 3);
-            filterKolom('#filterDataCenter', 4);
             filterKolom('#filterStatus', 9);
+
+            // ====== KARTU KIRI: filter per Data Center (pakai id dari data-dc di <tr>) ======
+            let dcAktif = '';
+            $.fn.dataTable.ext.search.push(function(settings, data, idx) {
+                if (settings.nTable.id !== 'reportTable' || !dcAktif) return true;
+                return table.row(idx).node().dataset.dc === dcAktif;
+            });
+
+            function pilihDc(id) {
+                dcAktif = id;
+                $('#dcList .dc-item').each(function() {
+                    $(this).toggleClass('active', this.dataset.dc === id);
+                });
+                table.draw();
+            }
+
+            $('#dcList').on('click', '.dc-item', function() {
+                // klik lagi data center yang sedang aktif = filter dilepas (tampil semua data)
+                pilihDc(this.dataset.dc === dcAktif ? '' : this.dataset.dc);
+            });
+
+            // cari data center di kartu kiri
+            $('#dcSearch').on('input keyup', function() {
+                const q = this.value.trim().toLowerCase();
+                let ada = 0;
+                $('#dcList .dc-item[data-cari]').each(function() {
+                    const cocok = !q || this.dataset.cari.includes(q);
+                    $(this).toggleClass('hidden', !cocok);
+                    if (cocok) ada++;
+                });
+                $('#dcEmpty').toggleClass('hidden', ada > 0);
+            });
+
+            // tombol Reset: lepas filter data center
+            $('.rfo-reset').on('click', function() {
+                pilihDc('');
+            });
 
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();

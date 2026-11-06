@@ -302,6 +302,18 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataCenter/update', 'DataCenter::update');
     $routes->get('DataCenter/delete/(:num)', 'DataCenter::delete/$1');
 
+    // Data Rak DC (menu All NOC di sidebar): Data Center, Data Rak, Data Perangkat & Visual Rak dalam satu halaman
+    $routes->get('DataRakDC', 'DataRakDC::index');
+    $routes->post('DataRakDC/dc/save', 'DataRakDC::saveDc');
+    $routes->post('DataRakDC/dc/update', 'DataRakDC::updateDc');
+    $routes->get('DataRakDC/dc/delete/(:num)', 'DataRakDC::deleteDc/$1');
+    $routes->post('DataRakDC/rak/save', 'DataRakDC::saveRak');
+    $routes->post('DataRakDC/rak/update', 'DataRakDC::updateRak');
+    $routes->get('DataRakDC/rak/delete/(:num)', 'DataRakDC::deleteRak/$1');
+    $routes->post('DataRakDC/perangkat/save', 'DataRakDC::savePerangkat');
+    $routes->post('DataRakDC/perangkat/update', 'DataRakDC::updatePerangkat');
+    $routes->get('DataRakDC/perangkat/delete/(:num)', 'DataRakDC::deletePerangkat/$1');
+
     // Data Interkoneksi (menu All NOC di sidebar)
     $routes->get('Interkoneksi', 'Interkoneksi::index');
     $routes->get('Interkoneksi/create', 'Interkoneksi::create');

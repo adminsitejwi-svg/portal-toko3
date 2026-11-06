@@ -6,6 +6,18 @@ use CodeIgniter\Config\BaseConfig;
 
 class App extends BaseConfig
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Akses lewat ngrok (bagikan-internet.bat): link & aset mengikuti alamat ngrok, akses localhost tidak berubah.
+        // Host dicek ketat karena nilainya berasal dari request.
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        if (preg_match('/^[a-z0-9-]+(\.[a-z0-9-]+)*\.ngrok(-free)?\.(app|dev|io)$/i', $host)) {
+            $this->baseURL = 'https://' . strtolower($host) . '/';
+        }
+    }
+
     /**
      * --------------------------------------------------------------------------
      * Base Site URL

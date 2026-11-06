@@ -256,6 +256,100 @@
             color: var(--ra-muted);
         }
 
+        /* animasi saat halaman dibuka / di-reload:
+           kartu naik + muncul, logo "pop", lalu isi kartu muncul berurutan (delay dari --i).
+           fill-mode "backwards" agar efek hover tombol (transform) tetap jalan setelah animasi selesai */
+        @keyframes loginCardIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes loginLogoPop {
+            0% {
+                opacity: 0;
+                transform: scale(.4) rotate(-12deg);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.08) rotate(3deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes loginItemIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .login-card {
+            animation: loginCardIn .6s cubic-bezier(.22, 1, .36, 1) backwards;
+        }
+
+        .login-logo {
+            animation: loginLogoPop .7s cubic-bezier(.34, 1.56, .64, 1) .25s backwards;
+        }
+
+        .login-anim {
+            animation: loginItemIn .5s cubic-bezier(.22, 1, .36, 1) backwards;
+            animation-delay: calc(.4s + var(--i, 0) * .08s);
+        }
+
+        /* tombol dark/light melayang (dipasang ruang.js): muncul berputar setelah isi kartu */
+        @keyframes loginToggleIn {
+            0% {
+                opacity: 0;
+                transform: scale(.3) rotate(-180deg);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.12) rotate(10deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        body.login-page .ra-theme-toggle.floating {
+            animation: loginToggleIn .7s cubic-bezier(.34, 1.56, .64, 1) 1s backwards;
+        }
+
+        /* tahan animasi selama layar "Memuat halaman" (ruang.css) masih tampil, agar tidak terlewat di baliknya */
+        html.ra-pageload:not(.ra-pageload-out) body.login-page * {
+            animation-play-state: paused;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .login-card,
+            .login-logo,
+            .login-anim,
+            body.login-page .ra-theme-toggle.floating {
+                animation: none;
+            }
+        }
+
         @media (max-width: 480px) {
             .login-card {
                 padding: 30px 22px 24px;
@@ -316,12 +410,12 @@
             <div class="login-logo mb-5">
                 <img src="<?= base_url('Logo/RumahWifi-logo.png') ?>" alt="Logo JWI Group">
             </div>
-            <h1 class="login-title">Selamat Datang</h1>
-            <p class="login-sub">Sistem Operasional JWI Group</p>
+            <h1 class="login-title login-anim" style="--i:0">Selamat Datang</h1>
+            <p class="login-sub login-anim" style="--i:1">Sistem Operasional JWI Group</p>
         </div>
 
         <?php if (session()->getFlashdata('error')) : ?>
-            <div class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-5 text-sm">
+            <div class="login-anim flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-5 text-sm">
                 <i class="ti ti-alert-circle text-lg leading-5"></i>
                 <div><?= session()->getFlashdata('error') ?></div>
             </div>
@@ -331,7 +425,7 @@
 
             <?= csrf_field() ?>
 
-            <div class="mb-5">
+            <div class="mb-5 login-anim" style="--i:2">
                 <label class="login-label" for="username">Username</label>
                 <div class="relative">
                     <i class="ti ti-user login-icon"></i>
@@ -348,7 +442,7 @@
                 </div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 login-anim" style="--i:3">
                 <label class="login-label" for="password">Password</label>
                 <div class="relative">
                     <i class="ti ti-lock login-icon"></i>
@@ -372,23 +466,23 @@
             </div>
 
             <!-- ingat saya (hanya username, disimpan di browser) -->
-            <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center gap-3 mb-6 login-anim" style="--i:4">
                 <label class="login-check">
                     <input type="checkbox" id="rememberMe">
                     <span>Ingat saya</span>
                 </label>
             </div>
 
-            <button type="submit" class="login-btn">
+            <button type="submit" class="login-btn login-anim" style="--i:5">
                 <span class="flex items-center justify-center gap-2"><i class="ti ti-login-2 text-xl"></i> Login</span>
                 <span class="login-btn-arrow"><i class="ti ti-arrow-right"></i></span>
             </button>
 
         </form>
 
-        <div class="login-divider"><span>atau</span></div>
+        <div class="login-divider login-anim" style="--i:6"><span>atau</span></div>
 
-        <div class="login-info">
+        <div class="login-info login-anim" style="--i:7">
             <span class="login-info-ic"><i class="ti ti-shield-check-filled"></i></span>
             <div>
                 <b>Akses hanya untuk pengguna terdaftar</b>
