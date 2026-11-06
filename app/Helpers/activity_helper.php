@@ -125,7 +125,7 @@ if (! function_exists('activity_label_action')) {
                 'md_simcard'           => 'Simcard',
                 'd_simcard'            => 'Simcard',
                 'd_nomor_inet'         => 'Nomor Inet',
-                'md_barang'            => 'Inventory Kantor',
+                'md_barang'            => 'Asset Management',
                 'd_rfo'                => 'RFO',
                 'd_rfo_email_log'      => 'RFO Email',
                 'md_maintenance'       => 'Maintenance',

@@ -158,23 +158,92 @@
     var PUBLIC_URL = scriptSrc.replace(/assets\/theme\/ruang\.js.*$/, '');
     var LOGO = '<img src="' + PUBLIC_URL + 'Logo/Logo-NOC-web.png" alt="Logo JWI Group">';
 
-    // ikon & warna per menu (berdasarkan label menu)
+    // ikon & teks kecil per menu sidebar (berdasarkan label menu)
     var MENU_ICON = {
-        'beranda': ['fa-house', '#4f8cff'],
-        'data toko': ['fa-store', '#c084fc'],
-        'data penggunaan': ['fa-chart-pie', '#f472b6'],
-        'master data': ['fa-database', '#fbbf24'],
-        'lokasi': ['fa-location-dot', '#fb923c'],
-        'rfo': ['fa-file-lines', '#60a5fa'],
-        'notifikasi maintenance': ['fa-bell', '#f87171'],
-        'report noc': ['fa-chart-column', '#818cf8'],
-        'all noc': ['fa-sitemap', '#38bdf8'],
-        'jadwal noc': ['fa-calendar-days', '#a78bfa'],
-        'profile': ['fa-user', '#60a5fa'],
-        'inventory kantor': ['fa-box', '#f59e0b'],
-        'pengguna': ['fa-users', '#818cf8'],
-        'change log': ['fa-file-pen', '#93c5fd']
+        'beranda': ['ti-home', 'Ringkasan Data'],
+        'data toko': ['ti-building-store', 'Toko Retail'],
+        'data penggunaan': ['ti-chart-pie', 'Simcard & Nomor Inet'],
+        'master data': ['ti-database', 'Perangkat & Vendor'],
+        'lokasi': ['ti-map-pin', 'Peta Lokasi'],
+        'rfo': ['ti-file-alert', 'Reason For Outage'],
+        'notifikasi maintenance': ['ti-bell', 'Pemberitahuan Maintenance'],
+        'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
+        'all noc': ['ti-topology-star-3', 'Data Center & BTS'],
+        'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
+        'profile': ['ti-user-circle', 'Akun Saya'],
+        'pengguna': ['ti-users', 'Kelola Pengguna'],
+        'change log': ['ti-history', 'Riwayat Perubahan']
     };
+
+    // ikon judul halaman, berdasarkan alamat menu yang aktif (huruf kecil)
+    var IKON_HALAMAN = {
+        'dashboard-manager': 'ti-home',
+        'alfamidi': 'ti-building-store',
+        'lawson': 'ti-building-store',
+        'alfamart': 'ti-building-store',
+        'datasi': 'ti-device-sim',
+        'nmrinet': 'ti-world',
+        'perangkat': 'ti-router',
+        'jns_perangkat': 'ti-category',
+        'typeperangkat': 'ti-cpu',
+        'vendor': 'ti-briefcase',
+        'vendorcelulllar': 'ti-antenna',
+        'layananvendor': 'ti-list-check',
+        'dcadmin': 'ti-server-2',
+        'mediakoneksi': 'ti-plug-connected',
+        'pemilikproject': 'ti-user-star',
+        'pelanggan': 'ti-users-group',
+        'nomorinet': 'ti-hash',
+        'quotasimcard': 'ti-gauge',
+        'vpn': 'ti-shield-lock',
+        'map': 'ti-map-pin',
+        'rfo': 'ti-file-alert',
+        'mdmaintenance': 'ti-bell',
+        'historyreport': 'ti-clipboard-text',
+        'maintenancereport': 'ti-tool',
+        'reportsat': 'ti-report',
+        'datacenter': 'ti-building-warehouse',
+        'datarakdc': 'ti-server-2',
+        'interkoneksi': 'ti-arrows-exchange',
+        'devicesbackbone': 'ti-router',
+        'bts': 'ti-antenna-bars-5',
+        'pelanggannoc': 'ti-users',
+        'vendornoc': 'ti-briefcase',
+        'calendar': 'ti-calendar-event',
+        'piket': 'ti-calendar-user',
+        'profile': 'ti-user-circle',
+        'inventorykantor': 'ti-package',
+        'settings': 'ti-users',
+        'logs': 'ti-history'
+    };
+
+    // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
+    function pasangIkonJudul(link) {
+        var ikon = link && IKON_HALAMAN[normalPath(link.pathname).split('/').pop()];
+        if (!ikon) return;
+
+        var ada = document.querySelector('.rfo-title-ic i');
+        if (ada) {
+            ada.className = 'ti ' + ikon;
+            return;
+        }
+
+        var judul = null;
+        var calon = document.querySelectorAll('.pc-container h1, .pc-container h2, .pc-container h5');
+        for (var i = 0; i < calon.length; i++) {
+            if (!calon[i].closest('header, .fixed, [id$="Modal"]')) {
+                judul = calon[i];
+                break;
+            }
+        }
+        if (!judul) return;
+
+        var bungkus = document.createElement('div');
+        bungkus.className = 'ra-title';
+        bungkus.innerHTML = '<span class="ra-title-ic"><i class="ti ' + ikon + '"></i></span>';
+        judul.parentNode.insertBefore(bungkus, judul);
+        bungkus.appendChild(judul);
+    }
 
     var SECTION_ICON = {
         'halaman utama': 'ti-home',
@@ -204,31 +273,175 @@
             heads[h].insertBefore(ic, heads[h].firstChild);
         }
 
-        // ikon berwarna di setiap menu (panah › hanya pada menu dropdown, bawaan halaman)
+        // ikon & teks kecil di setiap menu (panah › hanya pada menu dropdown, bawaan halaman)
         var links = sb.querySelectorAll('.pc-link');
         for (var i = 0; i < links.length; i++) {
             var spans = links[i].querySelectorAll('span:not(.pc-micon)');
-            var label = spans.length ? spans[spans.length - 1].textContent.trim().toLowerCase() : '';
+            var judulMenu = spans.length ? spans[spans.length - 1] : null;
+            var label = judulMenu ? judulMenu.textContent.trim().toLowerCase() : '';
             var cfg = MENU_ICON[label];
             var micon = links[i].querySelector('.pc-micon');
             if (cfg && micon) {
-                micon.innerHTML = '<i class="fa-solid ' + cfg[0] + '"></i>';
-                micon.style.color = cfg[1];
+                micon.innerHTML = '<i class="ti ' + cfg[0] + '"></i>';
+                var kecil = document.createElement('small');
+                kecil.className = 'ra-sub';
+                kecil.textContent = cfg[1];
+                judulMenu.appendChild(kecil);
+            }
+            if (links[i].closest('.hasmenu')) links[i].closest('.hasmenu').setAttribute('data-ra-menu', label);
+        }
+
+        pasangIkonJudul(setupDropdown(sb));
+    }
+
+    // ---- Dropdown sidebar: tetap terbuka antar halaman & menandai halaman aktif ----
+    var KEY_DROPDOWN = 'ra.sidebar.open';
+    var KEY_SCROLL = 'ra.sidebar.scroll';
+
+    function simpanData(store, key, nilai) {
+        try { store.setItem(key, nilai); } catch (e) { }
+    }
+
+    function bacaData(store, key) {
+        try { return store.getItem(key); } catch (e) { return null; }
+    }
+
+    function normalPath(p) {
+        return p.replace(/\/index\.php(?=\/|$)/i, '').replace(/\/+$/, '').toLowerCase();
+    }
+
+    function setupDropdown(sb) {
+        var menus = sb.querySelectorAll('.hasmenu');
+        var scroller = sb.querySelector('.overflow-y-auto');
+
+        function setBuka(li, buka) {
+            var sub = li.querySelector('.submenu');
+            var arrow = li.querySelector('.arrow');
+            if (sub) sub.classList.toggle('open', buka);
+            if (arrow) arrow.style.transform = ''; // arah panah diatur CSS (.ra-open)
+            li.classList.toggle('ra-open', buka);
+        }
+
+        function simpanBuka() {
+            var buka = [];
+            for (var i = 0; i < menus.length; i++) {
+                if (menus[i].classList.contains('ra-open')) buka.push(menus[i].getAttribute('data-ra-menu'));
+            }
+            simpanData(localStorage, KEY_DROPDOWN, JSON.stringify(buka));
+        }
+
+        // buka/tutup dengan animasi: tinggi dihitung dari isi submenu agar geraknya merata
+        function animasiBuka(li, buka) {
+            var sub = li.querySelector('.submenu');
+            var hemat = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!sub || hemat) {
+                setBuka(li, buka);
+                return;
+            }
+            clearTimeout(sub.raTimer);
+
+            // mulai dari tinggi saat ini, jadi aman bila diklik lagi saat animasi berjalan
+            sub.style.transition = 'none';
+            sub.style.overflow = 'hidden';
+            sub.style.maxHeight = sub.getBoundingClientRect().height + 'px';
+            void sub.offsetHeight;
+            sub.style.transition = '';
+
+            li.classList.toggle('ra-anim-in', buka);
+            setBuka(li, buka);
+            var tinggi = buka ? sub.scrollHeight : 0;
+            sub.style.maxHeight = tinggi + 'px';
+
+            // menu yang dibuka di bagian bawah digulir halus agar isinya terlihat
+            if (buka && scroller) {
+                var bawah = li.getBoundingClientRect().top + li.querySelector('.pc-link').offsetHeight + tinggi + 16;
+                var batas = scroller.getBoundingClientRect().bottom;
+                if (bawah > batas) scroller.scrollBy({ top: bawah - batas, behavior: 'smooth' });
+            }
+
+            sub.raTimer = setTimeout(function () {
+                sub.style.maxHeight = '';
+                sub.style.overflow = '';
+                li.classList.remove('ra-anim-in');
+            }, 700);
+        }
+
+        // toggleSub bawaan tiap halaman diganti: dropdown lain tidak ikut tertutup & statusnya disimpan
+        window.toggleSub = function (el) {
+            var li = el.closest('.hasmenu');
+            if (!li) return;
+            animasiBuka(li, !li.classList.contains('ra-open'));
+            simpanBuka();
+        };
+
+        // cari link yang paling cocok dengan URL (mis. Interkoneksi/edit/5 -> Interkoneksi)
+        var path = normalPath(location.pathname);
+        var cocok = null;
+        var panjang = -1;
+        var links = sb.querySelectorAll('a[href]');
+        for (var a = 0; a < links.length; a++) {
+            if (links[a].getAttribute('href').charAt(0) === '#') continue;
+            var p = normalPath(links[a].pathname);
+            if (p && (path === p || path.indexOf(p + '/') === 0) && p.length > panjang) {
+                cocok = links[a];
+                panjang = p.length;
             }
         }
 
-        // halaman di dalam submenu: tandai link-nya & induknya
-        var path = location.pathname.replace(/\/+$/, '').toLowerCase();
-        var subs = sb.querySelectorAll('.submenu a[href]');
-        for (var s = 0; s < subs.length; s++) {
-            var p = subs[s].pathname.replace(/\/+$/, '').toLowerCase();
-            if (p && (path === p || path.indexOf(p + '/') === 0)) {
-                subs[s].classList.add('ra-current');
-                var parent = subs[s].closest('.hasmenu');
-                var toggleLink = parent && parent.querySelector('.pc-link');
-                if (toggleLink && !sb.querySelector('.pc-link.active')) toggleLink.classList.add('active');
-            }
+        // pasang tanpa animasi agar menu tidak terlihat membuka ulang di tiap halaman
+        sb.classList.add('ra-no-anim');
+
+        var tersimpan = [];
+        try { tersimpan = JSON.parse(bacaData(localStorage, KEY_DROPDOWN)) || []; } catch (e) { }
+        for (var t = 0; t < menus.length; t++) {
+            if (tersimpan.indexOf(menus[t].getAttribute('data-ra-menu')) !== -1) setBuka(menus[t], true);
         }
+
+        var aktif = null;
+        if (cocok) {
+            // tanda aktif yang tertulis manual di halaman diganti hasil dari URL
+            var lama = sb.querySelectorAll('.pc-link.active');
+            for (var l = 0; l < lama.length; l++) lama[l].classList.remove('active');
+
+            var induk = cocok.closest('.hasmenu');
+            if (induk && cocok.closest('.submenu')) {
+                cocok.classList.add('ra-current');
+                induk.querySelector('.pc-link').classList.add('active');
+                setBuka(induk, true);
+            } else {
+                cocok.classList.add('active');
+            }
+            aktif = cocok;
+        } else {
+            // URL tidak cocok dengan menu mana pun: pakai tanda aktif bawaan halaman
+            aktif = sb.querySelector('.pc-link.active');
+            var indukLama = aktif && aktif.closest('.hasmenu');
+            if (indukLama) setBuka(indukLama, true);
+        }
+        simpanBuka();
+
+        // posisi scroll menu dipertahankan, dan menu aktif dipastikan terlihat
+        if (scroller) {
+            var posisi = parseInt(bacaData(sessionStorage, KEY_SCROLL), 10);
+            if (!isNaN(posisi)) scroller.scrollTop = posisi;
+            if (aktif) {
+                var ra = aktif.getBoundingClientRect();
+                var rs = scroller.getBoundingClientRect();
+                if (ra.top < rs.top) scroller.scrollTop -= rs.top - ra.top + 8;
+                else if (ra.bottom > rs.bottom) scroller.scrollTop += ra.bottom - rs.bottom + 8;
+            }
+            window.addEventListener('pagehide', function () {
+                simpanData(sessionStorage, KEY_SCROLL, String(scroller.scrollTop));
+            });
+        }
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                sb.classList.remove('ra-no-anim');
+            });
+        });
+
+        return cocok;
     }
 
     // ---- Tanggal & jam WIB di topbar: elemen [data-wib="tanggal"] / [data-wib="jam"], diperbarui tiap 30 detik ----

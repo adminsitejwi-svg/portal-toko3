@@ -38,7 +38,7 @@ class DataExportService
         'md_nomer_inet'      => 'Nomor INET',
         'md_quota_simcard'   => 'Kuota Simcard',
         'md_vpn'             => 'VPN',
-        'md_barang'          => 'Inventory Kantor',
+        'md_barang'          => 'Asset Management',
         'd_rfo'              => 'RFO',
         'md_maintenance'     => 'Maintenance',
         'd_report'           => 'Daily Report',

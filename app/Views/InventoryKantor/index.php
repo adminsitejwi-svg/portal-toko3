@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
     <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
     <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
-    <title>Inventory Kantor</title>
+    <title>Asset Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -315,6 +315,7 @@
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
+                        <li><a href="<?= site_url('InventoryKantor') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Asset Management</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -334,13 +335,6 @@
                     <a href="<?= site_url('Profile') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-user-circle"></i></span>
                         <span>Profile</span>
-                    </a>
-                </li>
-                 <li>
-                    <a href="<?= site_url('InventoryKantor') ?>"
-                        class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-basket-down"></i></span>
-                        <span>Inventory Kantor</span>
                     </a>
                 </li>
                 <li>
