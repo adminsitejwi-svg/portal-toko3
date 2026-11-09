@@ -51,11 +51,11 @@ class AllNoc extends BaseConfig
     // Menu Activation (bagian sidebar sebelum NOC Operation), semuanya masih "Segera Hadir"
     public array $activation = [
         ['route' => 'Spk',            'judul' => 'SPK',                     'ikon' => 'ti-file-certificate',    'info' => 'Surat Perintah Kerja untuk pekerjaan aktivasi.', 'soon' => true],
-        ['route' => 'BastCorporate',  'judul' => 'BAST Corporate',          'ikon' => 'ti-building-skyscraper', 'info' => 'Berita Acara Serah Terima pelanggan corporate.', 'soon' => true],
-        ['route' => 'BastAlfamidi',   'judul' => 'BAST Alfamidi',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamidi.', 'soon' => true],
-        ['route' => 'BastLawson',     'judul' => 'BAST Lawson',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Lawson.', 'soon' => true],
-        ['route' => 'BastAlfamart',   'judul' => 'BAST Alfamart',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamart.', 'soon' => true],
-        ['route' => 'BastDandan',     'judul' => 'BAST Dandan',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Dandan.', 'soon' => true],
+        ['route' => 'BastCorporate',  'judul' => 'BAST Corporate',          'ikon' => 'ti-building-skyscraper', 'info' => 'Berita Acara Serah Terima pelanggan corporate.', 'soon' => false],
+        ['route' => 'BastAlfamidi',   'judul' => 'BAST Alfamidi',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamidi.', 'soon' => false],
+        ['route' => 'BastLawson',     'judul' => 'BAST Lawson',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Lawson.', 'soon' => false],
+        ['route' => 'BastAlfamart',   'judul' => 'BAST Alfamart',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamart.', 'soon' => false],
+        ['route' => 'BastDandan',     'judul' => 'BAST Dandan',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Dandan.', 'soon' => false],
         ['route' => 'PksContract',    'judul' => 'PKS & Contract',          'ikon' => 'ti-file-text',           'info' => 'Perjanjian Kerja Sama & kontrak pelanggan.', 'soon' => true],
     ];
 

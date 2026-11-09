@@ -375,11 +375,31 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"
     $routes->get('Spk', 'ComingSoon::show/Spk');
-    $routes->get('BastCorporate', 'ComingSoon::show/BastCorporate');
-    $routes->get('BastAlfamidi', 'ComingSoon::show/BastAlfamidi');
-    $routes->get('BastLawson', 'ComingSoon::show/BastLawson');
-    $routes->get('BastAlfamart', 'ComingSoon::show/BastAlfamart');
-    $routes->get('BastDandan', 'ComingSoon::show/BastDandan');
+    $routes->get('BastCorporate', 'BastCorporate::index');
+    $routes->post('BastCorporate/upload', 'BastCorporate::upload');
+    $routes->get('BastCorporate/lihat/(:num)', 'BastCorporate::lihat/$1');
+    $routes->get('BastCorporate/download/(:num)', 'BastCorporate::download/$1');
+    $routes->get('BastCorporate/delete/(:num)', 'BastCorporate::delete/$1');
+    $routes->get('BastAlfamidi', 'BastAlfamidi::index');
+    $routes->post('BastAlfamidi/upload', 'BastAlfamidi::upload');
+    $routes->get('BastAlfamidi/lihat/(:num)', 'BastAlfamidi::lihat/$1');
+    $routes->get('BastAlfamidi/download/(:num)', 'BastAlfamidi::download/$1');
+    $routes->get('BastAlfamidi/delete/(:num)', 'BastAlfamidi::delete/$1');
+    $routes->get('BastLawson', 'BastLawson::index');
+    $routes->post('BastLawson/upload', 'BastLawson::upload');
+    $routes->get('BastLawson/lihat/(:num)', 'BastLawson::lihat/$1');
+    $routes->get('BastLawson/download/(:num)', 'BastLawson::download/$1');
+    $routes->get('BastLawson/delete/(:num)', 'BastLawson::delete/$1');
+    $routes->get('BastAlfamart', 'BastAlfamart::index');
+    $routes->post('BastAlfamart/upload', 'BastAlfamart::upload');
+    $routes->get('BastAlfamart/lihat/(:num)', 'BastAlfamart::lihat/$1');
+    $routes->get('BastAlfamart/download/(:num)', 'BastAlfamart::download/$1');
+    $routes->get('BastAlfamart/delete/(:num)', 'BastAlfamart::delete/$1');
+    $routes->get('BastDandan', 'BastDandan::index');
+    $routes->post('BastDandan/upload', 'BastDandan::upload');
+    $routes->get('BastDandan/lihat/(:num)', 'BastDandan::lihat/$1');
+    $routes->get('BastDandan/download/(:num)', 'BastDandan::download/$1');
+    $routes->get('BastDandan/delete/(:num)', 'BastDandan::delete/$1');
     $routes->get('PksContract', 'ComingSoon::show/PksContract');
 
     // Data VLAN (menu All NOC di sidebar): VLAN + mapping perangkat, form berupa pop up
