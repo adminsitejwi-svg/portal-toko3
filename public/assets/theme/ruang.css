@@ -890,20 +890,13 @@ html.ra-pageload body::before {
     padding-top: 96px;
     font: 700 15px/1.2 Nunito, system-ui, sans-serif;
     letter-spacing: .02em;
-    color: var(--ra-muted);
-    /* latar polos tetap jadi cadangan bila browser belum mendukung color-mix */
-    background: var(--ra-body);
-    /* halaman di belakang diburamkan; saat halaman baru dimuat lebih pekat agar tampilan mentahnya tidak terlihat */
-    background: color-mix(in srgb, var(--ra-body) 72%, transparent);
+    color: var(--ra-text, #1e293b);
+    text-shadow: 0 1px 8px var(--ra-body);
+    /* tanpa latar warna: halaman di belakang hanya diburamkan */
+    background: transparent;
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     transition: opacity .6s cubic-bezier(.4, 0, .2, 1);
-}
-
-/* saat pindah halaman: halaman yang sedang dibuka terlihat buram di belakang */
-html.ra-pageload-leave body::before {
-    background: var(--ra-body);
-    background: color-mix(in srgb, var(--ra-body) 45%, transparent);
 }
 
 html.ra-pageload body::after {

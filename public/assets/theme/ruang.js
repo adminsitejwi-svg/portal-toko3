@@ -60,9 +60,19 @@
     // ---- Layar "Memuat halaman" (lihat ruang.css: html.ra-pageload) ----
     // Tampil sejak <head> sampai halaman selesai dimuat, lalu memudar.
     // Tampil lagi saat pindah halaman (klik link / kirim form), agar ada tanda sedang memuat.
+    // Layar blur tampil minimal 3 detik (PAGE_BLUR_MS), lalu memudar setelah halaman selesai dimuat.
+    var PAGE_BLUR_MS = 3000;
     var pageTimer = null;
+    var pageShownAt = Date.now();
+    function requestHidePageLoader() {
+        var left = PAGE_BLUR_MS - (Date.now() - pageShownAt);
+        if (left <= 0) return hidePageLoader();
+        clearTimeout(pageTimer);
+        pageTimer = setTimeout(hidePageLoader, left);
+    }
     function showPageLoader() {
         clearTimeout(pageTimer);
+        pageShownAt = Date.now();
         root.classList.remove('ra-pageload-out');
         root.classList.add('ra-pageload', 'ra-pageload-leave');
         // pengaman: kalau ternyata tidak pindah halaman (mis. unduhan), tutup sendiri
@@ -78,7 +88,7 @@
     }
     root.classList.add('ra-pageload');
     pageTimer = setTimeout(hidePageLoader, 8000);
-    window.addEventListener('load', hidePageLoader);
+    window.addEventListener('load', requestHidePageLoader);
     // kembali lewat tombol Back (halaman dari cache browser): jangan biarkan loader menempel
     window.addEventListener('pageshow', function (e) {
         if (e.persisted) hidePageLoader();

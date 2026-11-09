@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
     <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
     <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
-    <title>Data Interkoneksi</title>
+    <title>Data Center &amp; Interkoneksi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -309,6 +309,242 @@
             display: none;
         }
 
+        .dc-item:focus-visible {
+            outline: 2px solid var(--dc-color, #2f6bff);
+            outline-offset: 2px;
+        }
+
+        /* tombol edit/hapus Data Center: muncul saat kartu disorot (selalu tampil di layar sentuh) */
+        .dc-actions {
+            display: flex;
+            gap: 2px;
+            flex: 0 0 auto;
+            opacity: 0;
+            transition: opacity .15s;
+        }
+
+        .dc-item:hover .dc-actions,
+        .dc-item:focus-within .dc-actions,
+        .dc-item.active .dc-actions {
+            opacity: 1;
+        }
+
+        @media (hover: none) {
+            .dc-actions {
+                opacity: 1;
+            }
+        }
+
+        .dc-act {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: var(--rf-muted);
+        }
+
+        .dc-act:hover {
+            background: var(--rf-soft);
+            color: #2f6bff;
+        }
+
+        .dc-act.is-del:hover {
+            color: #ef4444;
+        }
+
+        .dc-add {
+            margin-left: auto;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            background: linear-gradient(135deg, #5b8cff, #2f6bff);
+            box-shadow: 0 4px 12px rgba(47, 107, 255, .3);
+        }
+
+        .dc-add:hover {
+            filter: brightness(1.08);
+        }
+
+        /* ===== GRUP DROPDOWN DATA CENTER (nama sama) — mengikuti gaya dropdown sidebar ===== */
+        .dc-group {
+            margin-bottom: 8px;
+            border: 1px solid var(--rf-border);
+            border-left: 4px solid var(--dc-color, #2f6bff);
+            border-radius: 10px;
+            background: var(--rf-card);
+            transition: box-shadow .2s, border-color .2s;
+        }
+
+        .dc-group:hover {
+            box-shadow: 0 6px 16px rgba(31, 42, 68, .08);
+        }
+
+        .dc-group-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color .15s;
+        }
+
+        .dc-group-head:hover,
+        .dc-group.open>.dc-group-head {
+            background: var(--rf-soft);
+        }
+
+        .dc-group-head:focus-visible {
+            outline: 2px solid var(--dc-color, #2f6bff);
+            outline-offset: 2px;
+        }
+
+        /* salah satu lokasi rak di grup sedang dipilih */
+        .dc-group.has-active {
+            border-color: var(--dc-color, #2f6bff);
+            box-shadow: 0 0 0 1px var(--dc-color, #2f6bff) inset;
+        }
+
+        /* panah dalam kotak: tertutup ke bawah, terbuka ke atas (seperti sidebar) */
+        .dc-arrow {
+            flex: 0 0 auto;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--rf-border);
+            border-radius: 8px;
+            background: var(--rf-card);
+            color: var(--rf-muted);
+            font-size: 15px;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1), color .15s, border-color .15s;
+        }
+
+        .dc-group.open .dc-arrow {
+            transform: rotate(180deg);
+            color: var(--dc-color, #2f6bff);
+            border-color: var(--dc-color, #2f6bff);
+        }
+
+        /* buka/tutup halus: tinggi 0fr -> 1fr */
+        .dc-sub-wrap {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows .5s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .dc-group.open>.dc-sub-wrap {
+            grid-template-rows: 1fr;
+        }
+
+        .dc-sub-list {
+            min-height: 0;
+            overflow: hidden;
+            margin: 0 10px 0 22px;
+            padding-left: 10px;
+            border-left: 1px solid var(--rf-border);
+            transition: margin .5s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .dc-group.open .dc-sub-list {
+            margin-top: 6px;
+            margin-bottom: 8px;
+            border-left-color: var(--dc-color, #2f6bff);
+        }
+
+        #dcList.dc-no-anim *,
+        #dcList.dc-no-anim *::before {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        /* baris lokasi rak di dalam dropdown */
+        .dc-item.dc-child {
+            margin: 2px 0;
+            padding: 7px 8px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .dc-item.dc-child:hover {
+            background: var(--rf-soft);
+            box-shadow: none;
+        }
+
+        .dc-item.dc-child.active {
+            background: color-mix(in srgb, var(--dc-color, #2f6bff) 14%, transparent);
+            border: 0;
+            box-shadow: none;
+        }
+
+        .dc-item.dc-child .dc-dot {
+            width: 8px;
+            height: 8px;
+        }
+
+        .dc-item.dc-child .dc-name {
+            font-size: .84rem;
+        }
+
+        /* alamat cukup satu baris (lengkapnya terlihat di pop up Edit) */
+        .dc-item.dc-child .dc-sub {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dc-item.dc-child.active .dc-name {
+            color: var(--dc-color, #2f6bff);
+        }
+
+        /* item dropdown muncul berurutan saat dibuka */
+        @keyframes dcSubMasuk {
+            from {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+        }
+
+        .dc-group.open.dc-anim-in .dc-child {
+            animation: dcSubMasuk .45s cubic-bezier(.22, 1, .36, 1) backwards;
+        }
+
+        .dc-group.open.dc-anim-in .dc-child:nth-child(2) {
+            animation-delay: .05s;
+        }
+
+        .dc-group.open.dc-anim-in .dc-child:nth-child(3) {
+            animation-delay: .1s;
+        }
+
+        .dc-group.open.dc-anim-in .dc-child:nth-child(n+4) {
+            animation-delay: .15s;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .dc-sub-wrap,
+            .dc-arrow {
+                transition: none;
+            }
+
+            .dc-group.open.dc-anim-in .dc-child {
+                animation: none;
+            }
+        }
+
         .dc-item:hover {
             box-shadow: 0 6px 16px rgba(31, 42, 68, .08);
         }
@@ -533,9 +769,8 @@
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
                     <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('DataCenter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center</a></li>
                         <li><a href="<?= site_url('DataRakDC') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Rak DC</a></li>
-                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Interkoneksi</a></li>
+                        <li><a href="<?= site_url('Interkoneksi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Center &amp; Interkoneksi</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
@@ -614,11 +849,11 @@
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-4">
                     <span class="rfo-title-ic is-sky"><i class="ti ti-arrows-exchange"></i></span>
-                    <h1 class="rfo-title">Data Interkoneksi</h1>
+                    <h1 class="rfo-title">Data Center &amp; Interkoneksi</h1>
                 </div>
-                <a href="<?= site_url('Interkoneksi/create') ?>" class="rfo-btn rfo-btn-blue">
-                    <i class="ti ti-plus"></i> Tambah
-                </a>
+                <button type="button" onclick="openIk()" class="rfo-btn rfo-btn-blue border-0 cursor-pointer">
+                    <i class="ti ti-plus"></i> Tambah Interkoneksi
+                </button>
             </div>
 
             <?php
@@ -633,6 +868,7 @@
                     <div class="dc-head">
                         <div class="flex items-center gap-2 text-[1.1rem] font-bold text-[#202124] dark:text-white mb-3">
                             <i class="ti ti-building-warehouse text-[#2f6bff]"></i> Data Center
+                            <button type="button" class="dc-add" onclick="openDc()" title="Tambah Data Center" aria-label="Tambah Data Center"><i class="ti ti-plus"></i></button>
                         </div>
                         <div class="rfo-search">
                             <i class="ti ti-search"></i>
@@ -640,22 +876,69 @@
                         </div>
                     </div>
 
+                    <?php
+                    // Data Center dengan nama sama (beda lokasi rak) disatukan jadi satu grup dropdown
+                    $grupDc = [];
+                    foreach ($dataCenter as $dc) {
+                        $grupDc[mb_strtolower(trim($dc['nama_dc']))][] = $dc;
+                    }
+
+                    // Satu kartu Data Center. $anak = baris di dalam dropdown (judulnya lokasi rak)
+                    $kartuDc = function (array $dc, bool $anak) use ($jumlahDc) {
+                        $n = $jumlahDc[(string) $dc['id']] ?? 0;
+                        $rak = $dc['lokasi_rak'] ? 'Rak ' . $dc['lokasi_rak'] : '-';
+                        ob_start(); ?>
+                        <!-- klik kartu = filter tabel; ikon pensil / tong sampah = edit / hapus Data Center -->
+                        <div role="button" tabindex="0" class="dc-item<?= $anak ? ' dc-child' : '' ?>" data-dc="<?= (int) $dc['id'] ?>"
+                            data-cari="<?= esc(mb_strtolower($dc['nama_dc'] . ' ' . $dc['lokasi_rak'] . ' ' . $dc['alamat_dc']), 'attr') ?>"
+                            data-row="<?= esc(json_encode(['id' => $dc['id'], 'nama_dc' => $dc['nama_dc'], 'lokasi_rak' => $dc['lokasi_rak'], 'alamat_dc' => $dc['alamat_dc']]), 'attr') ?>"
+                            data-jumlah="<?= $n ?>">
+                            <span class="dc-dot"></span>
+                            <span class="min-w-0 flex-1">
+                                <span class="dc-name"><?= esc($anak ? $rak : $dc['nama_dc']) ?></span>
+                                <span class="dc-sub"><?= esc($anak ? ($dc['alamat_dc'] ?: '-') : ($dc['lokasi_rak'] ? $rak : ($dc['alamat_dc'] ?: '-'))) ?></span>
+                            </span>
+                            <span class="dc-actions">
+                                <button type="button" class="dc-act" data-aksi="edit" title="Edit Data Center" aria-label="Edit Data Center"><i class="ti ti-edit"></i></button>
+                                <button type="button" class="dc-act is-del" data-aksi="hapus" title="Hapus Data Center" aria-label="Hapus Data Center"><i class="ti ti-trash"></i></button>
+                            </span>
+                            <span class="dc-count <?= $n ? 'has' : '' ?>"><?= $n ?></span>
+                        </div>
+                    <?php return ob_get_clean();
+                    };
+                    ?>
                     <div class="dc-body" id="dcList">
-                        <?php foreach ($dataCenter as $i => $dc) : ?>
-                            <?php $n = $jumlahDc[(string) $dc['id']] ?? 0; ?>
-                            <button type="button" class="dc-item" data-dc="<?= (int) $dc['id'] ?>"
-                                data-cari="<?= esc(strtolower($dc['nama_dc'] . ' ' . $dc['lokasi_rak'] . ' ' . $dc['alamat_dc']), 'attr') ?>"
-                                style="--dc-color:<?= $warnaDc[$i % count($warnaDc)] ?>">
-                                <span class="dc-dot"></span>
-                                <span class="min-w-0">
-                                    <span class="dc-name"><?= esc($dc['nama_dc']) ?></span>
-                                    <span class="dc-sub"><?= esc($dc['lokasi_rak'] ? 'Rak ' . $dc['lokasi_rak'] : ($dc['alamat_dc'] ?: '-')) ?></span>
-                                </span>
-                                <span class="dc-count <?= $n ? 'has' : '' ?>"><?= $n ?></span>
-                            </button>
+                        <?php $g = 0; ?>
+                        <?php foreach ($grupDc as $kunci => $daftar) : ?>
+                            <?php $warna = $warnaDc[$g++ % count($warnaDc)]; ?>
+                            <?php if (count($daftar) === 1) : ?>
+                                <div class="dc-single" style="--dc-color:<?= $warna ?>"><?= $kartuDc($daftar[0], false) ?></div>
+                            <?php else : ?>
+                                <?php $total = 0;
+                                foreach ($daftar as $dc) $total += $jumlahDc[(string) $dc['id']] ?? 0; ?>
+                                <!-- grup dropdown (gaya dropdown sidebar): klik judul = buka / tutup daftar lokasi rak -->
+                                <div class="dc-group" data-grup="<?= esc($kunci, 'attr') ?>" style="--dc-color:<?= $warna ?>">
+                                    <button type="button" class="dc-group-head" aria-expanded="false">
+                                        <span class="dc-dot"></span>
+                                        <span class="min-w-0 flex-1 text-left">
+                                            <span class="dc-name"><?= esc($daftar[0]['nama_dc']) ?></span>
+                                            <span class="dc-sub"><?= count($daftar) ?> lokasi rak</span>
+                                        </span>
+                                        <span class="dc-count <?= $total ? 'has' : '' ?>"><?= $total ?></span>
+                                        <span class="dc-arrow"><i class="ti ti-chevron-down"></i></span>
+                                    </button>
+                                    <div class="dc-sub-wrap">
+                                        <div class="dc-sub-list">
+                                            <?php foreach ($daftar as $dc) : ?>
+                                                <?= $kartuDc($dc, true) ?>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         <?php endforeach; ?>
 
-                        <div id="dcEmpty" class="hidden text-gray-400 text-sm py-2">Data center tidak ditemukan.</div>
+                        <div id="dcEmpty" class="<?= $dataCenter ? 'hidden' : '' ?> text-gray-400 text-sm py-2"><?= $dataCenter ? 'Data center tidak ditemukan.' : 'Belum ada data center. Klik + untuk menambah.' ?></div>
                     </div>
                 </aside>
 
@@ -725,10 +1008,12 @@
                                         <tr data-dc="<?= (int) $row['data_center_id'] ?>">
                                             <td><?= $no++; ?></td>
                                             <td>
-                                                <a href="<?= site_url('Interkoneksi/edit/' . $row['id']) ?>"
+                                                <button type="button"
+                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                    onclick="openIk(JSON.parse(this.dataset.row))"
                                                     class="btn btn-sm btn-primary">
                                                     <i class="ti ti-edit"></i> <span>Edit</span>
-                                                </a>
+                                                </button>
 
                                                 <button type="button"
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
@@ -835,9 +1120,235 @@
         </div>
     </div>
 
+    <!-- ====== POP UP FORM DATA CENTER (tambah / edit) ====== -->
+    <div id="modal_dc" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeForm('dc')">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto rfo-form">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold" data-judul="Data Center"></h3>
+                <button type="button" onclick="closeForm('dc')" aria-label="Tutup"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <form method="POST" id="formDc" data-save="<?= site_url('DataCenter/save') ?>" data-update="<?= site_url('DataCenter/update') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <div class="rf-group"><label class="rf-label">Nama Data Center <span class="req">*</span></label><input class="rf-input" name="nama_dc" maxlength="255" required placeholder="Masukkan Nama Data Center"></div>
+                    <div class="rf-group"><label class="rf-label">Lokasi Rak <span class="req">*</span></label><input class="rf-input" name="lokasi_rak" maxlength="255" required placeholder="Masukkan Lokasi Rak"></div>
+                    <div class="rf-group md:col-span-2"><label class="rf-label">Lokasi Data Center (Alamat) <span class="req">*</span></label><textarea class="rf-input" name="alamat_dc" rows="3" required placeholder="Masukkan Alamat Data Center"></textarea></div>
+                </div>
+                <div class="d-flex">
+                    <button type="submit"><i class="ti ti-device-floppy"></i> Simpan</button>
+                    <button type="button" class="btn-back" onclick="closeForm('dc')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== POP UP FORM INTERKONEKSI (tambah / edit) ====== -->
+    <div id="modal_ik" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeForm('ik')">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto rfo-form">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold" data-judul="Data Interkoneksi"></h3>
+                <button type="button" onclick="closeForm('ik')" aria-label="Tutup"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <form method="POST" id="formIk" enctype="multipart/form-data" data-save="<?= site_url('Interkoneksi/save') ?>" data-update="<?= site_url('Interkoneksi/update') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <div class="rf-group"><label class="rf-label">Kode Interkoneksi <span class="req">*</span></label><input class="rf-input" name="kode_interkoneksi" maxlength="100" required placeholder="Masukkan Kode Interkoneksi"></div>
+                    <div class="rf-group"><label class="rf-label">Customer <span class="req">*</span></label><input class="rf-input" name="customer" maxlength="255" required placeholder="Masukkan Customer"></div>
+                    <div class="rf-group md:col-span-2">
+                        <label class="rf-label">Data Center <span class="req">*</span></label>
+                        <select class="rf-input" name="data_center_id" required>
+                            <option value="">-- Pilih Data Center --</option>
+                            <?php foreach ($dataCenter as $dc) : ?>
+                                <option value="<?= esc($dc['id'], 'attr') ?>"><?= esc($dc['nama_dc'] . ($dc['lokasi_rak'] ? ' - ' . $dc['lokasi_rak'] : '')) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="rf-group">
+                        <label class="rf-label">Sumber <span class="req">*</span></label>
+                        <select class="rf-input" name="sumber" required>
+                            <option value="">-- Pilih Sumber --</option>
+                            <?php foreach ($opsiSumber as $v) : ?>
+                                <option value="<?= esc($v, 'attr') ?>"><?= esc($v) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="rf-group"><label class="rf-label">Tujuan <span class="req">*</span></label><input class="rf-input" name="tujuan" maxlength="255" required placeholder="Masukkan Tujuan"></div>
+                    <div class="rf-group"><label class="rf-label">Label Kabel</label><input class="rf-input" name="label_kabel" maxlength="255" placeholder="Masukkan Label Kabel"></div>
+                    <div class="rf-group">
+                        <label class="rf-label">Status</label>
+                        <select class="rf-input" name="status">
+                            <option value="">-- Pilih Status --</option>
+                            <?php foreach ($opsiStatus as $v) : ?>
+                                <option value="<?= esc($v, 'attr') ?>"><?= esc($v) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="rf-group md:col-span-2"><label class="rf-label">Note</label><textarea class="rf-input" name="note" rows="3" placeholder="Masukkan Note"></textarea></div>
+                    <div class="rf-group md:col-span-2">
+                        <label class="rf-label">Dokumen <span class="text-gray-400 font-normal">(PDF, PNG, JPG - maks. 10 MB)</span></label>
+                        <input class="rf-input" type="file" name="file_dokumen" accept=".pdf,.png,.jpg,.jpeg">
+                        <!-- saat edit: file yang sudah ada -->
+                        <div id="ikFileLama" class="hidden mt-2 text-sm flex flex-wrap items-center gap-3">
+                            <span class="text-gray-500">File saat ini:</span>
+                            <a href="#" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1"><i class="ti ti-paperclip"></i> <span></span></a>
+                            <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                <input type="checkbox" name="hapus_dokumen" value="1"> Hapus file
+                            </label>
+                            <p class="w-full text-xs text-gray-500">Pilih file baru untuk mengganti file saat ini.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <button type="submit"><i class="ti ti-device-floppy"></i> Simpan</button>
+                    <button type="button" class="btn-back" onclick="closeForm('ik')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <?php
+    // Gagal simpan (validasi di server): pop up dibuka lagi dengan isian sebelumnya
+    $popupGagal = session()->getFlashdata('popup');
+    $isianLama  = [];
+    if ($popupGagal === 'dc') {
+        foreach (['id', 'nama_dc', 'lokasi_rak', 'alamat_dc'] as $k) {
+            $isianLama[$k] = old($k, '', false);
+        }
+    } elseif ($popupGagal === 'ik') {
+        foreach (['id', 'kode_interkoneksi', 'customer', 'data_center_id', 'sumber', 'tujuan', 'label_kabel', 'status', 'note'] as $k) {
+            $isianLama[$k] = old($k, '', false);
+        }
+        // saat edit: tampilkan lagi file dokumen yang sudah tersimpan
+        foreach ($interkoneksi as $r) {
+            if ($isianLama['id'] !== '' && (string) $r['id'] === (string) $isianLama['id']) {
+                $isianLama['file_dokumen']      = $r['file_dokumen'];
+                $isianLama['file_dokumen_asli'] = $r['file_dokumen_asli'];
+            }
+        }
+    }
+    ?>
+
     <script>
-        // Isian form tambah/edit (data_center_id dipilih dari dropdown Data Center)
-        const FIELDS = ['kode_interkoneksi', 'customer', 'data_center_id', 'sumber', 'tujuan', 'label_kabel', 'status', 'note'];
+        // ====== POP UP FORM TAMBAH / EDIT (Data Center & Interkoneksi) ======
+        const URL_FILE = '<?= site_url('Interkoneksi/file/') ?>';
+
+        function openForm(jenis, data) {
+            data = data || {};
+            const modal = document.getElementById('modal_' + jenis);
+            const form = modal.querySelector('form');
+            const edit = !!data.id;
+
+            form.reset();
+            form.elements.id.value = edit ? data.id : '';
+            form.setAttribute('action', edit ? form.dataset.update : form.dataset.save);
+            const judul = modal.querySelector('[data-judul]');
+            judul.textContent = (edit ? 'Edit ' : 'Tambah ') + judul.dataset.judul;
+
+            Object.keys(data).forEach(k => {
+                const el = form.elements[k];
+                if (el && k !== 'id' && el.type !== 'file' && el.type !== 'checkbox') el.value = data[k] === null ? '' : data[k];
+            });
+
+            if (jenis === 'ik') {
+                const lama = document.getElementById('ikFileLama');
+                const adaFile = edit && !!data.file_dokumen;
+                lama.classList.toggle('hidden', !adaFile);
+                if (adaFile) {
+                    const a = lama.querySelector('a');
+                    a.href = URL_FILE + data.id;
+                    a.querySelector('span').textContent = data.file_dokumen_asli || data.file_dokumen;
+                }
+            }
+
+            modal.classList.remove('hidden');
+            const pertama = form.querySelector('.rf-input');
+            if (pertama) setTimeout(() => pertama.focus(), 50);
+        }
+
+        function closeForm(jenis) {
+            document.getElementById('modal_' + jenis).classList.add('hidden');
+        }
+
+        function openDc(data) {
+            openForm('dc', data);
+        }
+
+        // Tambah interkoneksi: Data Center terisi otomatis dari kartu kiri yang sedang dipilih
+        function openIk(data) {
+            if (!document.querySelector('#dcList .dc-item')) {
+                return Swal.fire({ icon: 'warning', title: 'Belum Bisa', text: 'Tambahkan Data Center lebih dulu (tombol + di kartu Data Center).', confirmButtonColor: '#04a9f5' });
+            }
+            if (!data) {
+                const aktif = document.querySelector('#dcList .dc-item.active');
+                data = aktif ? { data_center_id: aktif.dataset.dc } : {};
+            }
+            openForm('ik', data);
+        }
+
+        function hapusDc(item) {
+            const d = JSON.parse(item.dataset.row);
+            const jumlah = Number(item.dataset.jumlah);
+            if (jumlah > 0) {
+                return Swal.fire({ icon: 'warning', title: 'Belum Bisa Dihapus', text: 'Data Center "' + d.nama_dc + '" masih dipakai ' + jumlah + ' data interkoneksi. Pindahkan atau hapus data interkoneksinya dulu.', confirmButtonColor: '#04a9f5' });
+            }
+            Swal.fire({
+                title: 'Hapus Data Center?',
+                text: '"' + d.nama_dc + '" akan dihapus dan tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then(r => {
+                if (r.isConfirmed) window.location.href = '<?= site_url('DataCenter/delete/') ?>' + d.id;
+            });
+        }
+
+        // Esc = tutup pop up form yang sedang terbuka
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            ['dc', 'ik'].forEach(j => {
+                if (!document.getElementById('modal_' + j).classList.contains('hidden')) closeForm(j);
+            });
+        });
+
+        // ====== VALIDASI SEBELUM SUBMIT ======
+        function formBelumLengkap(form) {
+            const kosong = [...form.querySelectorAll('[required]')].some(el => !el.value.trim());
+            if (kosong) {
+                Swal.fire({ icon: 'warning', title: 'Form Belum Lengkap', text: 'Semua field bertanda * wajib diisi.', confirmButtonColor: '#185a82' });
+            }
+            return kosong;
+        }
+
+        document.getElementById('formDc').addEventListener('submit', function(e) {
+            if (formBelumLengkap(this)) e.preventDefault();
+        });
+
+        document.getElementById('formIk').addEventListener('submit', function(e) {
+            if (formBelumLengkap(this)) return e.preventDefault();
+            // File dokumen (opsional): cek ekstensi & ukuran sebelum dikirim
+            const file = this.elements.file_dokumen.files[0];
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            let pesan = '';
+            if (!['pdf', 'png', 'jpg', 'jpeg'].includes(ext)) pesan = 'File Dokumen harus PDF, PNG, atau JPG.';
+            else if (file.size > 10 * 1024 * 1024) pesan = 'File Dokumen maksimal 10 MB.';
+            if (pesan) {
+                e.preventDefault();
+                Swal.fire({ icon: 'warning', title: 'File Tidak Valid', text: pesan, confirmButtonColor: '#185a82' });
+            }
+        });
+
+        <?php if ($popupGagal === 'dc' || $popupGagal === 'ik') : ?>
+            document.addEventListener('DOMContentLoaded', () => openForm(<?= json_encode($popupGagal) ?>, <?= json_encode($isianLama, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>));
+        <?php endif; ?>
+    </script>
+
+    <script>
         // Yang ditampilkan di pop up view (nama_dc & lokasi_rak hasil join ke md_data_center)
         const VIEW_FIELDS = ['kode_interkoneksi', 'customer', 'nama_dc', 'lokasi_rak', 'sumber', 'tujuan', 'label_kabel', 'status', 'note'];
 
@@ -1150,12 +1661,62 @@
                 $('#dcList .dc-item').each(function() {
                     $(this).toggleClass('active', this.dataset.dc === id);
                 });
+                // judul grup ikut ditandai bila salah satu lokasi raknya sedang dipilih
+                $('#dcList .dc-group').each(function() {
+                    $(this).toggleClass('has-active', !!this.querySelector('.dc-item.active'));
+                });
                 table.draw();
             }
 
-            $('#dcList').on('click', '.dc-item', function() {
+            // ====== GRUP DROPDOWN DATA CENTER (nama sama) — buka/tutup seperti dropdown sidebar ======
+            // grup yang terbuka diingat selama tab browser masih dibuka
+            const KUNCI_GRUP = 'interkoneksi.dcOpen';
+            let grupTerbuka = [];
+            try {
+                grupTerbuka = JSON.parse(sessionStorage.getItem(KUNCI_GRUP) || '[]');
+            } catch (err) {}
+
+            function setGrup(el, buka, simpan) {
+                el.classList.toggle('open', buka);
+                el.querySelector('.dc-group-head').setAttribute('aria-expanded', buka ? 'true' : 'false');
+                if (!simpan) return;
+                grupTerbuka = grupTerbuka.filter(k => k !== el.dataset.grup);
+                if (buka) grupTerbuka.push(el.dataset.grup);
+                try {
+                    sessionStorage.setItem(KUNCI_GRUP, JSON.stringify(grupTerbuka));
+                } catch (err) {}
+            }
+
+            // saat halaman dibuka: kembalikan tanpa animasi
+            $('#dcList').addClass('dc-no-anim');
+            $('#dcList .dc-group').each(function() {
+                setGrup(this, grupTerbuka.includes(this.dataset.grup), false);
+            });
+            requestAnimationFrame(() => requestAnimationFrame(() => $('#dcList').removeClass('dc-no-anim')));
+
+            $('#dcList').on('click', '.dc-group-head', function() {
+                const grup = this.closest('.dc-group');
+                // sedang mencari: grup dibuka otomatis, klik judul tidak menutupnya
+                if ($('#dcSearch').val().trim()) return;
+                const buka = !grup.classList.contains('open');
+                grup.classList.toggle('dc-anim-in', buka);
+                setGrup(grup, buka, true);
+            });
+
+            $('#dcList').on('click', '.dc-item', function(e) {
+                const aksi = e.target.closest('[data-aksi]');
+                if (aksi) {
+                    e.stopPropagation();
+                    return aksi.dataset.aksi === 'edit' ? openDc(JSON.parse(this.dataset.row)) : hapusDc(this);
+                }
                 // klik lagi data center yang sedang aktif = filter dilepas (tampil semua data)
                 pilihDc(this.dataset.dc === dcAktif ? '' : this.dataset.dc);
+            });
+            // kartu bisa dipilih dengan keyboard (Enter / Spasi)
+            $('#dcList').on('keydown', '.dc-item', function(e) {
+                if (e.target !== this || (e.key !== 'Enter' && e.key !== ' ')) return;
+                e.preventDefault();
+                this.click();
             });
 
             // cari data center di kartu kiri
@@ -1165,7 +1726,15 @@
                 $('#dcList .dc-item[data-cari]').each(function() {
                     const cocok = !q || this.dataset.cari.includes(q);
                     $(this).toggleClass('hidden', !cocok);
+                    // kartu tunggal: sembunyikan juga pembungkusnya
+                    $(this).parent('.dc-single').toggleClass('hidden', !cocok);
                     if (cocok) ada++;
+                });
+                // grup: tampil bila ada lokasi rak yang cocok, dan dibuka selama mencari
+                $('#dcList .dc-group').each(function() {
+                    const cocok = this.querySelectorAll('.dc-item:not(.hidden)').length > 0;
+                    $(this).toggleClass('hidden', !cocok);
+                    setGrup(this, q ? cocok : grupTerbuka.includes(this.dataset.grup), false);
                 });
                 $('#dcEmpty').toggleClass('hidden', ada > 0);
             });

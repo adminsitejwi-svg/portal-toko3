@@ -3,8 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\DataCenterModel;
+use App\Models\InterkoneksiModel;
 
-// Halaman Data Center (menu Data Center di sidebar)
+// Simpan / ubah / hapus Data Center. Tampilannya digabung di halaman Data Interkoneksi:
+// daftar Data Center ada di kartu kiri, form tambah/edit berupa pop up.
 class DataCenter extends BaseController
 {
     protected $dcModel;
@@ -14,30 +16,20 @@ class DataCenter extends BaseController
         $this->dcModel = new DataCenterModel();
     }
 
-    // Halaman utama (view di folder DataCenter/index.php)
+    // Halaman lama Data Center & form-nya sekarang ada di halaman Data Interkoneksi
     public function index()
     {
-        return view('DataCenter/index', [
-            'dataCenter' => $this->dcModel->orderBy('nama_dc', 'ASC')->findAll(),
-        ]);
+        return redirect()->to(site_url('Interkoneksi'));
     }
 
-    // Halaman form tambah (view DataCenter/FormDataCenter.php)
     public function create()
     {
-        return view('DataCenter/FormDataCenter');
+        return redirect()->to(site_url('Interkoneksi'));
     }
 
-    // Halaman form edit (view DataCenter/EditFormDataCenter.php)
     public function edit($id)
     {
-        $row = $this->dcModel->find($id);
-
-        if (! $row) {
-            return redirect()->to(site_url('DataCenter'))->with('error', 'Data Center tidak ditemukan.');
-        }
-
-        return view('DataCenter/EditFormDataCenter', ['row' => $row]);
+        return redirect()->to(site_url('Interkoneksi'));
     }
 
     private function rules(): array
@@ -60,20 +52,27 @@ class DataCenter extends BaseController
         ];
     }
 
+    // Gagal validasi: kembali ke halaman dan buka lagi pop up Data Center dengan isian sebelumnya
+    private function gagal(string $pesan)
+    {
+        return redirect()->to(site_url('Interkoneksi'))
+            ->withInput()
+            ->with('popup', 'dc')
+            ->with('error', $pesan);
+    }
+
     // Simpan data baru (POST DataCenter/save)
     public function save()
     {
         $fields = $this->collectFields();
 
         if (! $this->validateData($fields, $this->rules())) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode(' ', $this->validator->getErrors()));
+            return $this->gagal(implode(' ', $this->validator->getErrors()));
         }
 
         $this->dcModel->insert($fields);
 
-        return redirect()->to(site_url('DataCenter'))
+        return redirect()->to(site_url('Interkoneksi'))
             ->with('success', 'Data Center berhasil ditambahkan.');
     }
 
@@ -83,29 +82,34 @@ class DataCenter extends BaseController
         $id = $this->request->getPost('id');
 
         if (! $this->dcModel->find($id)) {
-            return redirect()->to(site_url('DataCenter'))->with('error', 'Data Center tidak ditemukan.');
+            return redirect()->to(site_url('Interkoneksi'))->with('error', 'Data Center tidak ditemukan.');
         }
 
         $fields = $this->collectFields();
 
         if (! $this->validateData($fields, $this->rules())) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode(' ', $this->validator->getErrors()));
+            return $this->gagal(implode(' ', $this->validator->getErrors()));
         }
 
         $this->dcModel->update($id, $fields);
 
-        return redirect()->to(site_url('DataCenter'))
+        return redirect()->to(site_url('Interkoneksi'))
             ->with('success', 'Data Center berhasil diperbarui.');
     }
 
-    // Hapus data
+    // Hapus data; ditolak bila masih dipakai Data Interkoneksi (agar datanya tidak kehilangan Data Center)
     public function delete($id)
     {
+        $dipakai = (new InterkoneksiModel())->where('data_center_id', $id)->countAllResults();
+
+        if ($dipakai > 0) {
+            return redirect()->to(site_url('Interkoneksi'))
+                ->with('error', 'Data Center masih dipakai ' . $dipakai . ' data interkoneksi. Pindahkan atau hapus data interkoneksinya dulu.');
+        }
+
         $this->dcModel->delete($id);
 
-        return redirect()->to(site_url('DataCenter'))
+        return redirect()->to(site_url('Interkoneksi'))
             ->with('success', 'Data Center berhasil dihapus.');
     }
 }

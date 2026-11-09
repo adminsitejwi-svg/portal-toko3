@@ -26,13 +26,12 @@ class Interkoneksi extends BaseController
         $this->ikModel = new InterkoneksiModel();
     }
 
-    // Halaman utama (view di folder Interkoneksi/index.php)
+    // Halaman utama (view di folder Interkoneksi/index.php).
+    // Data Center ikut tampil di kartu kiri; form tambah/edit Data Center & Interkoneksi berupa pop up.
     public function index()
     {
-        return view('Interkoneksi/index', [
+        return view('Interkoneksi/index', $this->formData() + [
             'interkoneksi' => $this->ikModel->withDataCenter(),
-            // daftar Data Center untuk kartu kategori di kiri tabel (filter per data center)
-            'dataCenter'   => (new DataCenterModel())->orderBy('nama_dc', 'ASC')->findAll(),
         ]);
     }
 
@@ -46,7 +45,7 @@ class Interkoneksi extends BaseController
     // Pilihan dropdown Status di form tambah/edit
     public const STATUS = ['Active', 'Terminate'];
 
-    // Pilihan dropdown Data Center, Sumber & Status di form tambah/edit
+    // Daftar Data Center (kartu kiri & dropdown) serta pilihan Sumber & Status di pop up form
     private function formData(): array
     {
         return [
@@ -56,22 +55,24 @@ class Interkoneksi extends BaseController
         ];
     }
 
-    // Halaman form tambah (view Interkoneksi/FormInterkoneksi.php)
+    // Form tambah/edit sekarang pop up di halaman utama; link lama diarahkan ke sana
     public function create()
     {
-        return view('Interkoneksi/FormInterkoneksi', $this->formData());
+        return redirect()->to(site_url('Interkoneksi'));
     }
 
-    // Halaman form edit (view Interkoneksi/EditFormInterkoneksi.php)
     public function edit($id)
     {
-        $row = $this->ikModel->find($id);
+        return redirect()->to(site_url('Interkoneksi'));
+    }
 
-        if (! $row) {
-            return redirect()->to(site_url('Interkoneksi'))->with('error', 'Data Interkoneksi tidak ditemukan.');
-        }
-
-        return view('Interkoneksi/EditFormInterkoneksi', $this->formData() + ['row' => $row]);
+    // Gagal validasi: kembali ke halaman dan buka lagi pop up Interkoneksi dengan isian sebelumnya
+    private function gagal(string $pesan)
+    {
+        return redirect()->to(site_url('Interkoneksi'))
+            ->withInput()
+            ->with('popup', 'ik')
+            ->with('error', $pesan);
     }
 
     // $id diisi saat update agar kode milik data itu sendiri tidak dianggap duplikat
@@ -177,7 +178,7 @@ class Interkoneksi extends BaseController
         $fields = $this->collectFields();
 
         if ($error = $this->validasi($fields)) {
-            return redirect()->back()->withInput()->with('error', $error);
+            return $this->gagal($error);
         }
 
         if ($file = $this->simpanFile()) {
@@ -203,7 +204,7 @@ class Interkoneksi extends BaseController
         $fields = $this->collectFields();
 
         if ($error = $this->validasi($fields, $id)) {
-            return redirect()->back()->withInput()->with('error', $error);
+            return $this->gagal($error);
         }
 
         $fileLamaDihapus = false;
