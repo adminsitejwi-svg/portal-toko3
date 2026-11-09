@@ -29,6 +29,8 @@ class AllNoc extends BaseConfig
         ['route' => 'IpPublic',        'judul' => 'Data IP Public',              'ikon' => 'ti-world',           'info' => 'Alokasi blok & alamat IP public.', 'soon' => true],
         ['route' => 'IpPrivate',       'judul' => 'Data IP Private',             'ikon' => 'ti-lock',            'info' => 'Alokasi subnet & alamat IP private.', 'soon' => true],
         ['route' => 'FtpClient',       'judul' => 'FTP Client',                  'ikon' => 'ti-folder-share',    'info' => 'Akses file server FTP NOC dari portal.', 'soon' => true],
+        ['route' => 'DataOdcOdp',     'judul' => 'Data ODC & ODP',            'ikon' => 'ti-box-model-2',      'info' => 'Data ODC (Optical Distribution Cabinet) & ODP (Optical Distribution Point).', 'soon' => true],
+        ['route' => 'Kmz',            'judul' => 'KMZ',                       'ikon' => 'ti-map-2',            'info' => 'File peta KMZ jalur kabel & titik jaringan.', 'soon' => true],
         ['route' => 'DevicesBackbone', 'judul' => 'Devices Backbone',            'ikon' => 'ti-router',          'info' => 'Perangkat jaringan backbone.', 'soon' => false],
         ['route' => 'Bts',             'judul' => 'Data BTS',                    'ikon' => 'ti-antenna-bars-5',  'info' => 'Data BTS & vendor BTS.', 'soon' => false],
         ['route' => 'PelangganNoc',    'judul' => 'Data Pelanggan',              'ikon' => 'ti-users',           'info' => 'Pelanggan NOC beserta perangkat & vendor.', 'soon' => false],

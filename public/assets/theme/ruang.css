@@ -1629,3 +1629,13 @@ html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .ra-soon {
     color: #b45309;
     background: #fef3c7;
 }
+
+/* label "Soon" pada menu utama: kecil, di samping judul menu */
+#sidebar.pc-sidebar .pc-link .ra-soon {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    line-height: 16px;
+    vertical-align: 1px;
+}

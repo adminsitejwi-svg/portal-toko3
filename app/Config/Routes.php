@@ -328,6 +328,8 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('DataSwitch', 'ComingSoon::show/DataSwitch');
     $routes->get('DataOlt', 'ComingSoon::show/DataOlt');
     $routes->get('DataRouter', 'ComingSoon::show/DataRouter');
+    $routes->get('DataOdcOdp', 'ComingSoon::show/DataOdcOdp');
+    $routes->get('Kmz', 'ComingSoon::show/Kmz');
 
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
     $routes->get('SlaReport', 'ComingSoon::show/SlaReport');

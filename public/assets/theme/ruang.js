@@ -267,6 +267,8 @@
         'ippublic': 'ti-world',
         'ipprivate': 'ti-lock',
         'ftpclient': 'ti-folder-share',
+        'dataodcodp': 'ti-box-model-2',
+        'kmz': 'ti-map-2',
         'devicesbackbone': 'ti-router',
         'bts': 'ti-antenna-bars-5',
         'pelanggannoc': 'ti-users',
@@ -280,7 +282,7 @@
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
-    var MENU_SEGERA = ['datarouter', 'dataswitch', 'dataolt', 'ippublic', 'ipprivate', 'ftpclient',
+    var MENU_SEGERA = ['datarouter', 'dataswitch', 'dataolt', 'ippublic', 'ipprivate', 'ftpclient', 'dataodcodp', 'kmz',
         'slareport', 'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport',
         'spk', 'pkscontract', 'bastcorporate', 'bastalfamidi', 'bastlawson', 'bastalfamart', 'bastdandan'];
 
@@ -365,7 +367,10 @@
                 var soonMenu = document.createElement('span');
                 soonMenu.className = 'ra-soon';
                 soonMenu.textContent = 'Soon';
-                links[i].appendChild(soonMenu);
+                // ditaruh tepat setelah judul menu (sebelum teks kecil) agar judul tidak terpotong
+                var subMenu = judulMenu && judulMenu.querySelector('.ra-sub');
+                if (judulMenu) judulMenu.insertBefore(soonMenu, subMenu);
+                else links[i].appendChild(soonMenu);
             }
         }
 

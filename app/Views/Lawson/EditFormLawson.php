@@ -734,6 +734,8 @@
                         <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
                         <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
                         <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
+                        <li><a href="<?= site_url('DataOdcOdp') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data ODC &amp; ODP</a></li>
+                        <li><a href="<?= site_url('Kmz') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">KMZ</a></li>
                         <li><a href="<?= site_url('DevicesBackbone') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices Backbone</a></li>
                         <li><a href="<?= site_url('Bts') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data BTS</a></li>
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
@@ -917,8 +919,8 @@
                             <div id="map"></div>
                         </div>
 
-                        <!-- ═══ B. DATA VENDOR ═══ -->
-                        <div class="section-title">Data Vendor</div>
+                        <!-- ═══ B1. VENDOR MAIN LINK ═══ -->
+                        <div class="section-title">Vendor Main Link</div>
                         <div class="grid-3">
                             <div class="form-group">
                                 <label>Media Koneksi <span class="req">*</span></label>
@@ -1019,6 +1021,114 @@
                                     <div class="form-group">
                                         <label>Isi Quota Internet Sim Card ( Gbps / Mbps / Kbps ) <span class="auto">(auto)</span></label>
                                         <input type="text" id="disp_quota_internet" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+
+                        <!-- ═══ B2. VENDOR LINK BACKUP (opsional, fitur sama dengan Main Link) ═══ -->
+                        <div class="section-title">Vendor Link Backup</div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Media Koneksi <span class="auto">(opsional)</span></label>
+                                <select name="media_koneksi_backup" id="media_koneksi_select_bk" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    <option value="">— Tanpa Link Backup —</option>
+                                    <option value="0" <?= (string)($lawson['media_koneksi_backup'] ?? '') === '0' ? 'selected' : '' ?>>Non Cellular</option>
+                                    <option value="1" <?= (string)($lawson['media_koneksi_backup'] ?? '') === '1' ? 'selected' : '' ?>>Cellular</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ── Blok Non-Cellular ── -->
+                        <div class="vendor-box mt-4" id="box_non_cellular_bk" style="display:none">
+                            <div class="vendor-box-title"><i class="ti ti-wifi"></i> Data Penggunaan Nomor INET</div>
+                            <?php if (empty($nomor_inet)): ?>
+                                <div class="empty-hint">Belum ada data penggunaan Nomor INET yang aktif. Tambahkan dulu lewat menu <b>Nomor Inet</b>.</div>
+                            <?php else: ?>
+                                <div class="grid-3">
+                                    <div class="form-group">
+                                        <label>Kode Layanan Vendor <span class="req">*</span></label>
+                                        <select id="kode_layanan_select_bk" name="nomor_inet_id_backup" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <option value="">— Pilih —</option>
+                                            <?php foreach ($nomor_inet as $row): ?>
+                                                <option value="<?= $row['usage_id'] ?>" <?= ($lawson['nomor_inet_id_backup'] ?? null) == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_layanan_vendor']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ID Pelanggan / No.INET <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_id_pelanggan_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password INET <span class="auto">(auto)</span></label>
+                                        <div style="position:relative">
+                                            <input type="password" id="disp_password_inet_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none" style="padding-right:44px">
+                                            <button type="button" id="toggle_password_inet_bk" title="Lihat / sembunyikan password"
+                                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#6b7280;font-size:17px;padding:0;line-height:1">
+                                                <i class="ti ti-eye" id="toggle_password_icon_bk"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_vendor_inet_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Layanan Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_layanan_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Harga Layanan <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_harga_layanan_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kecepatan / Bandwidth <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_kecepatan_bandwidth_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- ── Blok Cellular ── -->
+                        <div class="vendor-box mt-4" id="box_cellular_bk" style="display:none">
+                            <div class="vendor-box-title"><i class="ti ti-antenna"></i> Data Penggunaan Simcard</div>
+                            <?php if (empty($simcard)): ?>
+                                <div class="empty-hint">Belum ada data penggunaan Simcard yang aktif. Tambahkan dulu lewat menu <b>Simcard</b>.</div>
+                            <?php else: ?>
+                                <div class="grid-3">
+                                    <div class="form-group">
+                                        <label>Kode Quota SimCard <span class="req">*</span></label>
+                                        <select id="kode_quota_select_bk" name="simcard_id_backup" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                            <option value="">— Pilih —</option>
+                                            <?php foreach ($simcard as $row): ?>
+                                                <option value="<?= $row['usage_id'] ?>" <?= ($lawson['simcard_id_backup'] ?? null) == $row['usage_id'] ? 'selected' : '' ?>><?= esc($row['kode_quota_simcard']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nomor MSISDN <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nomor_msisdn_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nomor ISSID / IMEI <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nomor_imei_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Vendor <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_vendor_simcard_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Paket Data <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_nama_paket_data_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Harga Paket Quota <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_harga_quota_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Isi Quota Internet Sim Card ( Gbps / Mbps / Kbps ) <span class="auto">(auto)</span></label>
+                                        <input type="text" id="disp_quota_internet_bk" readonly class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -1822,6 +1932,82 @@
                 }
             });
         }
+    </script>
+    <script>
+        /* ════════════════════════════════════════════════
+           VENDOR LINK BACKUP — fitur sama dengan Vendor Main Link
+           (Media Koneksi → pilih Kode Layanan / Kode Quota → data lain terisi otomatis).
+           Backup boleh dikosongkan; id elemen = id Main Link + "_bk".
+           ════════════════════════════════════════════════ */
+        (function() {
+            const el = id => document.getElementById(id + '_bk');
+            const mediaSel = el('media_koneksi_select');
+            if (!mediaSel) return;
+            const boxNonCell = el('box_non_cellular');
+            const boxCell = el('box_cellular');
+            const inetSel = el('kode_layanan_select');
+            const simSel = el('kode_quota_select');
+            const isi = (id, v) => {
+                const e = el(id);
+                if (e) e.value = v;
+            };
+
+            function fillInetBackup(usageId) {
+                const item = ALL_NOMOR_INET.find(x => String(x.usage_id) === String(usageId));
+                isi('disp_id_pelanggan', item ? (item.id_pelanggan || item.nomor_inet || '') : '');
+                isi('disp_password_inet', item ? (item.password_inet || '') : '');
+                isi('disp_nama_vendor_inet', item ? (item.nama_vendor || '') : '');
+                isi('disp_nama_layanan', item ? (item.nama_layanan || '') : '');
+                isi('disp_harga_layanan', item ? formatRibuan(item.harga_layanan) : '');
+                isi('disp_kecepatan_bandwidth', item ? (item.kecepatan_bandwidth || '') : '');
+            }
+
+            function fillSimBackup(usageId) {
+                const item = ALL_SIMCARD.find(x => String(x.usage_id) === String(usageId));
+                isi('disp_nomor_msisdn', item ? (item.nomor_msisdn || '') : '');
+                isi('disp_nomor_imei', item ? (item.nomor_imei || '') : '');
+                isi('disp_nama_vendor_simcard', item ? (item.nama_vendor || '') : '');
+                isi('disp_nama_paket_data', item ? (item.nama_paket_data || '') : '');
+                isi('disp_harga_quota', item ? formatRibuan(item.harga_quota) : '');
+                isi('disp_quota_internet', item ? (item.quota_internet || '') : '');
+            }
+
+            // kode layanan / kode quota wajib dipilih hanya bila media koneksi backup dipilih
+            function tampilkan(media, kosongkanLawan) {
+                boxNonCell.style.display = media === '0' ? 'block' : 'none';
+                boxCell.style.display = media === '1' ? 'block' : 'none';
+                if (inetSel) inetSel.required = media === '0';
+                if (simSel) simSel.required = media === '1';
+                if (!kosongkanLawan) return;
+                if (media !== '0' && inetSel) {
+                    inetSel.value = '';
+                    fillInetBackup('');
+                }
+                if (media !== '1' && simSel) {
+                    simSel.value = '';
+                    fillSimBackup('');
+                }
+            }
+
+            mediaSel.addEventListener('change', () => tampilkan(mediaSel.value, true));
+            if (inetSel) inetSel.addEventListener('change', e => fillInetBackup(e.target.value));
+            if (simSel) simSel.addEventListener('change', e => fillSimBackup(e.target.value));
+
+            // Eye toggle — lihat/sembunyikan Password INET backup
+            const pwBtn = el('toggle_password_inet');
+            if (pwBtn) pwBtn.addEventListener('click', function() {
+                const pw = el('disp_password_inet');
+                const icon = el('toggle_password_icon');
+                const show = pw.type === 'password';
+                pw.type = show ? 'text' : 'password';
+                icon.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+            });
+
+            // data tersimpan (form edit / view) atau isian lama: tampilkan blok & isi otomatis
+            tampilkan(mediaSel.value, false);
+            if (inetSel && inetSel.value) fillInetBackup(inetSel.value);
+            if (simSel && simSel.value) fillSimBackup(simSel.value);
+        })();
     </script>
 </body>
 

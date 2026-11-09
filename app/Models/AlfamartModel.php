@@ -15,6 +15,8 @@ class AlfamartModel extends BaseModel
         'nama_dc_id',
         'nomor_inet_id',
         'simcard_id',
+        'nomor_inet_id_backup',   // Vendor Link Backup (opsional): id d_nomor_inet
+        'simcard_id_backup',      // Vendor Link Backup (opsional): id d_simcard
         'jenis_perangkat_id',
         'merk_perangkat_id',
         'type_perangkat_id',
@@ -30,6 +32,7 @@ class AlfamartModel extends BaseModel
         'tanggal_installasi',
         'tanggal_aktivasi',
         'media_koneksi',          // tinyint(1), default 1
+        'media_koneksi_backup',   // Vendor Link Backup: NULL = tanpa backup, 0 = Non Cellular, 1 = Cellular
         'kategori_ip_address',    // enum: Static / Dynamic
         'jenis_ip_address',       // enum: Public / Private
         'ip_address_toko',

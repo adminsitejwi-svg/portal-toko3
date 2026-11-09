@@ -161,6 +161,23 @@ class Lawson extends BaseController
             ->getResultArray();
     }
 
+    /**
+     * Vendor Link Backup (opsional) — aturannya sama dengan Vendor Main Link:
+     * media 0 = Non Cellular (pakai nomor_inet_id_backup), 1 = Cellular (pakai simcard_id_backup),
+     * kosong = tanpa link backup.
+     */
+    private function vendorBackupFields(): array
+    {
+        $media = (string) $this->request->getPost('media_koneksi_backup');
+        $media = in_array($media, ['0', '1'], true) ? $media : null;
+
+        return [
+            'media_koneksi_backup' => $media,
+            'nomor_inet_id_backup' => $media === '0' ? ($this->request->getPost('nomor_inet_id_backup') ?: null) : null,
+            'simcard_id_backup'    => $media === '1' ? ($this->request->getPost('simcard_id_backup') ?: null) : null,
+        ];
+    }
+
     public function index()
     {
         $db = \Config\Database::connect();
@@ -279,7 +296,7 @@ class Lawson extends BaseController
             'keterangan'              => $this->request->getPost('keterangan'),
             'upload_lampiran'         => $uploadedFileName,
             'created_at'              => date('Y-m-d H:i:s'),
-        ]);
+        ] + $this->vendorBackupFields());
 
         return redirect()->to('/Lawson')
             ->with('success', 'Data Toko Lawson berhasil disimpan.');
@@ -357,7 +374,7 @@ class Lawson extends BaseController
             'type_koneksi'            => $this->request->getPost('type_koneksi'),
             'serial_number_perangkat' => $this->request->getPost('serial_number_perangkat'),
             'keterangan'              => $this->request->getPost('keterangan'),
-        ];
+        ] + $this->vendorBackupFields();
 
         $adaPerubahanField = false;
         foreach ($dataBaru as $kolom => $nilaiBaru) {
@@ -472,7 +489,7 @@ class Lawson extends BaseController
 
             'keterangan'              => $this->request->getPost('keterangan'),
             'upload_lampiran'         => $uploadedFileName,
-        ]);
+        ] + $this->vendorBackupFields());
 
         return redirect()->to('/Lawson')->with('success', 'Data berhasil diperbarui.');
     }
