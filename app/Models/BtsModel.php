@@ -31,7 +31,7 @@ class BtsModel extends BaseModel
         $rows = ($id === null ? $this : $this->where('id', $id))->orderBy('nama_bts', 'ASC')->findAll();
 
         $vendorModel = (new BtsVendorModel())
-            ->select('d_bts_vendor.bts_id, d_bts_vendor.ip_address, d_bts_vendor.kapasitas, d_bts_vendor.vlan_id,
+            ->select('d_bts_vendor.bts_id, d_bts_vendor.note, d_bts_vendor.ip_address, d_bts_vendor.kapasitas, d_bts_vendor.vlan_id,
                 v.id, v.nama_vendor, v.note AS vendor_note')
             ->join('d_vendor v', 'v.id = d_bts_vendor.vendor_id');
         if ($id !== null) {

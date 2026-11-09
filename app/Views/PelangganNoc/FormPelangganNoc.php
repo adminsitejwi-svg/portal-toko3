@@ -409,7 +409,7 @@
                         $adaOld     = old('nama_pelanggan', null, false) !== null;
                         $vendorAwal = $adaOld
                             ? array_values((array) old('vendor', [], false))
-                            : array_map(fn ($v) => ['vendor_id' => $v['id']], $row['vendor_detail'] ?? []);
+                            : array_map(fn ($v) => ['vendor_id' => $v['id'], 'note' => $v['note'] ?? ''], $row['vendor_detail'] ?? []);
                         $perangkatAwal = $adaOld ? array_values((array) old('perangkat', [], false)) : ($row['perangkat'] ?? []);
                         ?>
                         <div class="form-group md:col-span-2">
@@ -438,7 +438,7 @@
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
-                            <!-- satu blok per vendor: vendor dipilih dari vendor milik BTS + Note (otomatis dari Note vendor di Data Vendor) -->
+                            <!-- satu blok per vendor: vendor dipilih dari vendor milik BTS + Note (diisi manual) -->
                             <div id="vendorRows" class="space-y-3"></div>
                             <template id="vendorTemplate">
                                 <div class="isian-row border border-[#e3e8ee] rounded-lg p-3">
@@ -448,7 +448,7 @@
                                     </div>
                                     <div class="mt-2">
                                         <div class="text-xs text-gray-500 mb-1">Note</div>
-                                        <textarea data-kolom="vendor_note" rows="2" readonly placeholder="Otomatis dari Note di Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                                        <textarea name="vendor[__i__][note]" data-isi="note" rows="2" maxlength="1000" placeholder="Masukkan note (opsional)" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                                     </div>
                                 </div>
                             </template>
@@ -631,7 +631,7 @@
             isiNoteVendor(row);
         }
 
-        // Note vendor (tidak bisa diubah) sesuai vendor yang dipilih, diambil dari data vendor milik BTS
+        // Isian otomatis dari data vendor BTS (data-kolom); Note vendor sekarang diisi manual, jadi tidak ikut diisi
         function isiNoteVendor(row) {
             const v = vendorBts()[row.querySelector('[data-isi="vendor_id"]').value] || {};
             row.querySelectorAll('[data-kolom]').forEach(el => el.value = kosong(v[el.dataset.kolom]) ? '' : v[el.dataset.kolom]);

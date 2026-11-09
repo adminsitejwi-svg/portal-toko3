@@ -602,7 +602,7 @@
                                         // Satu baris per vendor: Vendor, Note, IP Address, Kapasitas & Vlan ID ditumpuk sejajar (tidak digabung/dedup)
                                         $det        = $row['vendor_detail'];
                                         $vendorList = array_column($det, 'nama_vendor');
-                                        $noteList   = array_map(fn ($v) => trim(preg_replace('/\s+/', ' ', (string) $v['vendor_note'])) ?: '-', $det);
+                                        $noteList   = array_map(fn ($v) => trim(preg_replace('/\s+/', ' ', (string) ($v['note'] ?? ''))) ?: '-', $det);
                                         $ipList     = array_map(fn ($v) => (string) $v['ip_address'] !== '' ? $v['ip_address'] : '-', $det);
                                         $kapList    = array_map(fn ($v) => (string) $v['kapasitas'] !== '' ? $v['kapasitas'] : '-', $det);
                                         $vlanList   = array_map(fn ($v) => $v['vlan_id'] === null ? 'Tanpa VLAN' : (string) $v['vlan_id'], $det);
@@ -698,7 +698,7 @@
             // Vendor beserta data lengkapnya dari Data Vendor + IP Address, Kapasitas & VLAN-nya
             set('v_vendors', (d.vendor_detail || []).map(v => [
                 v.nama_vendor,
-                'Note Vendor: ' + (v.vendor_note || '-'),
+                'Note: ' + (v.note || '-'),
                 'IP Address: ' + v.ip_address + ' | Kapasitas: ' + (v.kapasitas || '-') + ' | VLAN: ' + (v.vlan_id === null ? 'Tanpa VLAN' : v.vlan_id),
             ].join('\n')).join('\n\n'));
             set('v_vlan_id', d.vlan_id === null || d.vlan_id === undefined ? 'Tanpa VLAN' : d.vlan_id);

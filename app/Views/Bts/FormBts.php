@@ -408,6 +408,7 @@
                             'vendor_id'  => $v['id'],
                             'ip_address' => $v['ip_address'],
                             'kapasitas'  => $v['kapasitas'] ?? '',
+                            'note'       => $v['note'] ?? '',
                             'vlan_id'    => $v['vlan_id'],
                             'tanpa_vlan' => $v['vlan_id'] === null,
                         ], $row['vendor_detail'] ?? []);
@@ -419,7 +420,7 @@
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Vendor <span style="color:red">*</span></label>
-                            <!-- satu blok per vendor: vendor dipilih dari menu Data Vendor (datanya tampil otomatis, tidak bisa diubah) + IP Address & VLAN milik vendor itu -->
+                            <!-- satu blok per vendor: vendor dipilih dari menu Data Vendor + Note (diisi manual), IP Address & VLAN milik vendor itu -->
                             <div id="vendorRows" class="space-y-3"></div>
                             <template id="vendorTemplate">
                                 <div class="isian-row border border-[#e3e8ee] rounded-lg p-3">
@@ -435,7 +436,7 @@
                                     <div class="grid grid-cols-1 gap-2 mt-2">
                                         <div>
                                             <div class="text-xs text-gray-500 mb-1">Note</div>
-                                            <textarea data-kolom="note" rows="2" readonly placeholder="Otomatis dari Note di Data Vendor" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
+                                            <textarea name="vendor[__i__][note]" data-isi="note" rows="2" maxlength="1000" placeholder="Masukkan note (opsional)" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none"></textarea>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
@@ -550,6 +551,7 @@
             row.querySelector('[data-isi="vendor_id"]').value = isi.vendor_id || '';
             row.querySelector('[data-isi="ip_address"]').value = isi.ip_address || '';
             row.querySelector('[data-isi="kapasitas"]').value = isi.kapasitas || '';
+            row.querySelector('[data-isi="note"]').value = isi.note || '';
             row.querySelector('[data-isi="vlan_id"]').value = isi.vlan_id ?? '';
             row.querySelector('[data-isi="tanpa_vlan"]').checked = !!isi.tanpa_vlan;
             isiVendor(row);

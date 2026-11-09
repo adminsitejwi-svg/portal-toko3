@@ -15,6 +15,7 @@ class BtsVendorModel extends BaseModel
     protected $allowedFields = [
         'bts_id',
         'vendor_id',
+        'note',          // note per vendor di BTS ini (diisi manual, bukan dari Data Vendor)
         'ip_address',
         'kapasitas',
         'vlan_id'

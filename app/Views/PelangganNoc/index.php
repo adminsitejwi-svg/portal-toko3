@@ -591,7 +591,7 @@
                                     <th>Kapasitas BTS</th>
                                     <th>Vlan ID BTS</th>
                                     <th>Vendor</th>
-                                    <th>Note Vendor</th>
+                                    <th>Note</th>
                                     <th>Detail Perangkat Pelanggan di Lokasi</th>
                                     <th>Topologi</th>
                                 </tr>
@@ -613,7 +613,7 @@
                                             'kap'    => $ambil($btsDet, 'kapasitas'),
                                             'vlan'   => array_map(fn ($r) => $r['vlan_id'] === null ? 'Tanpa VLAN' : (string) $r['vlan_id'], $btsDet),
                                             'vendor' => $ambil($row['vendor_detail'], 'nama_vendor'),
-                                            'note'   => array_map(fn ($r) => $isi(trim(preg_replace('/\s+/', ' ', (string) $r['vendor_note']))), $row['vendor_detail']),
+                                            'note'   => array_map(fn ($r) => $isi(trim(preg_replace('/\s+/', ' ', (string) ($r['note'] ?? '')))), $row['vendor_detail']),
                                             'perangkat' => $row['perangkat_teks'] !== '' ? explode("\n", $row['perangkat_teks']) : [],
                                         ];
                                         ?>
@@ -729,10 +729,10 @@
             const set = (id, v) => document.getElementById(id).textContent = kosong(v) ? '-' : v;
             ['nama_pelanggan', 'nama_bts'].forEach(k => set('v_' + k, d[k]));
             set('v_ip_bts', (d.ip_bts || []).join('\n'));
-            // Vendor beserta Note-nya dari Data Vendor
+            // Vendor beserta Note-nya (diisi manual di form pelanggan)
             set('v_vendors', (d.vendor_detail || []).map(v => [
                 v.nama_vendor,
-                'Note Vendor: ' + (v.vendor_note || '-'),
+                'Note: ' + (v.note || '-'),
             ].join('\n')).join('\n\n'));
             set('v_perangkat', d.perangkat_teks);
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
