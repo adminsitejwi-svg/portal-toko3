@@ -50,13 +50,13 @@ class AllNoc extends BaseConfig
 
     // Menu Activation (bagian sidebar sebelum NOC Operation), semuanya masih "Segera Hadir"
     public array $activation = [
-        ['route' => 'Spk',            'judul' => 'SPK',                     'ikon' => 'ti-file-certificate',    'info' => 'Surat Perintah Kerja untuk pekerjaan aktivasi.', 'soon' => true],
+        ['route' => 'Spk',            'judul' => 'SPK',                     'ikon' => 'ti-file-certificate',    'info' => 'Surat Perintah Kerja untuk pekerjaan aktivasi.', 'soon' => false],
         ['route' => 'BastCorporate',  'judul' => 'BAST Corporate',          'ikon' => 'ti-building-skyscraper', 'info' => 'Berita Acara Serah Terima pelanggan corporate.', 'soon' => false],
         ['route' => 'BastAlfamidi',   'judul' => 'BAST Alfamidi',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamidi.', 'soon' => false],
         ['route' => 'BastLawson',     'judul' => 'BAST Lawson',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Lawson.', 'soon' => false],
         ['route' => 'BastAlfamart',   'judul' => 'BAST Alfamart',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamart.', 'soon' => false],
         ['route' => 'BastDandan',     'judul' => 'BAST Dandan',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Dandan.', 'soon' => false],
-        ['route' => 'PksContract',    'judul' => 'PKS & Contract',          'ikon' => 'ti-file-text',           'info' => 'Perjanjian Kerja Sama & kontrak pelanggan.', 'soon' => true],
+        ['route' => 'PksContract',    'judul' => 'PKS & Contract',          'ikon' => 'ti-file-text',           'info' => 'Perjanjian Kerja Sama & kontrak pelanggan.', 'soon' => false],
     ];
 
     // Menu yang masih "Segera Hadir" (All NOC, Report NOC & Activation), dicari berdasarkan route

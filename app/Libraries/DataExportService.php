@@ -62,6 +62,8 @@ class DataExportService
         'd_bast_lawson'        => 'BAST Lawson (daftar dokumen)',
         'd_bast_alfamart'      => 'BAST Alfamart (daftar dokumen)',
         'd_bast_dandan'        => 'BAST Dandan (daftar dokumen)',
+        'd_spk'                => 'SPK (daftar dokumen)',
+        'd_pks_contract'       => 'PKS & Contract (daftar dokumen)',
         'md_wilayah'           => 'Data ODC & ODP - Wilayah',
         'd_odc'                => 'Data ODC & ODP - ODC',
         'd_odp'                => 'Data ODC & ODP - ODP',

@@ -197,7 +197,9 @@
     // logo sidebar: public/Logo/Logo-N.png (logo N + tulisan Network Operasional); alamat dihitung dari lokasi ruang.js (public/assets/theme/)
     var scriptSrc = (document.currentScript && document.currentScript.src) || '';
     var PUBLIC_URL = scriptSrc.replace(/assets\/theme\/ruang\.js.*$/, '');
-    var LOGO = '<img src="' + PUBLIC_URL + 'Logo/Logo-N.png" alt="Network Operasional - Network Operation Center">';
+    // sidebar terang: Logo-N.png; sidebar gelap: Logo_N2.png (versi menyala, tanpa kartu putih) — dipilih lewat CSS
+    var LOGO = '<img class="ra-logo-terang" src="' + PUBLIC_URL + 'Logo/Logo-N.png" alt="Network Operasional - Network Operation Center">' +
+        '<img class="ra-logo-gelap" src="' + PUBLIC_URL + 'Logo/Logo_N2.png" alt="Network Operasional - Network Operation Center">';
 
     // ikon & teks kecil per menu sidebar (berdasarkan label menu)
     var MENU_ICON = {
@@ -284,8 +286,7 @@
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
     var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'datacctv',
-        'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport', 'preventivemaintenance',
-        'spk', 'pkscontract'];
+        'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport', 'preventivemaintenance'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
     function pasangIkonJudul(link) {

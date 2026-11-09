@@ -374,7 +374,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('PreventiveMaintenance', 'ComingSoon::show/PreventiveMaintenance');
 
     // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"
-    $routes->get('Spk', 'ComingSoon::show/Spk');
+    $routes->get('Spk', 'Spk::index');
+    $routes->post('Spk/upload', 'Spk::upload');
+    $routes->get('Spk/lihat/(:num)', 'Spk::lihat/$1');
+    $routes->get('Spk/download/(:num)', 'Spk::download/$1');
+    $routes->get('Spk/delete/(:num)', 'Spk::delete/$1');
     $routes->get('BastCorporate', 'BastCorporate::index');
     $routes->post('BastCorporate/upload', 'BastCorporate::upload');
     $routes->get('BastCorporate/lihat/(:num)', 'BastCorporate::lihat/$1');
@@ -400,7 +404,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('BastDandan/lihat/(:num)', 'BastDandan::lihat/$1');
     $routes->get('BastDandan/download/(:num)', 'BastDandan::download/$1');
     $routes->get('BastDandan/delete/(:num)', 'BastDandan::delete/$1');
-    $routes->get('PksContract', 'ComingSoon::show/PksContract');
+    $routes->get('PksContract', 'PksContract::index');
+    $routes->post('PksContract/upload', 'PksContract::upload');
+    $routes->get('PksContract/lihat/(:num)', 'PksContract::lihat/$1');
+    $routes->get('PksContract/download/(:num)', 'PksContract::download/$1');
+    $routes->get('PksContract/delete/(:num)', 'PksContract::delete/$1');
 
     // Data VLAN (menu All NOC di sidebar): VLAN + mapping perangkat, form berupa pop up
     $routes->get('Vlan', 'Vlan::index');

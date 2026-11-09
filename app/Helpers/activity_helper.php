@@ -151,6 +151,8 @@ if (! function_exists('activity_label_action')) {
                 'd_bast_lawson'        => 'BAST Lawson',
                 'd_bast_alfamart'      => 'BAST Alfamart',
                 'd_bast_dandan'        => 'BAST Dandan',
+                'd_spk'                => 'SPK',
+                'd_pks_contract'       => 'PKS & Contract',
                 'md_wilayah'           => 'Data ODC & ODP - Wilayah',
                 'd_odc'                => 'Data ODC & ODP - ODC',
                 'd_odp'                => 'Data ODC & ODP - ODP',

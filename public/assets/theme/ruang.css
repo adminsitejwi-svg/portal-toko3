@@ -1708,10 +1708,14 @@ html.dark td.ra-aksi .btn:hover { color: #fff !important; }
     justify-content: center;
 }
 
-/* sidebar gelap: logo diberi kartu putih agar tulisan navy-nya tetap terbaca (tanpa efek pendar) */
-html.ra-sb-dark .ra-logo.ra-logo-full {
-    background: #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+/* sidebar terang: Logo-N.png; sidebar gelap: Logo_N2.png (versi menyala), tanpa kartu putih */
+.ra-logo .ra-logo-gelap,
+html.ra-sb-dark .ra-logo .ra-logo-terang {
+    display: none;
+}
+
+html.ra-sb-dark .ra-logo .ra-logo-gelap {
+    display: block;
 }
 
 html.ra-sb-dark .ra-logo.ra-logo-full img {

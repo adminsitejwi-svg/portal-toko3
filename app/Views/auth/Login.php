@@ -17,16 +17,14 @@
     <?= view('partials/theme') ?>
     <style>
         /* Halaman login (referensi: public/d/Tampilan login.jpg)
-           dark/light (<html data-ra-tema="penuh">): hanya latar halaman yang ikut mode;
-           panel kiri selalu navy, panel kanan (form) selalu putih
+           latar halaman = gambar Background Login.jpg (sama di mode terang & gelap);
+           panel kiri selalu navy; panel kanan (form): mode terang navy, mode gelap putih
            kartu dua kolom: kiri panel navy (branding NOC), kanan form Sign In */
-        body.login-page {
-            font-family: 'Inter', sans-serif !important;
-            background: #e9edf3 !important;
-        }
-
+        /* latar halaman: gambar jaringan (public/Logo/Background Login.jpg), sama di mode terang & gelap */
+        body.login-page,
         html.dark body.login-page {
-            background: #0b1220 !important;
+            font-family: 'Inter', sans-serif !important;
+            background: url("<?= base_url('Logo/Background%20Login.jpg') ?>") center / cover no-repeat fixed, #0b1c45 !important;
         }
 
         .lg-card {
@@ -106,17 +104,16 @@
             position: relative;
         }
 
+        /* logo N biru terang (public/Logo/Logo-N2.png) menggantikan tulisan "JWI", tanpa kotak */
         .lg-logo {
-            display: grid;
-            place-items: center;
-            width: 58px;
-            height: 58px;
-            border: 1px solid rgba(255, 255, 255, .35);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, .04);
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: .02em;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .lg-logo img {
+            display: block;
+            height: 72px;
+            width: auto;
         }
 
         .lg-kecil {
@@ -428,7 +425,7 @@
 
         <!-- ===== KIRI: branding ===== -->
         <div class="lg-brand">
-            <div class="lg-logo lg-anim" style="--i:0">JWI</div>
+            <div class="lg-logo lg-anim" style="--i:0"><img src="<?= base_url('Logo/Logo-N2.png') ?>" alt="Logo Network Operasional"></div>
             <div class="lg-kecil mt-5 lg-anim" style="--i:1">Network Operation Center</div>
 
             <div class="lg-garis mt-[66px] lg-anim" style="--i:2"></div>
