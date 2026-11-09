@@ -282,7 +282,7 @@
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
-    var MENU_SEGERA = ['datarouter', 'dataswitch', 'dataolt', 'ippublic', 'ipprivate', 'ftpclient', 'dataodcodp', 'kmz',
+    var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'dataodcodp',
         'slareport', 'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport',
         'spk', 'pkscontract', 'bastcorporate', 'bastalfamidi', 'bastlawson', 'bastalfamart', 'bastdandan'];
 

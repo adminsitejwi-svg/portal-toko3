@@ -325,11 +325,31 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('FtpClient', 'ComingSoon::show/FtpClient');
     $routes->get('IpPublic', 'ComingSoon::show/IpPublic');
     $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
-    $routes->get('DataSwitch', 'ComingSoon::show/DataSwitch');
-    $routes->get('DataOlt', 'ComingSoon::show/DataOlt');
-    $routes->get('DataRouter', 'ComingSoon::show/DataRouter');
     $routes->get('DataOdcOdp', 'ComingSoon::show/DataOdcOdp');
-    $routes->get('Kmz', 'ComingSoon::show/Kmz');
+
+    // Data Router (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Router / SN / IP tidak boleh dobel
+    $routes->get('DataRouter', 'DataRouter::index');
+    $routes->post('DataRouter/save', 'DataRouter::save');
+    $routes->post('DataRouter/update', 'DataRouter::update');
+    $routes->get('DataRouter/delete/(:num)', 'DataRouter::delete/$1');
+
+    // Data Switch (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Switch / IP / SN tidak boleh dobel
+    $routes->get('DataSwitch', 'DataSwitch::index');
+    $routes->post('DataSwitch/save', 'DataSwitch::save');
+    $routes->post('DataSwitch/update', 'DataSwitch::update');
+    $routes->get('DataSwitch/delete/(:num)', 'DataSwitch::delete/$1');
+
+    // Data OLT (menu Data Teknis NOC di sidebar): form berupa pop up, Nama OLT / IP / SN tidak boleh dobel
+    $routes->get('DataOlt', 'DataOlt::index');
+    $routes->post('DataOlt/save', 'DataOlt::save');
+    $routes->post('DataOlt/update', 'DataOlt::update');
+    $routes->get('DataOlt/delete/(:num)', 'DataOlt::delete/$1');
+
+    // KMZ (menu Data Teknis NOC di sidebar): upload file .kmz / .kml maks. 30 MB, info file tercatat otomatis
+    $routes->get('Kmz', 'Kmz::index');
+    $routes->post('Kmz/upload', 'Kmz::upload');
+    $routes->get('Kmz/download/(:num)', 'Kmz::download/$1');
+    $routes->get('Kmz/delete/(:num)', 'Kmz::delete/$1');
 
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
     $routes->get('SlaReport', 'ComingSoon::show/SlaReport');
