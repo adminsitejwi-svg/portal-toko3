@@ -325,7 +325,9 @@
 
         .dc-item:hover .dc-actions,
         .dc-item:focus-within .dc-actions,
-        .dc-item.active .dc-actions {
+        .dc-item.active .dc-actions,
+        .dc-group-head:hover .dc-actions,
+        .dc-group-head:focus-within .dc-actions {
             opacity: 1;
         }
 
@@ -401,6 +403,10 @@
         .dc-group-head:hover,
         .dc-group.open>.dc-group-head {
             background: var(--rf-soft);
+        }
+
+        .dc-act.is-add:hover {
+            color: #10b981;
         }
 
         .dc-group-head:focus-visible {
@@ -798,7 +804,7 @@
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link active flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
-                        <span class="flex-1">All NOC</span>
+                        <span class="flex-1">Data Teknis NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
                     <ul class="submenu bg-black/20">
@@ -942,6 +948,9 @@
                                 <span class="dc-sub"><?= esc($anak ? ($dc['alamat_dc'] ?: '-') : ($dc['lokasi_rak'] ? $rak : ($dc['alamat_dc'] ?: '-'))) ?></span>
                             </span>
                             <span class="dc-actions">
+                                <?php if (! $anak) : ?>
+                                    <button type="button" class="dc-act is-add" data-aksi="tambah" title="Tambah lokasi rak ke Data Center ini" aria-label="Tambah lokasi rak ke Data Center ini"><i class="ti ti-plus"></i></button>
+                                <?php endif; ?>
                                 <button type="button" class="dc-act" data-aksi="edit" title="Edit Data Center" aria-label="Edit Data Center"><i class="ti ti-edit"></i></button>
                                 <button type="button" class="dc-act is-del" data-aksi="hapus" title="Hapus Data Center" aria-label="Hapus Data Center"><i class="ti ti-trash"></i></button>
                             </span>
@@ -961,15 +970,20 @@
                                 foreach ($daftar as $dc) $total += $jumlahDc[(string) $dc['id']] ?? 0; ?>
                                 <!-- grup dropdown (gaya dropdown sidebar): klik judul = buka / tutup daftar lokasi rak -->
                                 <div class="dc-group" data-grup="<?= esc($kunci, 'attr') ?>" style="--dc-color:<?= $warna ?>">
-                                    <button type="button" class="dc-group-head" aria-expanded="false">
+                                    <div role="button" tabindex="0" class="dc-group-head" aria-expanded="false"
+                                        data-row="<?= esc(json_encode(['nama_dc' => $daftar[0]['nama_dc'], 'alamat_dc' => $daftar[0]['alamat_dc']]), 'attr') ?>">
                                         <span class="dc-dot"></span>
                                         <span class="min-w-0 flex-1 text-left">
                                             <span class="dc-name"><?= esc($daftar[0]['nama_dc']) ?></span>
                                             <span class="dc-sub"><?= count($daftar) ?> lokasi rak</span>
                                         </span>
+                                        <!-- + = tambah lokasi rak baru ke kelompok Data Center ini -->
+                                        <span class="dc-actions">
+                                            <button type="button" class="dc-act is-add" data-aksi="tambah" title="Tambah lokasi rak ke Data Center ini" aria-label="Tambah lokasi rak ke Data Center ini"><i class="ti ti-plus"></i></button>
+                                        </span>
                                         <span class="dc-count <?= $total ? 'has' : '' ?>"><?= $total ?></span>
                                         <span class="dc-arrow"><i class="ti ti-chevron-down"></i></span>
-                                    </button>
+                                    </div>
                                     <div class="dc-sub-wrap">
                                         <div class="dc-sub-list">
                                             <?php foreach ($daftar as $dc) : ?>
@@ -1173,6 +1187,25 @@
             <form method="POST" id="formDc" data-save="<?= site_url('DataCenter/save') ?>" data-update="<?= site_url('DataCenter/update') ?>">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id">
+                <?php
+                // pilihan kelompok = Data Center yang namanya sudah ada (kunci sama dengan pengelompokan kartu kiri)
+                $kelompokDc = [];
+                foreach ($dataCenter as $dc) {
+                    $kunciDc = mb_strtolower(trim($dc['nama_dc']));
+                    if (! isset($kelompokDc[$kunciDc])) $kelompokDc[$kunciDc] = $dc;
+                }
+                ?>
+                <div class="rf-group">
+                    <label class="rf-label"><i class="ti ti-folders"></i> Kelompok Data Center</label>
+                    <!-- tanpa name: hanya mengisi Nama & Alamat di bawah, tidak ikut dikirim -->
+                    <select class="rf-input" id="dcKelompok">
+                        <option value="">— Data Center baru —</option>
+                        <?php foreach ($kelompokDc as $kunciDc => $dc) : ?>
+                            <option value="<?= esc($kunciDc, 'attr') ?>" data-nama="<?= esc($dc['nama_dc'], 'attr') ?>" data-alamat="<?= esc($dc['alamat_dc'], 'attr') ?>"><?= esc($dc['nama_dc']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="rf-hint">Pilih Data Center yang sudah ada agar lokasi rak ini masuk ke kelompoknya. Nama &amp; alamat terisi otomatis.</div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                     <div class="rf-group"><label class="rf-label">Nama Data Center <span class="req">*</span></label><input class="rf-input" name="nama_dc" maxlength="255" required placeholder="Masukkan Nama Data Center"></div>
                     <div class="rf-group"><label class="rf-label">Lokasi Rak <span class="req">*</span></label><input class="rf-input" name="lokasi_rak" maxlength="255" required placeholder="Masukkan Lokasi Rak"></div>
@@ -1315,7 +1348,43 @@
         }
 
         function openDc(data) {
+            data = data || {};
             openForm('dc', data);
+            const form = document.getElementById('formDc');
+            const kunci = String(data.nama_dc || '').trim().toLowerCase();
+            const sel = document.getElementById('dcKelompok');
+            sel.value = [...sel.options].some(o => o.value === kunci) ? kunci : '';
+            aturKelompokDc(false);
+            // dari tombol + di judul Data Center: nama & alamat sudah terisi, langsung ke Lokasi Rak
+            if (!data.id && kunci) setTimeout(() => form.elements.lokasi_rak.focus(), 60);
+        }
+
+        // Kelompok dipilih -> Nama Data Center dikunci sama persis dengan kelompoknya (agar masuk grup yang sama)
+        function aturKelompokDc(isiAlamat) {
+            const form = document.getElementById('formDc');
+            const opt = document.getElementById('dcKelompok').selectedOptions[0];
+            const nama = form.elements.nama_dc;
+            const adaKelompok = !!(opt && opt.value);
+            const alamat = form.elements.alamat_dc;
+            nama.readOnly = adaKelompok;
+            if (adaKelompok) {
+                nama.value = opt.dataset.nama;
+                if (isiAlamat && opt.dataset.alamat) alamat.value = opt.dataset.alamat;
+            } else if (isiAlamat) {
+                nama.value = '';
+                // alamat yang terisi dari kelompok sebelumnya ikut dikosongkan (alamat yang sudah diubah sendiri dibiarkan)
+                if (alamat.value === alamatKelompokTerakhir) alamat.value = '';
+                nama.focus();
+            }
+            alamatKelompokTerakhir = adaKelompok ? (opt.dataset.alamat || '') : '';
+        }
+        let alamatKelompokTerakhir = '';
+
+        document.getElementById('dcKelompok').addEventListener('change', () => aturKelompokDc(true));
+
+        // tombol + di judul Data Center (kartu tunggal / judul grup): tambah lokasi rak ke kelompok itu
+        function tambahKeKelompok(row) {
+            openDc({ nama_dc: row.nama_dc, alamat_dc: row.alamat_dc });
         }
 
         // Tambah interkoneksi: Data Center terisi otomatis dari kartu kiri yang sedang dipilih
@@ -1737,7 +1806,8 @@
             });
             requestAnimationFrame(() => requestAnimationFrame(() => $('#dcList').removeClass('dc-no-anim')));
 
-            $('#dcList').on('click', '.dc-group-head', function() {
+            $('#dcList').on('click', '.dc-group-head', function(e) {
+                if (e.target.closest('[data-aksi="tambah"]')) return tambahKeKelompok(JSON.parse(this.dataset.row));
                 const grup = this.closest('.dc-group');
                 // sedang mencari: grup dibuka otomatis, klik judul tidak menutupnya
                 if ($('#dcSearch').val().trim()) return;
@@ -1750,10 +1820,17 @@
                 const aksi = e.target.closest('[data-aksi]');
                 if (aksi) {
                     e.stopPropagation();
+                    if (aksi.dataset.aksi === 'tambah') return tambahKeKelompok(JSON.parse(this.dataset.row));
                     return aksi.dataset.aksi === 'edit' ? openDc(JSON.parse(this.dataset.row)) : hapusDc(this);
                 }
                 // klik lagi data center yang sedang aktif = filter dilepas (tampil semua data)
                 pilihDc(this.dataset.dc === dcAktif ? '' : this.dataset.dc);
+            });
+            // judul grup bisa dibuka / ditutup dengan keyboard (Enter / Spasi)
+            $('#dcList').on('keydown', '.dc-group-head', function(e) {
+                if (e.target !== this || (e.key !== 'Enter' && e.key !== ' ')) return;
+                e.preventDefault();
+                this.click();
             });
             // kartu bisa dipilih dengan keyboard (Enter / Spasi)
             $('#dcList').on('keydown', '.dc-item', function(e) {

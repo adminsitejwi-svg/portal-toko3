@@ -29,6 +29,11 @@ class LawsonModel extends BaseModel
         'map_toko',
         'pic_toko',
         'nomor_hp_pic',
+        'nama_pejabat_toko',
+        'telp_pejabat_toko',
+        'nama_it_cabang',
+        'telp_it_cabang',
+        'pic_aktivasi',
         'tanggal_installasi',
         'tanggal_aktivasi',
         'media_koneksi',          // tinyint(1), default 1
@@ -38,6 +43,7 @@ class LawsonModel extends BaseModel
         'ip_address_toko',
         'type_koneksi',           // enum: IPSEC / L2TP / PPTP
         'serial_number_perangkat',
+        'mac_address',            // AA:BB:CC:DD:EE:FF (opsional)
         'status',                 // tinyint(1), default 0
         'keterangan',
         'upload_lampiran',

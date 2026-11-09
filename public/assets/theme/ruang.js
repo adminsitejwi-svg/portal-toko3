@@ -212,7 +212,7 @@
         'rfo': ['ti-file-alert', 'Reason For Outage'],
         'notifikasi maintenance': ['ti-bell', 'Pemberitahuan Maintenance'],
         'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
-        'all noc': ['ti-topology-star-3', 'Data Center & BTS'],
+        'data teknis noc': ['ti-topology-star-3', 'Data Center & BTS'],
         'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],

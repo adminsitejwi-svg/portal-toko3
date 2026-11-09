@@ -178,6 +178,34 @@ class Alfamart extends BaseController
         ];
     }
 
+    /**
+     * Kontak toko (Pejabat Toko, IT Cabang, PIC Aktivasi) & MAC Address — semuanya opsional.
+     * Telp disimpan angka saja; MAC disimpan seragam AA:BB:CC:DD:EE:FF.
+     */
+    private function kontakTokoFields(): array
+    {
+        $teks = fn (string $k, int $maks) => mb_substr(trim((string) $this->request->getPost($k)), 0, $maks) ?: null;
+        $telp = fn (string $k) => substr(preg_replace('/\D/', '', (string) $this->request->getPost($k)), 0, 15) ?: null;
+        $hex  = strtoupper(preg_replace('/[^0-9A-Fa-f]/', '', (string) $this->request->getPost('mac_address')));
+
+        return [
+            'nama_pejabat_toko' => $teks('nama_pejabat_toko', 150),
+            'telp_pejabat_toko' => $telp('telp_pejabat_toko'),
+            'nama_it_cabang'    => $teks('nama_it_cabang', 150),
+            'telp_it_cabang'    => $telp('telp_it_cabang'),
+            'pic_aktivasi'      => $teks('pic_aktivasi', 150),
+            'mac_address'       => strlen($hex) === 12 ? implode(':', str_split($hex, 2)) : null,
+        ];
+    }
+
+    // MAC Address boleh kosong; bila diisi harus lengkap 12 digit heksadesimal
+    private function macTidakValid(): bool
+    {
+        $mac = trim((string) $this->request->getPost('mac_address'));
+
+        return $mac !== '' && strlen(preg_replace('/[^0-9A-Fa-f]/', '', $mac)) !== 12;
+    }
+
     public function index()
     {
         $db = \Config\Database::connect();
@@ -220,6 +248,11 @@ class Alfamart extends BaseController
         if ($kodeToko !== '' && $modelCek->where('kode_toko', $kodeToko)->first()) {
             return redirect()->back()->withInput()
                 ->with('error', 'Data Toko Alfamart dengan kode toko "' . $kodeToko . '" sudah ada. Data tidak boleh ganda.');
+        }
+
+        if ($this->macTidakValid()) {
+            return redirect()->back()->withInput()
+                ->with('error', 'MAC Address tidak valid. Isi lengkap 12 digit, contoh AA:BB:CC:DD:EE:FF, atau kosongkan.');
         }
 
         // ── Upload lampiran ──
@@ -296,7 +329,7 @@ class Alfamart extends BaseController
             'keterangan'              => $this->request->getPost('keterangan'),
             'upload_lampiran'         => $uploadedFileName,
             'created_at'              => date('Y-m-d H:i:s'),
-        ] + $this->vendorBackupFields());
+        ] + $this->vendorBackupFields() + $this->kontakTokoFields());
 
         return redirect()->to('/Alfamart')
             ->with('success', 'Data Toko Alfamart berhasil disimpan.');
@@ -340,6 +373,11 @@ class Alfamart extends BaseController
                 ->with('error', 'Data Toko Alfamart dengan kode toko "' . $kodeToko . '" sudah ada. Data tidak boleh ganda.');
         }
 
+        if ($this->macTidakValid()) {
+            return redirect()->back()->withInput()
+                ->with('error', 'MAC Address tidak valid. Isi lengkap 12 digit, contoh AA:BB:CC:DD:EE:FF, atau kosongkan.');
+        }
+
         // ── Deteksi "tidak ada perubahan" ──────────────────────────────────
         // Jika seluruh field sama persis dengan data tersimpan, tidak ada file
         // baru, dan tidak ada file lama yang dihapus, hentikan di sini supaya
@@ -374,7 +412,7 @@ class Alfamart extends BaseController
             'type_koneksi'            => $this->request->getPost('type_koneksi'),
             'serial_number_perangkat' => $this->request->getPost('serial_number_perangkat'),
             'keterangan'              => $this->request->getPost('keterangan'),
-        ] + $this->vendorBackupFields();
+        ] + $this->vendorBackupFields() + $this->kontakTokoFields();
 
         $adaPerubahanField = false;
         foreach ($dataBaru as $kolom => $nilaiBaru) {
@@ -489,7 +527,7 @@ class Alfamart extends BaseController
 
             'keterangan'              => $this->request->getPost('keterangan'),
             'upload_lampiran'         => $uploadedFileName,
-        ] + $this->vendorBackupFields());
+        ] + $this->vendorBackupFields() + $this->kontakTokoFields());
 
         return redirect()->to('/Alfamart')->with('success', 'Data berhasil diperbarui.');
     }

@@ -684,7 +684,7 @@
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
-                        <span class="flex-1">All NOC</span>
+                        <span class="flex-1">Data Teknis NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
                     <ul class="submenu bg-black/20">
@@ -822,7 +822,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Aksi</th>
+                                    <th class="no-export">Aksi</th>
 
                                     <th>Jenis Perangkat</th>
                                     <th>Merek Perangkat</th>
@@ -838,7 +838,7 @@
                                     <?php foreach ($MD_type_perangkat as $row) : ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
-                                            <td>
+                                            <td class="ra-aksi">
                                                 <button
                                                     type="button"
                                                     onclick="openEditModal(
@@ -851,7 +851,7 @@
                                                     )"
                                                     class="btn btn-sm btn-primary">
 
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-edit"></i> <span>Edit</span>
 
                                                 </button>
 
@@ -861,14 +861,13 @@
                                                     onclick="confirmDelete(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-danger">
 
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
 
                                                 </button>
-                                                <br>
                                                 <button type="button"
                                                     onclick="openDetailModal(<?= $row['id'] ?>)"
                                                     class="btn btn-sm btn-info">
-                                                    <i class="ti ti-eye"></i>
+                                                    <i class="ti ti-eye"></i> <span>View</span>
                                                 </button>
 
                                             </td>
@@ -1200,7 +1199,7 @@
         $(document).ready(function() {
             const exportConfig = {
                 exportOptions: {
-                    columns: ':visible',
+                    columns: ':visible:not(.no-export)',
                     format: {
                         body: function(data) {
                             const tmp = document.createElement('div');

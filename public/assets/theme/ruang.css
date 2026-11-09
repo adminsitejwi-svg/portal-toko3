@@ -1639,3 +1639,61 @@ html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .ra-soon {
     line-height: 16px;
     vertical-align: 1px;
 }
+
+/* ---------- Tombol aksi tabel Data Toko JWI Group = gaya tombol aksi NOC Operation (rfo.css .rfo-table .btn) ----------
+   Sel aksi diberi kelas .ra-aksi; !important karena tiap halaman punya gaya #namaTabel .btn sendiri. */
+td.ra-aksi {
+    white-space: nowrap;
+}
+
+td.ra-aksi .btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center;
+    gap: 4px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 28px !important;
+    padding: 0 10px !important;
+    margin: 2px 4px 2px 0 !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    color: #64748b !important;
+    background: #eef1f5 !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+td.ra-aksi .btn i {
+    font-size: 14px !important;
+}
+
+td.ra-aksi .btn:hover {
+    color: #fff !important;
+    background: #64748b !important;
+    transform: translateY(-1px);
+}
+
+td.ra-aksi .btn-info { color: #2f6bff !important; background: #e8efff !important; }
+td.ra-aksi .btn-primary { color: #6d5dfc !important; background: #efedff !important; }
+td.ra-aksi .btn-danger { color: #ef4444 !important; background: #feecec !important; }
+td.ra-aksi .btn-success { color: #16a34a !important; background: #e6f8ee !important; }
+td.ra-aksi .btn-warning { color: #d97706 !important; background: #fff4e0 !important; }
+
+td.ra-aksi .btn-info:hover { color: #fff !important; background: #2f6bff !important; box-shadow: 0 4px 10px rgba(47, 107, 255, .35) !important; }
+td.ra-aksi .btn-primary:hover { color: #fff !important; background: #6d5dfc !important; box-shadow: 0 4px 10px rgba(109, 93, 252, .35) !important; }
+td.ra-aksi .btn-danger:hover { color: #fff !important; background: #ef4444 !important; box-shadow: 0 4px 10px rgba(239, 68, 68, .35) !important; }
+td.ra-aksi .btn-success:hover { color: #fff !important; background: #16a34a !important; box-shadow: 0 4px 10px rgba(22, 163, 74, .35) !important; }
+td.ra-aksi .btn-warning:hover { color: #fff !important; background: #f59e0b !important; box-shadow: 0 4px 10px rgba(245, 158, 11, .35) !important; }
+
+html.dark td.ra-aksi .btn { color: #b8c4dc !important; background: rgba(255, 255, 255, .06) !important; }
+html.dark td.ra-aksi .btn-info { color: #8fb2ff !important; background: rgba(47, 107, 255, .16) !important; }
+html.dark td.ra-aksi .btn-primary { color: #b4abff !important; background: rgba(109, 93, 252, .18) !important; }
+html.dark td.ra-aksi .btn-danger { color: #fca5a5 !important; background: rgba(239, 68, 68, .16) !important; }
+html.dark td.ra-aksi .btn-success { color: #86efac !important; background: rgba(34, 197, 94, .16) !important; }
+html.dark td.ra-aksi .btn-warning { color: #fcd34d !important; background: rgba(245, 158, 11, .16) !important; }
+html.dark td.ra-aksi .btn:hover { color: #fff !important; }

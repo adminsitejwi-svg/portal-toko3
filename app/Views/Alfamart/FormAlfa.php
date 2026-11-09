@@ -682,7 +682,7 @@
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-category"></i></span>
-                        <span class="flex-1">All NOC</span>
+                        <span class="flex-1">Data Teknis NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
                     </a>
                     <ul class="submenu bg-black/20">
@@ -847,6 +847,26 @@
                             <div class="form-group">
                                 <label>Tanggal Aktivasi <span class="req">*</span></label>
                                 <input type="date" name="tanggal_aktivasi" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Pejabat Toko</label>
+                                <input type="text" name="nama_pejabat_toko" maxlength="150" placeholder="Masukan Nama Pejabat Toko" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Telp Pejabat Toko</label>
+                                <input type="text" name="telp_pejabat_toko" id="telp_pejabat_toko" inputmode="numeric" pattern="[0-9]*" maxlength="15" placeholder="Masukan Telp Pejabat Toko" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama IT Cabang</label>
+                                <input type="text" name="nama_it_cabang" maxlength="150" placeholder="Masukan Nama IT Cabang" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>Telp IT Cabang</label>
+                                <input type="text" name="telp_it_cabang" id="telp_it_cabang" inputmode="numeric" pattern="[0-9]*" maxlength="15" placeholder="Masukan Telp IT Cabang" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>PIC Aktivasi</label>
+                                <input type="text" name="pic_aktivasi" maxlength="150" placeholder="Masukan Nama PIC Aktivasi" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
 
 
@@ -1167,6 +1187,10 @@
                             <div class="form-group">
                                 <label>Serial Number Perangkat <span class="req">*</span></label>
                                 <input type="text" name="serial_number_perangkat" placeholder="Masukan SN Perangkat" required class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div class="form-group">
+                                <label>MAC Address</label>
+                                <input type="text" name="mac_address" id="mac_address" maxlength="17" autocomplete="off" placeholder="Contoh: AA:BB:CC:DD:EE:FF" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                             <div class="form-group">
                                 <label>Status <span class="req">*</span></label>
@@ -1760,6 +1784,37 @@
             tampilkan(mediaSel.value, false);
             if (inetSel && inetSel.value) fillInetBackup(inetSel.value);
             if (simSel && simSel.value) fillSimBackup(simSel.value);
+        })();
+    </script>
+    <script>
+        /* ════════════════════════════════════════════════
+           KONTAK TOKO & MAC ADDRESS — batasi isian
+           Telp hanya angka; MAC Address hanya heksadesimal, otomatis AA:BB:CC:DD:EE:FF
+           ════════════════════════════════════════════════ */
+        (function() {
+            ['telp_pejabat_toko', 'telp_it_cabang'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            });
+
+            const mac = document.getElementById('mac_address');
+            if (!mac) return;
+            mac.addEventListener('input', function() {
+                const hex = this.value.toUpperCase().replace(/[^0-9A-F]/g, '').slice(0, 12);
+                this.value = hex.match(/.{1,2}/g)?.join(':') || '';
+            });
+            // isian MAC harus lengkap 12 digit heksadesimal (boleh dikosongkan)
+            mac.form && mac.form.addEventListener('submit', function(e) {
+                const v = mac.value.trim();
+                if (v !== '' && !/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(v)) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    Swal.fire({ icon: 'warning', title: 'MAC Address Tidak Valid', text: 'Isi MAC Address lengkap 12 digit, contoh AA:BB:CC:DD:EE:FF, atau kosongkan.', confirmButtonColor: '#185a82' });
+                    mac.focus();
+                }
+            }, true);
         })();
     </script>
 </body>
