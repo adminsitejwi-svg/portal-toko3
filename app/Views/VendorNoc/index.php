@@ -579,6 +579,7 @@
                                     <th>No</th>
                                     <th>Aksi</th>
                                     <th>Nama Vendor</th>
+                                    <th>CID</th>
                                     <th>Note</th>
                                 </tr>
                             </thead>
@@ -608,6 +609,7 @@
                                                 </button>
                                             </td>
                                             <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_vendor']); ?></td>
+                                            <td><?= esc(($row['cid'] ?? '') ?: '-'); ?></td>
                                             <td class="whitespace-pre-line min-w-[300px]"><?= esc($row['note'] ?: '-'); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -633,6 +635,10 @@
                 <div>
                     <div class="text-gray-500">Nama Vendor</div>
                     <div class="font-medium" id="v_nama_vendor"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">CID</div>
+                    <div class="font-medium" id="v_cid"></div>
                 </div>
                 <div class="md:col-span-2">
                     <div class="text-gray-500">Note</div>
@@ -661,7 +667,7 @@
 
         function openViewModal(d) {
             const set = (id, v) => document.getElementById(id).textContent = (v === null || v === undefined || String(v).trim() === '') ? '-' : v;
-            ['nama_vendor', 'note'].forEach(k => set('v_' + k, d[k]));
+            ['nama_vendor', 'cid', 'note'].forEach(k => set('v_' + k, d[k]));
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '');
 
             document.getElementById('viewModal').classList.remove('hidden');

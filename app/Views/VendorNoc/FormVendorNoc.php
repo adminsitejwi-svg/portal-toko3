@@ -400,9 +400,13 @@
                     <?= csrf_field() ?>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 mt-5">
-                        <div class="form-group md:col-span-2">
+                        <div class="form-group">
                             <label>Nama Vendor <span style="color:red">*</span></label>
                             <input type="text" name="nama_vendor" id="r_nama_vendor" maxlength="255" required placeholder="Masukkan Nama Vendor" value="<?= esc(old('nama_vendor', $row['nama_vendor'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                        </div>
+                        <div class="form-group">
+                            <label>CID</label>
+                            <input type="text" name="cid" id="r_cid" maxlength="100" placeholder="Masukkan CID" value="<?= esc(old('cid', $row['cid'] ?? '', false)) ?>" class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                         </div>
                         <div class="form-group md:col-span-2">
                             <label>Note</label>

@@ -12,6 +12,7 @@ class VendorNocModel extends BaseModel
 
     protected $allowedFields = [
         'nama_vendor',
+        'cid',
         'note',
         'created_at'
     ];

@@ -44,6 +44,7 @@ class VendorNoc extends BaseController
     {
         return [
             'nama_vendor' => 'required|max_length[255]',
+            'cid'         => 'permit_empty|max_length[100]',
             'note'        => 'permit_empty|max_length[1000]',
         ];
     }
@@ -51,6 +52,7 @@ class VendorNoc extends BaseController
     private function messages(): array
     {
         return [
+            'cid'  => ['max_length' => 'CID maksimal 100 karakter.'],
             'note' => ['max_length' => 'Note maksimal 1000 karakter.'],
         ];
     }
@@ -61,6 +63,7 @@ class VendorNoc extends BaseController
 
         return [
             'nama_vendor' => $post('nama_vendor'),
+            'cid'         => $post('cid') ?: null,
             'note'        => $post('note') ?: null,
         ];
     }
