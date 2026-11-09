@@ -325,7 +325,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('FtpClient', 'ComingSoon::show/FtpClient');
     $routes->get('IpPublic', 'ComingSoon::show/IpPublic');
     $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
-    $routes->get('DataOdcOdp', 'ComingSoon::show/DataOdcOdp');
+    $routes->get('DataCctv', 'ComingSoon::show/DataCctv');
 
     // Data Router (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Router / SN / IP tidak boleh dobel
     $routes->get('DataRouter', 'DataRouter::index');
@@ -351,12 +351,27 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('Kmz/download/(:num)', 'Kmz::download/$1');
     $routes->get('Kmz/delete/(:num)', 'Kmz::delete/$1');
 
+    // Data ODC & ODP (menu Data Teknis NOC di sidebar): tab Wilayah / ODC / ODP, kode & nama ODC / ODP otomatis per wilayah
+    $routes->get('DataOdcOdp', 'DataOdcOdp::index');
+    $routes->post('DataOdcOdp/wilayah/save', 'DataOdcOdp::saveWilayah');
+    $routes->post('DataOdcOdp/wilayah/update', 'DataOdcOdp::updateWilayah');
+    $routes->get('DataOdcOdp/wilayah/delete/(:num)', 'DataOdcOdp::deleteWilayah/$1');
+    $routes->post('DataOdcOdp/odc/save', 'DataOdcOdp::saveOdc');
+    $routes->post('DataOdcOdp/odc/update', 'DataOdcOdp::updateOdc');
+    $routes->get('DataOdcOdp/odc/delete/(:num)', 'DataOdcOdp::deleteOdc/$1');
+    $routes->post('DataOdcOdp/odp/save', 'DataOdcOdp::saveOdp');
+    $routes->post('DataOdcOdp/odp/update', 'DataOdcOdp::updateOdp');
+    $routes->get('DataOdcOdp/odp/delete/(:num)', 'DataOdcOdp::deleteOdp/$1');
+    $routes->post('DataOdcOdp/pelanggan/save', 'DataOdcOdp::savePelanggan');
+    $routes->post('DataOdcOdp/pelanggan/update', 'DataOdcOdp::updatePelanggan');
+    $routes->get('DataOdcOdp/pelanggan/delete/(:num)', 'DataOdcOdp::deletePelanggan/$1');
+
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
-    $routes->get('SlaReport', 'ComingSoon::show/SlaReport');
     $routes->get('MonthlyReport', 'ComingSoon::show/MonthlyReport');
     $routes->get('SurveyReport', 'ComingSoon::show/SurveyReport');
     $routes->get('InstallationReport', 'ComingSoon::show/InstallationReport');
     $routes->get('TroubleshootReport', 'ComingSoon::show/TroubleshootReport');
+    $routes->get('PreventiveMaintenance', 'ComingSoon::show/PreventiveMaintenance');
 
     // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"
     $routes->get('Spk', 'ComingSoon::show/Spk');

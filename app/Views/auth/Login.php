@@ -3,264 +3,317 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
-    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
-    <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
+    <link rel="icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+    <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+    <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
     <?= view('partials/theme') ?>
     <style>
-        /* Halaman login (referensi: refensiLogin.png) */
-        /* latar: gambar jaringan (public/Logo/Background Login.jpg) + lapisan gelap tipis agar kartu tetap menonjol */
+        /* Halaman login (referensi: public/d/Tampilan login.jpg)
+           dark/light (<html data-ra-tema="penuh">): hanya latar halaman yang ikut mode;
+           panel kiri selalu navy, panel kanan (form) selalu putih
+           kartu dua kolom: kiri panel navy (branding NOC), kanan form Sign In */
         body.login-page {
-            background:
-                linear-gradient(180deg, rgba(8, 18, 48, .25), rgba(8, 18, 48, .45)),
-                url("<?= base_url('Logo/Background%20Login.jpg') ?>") center / cover no-repeat fixed,
-                #0b1c45 !important;
+            font-family: 'Inter', sans-serif !important;
+            background: #e9edf3 !important;
         }
 
         html.dark body.login-page {
-            background:
-                linear-gradient(180deg, rgba(4, 10, 30, .55), rgba(4, 10, 30, .7)),
-                url("<?= base_url('Logo/Background%20Login.jpg') ?>") center / cover no-repeat fixed,
-                #071330 !important;
+            background: #0b1220 !important;
         }
 
-        .login-card {
-            background: var(--ra-card);
-            border: 1px solid #eef1f8;
-            border-radius: 24px;
-            padding: 40px 38px 32px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
-        }
-
-        html.dark .login-card {
-            border-color: var(--ra-border);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, .4);
-        }
-
-        /* Logo tanpa kotak, menyatu dengan form */
-        .login-logo {
-            position: relative;
-            width: 190px;
-            height: 134px;
-        }
-
-        .login-logo img {
+        .lg-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            max-width: 1060px;
+            min-height: 620px;
+            border-radius: 22px;
+            overflow: hidden;
+            background: var(--ra-card);
+            box-shadow: 0 24px 60px rgba(15, 30, 60, .16);
         }
 
-        /* teks logo berwarna navy: diberi pendar terang agar tetap terbaca di kartu gelap */
-        html.dark .login-logo img {
-            filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px rgba(255, 255, 255, .9)) drop-shadow(0 0 7px rgba(255, 255, 255, .4));
+        html.dark .lg-card {
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
         }
 
-        .login-title {
-            font-size: 32px;
+        /* panel kanan (form Sign In):
+           mode terang = navy, mengikuti panel kiri; mode gelap = putih.
+           variabel warna tema dibuat khusus di dalam panel ini */
+        .lg-form {
+            background: linear-gradient(160deg, #13284b 0%, #142a4c 100%);
+            color-scheme: dark;
+            --ra-card: #142a4c;
+            --ra-heading: #ffffff;
+            --ra-muted: #a9b8d6;
+            --ra-input: #0f2142;
+            --ra-border: #2a4270;
+            --lg-aksen: #7aa7ff;
+        }
+
+        html.dark .lg-form {
+            background: #ffffff;
+            color-scheme: light;
+            --ra-card: #ffffff;
+            --ra-heading: #14213d;
+            --ra-muted: #7a869a;
+            --ra-input: #ffffff;
+            --ra-border: #e1e6ee;
+            --lg-aksen: #2f6fd6;
+        }
+
+        /* isian otomatis browser mengikuti warna kotak isian */
+        .lg-input:-webkit-autofill {
+            -webkit-text-fill-color: var(--ra-heading);
+            box-shadow: 0 0 0 1000px var(--ra-input) inset !important;
+        }
+
+        /* ===== panel kiri ===== */
+        .lg-brand {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 54px 52px 52px;
+            color: #fff;
+            background:
+                radial-gradient(ellipse 60% 45% at 82% 10%, rgba(45, 105, 190, .55), transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 0%, rgba(30, 70, 140, .35), transparent 70%),
+                linear-gradient(160deg, #10203f 0%, #13284b 55%, #142a4c 100%);
+            overflow: hidden;
+        }
+
+        /* pola garis halus */
+        .lg-brand::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        .lg-brand > * {
+            position: relative;
+        }
+
+        .lg-logo {
+            display: grid;
+            place-items: center;
+            width: 58px;
+            height: 58px;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .04);
+            font-size: 19px;
             font-weight: 800;
-            line-height: 1.15;
-            color: var(--ra-heading);
+            letter-spacing: .02em;
         }
 
-        .login-sub {
-            margin-top: 6px;
-            font-size: 16px;
+        .lg-kecil {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(214, 226, 245, .8);
+        }
+
+        .lg-garis {
+            width: 46px;
+            height: 3px;
+            border-radius: 3px;
+            background: #4f8df7;
+        }
+
+        .lg-judul {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -.02em;
+        }
+
+        .lg-desk {
+            max-width: 370px;
+            font-size: 14.5px;
+            line-height: 1.75;
+            color: rgba(222, 232, 248, .85);
+        }
+
+        /* ===== panel kanan ===== */
+        .lg-form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 56px 80px 36px;
+        }
+
+        .lg-form-isi {
+            width: 100%;
+            max-width: 366px;
+            margin: auto;
+        }
+
+        .lg-welcome {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--lg-aksen);
+        }
+
+        .lg-title {
+            margin-top: 10px;
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            color: var(--ra-heading) !important;
+        }
+
+        .lg-sub {
+            margin-top: 12px;
+            font-size: 13px;
             color: var(--ra-muted);
         }
 
-        .login-label {
+        .lg-label {
             display: block;
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 12.5px;
             font-weight: 700;
-            color: var(--ra-heading);
+            color: var(--ra-heading) !important;
         }
 
-        .login-input {
+        .lg-input {
             width: 100%;
-            height: 52px;
-            border: 1px solid #e3e8f4;
-            border-radius: 12px;
-            padding: 0 1rem 0 3rem;
-            font-size: 15px;
-            background: #f5f7fd;
-            color: var(--ra-heading);
-            transition: border-color .15s, box-shadow .15s, background-color .15s;
-        }
-
-        html.dark .login-input {
+            height: 48px;
+            padding: 0 15px;
+            border: 1px solid var(--ra-border);
+            border-radius: 9px;
+            font-size: 13.5px;
             background: var(--ra-input);
-            border-color: var(--ra-border);
+            color: var(--ra-heading);
+            transition: border-color .15s, box-shadow .15s;
         }
 
-        .login-input:focus {
+        .lg-input::placeholder {
+            color: #8a94a6;
+        }
+
+        .lg-input:focus {
             outline: none;
-            background: var(--ra-card);
-            border-color: #6d8dff;
-            box-shadow: 0 0 0 4px rgba(47, 107, 255, .12);
+            border-color: #2f6fd6;
+            box-shadow: 0 0 0 4px rgba(47, 111, 214, .12);
         }
 
-        .login-icon {
+        .lg-hide {
             position: absolute;
-            left: 1.05rem;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--ra-muted);
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 0;
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
             font-size: 20px;
-        }
-
-        .login-eye {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: var(--ra-muted);
-        }
-
-        .login-eye:hover {
-            color: #2f6bff;
-        }
-
-        .login-check {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            color: var(--ra-text);
+            color: #8a94a6;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: color .15s;
         }
 
-        .login-check input {
-            width: 20px;
-            height: 20px;
-            accent-color: #3b5bff;
-            cursor: pointer;
+        .lg-hide:focus,
+        .lg-hide:focus-visible,
+        .lg-hide:active {
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
         }
 
-        .login-btn {
-            position: relative;
-            width: 100%;
-            height: 56px;
+        .lg-hide:hover {
+            color: var(--lg-aksen);
+        }
+
+        .lg-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            font-size: 17px;
+            gap: 12px;
+            width: 100%;
+            height: 48px;
+            border-radius: 9px;
+            font-size: 13.5px;
             font-weight: 700;
             color: #fff;
-            background: linear-gradient(90deg, #3b5bff 0%, #5b6cff 50%, #3d7bff 100%);
-            box-shadow: 0 12px 26px rgba(59, 91, 255, .35);
-            transition: transform .15s, box-shadow .15s, filter .15s;
+            background: #2267d4;
+            box-shadow: 0 10px 22px rgba(34, 103, 212, .25);
+            transition: background-color .15s, transform .15s, box-shadow .15s;
         }
 
-        .login-btn:hover {
+        .lg-btn:hover {
+            background: #1d5bbd;
             transform: translateY(-1px);
-            filter: brightness(1.05);
-            box-shadow: 0 16px 30px rgba(59, 91, 255, .42);
+            box-shadow: 0 14px 26px rgba(34, 103, 212, .32);
         }
 
-        .login-btn:active {
+        .lg-btn:active {
             transform: translateY(1px);
         }
 
-        .login-btn-arrow {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .lg-btn i {
             font-size: 18px;
-            background: rgba(255, 255, 255, .22);
         }
 
-        .login-divider {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin: 26px 0 20px;
-            font-size: 13px;
-            color: var(--ra-muted);
-        }
-
-        .login-divider::before,
-        .login-divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #e6eaf3;
-        }
-
-        html.dark .login-divider::before,
-        html.dark .login-divider::after {
-            background: var(--ra-border);
-        }
-
-        .login-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px;
-            border-radius: 14px;
-            background: #f5f7fd;
-            border: 1px solid #eef1f8;
-        }
-
-        html.dark .login-info {
-            background: var(--ra-input);
-            border-color: var(--ra-border);
-        }
-
-        .login-info-ic {
-            flex: 0 0 auto;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+        .lg-aman {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            color: #3b5bff;
-            background: #e4e9ff;
-        }
-
-        html.dark .login-info-ic {
-            color: #a5b4fc;
-            background: rgba(59, 91, 255, .2);
-        }
-
-        .login-info b {
-            display: block;
-            font-size: 14px;
-            color: var(--ra-heading);
-        }
-
-        .login-info div span {
-            display: block;
-            margin-top: 2px;
-            font-size: 13px;
+            gap: 8px;
+            margin-top: 26px;
+            font-size: 11px;
             color: var(--ra-muted);
         }
 
-        /* animasi saat halaman dibuka / di-reload:
-           kartu naik + muncul, logo "pop", lalu isi kartu muncul berurutan (delay dari --i).
-           fill-mode "backwards" agar efek hover tombol (transform) tetap jalan setelah animasi selesai */
-        @keyframes loginCardIn {
+        .lg-aman::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .lg-copy {
+            margin-top: 64px;
+            text-align: center;
+            font-size: 9.5px;
+            color: var(--ra-muted);
+        }
+
+        /* panel kiri (Network Management System) selalu navy di mode terang & gelap;
+           warna teksnya dibuat tegas agar tidak tertimpa warna judul/teks bawaan ruang.css */
+        body.login-page .lg-brand .lg-judul { color: #ffffff !important; }
+        body.login-page .lg-brand .lg-desk { color: rgba(222, 232, 248, .85); }
+        body.login-page .lg-brand .lg-kecil { color: rgba(214, 226, 245, .8); }
+        body.login-page .lg-brand .lg-logo { color: #ffffff; }
+
+        /* animasi saat dibuka: kartu naik, isi muncul berurutan (delay dari --i) */
+        @keyframes lgCardIn {
             from {
                 opacity: 0;
-                transform: translateY(40px) scale(.96);
+                transform: translateY(30px) scale(.98);
             }
 
             to {
@@ -269,27 +322,10 @@
             }
         }
 
-        @keyframes loginLogoPop {
-            0% {
-                opacity: 0;
-                transform: scale(.4) rotate(-12deg);
-            }
-
-            70% {
-                opacity: 1;
-                transform: scale(1.08) rotate(3deg);
-            }
-
-            100% {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        @keyframes loginItemIn {
+        @keyframes lgItemIn {
             from {
                 opacity: 0;
-                transform: translateY(14px);
+                transform: translateY(12px);
             }
 
             to {
@@ -298,63 +334,70 @@
             }
         }
 
-        .login-card {
-            animation: loginCardIn .6s cubic-bezier(.22, 1, .36, 1) backwards;
+        .lg-card {
+            animation: lgCardIn .6s cubic-bezier(.22, 1, .36, 1) backwards;
         }
 
-        .login-logo {
-            animation: loginLogoPop .7s cubic-bezier(.34, 1.56, .64, 1) .25s backwards;
+        .lg-anim {
+            animation: lgItemIn .5s cubic-bezier(.22, 1, .36, 1) backwards;
+            animation-delay: calc(.3s + var(--i, 0) * .07s);
         }
 
-        .login-anim {
-            animation: loginItemIn .5s cubic-bezier(.22, 1, .36, 1) backwards;
-            animation-delay: calc(.4s + var(--i, 0) * .08s);
-        }
-
-        /* tombol dark/light melayang (dipasang ruang.js): muncul berputar setelah isi kartu */
-        @keyframes loginToggleIn {
-            0% {
+        /* tombol dark/light melayang (dipasang ruang.js) */
+        @keyframes lgToggleIn {
+            from {
                 opacity: 0;
                 transform: scale(.3) rotate(-180deg);
             }
 
-            70% {
-                opacity: 1;
-                transform: scale(1.12) rotate(10deg);
-            }
-
-            100% {
+            to {
                 opacity: 1;
                 transform: none;
             }
         }
 
         body.login-page .ra-theme-toggle.floating {
-            animation: loginToggleIn .7s cubic-bezier(.34, 1.56, .64, 1) 1s backwards;
+            animation: lgToggleIn .6s cubic-bezier(.34, 1.56, .64, 1) .9s backwards;
         }
 
-        /* tahan animasi selama layar "Memuat halaman" (ruang.css) masih tampil, agar tidak terlewat di baliknya */
+        /* tahan animasi selama layar "Memuat halaman" (ruang.css) masih tampil */
         html.ra-pageload:not(.ra-pageload-out) body.login-page * {
             animation-play-state: paused;
         }
 
         @media (prefers-reduced-motion: reduce) {
 
-            .login-card,
-            .login-logo,
-            .login-anim,
+            .lg-card,
+            .lg-anim,
             body.login-page .ra-theme-toggle.floating {
                 animation: none;
             }
         }
 
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 30px 22px 24px;
+        @media (max-width: 900px) {
+            .lg-card {
+                grid-template-columns: 1fr;
+                min-height: 0;
             }
 
-            .login-title {
-                font-size: 26px;
+            .lg-brand {
+                padding: 36px 28px;
+            }
+
+            .lg-brand .lg-spasi {
+                display: none;
+            }
+
+            .lg-judul {
+                font-size: 32px;
+            }
+
+            .lg-form {
+                padding: 40px 28px 28px;
+            }
+
+            .lg-copy {
+                margin-top: 36px;
             }
         }
     </style>
@@ -364,209 +407,106 @@
 
     <!-- ALERT SUCCESS -->
     <?php if (session()->getFlashdata('success')) : ?>
-
-        <div id="successAlert"
-            class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
-
+        <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
             <div class="bg-green-500 text-white rounded-xl shadow-xl overflow-hidden">
-
                 <div class="flex items-center gap-3 px-5 py-4">
-
                     <i class="ti ti-circle-check text-3xl"></i>
-
                     <div>
-                        <h4 class="font-bold">
-                            Berhasil
-                        </h4>
-
-                        <p class="text-sm">
-                            <?= session()->getFlashdata('success') ?>
-                        </p>
+                        <h4 class="font-bold">Berhasil</h4>
+                        <p class="text-sm"><?= session()->getFlashdata('success') ?></p>
                     </div>
-
                 </div>
-
                 <!-- Progress Bar -->
                 <div class="h-1 bg-green-400">
-
-                    <div id="progressBar"
-                        class="h-full bg-white w-full">
-                    </div>
-
+                    <div id="progressBar" class="h-full bg-white w-full"></div>
                 </div>
-
             </div>
-
         </div>
-
     <?php endif; ?>
 
-    <div class="login-card w-full max-w-[460px]">
+    <div class="lg-card">
 
-        <!-- logo & judul -->
-        <div class="flex flex-col items-center text-center mb-7">
-            <div class="login-logo mb-5">
-                <img src="<?= base_url('Logo/Logo-NOC-web.png') ?>" alt="Logo JWI Group">
-            </div>
-            <h1 class="login-title login-anim" style="--i:0">Selamat Datang</h1>
-            <p class="login-sub login-anim" style="--i:1">Sistem Operasional JWI Group</p>
+        <!-- ===== KIRI: branding ===== -->
+        <div class="lg-brand">
+            <div class="lg-logo lg-anim" style="--i:0">JWI</div>
+            <div class="lg-kecil mt-5 lg-anim" style="--i:1">Network Operation Center</div>
+
+            <div class="lg-garis mt-[66px] lg-anim" style="--i:2"></div>
+            <h1 class="lg-judul mt-7 lg-anim" style="--i:3">Network<br>Management<br>System</h1>
+            <p class="lg-desk mt-9 lg-anim" style="--i:4">Integrated Customer, Activation &amp; Network Operation Management.</p>
+
+            <div class="flex-1 lg-spasi"></div>
+            <div class="lg-kecil lg-anim" style="--i:5; font-size:10px; letter-spacing:.16em">JWI Group · Internal Management System</div>
         </div>
 
-        <?php if (session()->getFlashdata('error')) : ?>
-            <div class="login-anim flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl mb-5 text-sm">
-                <i class="ti ti-alert-circle text-lg leading-5"></i>
-                <div><?= session()->getFlashdata('error') ?></div>
-            </div>
-        <?php endif; ?>
+        <!-- ===== KANAN: form Sign In ===== -->
+        <div class="lg-form">
+            <div class="lg-form-isi">
+                <div class="lg-welcome lg-anim" style="--i:2">Welcome Back</div>
+                <h2 class="lg-title lg-anim" style="--i:3">Sign in to your account</h2>
+                <p class="lg-sub lg-anim" style="--i:4">Masuk untuk mengakses sistem operasional jaringan.</p>
 
-        <form action="<?= site_url('login/auth') ?>" method="post" id="loginForm">
+                <?php if (session()->getFlashdata('error')) : ?>
+                    <div class="lg-anim flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mt-6 text-sm">
+                        <i class="ti ti-alert-circle text-lg leading-5"></i>
+                        <div><?= session()->getFlashdata('error') ?></div>
+                    </div>
+                <?php endif; ?>
 
-            <?= csrf_field() ?>
+                <form action="<?= site_url('login/auth') ?>" method="post" id="loginForm" class="mt-9">
+                    <?= csrf_field() ?>
 
-            <div class="mb-5 login-anim" style="--i:2">
-                <label class="login-label" for="username">Username</label>
-                <div class="relative">
-                    <i class="ti ti-user login-icon"></i>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value="<?= esc(old('username') ?? '') ?>"
-                        class="login-input"
-                        placeholder="Masukkan Username"
-                        autocomplete="username"
-                        required
-                        autofocus>
-                </div>
-            </div>
+                    <div class="mb-6 lg-anim" style="--i:5">
+                        <label class="lg-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" value="<?= esc(old('username') ?? '') ?>"
+                            class="lg-input" placeholder="Masukkan username" autocomplete="username" required autofocus>
+                    </div>
 
-            <div class="mb-4 login-anim" style="--i:3">
-                <label class="login-label" for="password">Password</label>
-                <div class="relative">
-                    <i class="ti ti-lock login-icon"></i>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="login-input pr-12"
-                        placeholder="Masukkan Password"
-                        autocomplete="current-password"
-                        required>
+                    <div class="mb-7 lg-anim" style="--i:6">
+                        <label class="lg-label" for="password">Password</label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" class="lg-input pr-16"
+                                placeholder="Masukkan password" autocomplete="current-password" required>
+                            <button type="button" onclick="togglePassword()" id="togglePass" class="lg-hide" aria-label="Tampilkan / sembunyikan password" title="Tampilkan password"><i id="eyeIcon" class="ti ti-eye-off"></i></button>
+                        </div>
+                    </div>
 
-                    <button
-                        type="button"
-                        onclick="togglePassword()"
-                        title="Tampilkan / sembunyikan password"
-                        class="login-eye">
-                        <i id="eyeIcon" class="ti ti-eye"></i>
+                    <button type="submit" class="lg-btn lg-anim" style="--i:7">
+                        Sign In <i class="ti ti-arrow-right"></i>
                     </button>
-                </div>
-            </div>
+                </form>
 
-            <!-- ingat saya (hanya username, disimpan di browser) -->
-            <div class="flex items-center gap-3 mb-6 login-anim" style="--i:4">
-                <label class="login-check">
-                    <input type="checkbox" id="rememberMe">
-                    <span>Ingat saya</span>
-                </label>
-            </div>
-
-            <button type="submit" class="login-btn login-anim" style="--i:5">
-                <span class="flex items-center justify-center gap-2"><i class="ti ti-login-2 text-xl"></i> Login</span>
-                <span class="login-btn-arrow"><i class="ti ti-arrow-right"></i></span>
-            </button>
-
-        </form>
-
-        <div class="login-divider login-anim" style="--i:6"><span>atau</span></div>
-
-        <div class="login-info login-anim" style="--i:7">
-            <span class="login-info-ic"><i class="ti ti-shield-check-filled"></i></span>
-            <div>
-                <b>Akses hanya untuk pengguna terdaftar</b>
-                <span>Pastikan akun Anda aman dan tidak dibagikan.</span>
+                <div class="lg-aman lg-anim" style="--i:8">Secure internal access</div>
+                <div class="lg-copy lg-anim" style="--i:9">&copy; <?= date('Y') ?> JWI Group. All rights reserved.</div>
             </div>
         </div>
     </div>
 
     <script>
-        // SHOW / HIDE PASSWORD
+        // SHOW / HIDE PASSWORD: ikon mata dicoret = tersembunyi, mata terbuka = terlihat
         function togglePassword() {
-
-            let password = document.getElementById('password');
-            let icon = document.getElementById('eyeIcon');
-
-            if (password.type === 'password') {
-
-                password.type = 'text';
-
-                icon.classList.remove('ti-eye');
-                icon.classList.add('ti-eye-off');
-
-            } else {
-
-                password.type = 'password';
-
-                icon.classList.remove('ti-eye-off');
-                icon.classList.add('ti-eye');
-            }
+            const password = document.getElementById('password');
+            const tombol = document.getElementById('togglePass');
+            const tampil = password.type === 'password';
+            password.type = tampil ? 'text' : 'password';
+            document.getElementById('eyeIcon').className = 'ti ' + (tampil ? 'ti-eye' : 'ti-eye-off');
+            tombol.title = tampil ? 'Sembunyikan password' : 'Tampilkan password';
         }
 
-        // INGAT SAYA: hanya username yang disimpan di browser ini (password tidak pernah disimpan)
-        (function() {
-            const KEY = 'login_username';
-            const user = document.getElementById('username');
-            const cek = document.getElementById('rememberMe');
-            let saved = null;
-            try {
-                saved = localStorage.getItem(KEY);
-            } catch (e) {}
-            if (saved && !user.value) {
-                user.value = saved;
-                cek.checked = true;
-                user.removeAttribute('autofocus');
-                document.getElementById('password').focus();
-            } else if (saved) {
-                cek.checked = true;
-            }
-            document.getElementById('loginForm').addEventListener('submit', function() {
-                try {
-                    if (cek.checked) localStorage.setItem(KEY, user.value.trim());
-                    else localStorage.removeItem(KEY);
-                } catch (e) {}
-            });
-        })();
-
         document.addEventListener('DOMContentLoaded', function() {
-
             const alertBox = document.getElementById('successAlert');
             const progressBar = document.getElementById('progressBar');
-
-            if (alertBox) {
-
-                if (progressBar) {
-
-                    progressBar.style.transition = "width 3s linear";
-
-                    setTimeout(() => {
-                        progressBar.style.width = "0%";
-                    }, 100);
-                }
-
-                setTimeout(() => {
-
-                    alertBox.style.transition = "all 0.5s ease";
-                    alertBox.style.opacity = "0";
-                    alertBox.style.transform = "translate(-50%, -20px)";
-
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
-
-                }, 3000);
-
+            if (!alertBox) return;
+            if (progressBar) {
+                progressBar.style.transition = "width 3s linear";
+                setTimeout(() => progressBar.style.width = "0%", 100);
             }
-
+            setTimeout(() => {
+                alertBox.style.transition = "all 0.5s ease";
+                alertBox.style.opacity = "0";
+                alertBox.style.transform = "translate(-50%, -20px)";
+                setTimeout(() => alertBox.remove(), 500);
+            }, 3000);
         });
     </script>
     <script>

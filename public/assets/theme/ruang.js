@@ -194,10 +194,10 @@
     window.RuangTheme = { toggle: toggle, apply: apply, showLoader: showPageLoader, hideLoader: hidePageLoader };
 
     // ---- Sidebar navy: tambahan tampilan sesuai referensi (struktur menu tidak diubah) ----
-    // logo NOC (public/Logo/Logo-NOC-web.png: Logo-NOC.png tanpa margin kosong); alamat dihitung dari lokasi ruang.js (public/assets/theme/)
+    // logo sidebar: public/Logo/Logo-N.png (logo N + tulisan Network Operasional); alamat dihitung dari lokasi ruang.js (public/assets/theme/)
     var scriptSrc = (document.currentScript && document.currentScript.src) || '';
     var PUBLIC_URL = scriptSrc.replace(/assets\/theme\/ruang\.js.*$/, '');
-    var LOGO = '<img src="' + PUBLIC_URL + 'Logo/Logo-NOC-web.png" alt="Logo JWI Group">';
+    var LOGO = '<img src="' + PUBLIC_URL + 'Logo/Logo-N.png" alt="Network Operasional - Network Operation Center">';
 
     // ikon & teks kecil per menu sidebar (berdasarkan label menu)
     var MENU_ICON = {
@@ -252,11 +252,11 @@
         'bastlawson': 'ti-building-store',
         'bastalfamart': 'ti-building-store',
         'bastdandan': 'ti-building-store',
-        'slareport': 'ti-target',
         'monthlyreport': 'ti-calendar-stats',
         'surveyreport': 'ti-zoom-check',
         'installationreport': 'ti-plug-connected',
         'troubleshootreport': 'ti-bug',
+        'preventivemaintenance': 'ti-tool',
         'datacenter': 'ti-building-warehouse',
         'datarakdc': 'ti-server-2',
         'interkoneksi': 'ti-arrows-exchange',
@@ -264,6 +264,7 @@
         'datarouter': 'ti-router',
         'dataswitch': 'ti-switch-horizontal',
         'dataolt': 'ti-affiliate',
+        'datacctv': 'ti-device-cctv',
         'ippublic': 'ti-world',
         'ipprivate': 'ti-lock',
         'ftpclient': 'ti-folder-share',
@@ -282,8 +283,8 @@
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
-    var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'dataodcodp',
-        'slareport', 'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport',
+    var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'datacctv',
+        'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport', 'preventivemaintenance',
         'spk', 'pkscontract', 'bastcorporate', 'bastalfamidi', 'bastlawson', 'bastalfamart', 'bastdandan'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
@@ -327,12 +328,12 @@
         if (!sb || sb.classList.contains('ra-enhanced')) return;
         sb.classList.add('ra-enhanced');
 
-        // brand: logo + "Sistem Operasional / JWI Group"
+        // brand: logo lengkap (sudah berisi tulisan "Network Operasional", jadi tanpa teks tambahan)
         var brand = sb.firstElementChild;
         var brandLink = brand && brand.querySelector('a');
         if (brandLink) {
-            brandLink.innerHTML = '<span class="ra-logo">' + LOGO + '</span>' +
-                '<span class="ra-brand"><small>Sistem Operasional</small><b>JWI Group</b></span>';
+            brandLink.innerHTML = '<span class="ra-logo ra-logo-full">' + LOGO + '</span>';
+            brandLink.title = 'Network Operasional';
         }
 
         // judul kelompok menu

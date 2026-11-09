@@ -5,9 +5,9 @@
         <meta charset="utf-8" />
         <title>Beranda</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="<?= base_url('favicon-noc.png') ?>?v=3">
-    <link rel="shortcut icon" href="<?= base_url('favicon.ico') ?>?v=3">
-    <link rel="apple-touch-icon" href="<?= base_url('apple-touch-icon.png') ?>?v=3">
+        <link rel="icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+    <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+    <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <!-- Feather icons -->
@@ -216,6 +216,462 @@
             .vendor-card .custom-scroll {
                 scrollbar-width: thin;
             }
+
+            /* ===== BERANDA (referensi: public/d/tampilan beranda.jpg) ===== */
+            .db-page {
+                position: relative;
+                min-height: calc(100vh - 74px);
+                overflow: hidden;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .db-page > *:not(.db-latar) {
+                position: relative;
+                z-index: 1;
+            }
+
+            .db-judul-top b {
+                display: block;
+                font-size: 19px;
+                font-weight: 800;
+                color: var(--ra-heading);
+                line-height: 1.15;
+            }
+
+            .db-judul-top small {
+                font-size: 12.5px;
+                color: var(--ra-muted);
+            }
+
+            /* kartu utama */
+            .db-hero-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 18px;
+                margin-bottom: 18px;
+            }
+
+            .db-hero {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 26px;
+                min-height: 120px;
+                padding: 20px 26px;
+                border-radius: 16px;
+                color: #fff !important;
+                overflow: hidden;
+                transition: transform .2s, box-shadow .2s;
+            }
+
+            .db-hero:hover {
+                transform: translateY(-2px);
+            }
+
+            .db-hero.is-blue {
+                background: linear-gradient(110deg, #1d5ff2 0%, #2f7bff 55%, #5aa2ff 100%);
+                box-shadow: 0 14px 30px rgba(29, 95, 242, .28);
+            }
+
+            .db-hero.is-green {
+                background: linear-gradient(110deg, #0e9f6e 0%, #19b981 55%, #48d59c 100%);
+                box-shadow: 0 14px 30px rgba(14, 159, 110, .26);
+            }
+
+            .db-hero-ic {
+                flex: none;
+                display: grid;
+                place-items: center;
+                width: 74px;
+                height: 74px;
+                border-radius: 50%;
+                font-size: 36px;
+                background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .55), rgba(255, 255, 255, .12) 70%);
+                box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35), 0 8px 18px rgba(0, 0, 0, .15);
+            }
+
+            .db-hero-isi {
+                position: relative;
+                z-index: 1;
+            }
+
+            .db-hero-label {
+                font-size: 15px;
+                font-weight: 600;
+                opacity: .95;
+            }
+
+            .db-hero-angka {
+                font-size: 34px;
+                font-weight: 800;
+                line-height: 1.15;
+            }
+
+            .db-hero-note {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 13px;
+                opacity: .92;
+            }
+
+            .db-hero-hias {
+                position: absolute;
+                right: 70px;
+                bottom: 0;
+                width: 55%;
+                height: 100%;
+                pointer-events: none;
+            }
+
+            .db-hero-go {
+                position: absolute;
+                right: 22px;
+                top: 50%;
+                transform: translateY(-50%);
+                display: grid;
+                place-items: center;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                font-size: 18px;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+            }
+
+            .db-hero.is-blue .db-hero-go { color: #1d5ff2; }
+            .db-hero.is-green .db-hero-go { color: #0e9f6e; }
+
+            /* kartu umum */
+            .db-card {
+                display: block;
+                border: 1px solid var(--ra-border);
+                border-radius: 14px;
+                background: var(--ra-card);
+                box-shadow: 0 6px 22px rgba(31, 42, 68, .07);
+            }
+
+            /* kartu toko */
+            .db-toko-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 18px;
+                margin-bottom: 18px;
+            }
+
+            .db-toko {
+                overflow: hidden;
+                transition: transform .2s, box-shadow .2s;
+            }
+
+            .db-toko:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 26px rgba(31, 42, 68, .12);
+            }
+
+            .db-toko-atas {
+                position: relative;
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 16px 18px 18px;
+                min-height: 92px;
+            }
+
+            .db-toko-ic {
+                flex: none;
+                display: grid;
+                place-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 11px;
+                font-size: 24px;
+                color: #fff;
+            }
+
+            .db-toko-ic.is-ungu { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+            .db-toko-ic.is-oranye { background: linear-gradient(135deg, #fb923c, #ea580c); }
+            .db-toko-ic.is-teal { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
+
+            .db-toko-nama {
+                font-size: 17px;
+                font-weight: 800;
+                color: var(--ra-heading);
+            }
+
+            .db-toko-angka {
+                font-size: 28px;
+                font-weight: 800;
+                line-height: 1;
+                color: var(--ra-heading);
+            }
+
+            .db-toko-hias {
+                position: absolute;
+                right: 22px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 84px;
+                color: #2f6bff;
+                opacity: .08;
+                pointer-events: none;
+            }
+
+            .db-toko-bawah {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 9px 12px;
+                font-size: 12.5px;
+                color: var(--ra-muted);
+                border-top: 1px solid var(--ra-border);
+            }
+
+            .db-toko-bawah b {
+                color: var(--ra-heading);
+            }
+
+            .db-sep {
+                width: 1px;
+                height: 14px;
+                background: var(--ra-border);
+            }
+
+            .db-badge {
+                padding: 2px 10px;
+                border-radius: 99px;
+                font-size: 11.5px;
+                font-weight: 600;
+            }
+
+            .db-badge.is-aktif { color: #059669; background: rgba(16, 185, 129, .14); }
+            .db-badge.is-abu { color: var(--ra-muted); background: var(--ra-hover); }
+
+            /* daftar */
+            .db-list-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 18px;
+                align-items: start;
+                margin-bottom: 120px;
+            }
+
+            .db-list-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 14px 16px;
+                border-bottom: 1px solid var(--ra-border);
+            }
+
+            .db-list-judul {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 14.5px;
+                font-weight: 800;
+                color: var(--ra-heading) !important;
+                white-space: nowrap;
+            }
+
+            .db-list-judul i {
+                font-size: 22px;
+            }
+
+            .db-list-judul i.is-blue {
+                color: #2f6bff;
+            }
+
+            .db-cari {
+                position: relative;
+                width: 150px;
+                max-width: 50%;
+            }
+
+            .db-cari i {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 14px;
+                color: var(--ra-muted);
+            }
+
+            .db-cari input {
+                width: 100%;
+                padding: 6px 10px 6px 30px;
+                border: 1px solid var(--ra-border);
+                border-radius: 9px;
+                font-size: 12px;
+                background: var(--ra-hover);
+                color: var(--ra-heading);
+                outline: none;
+            }
+
+            .db-cari input:focus {
+                border-color: #2f6bff;
+            }
+
+            .db-list-isi {
+                max-height: 360px;
+                overflow-y: auto;
+                padding: 4px 0;
+            }
+
+            .db-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 11px 16px;
+                border-bottom: 1px solid var(--ra-border);
+            }
+
+            .db-row:last-of-type {
+                border-bottom: 0;
+            }
+
+            .db-row:hover {
+                background: var(--ra-hover);
+            }
+
+            .db-avatar {
+                flex: none;
+                display: grid;
+                place-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 20px;
+                color: #2f6bff;
+                background: rgba(47, 107, 255, .1);
+            }
+
+            .db-avatar.is-kecil {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+                color: var(--ra-muted);
+                background: var(--ra-hover);
+            }
+
+            .db-row-teks {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .db-row-teks b {
+                display: block;
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--ra-heading);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .db-row-teks small {
+                display: block;
+                font-size: 11.5px;
+                color: var(--ra-muted);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .db-unit {
+                flex: none;
+                padding: 4px 12px;
+                border-radius: 7px;
+                font-size: 12px;
+                font-weight: 700;
+                color: #fff;
+                background: #2f6bff;
+            }
+
+            .db-tgl {
+                flex: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 11.5px;
+                color: var(--ra-muted);
+                white-space: nowrap;
+            }
+
+            .db-tgl i {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+            }
+
+            .db-tgl i.is-aktif { background: #10b981; }
+            .db-tgl i.is-non { background: #ef4444; }
+
+            .db-badge-solid {
+                flex: none;
+                padding: 3px 9px;
+                border-radius: 6px;
+                font-size: 11px;
+                font-weight: 700;
+                color: #fff;
+            }
+
+            .db-badge-solid.is-aktif { background: #10b981; }
+            .db-badge-solid.is-non { background: #ef4444; }
+
+            .db-kosong {
+                padding: 36px 12px;
+                text-align: center;
+                font-size: 13px;
+                color: var(--ra-muted);
+            }
+
+            .db-kosong.hidden {
+                display: none;
+            }
+
+            /* latar gelombang & gedung */
+            .db-latar {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 190px;
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            .db-latar-kota rect { fill: rgba(47, 107, 255, .06); }
+            .db-latar-gel1 { fill: rgba(47, 107, 255, .07); }
+            .db-latar-gel2 { fill: rgba(47, 107, 255, .11); }
+            html.dark .db-latar-kota rect { fill: rgba(122, 167, 255, .045); }
+            html.dark .db-latar-gel1 { fill: rgba(122, 167, 255, .05); }
+            html.dark .db-latar-gel2 { fill: rgba(122, 167, 255, .08); }
+
+            html.dark .db-card {
+                box-shadow: 0 6px 22px rgba(0, 0, 0, .25);
+            }
+
+            html.dark .db-toko-hias {
+                color: #7aa7ff;
+            }
+
+            @media (max-width: 1280px) {
+                .db-list-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            }
+
+            @media (max-width: 1024px) {
+                .db-hero-grid, .db-toko-grid { grid-template-columns: 1fr; }
+            }
+
+            @media (max-width: 768px) {
+                .db-list-grid { grid-template-columns: 1fr; }
+                .db-hero-hias { display: none; }
+                .db-tgl { display: none; }
+            }
         </style>
         <?= view('partials/theme') ?>
     </head>
@@ -381,11 +837,11 @@
                             <li><a href="<?= site_url('HistoryReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report</a></li>
                             <li><a href="<?= site_url('MaintenanceReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Maintenance Report</a></li>
                             <li><a href="<?= site_url('ReportSat') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Daily Report SAT Group</a></li>
-                            <li><a href="<?= site_url('SlaReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">SLA Report</a></li>
                             <li><a href="<?= site_url('MonthlyReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Monthly Report</a></li>
                             <li><a href="<?= site_url('SurveyReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Survey Report</a></li>
                             <li><a href="<?= site_url('InstallationReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Installation Report</a></li>
                             <li><a href="<?= site_url('TroubleshootReport') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Troubleshoot Report</a></li>
+                            <li><a href="<?= site_url('PreventiveMaintenance') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Preventive Maintenance</a></li>
                         </ul>
                     </li>
                     <li class="hasmenu">
@@ -402,6 +858,7 @@
                             <li><a href="<?= site_url('DataRouter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Router</a></li>
                             <li><a href="<?= site_url('DataSwitch') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Switch</a></li>
                             <li><a href="<?= site_url('DataOlt') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data OLT</a></li>
+                            <li><a href="<?= site_url('DataCctv') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data CCTV</a></li>
                             <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
                             <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
                             <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
@@ -478,6 +935,7 @@
             <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
                 <ul class="flex items-center gap-1">
                     <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
+                    <li class="db-judul-top ml-3"><b>Dashboard</b><small>Ringkasan Monitoring Jaringan</small></li>
 
                 </ul>
 
@@ -514,447 +972,161 @@
                 </ul>
             </header>
 
-            <!-- CONTENT -->
-            <div class="p-6">
-                <!-- breadcrumb -->
-                <div class="flex items-center justify-between mb-6">
-                    <h5 class="font-medium text-lg">Dashboard</h5>
+            <!-- CONTENT (referensi: public/d/tampilan beranda.jpg) -->
+            <div class="db-page p-6">
+                <?php
+                // status toko: 0 / 'aktif' = Aktif (sama seperti hitungStatus di controller)
+                $statusAktif = static function ($v) {
+                    $s = strtolower(trim((string) ($v['status'] ?? '')));
+                    return $s === '0' || $s === 'aktif';
+                };
+                $toko = [
+                    ['nama' => 'Alfamidi', 'url' => 'Alfamidi', 'ikon' => 'ti-user-square-rounded', 'warna' => 'is-ungu', 'total' => $total_midi ?? 0, 'aktif' => $total_aktif ?? 0, 'non' => $total_nonaktif ?? 0],
+                    ['nama' => 'Lawson', 'url' => 'Lawson', 'ikon' => 'ti-building-store', 'warna' => 'is-oranye', 'total' => $total_lawson ?? 0, 'aktif' => $total_lawson_aktif ?? 0, 'non' => $total_lawson_nonaktif ?? 0],
+                    ['nama' => 'Alfamart', 'url' => 'Alfamart', 'ikon' => 'ti-building-store', 'warna' => 'is-teal', 'total' => $total_alfamart ?? 0, 'aktif' => $total_alfamart_aktif ?? 0, 'non' => $total_alfamart_nonaktif ?? 0],
+                ];
+                $daftarVendor = [
+                    ['judul' => 'Vendor Non Cellular', 'ikon' => 'ti-users', 'url' => 'Vendor', 'data' => $vendor ?? [], 'kosong' => 'Data vendor belum tersedia'],
+                    ['judul' => 'Vendor Cellular', 'ikon' => 'ti-antenna', 'url' => 'VendorCelulllar', 'data' => $vendorCellular ?? [], 'kosong' => 'Data vendor cellular belum tersedia'],
+                ];
+                ?>
 
+                <!-- ===== KARTU UTAMA ===== -->
+                <div class="db-hero-grid">
+                    <a href="<?= site_url('Perangkat') ?>" class="db-hero is-blue" title="Buka Master Data">
+                        <span class="db-hero-ic"><i class="ti ti-database"></i></span>
+                        <div class="db-hero-isi">
+                            <div class="db-hero-label">Total Master Data</div>
+                            <div class="db-hero-angka"><?= number_format($totalMasterData ?? 0) ?></div>
+                            <div class="db-hero-note"><i class="ti ti-arrow-up"></i> dari <?= (int) ($jumlahJenisMaster ?? 0) ?> jenis master data</div>
+                        </div>
+                        <!-- hiasan garis gelombang -->
+                        <svg class="db-hero-hias" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M0 105 C40 100 60 70 95 78 S150 110 185 70 S240 20 300 30" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round" />
+                            <path d="M0 120 L0 105 C40 100 60 70 95 78 S150 110 185 70 S240 20 300 30 L300 120 Z" fill="rgba(255,255,255,.08)" />
+                        </svg>
+                        <span class="db-hero-go"><i class="ti ti-arrow-right"></i></span>
+                    </a>
+
+                    <a href="<?= site_url('DataSI') ?>" class="db-hero is-green" title="Buka Data Penggunaan">
+                        <span class="db-hero-ic"><i class="ti ti-shield-check-filled"></i></span>
+                        <div class="db-hero-isi">
+                            <div class="db-hero-label">Total Data Penggunaan</div>
+                            <div class="db-hero-angka"><?= number_format($totalDataPenggunaan ?? 0) ?></div>
+                            <div class="db-hero-note">Simcard &amp; Nomor Inet</div>
+                        </div>
+                        <!-- hiasan grafik batang -->
+                        <svg class="db-hero-hias" viewBox="0 0 300 120" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+                            <?php foreach ([[150, 70], [180, 50], [210, 85], [240, 35], [270, 60]] as [$x, $y]) : ?>
+                                <rect x="<?= $x ?>" y="<?= $y ?>" width="16" height="<?= 120 - $y ?>" rx="5" fill="rgba(255,255,255,.22)" />
+                            <?php endforeach; ?>
+                        </svg>
+                        <span class="db-hero-go"><i class="ti ti-arrow-right"></i></span>
+                    </a>
                 </div>
 
-                <div class="grid grid-cols-12 gap-x-6">
-                    <!-- Daily Sales -->
-
-
-
-                    <!-- TOTAL GLOBAL: Master Data & Data Penggunaan -->
-                    <div class="col-span-12 md:col-span-6">
-                        <div class="card stat-card">
-                            <div class="card-body flex items-center justify-between gap-4">
+                <!-- ===== KARTU TOKO ===== -->
+                <div class="db-toko-grid">
+                    <?php foreach ($toko as $t) : ?>
+                        <a href="<?= site_url($t['url']) ?>" class="db-card db-toko" title="Buka data <?= esc($t['nama']) ?>">
+                            <div class="db-toko-atas">
+                                <span class="db-toko-ic <?= $t['warna'] ?>"><i class="ti <?= $t['ikon'] ?>"></i></span>
                                 <div>
-                                    <div class="stat-label">Total Master Data</div>
-                                    <div class="stat-value"><?= number_format($totalMasterData ?? 0) ?></div>
-                                    <div class="stat-note">dari <?= $jumlahJenisMaster ?? 0 ?> jenis master data</div>
-                                </div>
-                                <i class="ti ti-category stat-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-span-12 md:col-span-6">
-                        <div class="card stat-card stat-card-green">
-                            <div class="card-body flex items-center justify-between gap-4">
-                                <div>
-                                    <div class="stat-label">Total Data Penggunaan</div>
-                                    <div class="stat-value"><?= number_format($totalDataPenggunaan ?? 0) ?></div>
-                                    <div class="stat-note">Simcard &amp; Nomor Inet</div>
-                                </div>
-                                <i class="ti ti-brand-databricks stat-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-span-12">
-
-                    </div>
-                    <!-- Facebook -->
-                    <div class="col-span-12 xl:col-span-4">
-                        <div class="card">
-                            <div class="card-body border-b border-gray-100 dark:border-white/10">
-                                <div class="flex items-center justify-center">
-                                    <i class="ti ti-building-store text-primary-500 text-4xl"></i>
-                                    <div class="ml-auto text-right">
-                                        <h3 class="text-2xl mb-1">
-                                            <?= number_format($total_midi) ?>
-                                        </h3>
-                                        <h5 class="text-success-500"><span class="text-gray-400">Alfamidi</span></h5>
+                                    <div class="db-toko-nama"><?= esc($t['nama']) ?></div>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="db-toko-angka"><?= number_format($t['total']) ?></span>
+                                        <span class="db-badge <?= $t['aktif'] > 0 ? 'is-aktif' : 'is-abu' ?>">Aktif</span>
                                     </div>
                                 </div>
+                                <i class="ti ti-building-store db-toko-hias" aria-hidden="true"></i>
                             </div>
-                            <div class="card-body grid grid-cols-2 gap-x-6">
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Aktif :</span> <?= number_format($total_aktif) ?></h6>
-
-                                </div>
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Non Aktif :</span> <?= number_format($total_nonaktif) ?></h6>
-
-                                </div>
+                            <div class="db-toko-bawah">
+                                <span>Aktif : <b><?= number_format($t['aktif']) ?></b></span>
+                                <span class="db-sep"></span>
+                                <span>Non Aktif : <b><?= number_format($t['non']) ?></b></span>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Twitter -->
-                    <div class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card">
-                            <div class="card-body border-b border-gray-100 dark:border-white/10">
-                                <div class="flex items-center justify-center">
-                                    <i class="ti ti-building-store text-primary-500 text-4xl"></i>
-                                    <div class="ml-auto text-right">
-                                        <h3 class="text-2xl mb-1"><?= $total_lawson ?></h3>
-                                        <h5 class="text-purple-500"><span class="text-gray-400">Lawson</span></h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body grid grid-cols-2 gap-x-6">
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Aktif :</span> <?= $total_lawson_aktif ?></h6>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
 
-                                </div>
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Non Aktif :</span> <?= $total_lawson_nonaktif ?></h6>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Google -->
-                    <div class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card">
-                            <div class="card-body border-b border-gray-100 dark:border-white/10">
-                                <div class="flex items-center justify-center">
-                                    <i class="ti ti-building-store text-primary-500 text-4xl"></i>
-                                    <div class="ml-auto text-right">
-                                        <h3 class="text-2xl mb-1"><?= $total_alfamart ?></h3>
-                                        <h5 class="text-purple-500"><span class="text-gray-400">Alfamart</span></h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body grid grid-cols-2 gap-x-6">
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Aktif :</span><?= $total_alfamart_aktif ?></h6>
-
-                                </div>
-                                <div>
-                                    <h6 class="text-center mb-2 text-sm"><span class="text-gray-400">Non Aktif :</span><?= $total_alfamart_nonaktif ?></h6>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- ===== DAFTAR ===== -->
+                <div class="db-list-grid">
                     <!-- Merek Perangkat -->
-                    <div class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card">
-                            <div class="card-header flex items-center justify-between gap-2 flex-wrap">
-                                <h5>Merek Perangkat</h5>
-
-                                <div class="flex items-center gap-2">
-
-                                    <div class="relative">
-                                        <input type="text" id="merekSearch" placeholder="Cari..."
-                                            class="border border-gray-200 dark:border-white/10 dark:bg-[#1d2630] rounded-lg pl-8 pr-2 py-1.5 text-xs outline-none focus:border-primary-500 w-28">
-                                        <i class="ti ti-search absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <div class="db-card db-list">
+                        <div class="db-list-head">
+                            <a href="<?= site_url('Perangkat') ?>" class="db-list-judul"><i class="ti ti-chart-bar is-blue"></i> Merek Perangkat</a>
+                            <div class="db-cari"><i class="ti ti-search"></i><input type="text" placeholder="Cari..." data-cari="merek"></div>
+                        </div>
+                        <div class="db-list-isi custom-scroll" data-daftar="merek">
+                            <?php foreach ($merekPerangkat ?? [] as $mp) : ?>
+                                <div class="db-row">
+                                    <span class="db-avatar"><i class="ti ti-router"></i></span>
+                                    <div class="db-row-teks">
+                                        <b><?= esc($mp['merk_perangkat'] ?: 'Tanpa Merek') ?></b>
+                                        <small>Total perangkat</small>
                                     </div>
-
-                                    <a href="<?= site_url('Perangkat') ?>"
-                                        class="inline-flex items-center justify-center w-8 h-8 text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition"
-                                        title="Lihat Perangkat">
-                                        <i class="ti ti-external-link text-sm"></i>
-                                    </a>
-
+                                    <span class="db-unit"><?= (int) $mp['jumlah'] ?> unit</span>
                                 </div>
-
-                            </div>
-                            <div class="card-body !p-0">
-
-                                <?php
-                                $totalMerek = count($merekPerangkat ?? []);
-                                ?>
-
-                                <div
-                                    class="<?= $totalMerek > 5 ? 'overflow-y-auto custom-scroll' : '' ?>"
-                                    style="<?= $totalMerek > 5 ? 'max-height:360px;' : '' ?>">
-
-                                    <table class="w-full text-sm">
-                                        <tbody id="merekList">
-                                            <?php if (!empty($merekPerangkat)) : ?>
-                                                <?php foreach ($merekPerangkat as $mp) : ?>
-                                                    <tr class="merek-row border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-                                                        <td class="px-5 py-4">
-                                                            <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
-                                                                <i class="ti ti-device-desktop text-gray-500 text-xl"></i>
-                                                            </div>
-                                                        </td>
-                                                        <td class="px-2 py-4">
-                                                            <h6 class="font-medium mb-1 merek-name"><?= esc($mp['merk_perangkat'] ?: 'Tanpa Merek') ?></h6>
-                                                            <p class="text-gray-400 text-xs">Total perangkat</p>
-                                                        </td>
-                                                        <td class="px-5 py-4 whitespace-nowrap text-right">
-                                                            <span class="text-xs text-white bg-primary-500 px-3 py-1 rounded"><?= $mp['jumlah'] ?> unit</span>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-
-                                    <div id="merekEmpty" class="text-center text-gray-400 text-sm py-10 <?= !empty($merekPerangkat) ? 'hidden' : '' ?>">
-                                        Data perangkat belum tersedia
-                                    </div>
-
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
+                            <div class="db-kosong <?= empty($merekPerangkat) ? '' : 'hidden' ?>" data-kosong="Data perangkat belum tersedia">Data perangkat belum tersedia</div>
                         </div>
                     </div>
 
-                    <!-- Recent Users -->
-                    <div class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card vendor-card">
-                            <div class="card-header flex items-center justify-between gap-3 flex-wrap">
-
-                                <h5>Vendor Non Celullar</h5>
-
-                                <div class="flex items-center gap-2 flex-wrap">
-
-                                    <div class="relative">
-                                        <input
-                                            type="text"
-                                            id="vendorSearch"
-                                            placeholder="Cari vendor..."
-                                            class="border border-gray-200 dark:border-white/10 dark:bg-[#1d2630] rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-primary-500 w-56 max-w-full">
-
-                                        <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                    </div>
-
-                                    <a href="<?= site_url('Vendor') ?>"
-                                        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition">
-
-                                        <i class="ti ti-external-link"></i>
-                                        Lihat
-
-                                    </a>
-
-                                </div>
-
+                    <!-- Vendor Non Cellular & Vendor Cellular -->
+                    <?php foreach ($daftarVendor as $i => $dv) : ?>
+                        <div class="db-card db-list">
+                            <div class="db-list-head">
+                                <a href="<?= site_url($dv['url']) ?>" class="db-list-judul"><i class="ti <?= $dv['ikon'] ?> is-blue"></i> <?= esc($dv['judul']) ?></a>
+                                <div class="db-cari"><i class="ti ti-search"></i><input type="text" placeholder="Cari vendor..." data-cari="vendor<?= $i ?>"></div>
                             </div>
-                            <div class="card-body !p-0">
-
-                                <?php
-                                $totalVendor = count($vendor ?? []);
-                                ?>
-
-                                <div
-                                    class="<?= $totalVendor > 5 ? 'overflow-y-auto custom-scroll' : '' ?>"
-                                    style="<?= $totalVendor > 5 ? 'max-height:360px;' : '' ?>">
-
-                                    <div class="overflow-x-auto custom-scroll">
-                                        <table class="min-w-[700px] w-full text-sm" style="min-width:560px">
-                                            <tbody id="vendorList">
-
-                                                <?php if (!empty($vendor)) : ?>
-                                                    <?php foreach ($vendor as $v) : ?>
-                                                        <?php
-                                                        // Normalisasi: 0/'aktif' => Aktif, selain itu => Non Aktif
-                                                        $s = strtolower(trim((string)($v['status'] ?? '')));
-                                                        $isAktif = ($s === '0' || $s === 'aktif');
-                                                        ?>
-                                                        <tr class="vendor-row border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-
-                                                            <td class="px-5 py-4">
-                                                                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
-                                                                    <i class="ti ti-user text-gray-500 text-xl"></i>
-                                                                </div>
-                                                            </td>
-
-                                                            <td class="px-2 py-4">
-                                                                <h6 class="font-medium mb-1 vendor-name"><?= esc($v['nama_vendor'] ?? '-') ?></h6>
-                                                                <p class="text-gray-400 text-xs"><?= esc($v['keterangan'] ?? '-') ?></p>
-                                                            </td>
-
-                                                            <td class="px-2 py-4 whitespace-nowrap text-gray-400 text-xs">
-                                                                <i class="fas fa-circle text-[8px] mr-2 <?= $isAktif ? 'text-success-500' : 'text-danger-500' ?>"></i>
-                                                                <?= !empty($v['created_at']) ? date('d-m-Y H:i', strtotime($v['created_at'])) : '-' ?>
-                                                            </td>
-
-                                                            <td class="px-5 py-4 whitespace-nowrap">
-                                                                <?php if ($isAktif) : ?>
-                                                                    <span class="text-xs text-white bg-success-500 px-3 py-1 rounded">Aktif</span>
-                                                                <?php else : ?>
-                                                                    <span class="text-xs text-white bg-danger-500 px-3 py-1 rounded">Non Aktif</span>
-                                                                <?php endif; ?>
-                                                            </td>
-
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-
-                                            </tbody>
-                                        </table>
+                            <div class="db-list-isi custom-scroll" data-daftar="vendor<?= $i ?>">
+                                <?php foreach ($dv['data'] as $v) : ?>
+                                    <?php $aktif = $statusAktif($v); ?>
+                                    <div class="db-row">
+                                        <span class="db-avatar is-kecil"><i class="ti ti-user"></i></span>
+                                        <div class="db-row-teks">
+                                            <b title="<?= esc($v['nama_vendor'] ?? '-', 'attr') ?>"><?= esc($v['nama_vendor'] ?? '-') ?></b>
+                                            <small title="<?= esc($v['keterangan'] ?? '-', 'attr') ?>"><?= esc($v['keterangan'] ?? '-') ?></small>
+                                        </div>
+                                        <span class="db-tgl"><i class="<?= $aktif ? 'is-aktif' : 'is-non' ?>"></i><?= !empty($v['created_at']) ? date('d-m-Y H:i', strtotime($v['created_at'])) : '-' ?></span>
+                                        <span class="db-badge-solid <?= $aktif ? 'is-aktif' : 'is-non' ?>"><?= $aktif ? 'Aktif' : 'Non Aktif' ?></span>
                                     </div>
-
-                                    <div
-                                        id="vendorEmpty"
-                                        class="text-center text-gray-400 text-sm py-10 <?= !empty($vendor) ? 'hidden' : '' ?>">
-
-                                        Data vendor non celullar belum tersedia
-
-                                    </div>
-
-                                </div>
-
+                                <?php endforeach; ?>
+                                <div class="db-kosong <?= empty($dv['data']) ? '' : 'hidden' ?>" data-kosong="<?= esc($dv['kosong'], 'attr') ?>"><?= esc($dv['kosong']) ?></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-span-12 xl:col-span-4 md:col-span-6">
-                        <div class="card">
-
-                            <div class="card-header flex items-center justify-between gap-3 flex-wrap">
-
-                                <h5>Vendor Cellular</h5>
-
-                                <div class="flex items-center gap-2 flex-wrap">
-
-                                    <div class="relative">
-                                        <input
-                                            type="text"
-                                            id="vendorSearch2"
-                                            placeholder="Cari vendor..."
-                                            class="border border-gray-200 dark:border-white/10 dark:bg-[#1d2630] rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-primary-500 w-56 max-w-full">
-
-                                        <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                    </div>
-
-                                    <a href="<?= site_url('VendorCelulllar') ?>"
-                                        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition">
-
-                                        <i class="ti ti-external-link"></i>
-                                        Lihat
-
-                                    </a>
-
-                                </div>
-
-                            </div>
-                            <div class="card-body !p-0">
-
-                                <?php
-                                $totalVendor = count($vendorCellular ?? []);
-                                ?>
-
-                                <div
-                                    class="<?= $totalVendor > 5 ? 'ooverflow-y-auto overflow-x-hidden custom-scroll' : '' ?>"
-                                    style="<?= $totalVendor > 5 ? 'max-height:360px;' : '' ?>">
-
-                                    <div class="overflow-x-auto custom-scroll">
-                                        <table class="w-full text-sm" style="min-width:560px">
-                                            <tbody id="vendorList">
-
-                                                <?php if (!empty($vendorCellular)) : ?>
-                                                    <?php foreach ($vendorCellular as $v) : ?>
-                                                        <?php
-                                                        // Normalisasi status: 0/'aktif' => Aktif, selain itu => Non Aktif
-                                                        $s = strtolower(trim((string)($v['status'] ?? '')));
-                                                        $isAktif = ($s === '0' || $s === 'aktif');
-                                                        ?>
-                                                        <tr class="vendor-row border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
-
-                                                            <td class="px-5 py-4">
-                                                                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
-                                                                    <i class="ti ti-user text-gray-500 text-xl"></i>
-                                                                </div>
-                                                            </td>
-
-                                                            <td class="px-2 py-4">
-                                                                <h6 class="font-medium mb-1 vendor-name">
-                                                                    <?= esc($v['nama_vendor'] ?? '-') ?>
-                                                                </h6>
-                                                                <p class="text-gray-400 text-xs">
-                                                                    <?= esc($v['keterangan'] ?? '-') ?>
-                                                                </p>
-                                                            </td>
-
-                                                            <td class="px-2 py-4 whitespace-nowrap text-gray-400 text-xs">
-                                                                <i class="fas fa-circle text-[8px] mr-2 <?= $isAktif ? 'text-success-500' : 'text-danger-500' ?>"></i>
-                                                                <?= !empty($v['created_at'])
-                                                                    ? date('d-m-Y H:i', strtotime($v['created_at']))
-                                                                    : '-' ?>
-                                                            </td>
-
-                                                            <td class="px-5 py-4 whitespace-nowrap">
-                                                                <?php if ($isAktif) : ?>
-                                                                    <span class="text-xs text-white bg-success-500 px-3 py-1 rounded">
-                                                                        Aktif
-                                                                    </span>
-                                                                <?php else : ?>
-                                                                    <span class="text-xs text-white bg-danger-500 px-3 py-1 rounded">
-                                                                        Non Aktif
-                                                                    </span>
-                                                                <?php endif; ?>
-                                                            </td>
-
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <div
-                                        id="vendorEmpty"
-                                        class="text-center text-gray-400 text-sm py-10 <?= !empty($vendorCellular) ? 'hidden' : '' ?>">
-
-                                        Data vendor celullar belum tersedia
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
+                    <?php endforeach; ?>
                 </div>
 
+                <!-- hiasan latar: gelombang & siluet gedung -->
+                <svg class="db-latar" viewBox="0 0 1200 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+                    <g class="db-latar-kota">
+                        <rect x="880" y="120" width="34" height="140" /><rect x="920" y="80" width="40" height="180" /><rect x="966" y="140" width="28" height="120" />
+                        <rect x="1000" y="60" width="44" height="200" /><rect x="1050" y="110" width="30" height="150" /><rect x="1086" y="90" width="38" height="170" />
+                        <rect x="1130" y="150" width="30" height="110" /><rect x="1166" y="125" width="34" height="135" /><rect x="830" y="160" width="40" height="100" />
+                    </g>
+                    <path class="db-latar-gel1" d="M0 200 C200 150 420 250 650 205 S1000 140 1200 190 L1200 260 L0 260 Z" />
+                    <path class="db-latar-gel2" d="M0 230 C260 190 480 260 760 228 S1060 190 1200 220 L1200 260 L0 260 Z" />
+                </svg>
             </div>
         </div>
         <script>
-            // ---- Search merek perangkat ----
-            (function() {
-                const input = document.getElementById('merekSearch');
-                if (!input) return;
-                const rows = document.querySelectorAll('#merekList .merek-row');
-                const emptyBox = document.getElementById('merekEmpty');
-
-                input.addEventListener('keyup', function() {
-                    const keyword = this.value.toLowerCase().trim();
-                    let visible = 0;
-                    rows.forEach(function(row) {
-                        const match = row.innerText.toLowerCase().includes(keyword);
-                        row.style.display = match ? '' : 'none';
-                        if (match) visible++;
+            // ---- Cari di daftar Merek Perangkat / Vendor (per kartu) ----
+            document.querySelectorAll('[data-cari]').forEach(function(input) {
+                const daftar = document.querySelector('[data-daftar="' + input.dataset.cari + '"]');
+                const baris = daftar.querySelectorAll('.db-row');
+                const kosong = daftar.querySelector('.db-kosong');
+                input.addEventListener('input', function() {
+                    const kata = this.value.toLowerCase().trim();
+                    let tampil = 0;
+                    baris.forEach(function(r) {
+                        const cocok = r.textContent.toLowerCase().includes(kata);
+                        r.style.display = cocok ? '' : 'none';
+                        if (cocok) tampil++;
                     });
-                    if (emptyBox) {
-                        if (visible === 0) {
-                            emptyBox.textContent = rows.length === 0 ? 'Data perangkat belum tersedia' : 'Merek tidak ditemukan';
-                            emptyBox.classList.remove('hidden');
-                        } else {
-                            emptyBox.classList.add('hidden');
-                        }
-                    }
+                    kosong.textContent = baris.length ? 'Data tidak ditemukan' : kosong.dataset.kosong;
+                    kosong.classList.toggle('hidden', tampil > 0);
                 });
-            })();
-        </script>
-
-        <script>
-            document.getElementById('vendorSearch').addEventListener('keyup', function() {
-
-                let keyword = this.value.toLowerCase();
-                let found = false;
-
-                document.querySelectorAll('.vendor-row').forEach(function(row) {
-
-                    let text = row.textContent.toLowerCase();
-
-                    if (text.includes(keyword)) {
-                        row.style.display = '';
-                        found = true;
-                    } else {
-                        row.style.display = 'none';
-                    }
-
-                });
-
-                document.getElementById('vendorEmpty').classList.toggle('hidden', found);
-
             });
         </script>
         <script>

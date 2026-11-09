@@ -26,10 +26,11 @@ class AllNoc extends BaseConfig
         ['route' => 'DataRouter',      'judul' => 'Data Router',                 'ikon' => 'ti-router',          'info' => 'Inventaris router beserta lokasi & konfigurasi.', 'soon' => false],
         ['route' => 'DataSwitch',      'judul' => 'Data Switch',                 'ikon' => 'ti-switch-horizontal', 'info' => 'Inventaris switch beserta IP, versi & lokasi.', 'soon' => false],
         ['route' => 'DataOlt',         'judul' => 'Data OLT',                    'ikon' => 'ti-affiliate',       'info' => 'Inventaris OLT beserta IP, versi & lokasi.', 'soon' => false],
+        ['route' => 'DataCctv',        'judul' => 'Data CCTV',                   'ikon' => 'ti-device-cctv',     'info' => 'Inventaris kamera CCTV beserta IP & lokasi.', 'soon' => true],
         ['route' => 'IpPublic',        'judul' => 'Data IP Public',              'ikon' => 'ti-world',           'info' => 'Alokasi blok & alamat IP public.', 'soon' => true],
         ['route' => 'IpPrivate',       'judul' => 'Data IP Private',             'ikon' => 'ti-lock',            'info' => 'Alokasi subnet & alamat IP private.', 'soon' => true],
         ['route' => 'FtpClient',       'judul' => 'FTP Client',                  'ikon' => 'ti-folder-share',    'info' => 'Akses file server FTP NOC dari portal.', 'soon' => true],
-        ['route' => 'DataOdcOdp',     'judul' => 'Data ODC & ODP',            'ikon' => 'ti-box-model-2',      'info' => 'Data ODC (Optical Distribution Cabinet) & ODP (Optical Distribution Point).', 'soon' => true],
+        ['route' => 'DataOdcOdp',     'judul' => 'Data ODC & ODP',            'ikon' => 'ti-box-model-2',      'info' => 'Data ODC (Optical Distribution Cabinet) & ODP (Optical Distribution Point).', 'soon' => false],
         ['route' => 'Kmz',            'judul' => 'KMZ',                       'ikon' => 'ti-map-2',            'info' => 'File peta KMZ jalur kabel & titik jaringan.', 'soon' => false],
         ['route' => 'DevicesBackbone', 'judul' => 'Devices Backbone',            'ikon' => 'ti-router',          'info' => 'Perangkat jaringan backbone.', 'soon' => false],
         ['route' => 'Bts',             'judul' => 'Data BTS',                    'ikon' => 'ti-antenna-bars-5',  'info' => 'Data BTS & vendor BTS.', 'soon' => false],
@@ -40,11 +41,11 @@ class AllNoc extends BaseConfig
 
     // Menu Report NOC yang belum dibuat (dropdown Report NOC di sidebar), format sama dengan $menu
     public array $reportNoc = [
-        ['route' => 'SlaReport',           'judul' => 'SLA Report',           'ikon' => 'ti-target',         'info' => 'Laporan pencapaian SLA layanan pelanggan.', 'soon' => true],
         ['route' => 'MonthlyReport',       'judul' => 'Monthly Report',       'ikon' => 'ti-calendar-stats', 'info' => 'Rekap laporan NOC bulanan.', 'soon' => true],
         ['route' => 'SurveyReport',        'judul' => 'Survey Report',        'ikon' => 'ti-zoom-check',     'info' => 'Laporan hasil survey lokasi.', 'soon' => true],
         ['route' => 'InstallationReport',  'judul' => 'Installation Report',  'ikon' => 'ti-plug-connected', 'info' => 'Laporan pekerjaan instalasi.', 'soon' => true],
         ['route' => 'TroubleshootReport',  'judul' => 'Troubleshoot Report',  'ikon' => 'ti-bug',            'info' => 'Laporan penanganan gangguan / troubleshoot.', 'soon' => true],
+        ['route' => 'PreventiveMaintenance', 'judul' => 'Preventive Maintenance', 'ikon' => 'ti-tool',       'info' => 'Jadwal & laporan preventive maintenance perangkat jaringan.', 'soon' => true],
     ];
 
     // Menu Activation (bagian sidebar sebelum NOC Operation), semuanya masih "Segera Hadir"
