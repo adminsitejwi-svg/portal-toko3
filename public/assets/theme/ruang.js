@@ -5,6 +5,10 @@
  *    halaman tampil (tidak ada kedipan putih).
  *  - Pilihan disimpan di localStorage ('ra-theme' = 'dark' | 'light'),
  *    jadi berlaku di semua halaman termasuk login.
+ *  - Halaman biasa: sidebar mengikuti mode (class "ra-sb-dark"), isi halaman
+ *    KEBALIKANNYA (class "dark"): mode terang = sidebar putih + isi gelap,
+ *    mode gelap = sidebar gelap + isi putih. Halaman login
+ *    (<html data-ra-tema="penuh">) ikut mode seluruhnya.
  *  - Tombol 🌙/☀️ otomatis ditambahkan di topbar (sebelah ikon user);
  *    halaman tanpa topbar mendapat tombol melayang di pojok kanan bawah.
  *  - Tanggal & jam WIB otomatis ditambahkan di topbar (kiri tombol 🌙/☀️).
@@ -12,6 +16,8 @@
 (function () {
     var KEY = 'ra-theme';
     var root = document.documentElement;
+    // halaman yang seluruhnya ikut mode (login); halaman lain: isi kebalikan sidebar
+    var TEMA_PENUH = root.getAttribute('data-ra-tema') === 'penuh';
 
     function saved() {
         try {
@@ -22,8 +28,12 @@
     }
 
     function apply(mode) {
-        root.classList.toggle('dark', mode === 'dark');
-        root.classList.toggle('light', mode !== 'dark');
+        var gelap = mode === 'dark';
+        // sidebar mengikuti mode; isi halaman kebalikannya (kecuali login: ikut mode)
+        var isiGelap = TEMA_PENUH ? gelap : !gelap;
+        root.classList.toggle('ra-sb-dark', gelap);
+        root.classList.toggle('dark', isiGelap);
+        root.classList.toggle('light', !isiGelap);
         var icons = document.querySelectorAll('.ra-theme-toggle i');
         for (var i = 0; i < icons.length; i++) {
             icons[i].className = 'ti ' + (mode === 'dark' ? 'ti-sun' : 'ti-moon');
@@ -35,7 +45,7 @@
     }
 
     function current() {
-        return root.classList.contains('dark') ? 'dark' : 'light';
+        return root.classList.contains('ra-sb-dark') ? 'dark' : 'light';
     }
 
     function toggle() {
@@ -60,8 +70,8 @@
     // ---- Layar "Memuat halaman" (lihat ruang.css: html.ra-pageload) ----
     // Tampil sejak <head> sampai halaman selesai dimuat, lalu memudar.
     // Tampil lagi saat pindah halaman (klik link / kirim form), agar ada tanda sedang memuat.
-    // Layar blur tampil minimal 3 detik (PAGE_BLUR_MS), lalu memudar setelah halaman selesai dimuat.
-    var PAGE_BLUR_MS = 3000;
+    // Layar blur tampil minimal 1 detik (PAGE_BLUR_MS), lalu memudar setelah halaman selesai dimuat.
+    var PAGE_BLUR_MS = 1000;
     var pageTimer = null;
     var pageShownAt = Date.now();
     function requestHidePageLoader() {
@@ -160,6 +170,27 @@
         }
     });
 
+    // ---- Notifikasi sukses / gagal (banner di tengah atas) tampil DI DEPAN layar "Memuat halaman" ----
+    // Banyak halaman menaruh banner di dalam <nav id="sidebar">, yang membatasi tumpukannya di bawah
+    // layar memuat. Banner dipindah ke <body> lalu diberi kelas .ra-flash (z-index di ruang.css).
+    function angkatNotifikasi(el) {
+        if (!el || el.nodeType !== 1 || !el.matches('div.fixed.top-5')) return;
+        if (el.parentNode !== document.body) document.body.appendChild(el);
+        el.classList.add('ra-flash');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var ada = document.querySelectorAll('div.fixed.top-5');
+        for (var i = 0; i < ada.length; i++) angkatNotifikasi(ada[i]);
+
+        // banner yang dibuat belakangan oleh skrip halaman (mis. showFlash setelah simpan lewat AJAX)
+        new MutationObserver(function (muts) {
+            for (var m = 0; m < muts.length; m++) {
+                for (var n = 0; n < muts[m].addedNodes.length; n++) angkatNotifikasi(muts[m].addedNodes[n]);
+            }
+        }).observe(document.body, { childList: true });
+    });
+
     window.RuangTheme = { toggle: toggle, apply: apply, showLoader: showPageLoader, hideLoader: hidePageLoader };
 
     // ---- Sidebar navy: tambahan tampilan sesuai referensi (struktur menu tidak diubah) ----
@@ -175,6 +206,9 @@
         'data penggunaan': ['ti-chart-pie', 'Simcard & Nomor Inet'],
         'master data': ['ti-database', 'Perangkat & Vendor'],
         'lokasi': ['ti-map-pin', 'Peta Lokasi'],
+        'spk': ['ti-file-certificate', 'Surat Perintah Kerja'],
+        'bast': ['ti-file-check', 'Berita Acara Serah Terima'],
+        'pks & contract': ['ti-file-text', 'Perjanjian & Kontrak'],
         'rfo': ['ti-file-alert', 'Reason For Outage'],
         'notifikasi maintenance': ['ti-bell', 'Pemberitahuan Maintenance'],
         'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
@@ -209,12 +243,30 @@
         'map': 'ti-map-pin',
         'rfo': 'ti-file-alert',
         'mdmaintenance': 'ti-bell',
+        'netmon': 'ti-activity-heartbeat',
         'historyreport': 'ti-clipboard-text',
         'maintenancereport': 'ti-tool',
         'reportsat': 'ti-report',
+        'bastcorporate': 'ti-building-skyscraper',
+        'bastalfamidi': 'ti-building-store',
+        'bastlawson': 'ti-building-store',
+        'bastalfamart': 'ti-building-store',
+        'bastdandan': 'ti-building-store',
+        'slareport': 'ti-target',
+        'monthlyreport': 'ti-calendar-stats',
+        'surveyreport': 'ti-zoom-check',
+        'installationreport': 'ti-plug-connected',
+        'troubleshootreport': 'ti-bug',
         'datacenter': 'ti-building-warehouse',
         'datarakdc': 'ti-server-2',
         'interkoneksi': 'ti-arrows-exchange',
+        'vlan': 'ti-network',
+        'datarouter': 'ti-router',
+        'dataswitch': 'ti-switch-horizontal',
+        'dataolt': 'ti-affiliate',
+        'ippublic': 'ti-world',
+        'ipprivate': 'ti-lock',
+        'ftpclient': 'ti-folder-share',
         'devicesbackbone': 'ti-router',
         'bts': 'ti-antenna-bars-5',
         'pelanggannoc': 'ti-users',
@@ -226,6 +278,11 @@
         'settings': 'ti-users',
         'logs': 'ti-history'
     };
+
+    // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
+    var MENU_SEGERA = ['datarouter', 'dataswitch', 'dataolt', 'ippublic', 'ipprivate', 'ftpclient',
+        'slareport', 'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport',
+        'spk', 'pkscontract', 'bastcorporate', 'bastalfamidi', 'bastlawson', 'bastalfamart', 'bastdandan'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
     function pasangIkonJudul(link) {
@@ -257,6 +314,8 @@
 
     var SECTION_ICON = {
         'halaman utama': 'ti-home',
+        'data toko jwi group': 'ti-building-store',
+        'activation': 'ti-rocket',
         'noc operation': 'ti-settings',
         'informasi': 'ti-info-circle'
     };
@@ -299,6 +358,36 @@
                 judulMenu.appendChild(kecil);
             }
             if (links[i].closest('.hasmenu')) links[i].closest('.hasmenu').setAttribute('data-ra-menu', label);
+
+            // menu utama (bukan dropdown) yang halamannya belum dibuat juga diberi label "Soon"
+            var kunciMenu = links[i].getAttribute('href') === '#' ? '' : normalPath(links[i].pathname || '').split('/').pop();
+            if (kunciMenu && MENU_SEGERA.indexOf(kunciMenu) !== -1 && !links[i].querySelector('.ra-soon')) {
+                var soonMenu = document.createElement('span');
+                soonMenu.className = 'ra-soon';
+                soonMenu.textContent = 'Soon';
+                links[i].appendChild(soonMenu);
+            }
+        }
+
+        // ikon di setiap item dropdown (diambil dari IKON_HALAMAN berdasarkan alamat link)
+        var subLinks = sb.querySelectorAll('.submenu a[href]');
+        for (var s = 0; s < subLinks.length; s++) {
+            var a = subLinks[s];
+            if (a.querySelector('.ra-sm-ic')) continue;
+            var kunci = normalPath(a.pathname || '').split('/').pop();
+            var ikonSub = document.createElement('span');
+            ikonSub.className = 'ra-sm-ic';
+            ikonSub.setAttribute('aria-hidden', 'true');
+            ikonSub.innerHTML = '<i class="ti ' + (IKON_HALAMAN[kunci] || 'ti-point') + '"></i>';
+            a.insertBefore(ikonSub, a.firstChild);
+            a.classList.add('ra-has-ic');
+            // menu yang halamannya belum dibuat diberi label kecil "Soon" (daftar di MENU_SEGERA)
+            if (MENU_SEGERA.indexOf(kunci) !== -1 && !a.querySelector('.ra-soon')) {
+                var soon = document.createElement('span');
+                soon.className = 'ra-soon';
+                soon.textContent = 'Soon';
+                a.appendChild(soon);
+            }
         }
 
         pasangIkonJudul(setupDropdown(sb));

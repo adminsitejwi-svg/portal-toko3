@@ -314,6 +314,43 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataRakDC/perangkat/update', 'DataRakDC::updatePerangkat');
     $routes->get('DataRakDC/perangkat/delete/(:num)', 'DataRakDC::deletePerangkat/$1');
 
+    // NetMon (menu All NOC di sidebar): kartu link website monitoring, form berupa pop up
+    $routes->get('NetMon', 'NetMon::index');
+    $routes->post('NetMon/save', 'NetMon::save');
+    $routes->post('NetMon/update', 'NetMon::update');
+    $routes->get('NetMon/delete/(:num)', 'NetMon::delete/$1');
+
+    // Menu All NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
+    // (saat halamannya jadi, ganti handler route-nya & ubah 'soon' di Config/AllNoc.php)
+    $routes->get('FtpClient', 'ComingSoon::show/FtpClient');
+    $routes->get('IpPublic', 'ComingSoon::show/IpPublic');
+    $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
+    $routes->get('DataSwitch', 'ComingSoon::show/DataSwitch');
+    $routes->get('DataOlt', 'ComingSoon::show/DataOlt');
+    $routes->get('DataRouter', 'ComingSoon::show/DataRouter');
+
+    // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
+    $routes->get('SlaReport', 'ComingSoon::show/SlaReport');
+    $routes->get('MonthlyReport', 'ComingSoon::show/MonthlyReport');
+    $routes->get('SurveyReport', 'ComingSoon::show/SurveyReport');
+    $routes->get('InstallationReport', 'ComingSoon::show/InstallationReport');
+    $routes->get('TroubleshootReport', 'ComingSoon::show/TroubleshootReport');
+
+    // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"
+    $routes->get('Spk', 'ComingSoon::show/Spk');
+    $routes->get('BastCorporate', 'ComingSoon::show/BastCorporate');
+    $routes->get('BastAlfamidi', 'ComingSoon::show/BastAlfamidi');
+    $routes->get('BastLawson', 'ComingSoon::show/BastLawson');
+    $routes->get('BastAlfamart', 'ComingSoon::show/BastAlfamart');
+    $routes->get('BastDandan', 'ComingSoon::show/BastDandan');
+    $routes->get('PksContract', 'ComingSoon::show/PksContract');
+
+    // Data VLAN (menu All NOC di sidebar): VLAN + mapping perangkat, form berupa pop up
+    $routes->get('Vlan', 'Vlan::index');
+    $routes->post('Vlan/save', 'Vlan::save');
+    $routes->post('Vlan/update', 'Vlan::update');
+    $routes->get('Vlan/delete/(:num)', 'Vlan::delete/$1');
+
     // Data Interkoneksi (menu All NOC di sidebar)
     $routes->get('Interkoneksi', 'Interkoneksi::index');
     $routes->get('Interkoneksi/create', 'Interkoneksi::create');

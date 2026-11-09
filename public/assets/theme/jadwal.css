@@ -605,3 +605,10 @@ html.dark .sh-icon-btn:hover {
     background: var(--rf-card);
     box-shadow: none;
 }
+
+/* judul hari Minggu & Sabtu tetap merah saat isi halaman gelap
+   (halaman Shift punya aturan .dark #Calendar yang mewarnai semua judul hari) */
+.sh-cal #Calendar .fc-day-sun .fc-col-header-cell-cushion,
+.sh-cal #Calendar .fc-day-sat .fc-col-header-cell-cushion {
+    color: #ef4444 !important;
+}

@@ -6,7 +6,11 @@
  *  Struktur HTML, fitur & JavaScript tiap halaman tidak diubah.
  *  Dimuat lewat app/Views/partials/theme.php, setelah CSS halaman.
  *
- *  Dark mode: class "dark" pada <html> (diatur oleh ruang.js).
+ *  Mode terang/gelap (tombol 🌙/☀️, diatur ruang.js):
+ *  - sidebar mengikuti mode: class "ra-sb-dark" pada <html> = sidebar gelap;
+ *  - isi halaman (class "dark") KEBALIKAN sidebar: mode terang = isi gelap,
+ *    mode gelap = isi terang;
+ *  - halaman login (<html data-ra-tema="penuh">) ikut mode seluruhnya.
  * ===================================================================== */
 
 :root {
@@ -62,6 +66,56 @@ html.dark {
     --nv-hover: rgba(61, 123, 255, .14);
     --nv-active-1: #2f6bff;
     --nv-active-2: #3d8bff;
+}
+
+/* sidebar mode gelap: warna gelap hanya berlaku di dalam sidebar, isi halaman tetap terang.
+   Variabel --nv-* diulang di sini karena mode terang (html:not(.dark)) menimpanya untuk topbar. */
+html.ra-sb-dark #sidebar {
+    --nv-line: rgba(110, 145, 225, .16);
+    --nv-text: #c9d4ee;
+    --nv-muted: #7f95c7;
+    --nv-hover: rgba(61, 123, 255, .14);
+    --ra-primary: #3d7bff;
+    --ra-primary-dark: #2f6bff;
+    --ra-primary-soft: rgba(61, 123, 255, .16);
+    --ra-body: #071330;
+    --ra-card: #0d1d42;
+    --ra-text: #bccae6;
+    --ra-heading: #eaf0ff;
+    --ra-muted: #8496c0;
+    --ra-border: #1c2f5c;
+    --ra-thead: #11244f;
+    --ra-hover: #13275a;
+    --ra-sidebar: #0b1c45;
+    --ra-sidebar-text: #c9d4ee;
+    --ra-sidebar-heading: #7f95c7;
+    --ra-input: #0a1838;
+    color-scheme: dark;
+}
+
+/* sidebar mode terang: variabel terang hanya di dalam sidebar,
+   karena isi halaman (html.dark) memakai variabel gelap */
+html:not(.ra-sb-dark) #sidebar {
+    --nv-line: #e8ecf5;
+    --nv-text: #3b4754;
+    --nv-muted: #8a96ad;
+    --nv-hover: #eef3ff;
+    --ra-primary: #6777ef;
+    --ra-primary-dark: #5566e6;
+    --ra-primary-soft: #eef0fd;
+    --ra-body: #f8f9fc;
+    --ra-card: #ffffff;
+    --ra-text: #5a5c69;
+    --ra-heading: #3a3b45;
+    --ra-muted: #858796;
+    --ra-border: #e3e6f0;
+    --ra-thead: #eaecf4;
+    --ra-hover: #f8f9fc;
+    --ra-sidebar: #ffffff;
+    --ra-sidebar-text: #6e707e;
+    --ra-sidebar-heading: #b7b9cc;
+    --ra-input: #ffffff;
+    color-scheme: light;
 }
 
 /* ---------- Dasar ---------- */
@@ -1056,94 +1110,94 @@ html:not(.dark) {
 }
 
 /* ----- sidebar ----- */
-html:not(.dark) #sidebar.pc-sidebar {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar {
     background: #ffffff !important;
     color: var(--nv-text) !important;
     border-right: 1px solid #e8ecf5;
     box-shadow: 4px 0 24px rgba(31, 42, 68, .06);
 }
 
-html:not(.dark) #sidebar.pc-sidebar::before {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar::before {
     opacity: .18;
 }
 
-html:not(.dark) #sidebar.pc-sidebar>div:first-child a,
-html:not(.dark) #sidebar.pc-sidebar>div:first-child a:hover,
-html:not(.dark) #sidebar.pc-sidebar>div:first-child a:focus,
-html:not(.dark) #sidebar.pc-sidebar>div:first-child a:active,
-html:not(.dark) #sidebar.pc-sidebar .brand-text,
-html:not(.dark) .ra-brand b {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar>div:first-child a,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar>div:first-child a:hover,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar>div:first-child a:focus,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar>div:first-child a:active,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .brand-text,
+html:not(.ra-sb-dark) .ra-brand b {
     color: #1f2a44 !important;
 }
 
-html:not(.dark) .ra-brand small {
+html:not(.ra-sb-dark) .ra-brand small {
     color: #8a96ad;
 }
 
-html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar li[class*="uppercase"] {
     color: #9aa6bd !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"]::after {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar li[class*="uppercase"]::after {
     border-image: linear-gradient(90deg, #e3e8f2, rgba(227, 232, 242, 0)) 1;
 }
 
-html:not(.dark) #sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar li[class*="uppercase"] .ra-sec-ic {
     color: #9aa6bd;
 }
 
-html:not(.dark) #sidebar.pc-sidebar a {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar a {
     color: #3b4754 !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link .arrow {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .arrow {
     color: #9aa6bd !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar a:hover,
-html:not(.dark) #sidebar.pc-sidebar .pc-link:hover {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar a:hover,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link:hover {
     color: #2f6bff !important;
     background: #eef3ff;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link:hover .arrow {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link:hover .arrow {
     color: #2f6bff !important;
 }
 
 /* menu aktif tetap pil biru dengan teks putih */
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active:hover {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active:hover {
     color: #fff !important;
     background: linear-gradient(90deg, var(--nv-active-1) 0%, var(--nv-active-2) 100%);
     box-shadow: 0 6px 16px rgba(47, 107, 255, .3), inset 0 1px 0 rgba(255, 255, 255, .18);
 }
 
-html:not(.dark) #sidebar.pc-sidebar .submenu.open {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu.open {
     background: #f6f8fd !important;
     border-color: #e8ecf5;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .submenu a {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a {
     color: #55627a !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .submenu a::before {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a::before {
     background: #c3cbdb;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .submenu a:hover,
-html:not(.dark) #sidebar.pc-sidebar .submenu a.ra-current {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a:hover,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a.ra-current {
     background: #e8efff !important;
     color: #2f6bff !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .submenu a:hover::before,
-html:not(.dark) #sidebar.pc-sidebar .submenu a.ra-current::before {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a:hover::before,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a.ra-current::before {
     background: #2f6bff;
     box-shadow: none;
 }
 
-html:not(.dark) #sidebar.pc-sidebar ::-webkit-scrollbar-thumb {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar ::-webkit-scrollbar-thumb {
     background: #d5dbe7 !important;
 }
 
@@ -1404,36 +1458,36 @@ html:not(.dark) body::-webkit-scrollbar-track {
 }
 
 /* ----- mode terang ----- */
-html:not(.dark) .ra-sub {
+html:not(.ra-sb-dark) .ra-sub {
     color: #7686a3;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link .pc-micon,
-html:not(.dark) #sidebar.pc-sidebar .pc-link .arrow,
-html:not(.dark) #sidebar.pc-sidebar .pc-link:hover .arrow {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .pc-micon,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .arrow,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link:hover .arrow {
     border-color: #d5dcea;
     background: #f6f8fd;
     color: #55627a !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link::before {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link::before {
     background: linear-gradient(135deg, #eef5ff 0%, #e4eefe 100%);
     box-shadow: inset 3px 0 0 #2f6bff, 0 2px 8px rgba(47, 107, 255, .12);
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active:hover {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active:hover {
     color: #1f2a44 !important;
     background: transparent;
     border-color: #bcd6ff;
     box-shadow: none;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active .pc-micon,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active .arrow,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active:hover .arrow,
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.pc-link .arrow,
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.pc-link:hover .arrow {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active .pc-micon,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active .arrow,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active:hover .arrow,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.pc-link .arrow,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.pc-link:hover .arrow {
     border-color: #9cc2ff;
     background: #fff;
     box-shadow: none;
@@ -1441,27 +1495,27 @@ html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.pc-link:hover .arrow {
 }
 
 /* mode terang: ikon & panah menu aktif berwarna hitam */
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active .pc-micon,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active .arrow,
-html:not(.dark) #sidebar.pc-sidebar .pc-link.active:hover .arrow {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active .pc-micon,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active .arrow,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link.active:hover .arrow {
     color: #111827 !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu.open {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu.open {
     border-left-color: #cfdcf5;
     background: transparent !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a {
     color: #55627a !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a:hover {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a:hover {
     background: #eef3ff !important;
     color: #2f6bff !important;
 }
 
-html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a.ra-current {
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a.ra-current {
     background: #dfeaff !important;
     color: #1f4fd8 !important;
 }
@@ -1493,4 +1547,85 @@ html:not(.dark) #sidebar.pc-sidebar .hasmenu.ra-open>.submenu a.ra-current {
 .pagination a,
 .page-link {
     cursor: pointer !important;
+}
+/* ---------- Ikon di setiap item dropdown sidebar (dipasang ruang.js) ---------- */
+#sidebar.pc-sidebar .submenu a.ra-has-ic {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+}
+
+/* titik bawaan diganti ikon */
+#sidebar.pc-sidebar .submenu a.ra-has-ic::before {
+    display: none;
+}
+
+#sidebar.pc-sidebar .submenu a.ra-has-ic:not(.ra-open *) {
+    padding-left: 22px !important;
+}
+
+#sidebar.pc-sidebar .ra-sm-ic {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(148, 170, 215, .22);
+    background: rgba(255, 255, 255, .04);
+    color: #9fb3dd;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+#sidebar.pc-sidebar .ra-sm-ic i {
+    font-size: 15px;
+    color: inherit !important;
+}
+
+#sidebar.pc-sidebar .submenu a:hover .ra-sm-ic,
+#sidebar.pc-sidebar .submenu a.ra-current .ra-sm-ic {
+    border-color: rgba(56, 189, 248, .5);
+    background: rgba(56, 189, 248, .14);
+    color: #7dd3fc;
+}
+
+/* sidebar putih (mode terang) */
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .ra-sm-ic {
+    border-color: #d5dcea;
+    background: #f6f8fd;
+    color: #55627a;
+}
+
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a:hover .ra-sm-ic,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a.ra-current .ra-sm-ic {
+    border-color: #9cc2ff;
+    background: #fff;
+    color: #2f6bff;
+}
+
+/* ---------- Notifikasi sukses / gagal di depan layar "Memuat halaman" ----------
+   .ra-flash dipasang ruang.js pada banner div.fixed.top-5 (dipindah ke <body>);
+   layar memuat memakai z-index 99998-99999 (body::before / body::after). */
+.ra-flash {
+    z-index: 100000 !important;
+}
+
+/* label kecil "Soon" pada menu sidebar yang halamannya belum dibuat (dipasang ruang.js) */
+#sidebar.pc-sidebar .submenu a .ra-soon,
+#sidebar.pc-sidebar .pc-link .ra-soon {
+    margin-left: auto;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    color: #fcd34d;
+    background: rgba(245, 158, 11, .18);
+}
+
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .submenu a .ra-soon,
+html:not(.ra-sb-dark) #sidebar.pc-sidebar .pc-link .ra-soon {
+    color: #b45309;
+    background: #fef3c7;
 }
