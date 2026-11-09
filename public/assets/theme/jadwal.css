@@ -1,0 +1,607 @@
+/* =====================================================================
+ *  TAMPILAN HALAMAN JADWAL (Shift & Piket)
+ *  referensi: public/HAPUS SIDEBAR di dalam index/tampilan shift.png
+ *  Dimuat setelah rfo.css; memakai variabel --rf-* agar mode gelap ikut menyesuaikan.
+ * ===================================================================== */
+.sh-page {
+    --sh-ungu: #6d5dfc;
+    --sh-ungu-soft: #efedff;
+}
+
+html.dark .sh-page {
+    --sh-ungu-soft: rgba(109, 93, 252, .18);
+}
+
+.sh-btn-purple {
+    background: linear-gradient(135deg, #8b7bff, #6d5dfc);
+    box-shadow: 0 6px 16px rgba(109, 93, 252, .35);
+}
+
+/* kartu ringkasan */
+.sh-stat {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    box-shadow: var(--rf-shadow);
+}
+
+.sh-stat-ic {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.sh-stat-ic.is-indigo {
+    color: #4f5bd5;
+    background: #e8eaff;
+}
+
+.sh-stat-ic.is-purple {
+    color: #7c5cff;
+    background: #efe9ff;
+}
+
+.sh-stat-ic.is-green {
+    color: #16a34a;
+    background: #e3f7ea;
+}
+
+.sh-stat-ic.is-violet {
+    color: #6d5dfc;
+    background: #ece9ff;
+}
+
+html.dark .sh-stat-ic {
+    background: rgba(255, 255, 255, .07);
+}
+
+.sh-stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rf-head);
+}
+
+.sh-stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--rf-head);
+}
+
+.sh-stat-note {
+    font-size: 12px;
+    color: var(--rf-muted);
+}
+
+/* kepala kalender */
+.sh-nav {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    color: var(--rf-head);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: background-color .15s, color .15s;
+}
+
+.sh-nav:hover {
+    background: var(--sh-ungu-soft);
+    color: var(--sh-ungu);
+}
+
+.sh-month {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--rf-head);
+    min-width: 190px;
+}
+
+.sh-month i {
+    color: var(--sh-ungu);
+    font-size: 20px;
+}
+
+.sh-views {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.sh-views button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rf-text);
+    transition: background-color .15s, color .15s;
+}
+
+.sh-views button:hover {
+    color: var(--sh-ungu);
+}
+
+.sh-views button.active {
+    border-color: transparent;
+    color: #fff;
+    background: linear-gradient(135deg, #8b7bff, #6d5dfc);
+    box-shadow: 0 4px 12px rgba(109, 93, 252, .3);
+}
+
+/* grid kalender */
+.sh-cal #Calendar {
+    --fc-border-color: var(--rf-border);
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: var(--rf-soft);
+}
+
+.sh-cal .fc-theme-standard .fc-scrollgrid {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sh-cal .fc .fc-col-header-cell {
+    background: var(--rf-soft);
+}
+
+.sh-cal .fc .fc-col-header-cell-cushion {
+    padding: 9px 4px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--rf-head);
+}
+
+.sh-cal .fc .fc-day-sun .fc-col-header-cell-cushion,
+.sh-cal .fc .fc-day-sat .fc-col-header-cell-cushion,
+.sh-cal .fc .fc-daygrid-day.fc-day-sun .fc-daygrid-day-number,
+.sh-cal .fc .fc-daygrid-day.fc-day-sat .fc-daygrid-day-number {
+    color: #ef4444 !important;
+}
+
+.sh-cal .fc .fc-daygrid-day-number {
+    padding: 6px 8px 2px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rf-head);
+}
+
+.sh-cal .fc .fc-day-other .fc-daygrid-day-number {
+    color: var(--rf-muted) !important;
+    opacity: .55;
+    font-weight: 500;
+}
+
+.sh-cal .fc .fc-daygrid-day-frame {
+    min-height: 92px;
+    cursor: pointer;
+    transition: background-color .15s;
+}
+
+.sh-cal .fc .fc-daygrid-day:hover .fc-daygrid-day-frame {
+    background: var(--rf-soft);
+}
+
+.sh-cal .fc .fc-day-today,
+.dark .sh-cal #Calendar .fc-day-today {
+    background: var(--sh-ungu-soft) !important;
+}
+
+.sh-cal .fc-daygrid-day.selected-day {
+    outline: 2px solid var(--sh-ungu);
+    outline-offset: -2px;
+    border-radius: 8px;
+}
+
+.sh-cal .fc-daygrid-day.selected-day .fc-daygrid-day-number {
+    color: var(--sh-ungu) !important;
+}
+
+.sh-cal .ev-box {
+    width: 18px;
+    height: 18px;
+    font-size: .66rem;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+
+/* kaki kalender: keterangan warna + pindah bulan */
+.sh-cal-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rf-border);
+}
+
+.sh-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    font-size: 12.5px;
+    color: var(--rf-text);
+}
+
+.sh-legend-title {
+    font-weight: 700;
+    color: var(--rf-head);
+}
+
+.sh-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sh-legend .ev-box {
+    width: 20px;
+    height: 16px;
+    font-size: .62rem;
+    border-radius: 4px;
+}
+
+.sh-foot-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--rf-text);
+    transition: background-color .15s, color .15s;
+}
+
+.sh-foot-btn:hover {
+    background: var(--sh-ungu-soft);
+    color: var(--sh-ungu);
+}
+
+.sh-foot-btn.is-next {
+    border-color: var(--sh-ungu);
+    color: var(--sh-ungu);
+}
+
+/* jam (kartu ungu) */
+.sh-clock {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 22px;
+    border-radius: 18px;
+    color: #fff;
+    background: linear-gradient(135deg, #5b4bf5 0%, #7c5cff 60%, #9b7bff 100%);
+    box-shadow: 0 10px 24px rgba(91, 75, 245, .35);
+}
+
+/* hiasan gelombang di bawah kartu */
+.sh-clock::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    bottom: -60px;
+    width: 260px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .12);
+}
+
+.sh-clock::before {
+    content: "";
+    position: absolute;
+    right: 18px;
+    top: -30px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+}
+
+.sh-clock-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.sh-clock-row+.sh-clock-row {
+    margin-top: 12px;
+}
+
+.sh-clock-row.is-time {
+    font-size: 1.3rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.sh-clock-row i {
+    font-size: 22px;
+    opacity: .9;
+}
+
+/* kartu samping */
+.sh-side {
+    padding: 18px 18px 16px;
+}
+
+.sh-side-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--rf-head);
+}
+
+.sh-side-title i {
+    color: var(--sh-ungu);
+    font-size: 20px;
+}
+
+.sh-badge {
+    flex: 0 0 auto;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--sh-ungu);
+    background: var(--sh-ungu-soft);
+}
+
+.sh-daynav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sh-daynav button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+    color: var(--rf-text);
+    transition: background-color .15s, color .15s;
+}
+
+.sh-daynav button:hover {
+    background: var(--rf-soft);
+}
+
+.sh-daynav .is-today {
+    border-left: 1px solid var(--rf-border);
+    border-right: 1px solid var(--rf-border);
+    font-weight: 700;
+    color: var(--sh-ungu);
+}
+
+.jadwal-panel .rfo-search {
+    margin-bottom: 12px;
+}
+
+/* baris jadwal di kartu kanan */
+.sh-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 9px 12px 9px 16px;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    background: var(--rf-card);
+    cursor: pointer;
+    transition: box-shadow .15s, background-color .15s;
+}
+
+.sh-item::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    bottom: 8px;
+    width: 4px;
+    border-radius: 4px;
+    background: var(--c);
+}
+
+.sh-item:hover {
+    background: var(--rf-soft);
+    box-shadow: 0 4px 12px rgba(31, 42, 68, .06);
+}
+
+.sh-item-dot {
+    flex: 0 0 auto;
+    width: 11px;
+    height: 11px;
+    margin-top: 4px;
+    border-radius: 50%;
+    background: var(--c);
+}
+
+.sh-item-name {
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--rf-head);
+    line-height: 1.3;
+}
+
+.sh-item-sub {
+    margin-top: 2px;
+    font-size: .76rem;
+    color: var(--rf-muted);
+    line-height: 1.3;
+}
+
+.sh-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    margin-top: 4px;
+    padding: 9px;
+    border: 1px solid var(--rf-border);
+    border-radius: 10px;
+    background: var(--sh-ungu-soft);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--sh-ungu);
+}
+
+.sh-more.hidden {
+    display: none;
+}
+
+/* statistik mini */
+.sh-mini-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.sh-mini-stats>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    text-align: center;
+}
+
+.sh-mini-stats>div+div {
+    border-left: 1px solid var(--rf-border);
+}
+
+.sh-mini-ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--c, #16a34a);
+    background: color-mix(in srgb, var(--c, #16a34a) 16%, transparent);
+}
+
+.sh-mini-ic.is-green {
+    --c: #16a34a;
+}
+
+.sh-mini-label {
+    font-size: 12px;
+    color: var(--rf-muted);
+}
+
+.sh-mini-val {
+    font-size: 12.5px;
+    color: var(--rf-text);
+}
+
+.sh-mini-val b {
+    font-size: 1.05rem;
+    color: var(--rf-head);
+}
+
+.sh-add-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #8b7bff, #6d5dfc);
+}
+
+@media (max-width: 640px) {
+    .sh-month {
+        min-width: 0;
+        font-size: 1rem;
+    }
+
+    .sh-views button {
+        padding: 0 10px;
+    }
+
+    .sh-cal .fc .fc-daygrid-day-frame {
+        min-height: 64px;
+    }
+
+    .sh-cal .ev-box {
+        width: 14px;
+        height: 14px;
+        font-size: .55rem;
+        border-radius: 3px;
+    }
+}
+
+/* tombol ikon bulat (mis. aturan piket) */
+.sh-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #f97316;
+    border: 1px solid var(--rf-border);
+    background: var(--rf-card);
+    box-shadow: var(--rf-shadow);
+    transition: background-color .15s;
+}
+
+.sh-icon-btn:hover {
+    background: #fff4e8;
+}
+
+html.dark .sh-icon-btn:hover {
+    background: rgba(249, 115, 22, .15);
+}
+
+/* baris informasi (bukan tombol) */
+.sh-item.is-static {
+    cursor: default;
+}
+
+.sh-item.is-static:hover {
+    background: var(--rf-card);
+    box-shadow: none;
+}
