@@ -366,8 +366,13 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataOdcOdp/pelanggan/update', 'DataOdcOdp::updatePelanggan');
     $routes->get('DataOdcOdp/pelanggan/delete/(:num)', 'DataOdcOdp::deletePelanggan/$1');
 
+    // Monthly Report: tambah / edit lewat pop up, Duration dihitung otomatis dari Start - Finish Time
+    $routes->get('MonthlyReport', 'MonthlyReport::index');
+    $routes->post('MonthlyReport/save', 'MonthlyReport::save');
+    $routes->post('MonthlyReport/update', 'MonthlyReport::update');
+    $routes->get('MonthlyReport/delete/(:num)', 'MonthlyReport::delete/$1');
+
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
-    $routes->get('MonthlyReport', 'ComingSoon::show/MonthlyReport');
     $routes->get('SurveyReport', 'ComingSoon::show/SurveyReport');
     $routes->get('InstallationReport', 'ComingSoon::show/InstallationReport');
     $routes->get('TroubleshootReport', 'ComingSoon::show/TroubleshootReport');

@@ -286,7 +286,7 @@
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
     var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'datacctv',
-        'monthlyreport', 'surveyreport', 'installationreport', 'troubleshootreport', 'preventivemaintenance'];
+        'surveyreport', 'installationreport', 'troubleshootreport', 'preventivemaintenance'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
     function pasangIkonJudul(link) {

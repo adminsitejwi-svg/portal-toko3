@@ -145,6 +145,7 @@ if (! function_exists('activity_label_action')) {
                 'd_router'             => 'Data Router',
                 'd_switch'             => 'Data Switch',
                 'd_olt'                => 'Data OLT',
+                'd_monthly_report'     => 'Monthly Report',
                 'd_kmz'                => 'KMZ',
                 'd_bast_corporate'     => 'BAST Corporate',
                 'd_bast_alfamidi'      => 'BAST Alfamidi',
@@ -265,6 +266,7 @@ if (! function_exists('activity_pick_label')) {
                 str_contains($k, 'name') ||
                 $k === 'judul' ||
                 $k === 'title' ||
+                $k === 'client' ||
                 str_contains($k, 'merek') ||
                 str_contains($k, 'type') ||
                 str_contains($k, 'nomor') ||

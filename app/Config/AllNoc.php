@@ -41,7 +41,7 @@ class AllNoc extends BaseConfig
 
     // Menu Report NOC yang belum dibuat (dropdown Report NOC di sidebar), format sama dengan $menu
     public array $reportNoc = [
-        ['route' => 'MonthlyReport',       'judul' => 'Monthly Report',       'ikon' => 'ti-calendar-stats', 'info' => 'Rekap laporan NOC bulanan.', 'soon' => true],
+        ['route' => 'MonthlyReport',       'judul' => 'Monthly Report',       'ikon' => 'ti-calendar-stats', 'info' => 'Rekap laporan NOC bulanan.', 'soon' => false],
         ['route' => 'SurveyReport',        'judul' => 'Survey Report',        'ikon' => 'ti-zoom-check',     'info' => 'Laporan hasil survey lokasi.', 'soon' => true],
         ['route' => 'InstallationReport',  'judul' => 'Installation Report',  'ikon' => 'ti-plug-connected', 'info' => 'Laporan pekerjaan instalasi.', 'soon' => true],
         ['route' => 'TroubleshootReport',  'judul' => 'Troubleshoot Report',  'ikon' => 'ti-bug',            'info' => 'Laporan penanganan gangguan / troubleshoot.', 'soon' => true],
