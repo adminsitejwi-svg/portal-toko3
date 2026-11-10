@@ -38,6 +38,11 @@ class SurveyReportPdf
         'srcorbel' => [
             ['C:/Windows/Fonts/corbel.ttf', 'C:/Windows/Fonts/corbelb.ttf'],
         ],
+        // Judul & bar section docx Maintenance Report (Preventive Maintenance) memakai Trebuchet MS tebal
+        'srtrebuchet' => [
+            ['C:/Windows/Fonts/trebuc.ttf', 'C:/Windows/Fonts/trebucbd.ttf'],
+            ['/usr/share/fonts/truetype/msttcorefonts/trebuc.ttf', '/usr/share/fonts/truetype/msttcorefonts/trebucbd.ttf'],
+        ],
     ];
 
     /** Nama file PDF Survey Report, mis. SVR-10-11-2026-001.pdf */

@@ -45,7 +45,7 @@ class AllNoc extends BaseConfig
         ['route' => 'SurveyReport',        'judul' => 'Survey Report',        'ikon' => 'ti-zoom-check',     'info' => 'Laporan hasil survey lokasi.', 'soon' => false],
         ['route' => 'InstallationReport',  'judul' => 'Installation Report',  'ikon' => 'ti-plug-connected', 'info' => 'Laporan pekerjaan instalasi.', 'soon' => false],
         ['route' => 'TroubleshootReport',  'judul' => 'Troubleshoot Report',  'ikon' => 'ti-bug',            'info' => 'Laporan penanganan gangguan / troubleshoot.', 'soon' => false],
-        ['route' => 'PreventiveMaintenance', 'judul' => 'Preventive Maintenance', 'ikon' => 'ti-tool',       'info' => 'Jadwal & laporan preventive maintenance perangkat jaringan.', 'soon' => true],
+        ['route' => 'PreventiveMaintenance', 'judul' => 'Preventive Maintenance', 'ikon' => 'ti-tool',       'info' => 'Jadwal & laporan preventive maintenance perangkat jaringan.', 'soon' => false],
     ];
 
     // Menu Activation (bagian sidebar sebelum NOC Operation), semuanya masih "Segera Hadir"

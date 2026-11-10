@@ -230,16 +230,40 @@
                 z-index: 1;
             }
 
+            /* Judul halaman di bagian atas konten (sama dengan judul halaman index lain, mis. RFO) */
+            .db-judul {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+
+            .db-judul-ic {
+                width: 56px;
+                height: 56px;
+                border-radius: 16px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 auto;
+                font-size: 28px;
+                color: #fff;
+                background: linear-gradient(135deg, #3b82f6, #2f6bff);
+                box-shadow: 0 8px 20px rgba(47, 107, 255, .3);
+            }
+
             .db-judul-top b {
                 display: block;
-                font-size: 19px;
+                font-size: 24px;
                 font-weight: 800;
                 color: var(--ra-heading);
-                line-height: 1.15;
+                line-height: 1.2;
             }
 
             .db-judul-top small {
-                font-size: 12.5px;
+                display: block;
+                margin-top: 2px;
+                font-size: 14px;
                 color: var(--ra-muted);
             }
 
@@ -1035,10 +1059,14 @@
             <!-- CONTENT (referensi: public/d/tampilan beranda.jpg) -->
             <div class="db-page p-6">
 
-                <div class="flex items-center justify-between mb-6">
-                    <h5 class="font-medium text-lg">Beranda</h5>
-
-
+                <!-- JUDUL (di konten halaman, bukan di header) -->
+                <div class="db-judul">
+                    <!-- rfo-title-ic: penanda kotak ikon judul agar ruang.js tidak menambah ikon kedua -->
+                    <span class="db-judul-ic rfo-title-ic"><i class="ti ti-home"></i></span>
+                    <h1 class="db-judul-top">
+                        <b>Beranda</b>
+                        <small>Ringkasan data toko, master data, perangkat &amp; vendor</small>
+                    </h1>
                 </div>
                 <?php
                 // status toko: 0 / 'aktif' = Aktif (sama seperti hitungStatus di controller)

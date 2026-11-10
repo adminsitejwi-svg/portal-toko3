@@ -420,8 +420,21 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('TroubleshootReport/email-log/body/(:num)', 'TroubleshootReport::emailLogBody/$1');
     $routes->get('TroubleshootReport/email-preview/(:num)', 'TroubleshootReport::emailPreview/$1');
 
-    // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
-    $routes->get('PreventiveMaintenance', 'ComingSoon::show/PreventiveMaintenance');
+    // Preventive Maintenance: tampilan & fitur sama dengan Survey Report (form, View, PDF terkunci, kirim email + riwayat);
+    // struktur dari Maintenance Report Form Yesnet.docx
+    $routes->get('PreventiveMaintenance', 'PreventiveMaintenance::index');
+    $routes->get('PreventiveMaintenance/create', 'PreventiveMaintenance::create');
+    $routes->post('PreventiveMaintenance/save', 'PreventiveMaintenance::save');
+    $routes->get('PreventiveMaintenance/edit/(:num)', 'PreventiveMaintenance::edit/$1');
+    $routes->post('PreventiveMaintenance/update', 'PreventiveMaintenance::update');
+    $routes->get('PreventiveMaintenance/delete/(:num)', 'PreventiveMaintenance::delete/$1');
+    $routes->get('PreventiveMaintenance/view/(:num)', 'PreventiveMaintenance::view/$1');
+    $routes->get('PreventiveMaintenance/pdf/(:num)', 'PreventiveMaintenance::pdf/$1');
+    $routes->get('PreventiveMaintenance/foto/(:num)/(:segment)', 'PreventiveMaintenance::foto/$1/$2');
+    $routes->post('PreventiveMaintenance/email', 'PreventiveMaintenance::email');
+    $routes->get('PreventiveMaintenance/email-log', 'PreventiveMaintenance::emailLog');
+    $routes->get('PreventiveMaintenance/email-log/body/(:num)', 'PreventiveMaintenance::emailLogBody/$1');
+    $routes->get('PreventiveMaintenance/email-preview/(:num)', 'PreventiveMaintenance::emailPreview/$1');
 
     // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"
     $routes->get('Spk', 'Spk::index');

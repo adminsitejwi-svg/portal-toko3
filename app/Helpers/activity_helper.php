@@ -152,6 +152,8 @@ if (! function_exists('activity_label_action')) {
                 'd_installation_report_email_log' => 'Installation Report Email',
                 'd_troubleshoot_report' => 'Troubleshoot Report',
                 'd_troubleshoot_report_email_log' => 'Troubleshoot Report Email',
+                'd_preventive_maintenance' => 'Preventive Maintenance',
+                'd_preventive_maintenance_email_log' => 'Preventive Maintenance Email',
                 'd_kmz'                => 'KMZ',
                 'd_bast_corporate'     => 'BAST Corporate',
                 'd_bast_alfamidi'      => 'BAST Alfamidi',
