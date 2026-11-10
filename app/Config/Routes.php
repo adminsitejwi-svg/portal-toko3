@@ -373,7 +373,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('MonthlyReport/delete/(:num)', 'MonthlyReport::delete/$1');
 
     // Survey Report: tampilan & fitur seperti RFO (form, View, PDF terkunci, kirim email + riwayat),
-    // perusahaan & logo sama dengan RFO; struktur dari Maintenance Report Form Yesnet.docx
+    // perusahaan & logo sama dengan RFO; struktur dari Survey Report Form Yesnet.docx
     $routes->get('SurveyReport', 'SurveyReport::index');
     $routes->get('SurveyReport/create', 'SurveyReport::create');
     $routes->post('SurveyReport/save', 'SurveyReport::save');
@@ -388,9 +388,39 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('SurveyReport/email-log/body/(:num)', 'SurveyReport::emailLogBody/$1');
     $routes->get('SurveyReport/email-preview/(:num)', 'SurveyReport::emailPreview/$1');
 
+    // Installation Report: tampilan & fitur sama dengan Survey Report (form, View, PDF terkunci, kirim email + riwayat);
+    // struktur dari Installation Report Form Yesnet (1).docx
+    $routes->get('InstallationReport', 'InstallationReport::index');
+    $routes->get('InstallationReport/create', 'InstallationReport::create');
+    $routes->post('InstallationReport/save', 'InstallationReport::save');
+    $routes->get('InstallationReport/edit/(:num)', 'InstallationReport::edit/$1');
+    $routes->post('InstallationReport/update', 'InstallationReport::update');
+    $routes->get('InstallationReport/delete/(:num)', 'InstallationReport::delete/$1');
+    $routes->get('InstallationReport/view/(:num)', 'InstallationReport::view/$1');
+    $routes->get('InstallationReport/pdf/(:num)', 'InstallationReport::pdf/$1');
+    $routes->get('InstallationReport/foto/(:num)/(:segment)', 'InstallationReport::foto/$1/$2');
+    $routes->post('InstallationReport/email', 'InstallationReport::email');
+    $routes->get('InstallationReport/email-log', 'InstallationReport::emailLog');
+    $routes->get('InstallationReport/email-log/body/(:num)', 'InstallationReport::emailLogBody/$1');
+    $routes->get('InstallationReport/email-preview/(:num)', 'InstallationReport::emailPreview/$1');
+
+    // Troubleshoot Report: tampilan & fitur sama dengan Survey Report (form, View, PDF terkunci, kirim email + riwayat);
+    // struktur dari Troubleshooting Report Form Yesnet (1).docx
+    $routes->get('TroubleshootReport', 'TroubleshootReport::index');
+    $routes->get('TroubleshootReport/create', 'TroubleshootReport::create');
+    $routes->post('TroubleshootReport/save', 'TroubleshootReport::save');
+    $routes->get('TroubleshootReport/edit/(:num)', 'TroubleshootReport::edit/$1');
+    $routes->post('TroubleshootReport/update', 'TroubleshootReport::update');
+    $routes->get('TroubleshootReport/delete/(:num)', 'TroubleshootReport::delete/$1');
+    $routes->get('TroubleshootReport/view/(:num)', 'TroubleshootReport::view/$1');
+    $routes->get('TroubleshootReport/pdf/(:num)', 'TroubleshootReport::pdf/$1');
+    $routes->get('TroubleshootReport/foto/(:num)/(:segment)', 'TroubleshootReport::foto/$1/$2');
+    $routes->post('TroubleshootReport/email', 'TroubleshootReport::email');
+    $routes->get('TroubleshootReport/email-log', 'TroubleshootReport::emailLog');
+    $routes->get('TroubleshootReport/email-log/body/(:num)', 'TroubleshootReport::emailLogBody/$1');
+    $routes->get('TroubleshootReport/email-preview/(:num)', 'TroubleshootReport::emailPreview/$1');
+
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
-    $routes->get('InstallationReport', 'ComingSoon::show/InstallationReport');
-    $routes->get('TroubleshootReport', 'ComingSoon::show/TroubleshootReport');
     $routes->get('PreventiveMaintenance', 'ComingSoon::show/PreventiveMaintenance');
 
     // Menu Activation (SPK, BAST, PKS & Contract) yang belum dibuat: tampil halaman "Segera Hadir"

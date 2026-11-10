@@ -6,8 +6,8 @@
         <title>Beranda</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
-    <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
-    <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
+        <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+        <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <!-- Feather icons -->
@@ -225,7 +225,7 @@
                 font-family: 'Inter', sans-serif;
             }
 
-            .db-page > *:not(.db-latar) {
+            .db-page>*:not(.db-latar) {
                 position: relative;
                 z-index: 1;
             }
@@ -339,8 +339,13 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
             }
 
-            .db-hero.is-blue .db-hero-go { color: #1d5ff2; }
-            .db-hero.is-green .db-hero-go { color: #0e9f6e; }
+            .db-hero.is-blue .db-hero-go {
+                color: #1d5ff2;
+            }
+
+            .db-hero.is-green .db-hero-go {
+                color: #0e9f6e;
+            }
 
             /* kartu umum */
             .db-card {
@@ -389,9 +394,17 @@
                 color: #fff;
             }
 
-            .db-toko-ic.is-ungu { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-            .db-toko-ic.is-oranye { background: linear-gradient(135deg, #fb923c, #ea580c); }
-            .db-toko-ic.is-teal { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
+            .db-toko-ic.is-ungu {
+                background: linear-gradient(135deg, #a855f7, #7c3aed);
+            }
+
+            .db-toko-ic.is-oranye {
+                background: linear-gradient(135deg, #fb923c, #ea580c);
+            }
+
+            .db-toko-ic.is-teal {
+                background: linear-gradient(135deg, #2dd4bf, #0d9488);
+            }
 
             .db-toko-nama {
                 font-size: 17px;
@@ -445,8 +458,15 @@
                 font-weight: 600;
             }
 
-            .db-badge.is-aktif { color: #059669; background: rgba(16, 185, 129, .14); }
-            .db-badge.is-abu { color: var(--ra-muted); background: var(--ra-hover); }
+            .db-badge.is-aktif {
+                color: #059669;
+                background: rgba(16, 185, 129, .14);
+            }
+
+            .db-badge.is-abu {
+                color: var(--ra-muted);
+                background: var(--ra-hover);
+            }
 
             /* daftar */
             .db-list-grid {
@@ -606,8 +626,13 @@
                 border-radius: 50%;
             }
 
-            .db-tgl i.is-aktif { background: #10b981; }
-            .db-tgl i.is-non { background: #ef4444; }
+            .db-tgl i.is-aktif {
+                background: #10b981;
+            }
+
+            .db-tgl i.is-non {
+                background: #ef4444;
+            }
 
             .db-badge-solid {
                 flex: none;
@@ -618,8 +643,13 @@
                 color: #fff;
             }
 
-            .db-badge-solid.is-aktif { background: #10b981; }
-            .db-badge-solid.is-non { background: #ef4444; }
+            .db-badge-solid.is-aktif {
+                background: #10b981;
+            }
+
+            .db-badge-solid.is-non {
+                background: #ef4444;
+            }
 
             .db-kosong {
                 padding: 36px 12px;
@@ -644,12 +674,29 @@
                 pointer-events: none;
             }
 
-            .db-latar-kota rect { fill: rgba(47, 107, 255, .06); }
-            .db-latar-gel1 { fill: rgba(47, 107, 255, .07); }
-            .db-latar-gel2 { fill: rgba(47, 107, 255, .11); }
-            html.dark .db-latar-kota rect { fill: rgba(122, 167, 255, .045); }
-            html.dark .db-latar-gel1 { fill: rgba(122, 167, 255, .05); }
-            html.dark .db-latar-gel2 { fill: rgba(122, 167, 255, .08); }
+            .db-latar-kota rect {
+                fill: rgba(47, 107, 255, .06);
+            }
+
+            .db-latar-gel1 {
+                fill: rgba(47, 107, 255, .07);
+            }
+
+            .db-latar-gel2 {
+                fill: rgba(47, 107, 255, .11);
+            }
+
+            html.dark .db-latar-kota rect {
+                fill: rgba(122, 167, 255, .045);
+            }
+
+            html.dark .db-latar-gel1 {
+                fill: rgba(122, 167, 255, .05);
+            }
+
+            html.dark .db-latar-gel2 {
+                fill: rgba(122, 167, 255, .08);
+            }
 
             html.dark .db-card {
                 box-shadow: 0 6px 22px rgba(0, 0, 0, .25);
@@ -660,17 +707,31 @@
             }
 
             @media (max-width: 1280px) {
-                .db-list-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                .db-list-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
             }
 
             @media (max-width: 1024px) {
-                .db-hero-grid, .db-toko-grid { grid-template-columns: 1fr; }
+
+                .db-hero-grid,
+                .db-toko-grid {
+                    grid-template-columns: 1fr;
+                }
             }
 
             @media (max-width: 768px) {
-                .db-list-grid { grid-template-columns: 1fr; }
-                .db-hero-hias { display: none; }
-                .db-tgl { display: none; }
+                .db-list-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .db-hero-hias {
+                    display: none;
+                }
+
+                .db-tgl {
+                    display: none;
+                }
             }
         </style>
         <?= view('partials/theme') ?>
@@ -935,7 +996,6 @@
             <header class="pc-header sticky top-0 z-[1025] bg-white dark:bg-[#263240] h-header flex items-center px-6 shadow-[0_1px_20px_0_rgba(69,90,100,.08)]">
                 <ul class="flex items-center gap-1">
                     <li><a href="#" onclick="toggleSidebar();return false;" class="head-link flex items-center justify-center w-10 h-10 rounded hover:bg-gray-100 dark:hover:bg-white/5"><i data-feather="menu"></i></a></li>
-                    <li class="db-judul-top ml-3"><b>Dashboard</b><small>Ringkasan Monitoring Jaringan</small></li>
 
                 </ul>
 
@@ -974,6 +1034,12 @@
 
             <!-- CONTENT (referensi: public/d/tampilan beranda.jpg) -->
             <div class="db-page p-6">
+
+                <div class="flex items-center justify-between mb-6">
+                    <h5 class="font-medium text-lg">Beranda</h5>
+
+
+                </div>
                 <?php
                 // status toko: 0 / 'aktif' = Aktif (sama seperti hitungStatus di controller)
                 $statusAktif = static function ($v) {
@@ -1101,9 +1167,15 @@
                 <!-- hiasan latar: gelombang & siluet gedung -->
                 <svg class="db-latar" viewBox="0 0 1200 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
                     <g class="db-latar-kota">
-                        <rect x="880" y="120" width="34" height="140" /><rect x="920" y="80" width="40" height="180" /><rect x="966" y="140" width="28" height="120" />
-                        <rect x="1000" y="60" width="44" height="200" /><rect x="1050" y="110" width="30" height="150" /><rect x="1086" y="90" width="38" height="170" />
-                        <rect x="1130" y="150" width="30" height="110" /><rect x="1166" y="125" width="34" height="135" /><rect x="830" y="160" width="40" height="100" />
+                        <rect x="880" y="120" width="34" height="140" />
+                        <rect x="920" y="80" width="40" height="180" />
+                        <rect x="966" y="140" width="28" height="120" />
+                        <rect x="1000" y="60" width="44" height="200" />
+                        <rect x="1050" y="110" width="30" height="150" />
+                        <rect x="1086" y="90" width="38" height="170" />
+                        <rect x="1130" y="150" width="30" height="110" />
+                        <rect x="1166" y="125" width="34" height="135" />
+                        <rect x="830" y="160" width="40" height="100" />
                     </g>
                     <path class="db-latar-gel1" d="M0 200 C200 150 420 250 650 205 S1000 140 1200 190 L1200 260 L0 260 Z" />
                     <path class="db-latar-gel2" d="M0 230 C260 190 480 260 760 228 S1060 190 1200 220 L1200 260 L0 260 Z" />

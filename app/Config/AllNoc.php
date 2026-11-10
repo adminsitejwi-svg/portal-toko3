@@ -43,8 +43,8 @@ class AllNoc extends BaseConfig
     public array $reportNoc = [
         ['route' => 'MonthlyReport',       'judul' => 'Monthly Report',       'ikon' => 'ti-calendar-stats', 'info' => 'Rekap laporan NOC bulanan.', 'soon' => false],
         ['route' => 'SurveyReport',        'judul' => 'Survey Report',        'ikon' => 'ti-zoom-check',     'info' => 'Laporan hasil survey lokasi.', 'soon' => false],
-        ['route' => 'InstallationReport',  'judul' => 'Installation Report',  'ikon' => 'ti-plug-connected', 'info' => 'Laporan pekerjaan instalasi.', 'soon' => true],
-        ['route' => 'TroubleshootReport',  'judul' => 'Troubleshoot Report',  'ikon' => 'ti-bug',            'info' => 'Laporan penanganan gangguan / troubleshoot.', 'soon' => true],
+        ['route' => 'InstallationReport',  'judul' => 'Installation Report',  'ikon' => 'ti-plug-connected', 'info' => 'Laporan pekerjaan instalasi.', 'soon' => false],
+        ['route' => 'TroubleshootReport',  'judul' => 'Troubleshoot Report',  'ikon' => 'ti-bug',            'info' => 'Laporan penanganan gangguan / troubleshoot.', 'soon' => false],
         ['route' => 'PreventiveMaintenance', 'judul' => 'Preventive Maintenance', 'ikon' => 'ti-tool',       'info' => 'Jadwal & laporan preventive maintenance perangkat jaringan.', 'soon' => true],
     ];
 

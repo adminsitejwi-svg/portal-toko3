@@ -7,11 +7,11 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 
 /**
- * PDF Survey Report (dompdf), tampilan sama dengan halaman View dan dengan
- * "Maintenance Report Form Yesnet.docx" (dokumen SurveyReport/Dokumen.php).
+ * PDF Survey Report & Installation Report (dompdf), tampilan sama dengan halaman View dan dengan docx Yesnet
+ * (dokumen SurveyReport/Dokumen.php & InstallationReport/Dokumen.php).
  * - Logo perusahaan & foto lampiran disisipkan sebagai data URI.
  * - Foto diperkecil dulu (maks 1200 px, JPEG) agar ukuran PDF / lampiran email tetap kecil; di-cache.
- * - Font seperti di docx: isi Caladea (= Cambria), judul Trebuchet MS; dipakai bila ada di server,
+ * - Font seperti di docx: isi Cambria/Caladea, judul Open Sans (Survey) / Corbel (Installation); dipakai bila ada di server,
  *   selain itu kembali ke font bawaan dompdf.
  * - PDF dikunci: hanya bisa dibuka & dicetak, tidak bisa diubah / disalin (sama dengan PDF RFO).
  */
@@ -34,31 +34,44 @@ class SurveyReportPdf
             ['C:/Windows/Fonts/segoeui.ttf', 'C:/Windows/Fonts/segoeuib.ttf'],
             ['/usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf', '/usr/share/fonts/truetype/open-sans/OpenSans-Bold.ttf'],
         ],
+        // Judul & bar section docx Installation Report memakai Corbel tebal
+        'srcorbel' => [
+            ['C:/Windows/Fonts/corbel.ttf', 'C:/Windows/Fonts/corbelb.ttf'],
+        ],
     ];
 
-    /** Nama file PDF, mis. SVR-10-11-2026-001.pdf */
+    /** Nama file PDF Survey Report, mis. SVR-10-11-2026-001.pdf */
     public static function namaFile(array $sr): string
     {
-        return preg_replace('/[^A-Za-z0-9\-]+/', '-', $sr['survey_id']) . '.pdf';
+        return self::namaFileId($sr['survey_id']);
+    }
+
+    /** Nama file PDF dari nomor dokumen: karakter selain huruf/angka/- jadi "-" */
+    public static function namaFileId(string $id): string
+    {
+        return preg_replace('/[^A-Za-z0-9\-]+/', '-', $id) . '.pdf';
     }
 
     /**
      * @param array $data Data dokumen dari SurveyReport::dokumenData() (sr, namaTtd, warna, ...)
-     * @param array $foto Foto lampiran yang ada di folder foto: [['file', 'ket'], ...]
+     * @param array  $foto   Foto lampiran yang ada di folder foto: [['file', 'ket'], ...]
+     * @param string $view   View PDF (SurveyReport/Pdf atau InstallationReport/Pdf)
+     * @param string|null $folder Folder foto (bawaan: folder foto Survey Report)
      */
-    public function buat(array $data, array $foto): string
+    public function buat(array $data, array $foto, string $view = 'SurveyReport/Pdf', ?string $folder = null): string
     {
+        $folder ??= SurveyReportModel::folderFoto();
         $logo = $data['sr']['logo'] ?? null;
 
         // Foto: ['src', 'w', 'h', 'ket']
         $fotoSrc = [];
         foreach ($foto as $l) {
-            if ($u = $this->fotoUri(SurveyReportModel::folderFoto() . $l['file'])) {
+            if ($u = $this->fotoUri($folder . $l['file'])) {
                 $fotoSrc[] = $u + ['ket' => $l['ket']];
             }
         }
 
-        $html = view('SurveyReport/Pdf', $data + [
+        $html = view($view, $data + [
             'logo'    => self::logoInfo($logo),
             'fotoSrc' => $fotoSrc,
         ]);
