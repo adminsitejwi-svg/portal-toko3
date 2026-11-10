@@ -372,8 +372,23 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('MonthlyReport/update', 'MonthlyReport::update');
     $routes->get('MonthlyReport/delete/(:num)', 'MonthlyReport::delete/$1');
 
+    // Survey Report: tampilan & fitur seperti RFO (form, View, PDF terkunci, kirim email + riwayat),
+    // perusahaan & logo sama dengan RFO; struktur dari Maintenance Report Form Yesnet.docx
+    $routes->get('SurveyReport', 'SurveyReport::index');
+    $routes->get('SurveyReport/create', 'SurveyReport::create');
+    $routes->post('SurveyReport/save', 'SurveyReport::save');
+    $routes->get('SurveyReport/edit/(:num)', 'SurveyReport::edit/$1');
+    $routes->post('SurveyReport/update', 'SurveyReport::update');
+    $routes->get('SurveyReport/delete/(:num)', 'SurveyReport::delete/$1');
+    $routes->get('SurveyReport/view/(:num)', 'SurveyReport::view/$1');
+    $routes->get('SurveyReport/pdf/(:num)', 'SurveyReport::pdf/$1');
+    $routes->get('SurveyReport/foto/(:num)/(:segment)', 'SurveyReport::foto/$1/$2');
+    $routes->post('SurveyReport/email', 'SurveyReport::email');
+    $routes->get('SurveyReport/email-log', 'SurveyReport::emailLog');
+    $routes->get('SurveyReport/email-log/body/(:num)', 'SurveyReport::emailLogBody/$1');
+    $routes->get('SurveyReport/email-preview/(:num)', 'SurveyReport::emailPreview/$1');
+
     // Menu Report NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
-    $routes->get('SurveyReport', 'ComingSoon::show/SurveyReport');
     $routes->get('InstallationReport', 'ComingSoon::show/InstallationReport');
     $routes->get('TroubleshootReport', 'ComingSoon::show/TroubleshootReport');
     $routes->get('PreventiveMaintenance', 'ComingSoon::show/PreventiveMaintenance');

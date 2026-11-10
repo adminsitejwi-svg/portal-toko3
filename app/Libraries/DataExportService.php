@@ -44,6 +44,7 @@ class DataExportService
         'd_report'           => 'Daily Report',
         'd_maintenance_report' => 'Maintenance Report',
         'd_monthly_report'     => 'Monthly Report',
+        'd_survey_report'      => 'Survey Report',
         'd_report_sat'         => 'Tiket FO Loss',
         'd_resi_pengiriman'    => 'Resi Pengiriman',
         'md_data_center'       => 'Data Center',
