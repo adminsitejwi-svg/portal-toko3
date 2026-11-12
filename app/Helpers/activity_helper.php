@@ -188,6 +188,7 @@ if (! function_exists('activity_label_action')) {
                 'repot_noc'            => 'Report NOC',
                 'aktivasi_ripot'       => 'Aktivasi Report',
                 'login'                => 'Pengguna',
+                'rekap_data_toko'      => 'Rekap Data Toko',
                 'activity_logs'        => 'Log Aktivitas',
             ];
 

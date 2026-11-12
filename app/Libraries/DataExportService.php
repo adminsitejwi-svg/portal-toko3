@@ -98,10 +98,11 @@ class DataExportService
         'd_simcard'          => 'Data SI (Simcard)',
         'd_nomor_inet'       => 'Nomor Inet (Data Penggunaan)',
         'jadwal_noc'         => 'Jadwal NOC',
+        'rekap_data_toko'      => 'Rekap Data Toko'
     ];
 
     /** Tabel Data Toko — dapat folder "foto" berisi lampiran asli, bukan PDF. */
-    private const TOKO_TABLES = ['d_midi', 'd_lawson', 'd_alfamart'];
+    private const TOKO_TABLES = ['d_midi', 'd_lawson', 'd_alfamart', 'rekap_data_toko'];
 
     private const HEADER_COLOR = '1F4E78';
     private const BAND_COLOR   = 'F2F6FB';
@@ -276,6 +277,39 @@ class DataExportService
             foreach ($files as $filename) {
                 $filename = basename((string) $filename); // proteksi path traversal
                 $source   = $sourceDir . DIRECTORY_SEPARATOR . $filename;
+
+                if ($filename === '' || ! is_file($source)) {
+                    continue;
+                }
+
+                if (! is_dir($photoDir)) {
+                    mkdir($photoDir, 0755, true);
+                }
+
+                copy($source, $photoDir . DIRECTORY_SEPARATOR . $storeCode . '_' . $filename);
+                $copied++;
+            }
+        }
+
+        return $copied;
+    }
+    private function exportRekapPhotos(string $pageFolder, array $rows): int
+    {
+        $photoDir   = $pageFolder . DIRECTORY_SEPARATOR . 'foto';
+        $copied     = 0;
+        $fileFields = ['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1'];
+
+        foreach ($rows as $row) {
+            $storeCode = $this->slug((string) ($row['kode_toko'] ?? ('id-' . ($row['id'] ?? '0'))));
+
+            foreach ($fileFields as $field) {
+                $relPath = trim((string) ($row[$field] ?? ''));
+                if ($relPath === '') {
+                    continue;
+                }
+
+                $filename = basename($relPath);
+                $source   = FCPATH . 'uploads' . DIRECTORY_SEPARATOR . 'rekap_toko' . DIRECTORY_SEPARATOR . $filename;
 
                 if ($filename === '' || ! is_file($source)) {
                     continue;

@@ -584,4 +584,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataCctv/saveCctv', 'DataCctv::saveCctv');
     $routes->post('DataCctv/updateCctv', 'DataCctv::updateCctv');
     $routes->get('DataCctv/deleteCctv/(:num)', 'DataCctv::deleteCctv/$1');
+
+    $routes->get('RekapDataMidi', 'RekapDataMidi::index');
+    $routes->get('RekapDataMidi/FormTambahRKD', 'RekapDataMidi::create');
+    $routes->post('RekapDataMidi/save', 'RekapDataMidi::save');
+    $routes->get('RekapDataMidi/FormEditRKD/(:num)', 'RekapDataMidi::edit/$1');
+    $routes->post('RekapDataMidi/update', 'RekapDataMidi::update');
+    $routes->get('RekapDataMidi/delete/(:num)', 'RekapDataMidi::delete/$1');
 });

@@ -219,7 +219,9 @@
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],
         'surat tugas': ['ti-file-text', 'Surat Tugas'],
+        'rekap data toko':['ti-report-analytics', 'Rekap Data Toko'],
         'change log': ['ti-history', 'Riwayat Perubahan']
+        
     };
 
     // ikon judul halaman, berdasarkan alamat menu yang aktif (huruf kecil)
@@ -283,6 +285,7 @@
         'inventorykantor': 'ti-package',
         'settings': 'ti-users',
         'surattugas': 'ti-file-text',
+        'rekapdatamidi': 'ti-report-analytics',
         'logs': 'ti-history'
     };
 

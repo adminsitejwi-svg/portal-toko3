@@ -37,6 +37,7 @@ class AllNoc extends BaseConfig
         ['route' => 'PelangganNoc',    'judul' => 'Data Pelanggan',              'ikon' => 'ti-users',           'info' => 'Pelanggan NOC beserta perangkat & vendor.', 'soon' => false],
         ['route' => 'VendorNoc',       'judul' => 'Data Vendor',                 'ikon' => 'ti-briefcase',       'info' => 'Daftar vendor NOC.', 'soon' => false],
         ['route' => 'InventoryKantor', 'judul' => 'Asset Management',            'ikon' => 'ti-package',         'info' => 'Inventaris aset kantor.', 'soon' => false],
+        ['route' => 'RekapDataMidi',   'judul' => 'Rekap Data Toko',             'ikon' => 'ti-report-analytics', 'info' => 'Rekap Data Toko All.', 'soon' => false]
     ];
 
     // Menu Report NOC yang belum dibuat (dropdown Report NOC di sidebar), format sama dengan $menu
