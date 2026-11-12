@@ -323,9 +323,20 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     // Menu All NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
     // (saat halamannya jadi, ganti handler route-nya & ubah 'soon' di Config/AllNoc.php)
     $routes->get('FtpClient', 'ComingSoon::show/FtpClient');
-    $routes->get('IpPublic', 'ComingSoon::show/IpPublic');
     $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
-    $routes->get('DataCctv', 'ComingSoon::show/DataCctv');
+    $routes->get('SuratTugas', 'ComingSoon::show/SuratTugas');
+
+    // Data IP Public (menu Data Teknis NOC): Judul (per perusahaan) -> Sub Judul -> Subnet, form berupa pop up
+    $routes->get('IpPublic', 'IpPublic::index');
+    $routes->post('IpPublic/judul/save', 'IpPublic::saveJudul');
+    $routes->post('IpPublic/judul/update', 'IpPublic::updateJudul');
+    $routes->get('IpPublic/judul/delete/(:num)', 'IpPublic::deleteJudul/$1');
+    $routes->post('IpPublic/subjudul/save', 'IpPublic::saveSubjudul');
+    $routes->post('IpPublic/subjudul/update', 'IpPublic::updateSubjudul');
+    $routes->get('IpPublic/subjudul/delete/(:num)', 'IpPublic::deleteSubjudul/$1');
+    $routes->post('IpPublic/subnet/save', 'IpPublic::saveSubnet');
+    $routes->post('IpPublic/subnet/update', 'IpPublic::updateSubnet');
+    $routes->get('IpPublic/subnet/delete/(:num)', 'IpPublic::deleteSubnet/$1');
 
     // Data Router (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Router / SN / IP tidak boleh dobel
     $routes->get('DataRouter', 'DataRouter::index');
@@ -564,4 +575,13 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Interkoneksi/update', 'Interkoneksi::update');
     $routes->get('Interkoneksi/delete/(:num)', 'Interkoneksi::delete/$1');
     $routes->get('Interkoneksi/file/(:num)', 'Interkoneksi::file/$1');
+
+    $routes->get('DataCctv', 'DataCctv::index');
+    $routes->post('DataCctv/saveNvr', 'DataCctv::saveNvr');
+    $routes->post('DataCctv/updateNvr', 'DataCctv::updateNvr');
+    $routes->get('DataCctv/deleteNvr/(:num)', 'DataCctv::deleteNvr/$1');
+
+    $routes->post('DataCctv/saveCctv', 'DataCctv::saveCctv');
+    $routes->post('DataCctv/updateCctv', 'DataCctv::updateCctv');
+    $routes->get('DataCctv/deleteCctv/(:num)', 'DataCctv::deleteCctv/$1');
 });

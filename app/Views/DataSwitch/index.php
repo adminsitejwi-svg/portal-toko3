@@ -235,18 +235,60 @@
             background: #eef1f5;
         }
 
-        .rt-type.rt-cisco { color: #0369a1; background: #e0f2fe; }
-        .rt-type.rt-arista { color: #4338ca; background: #e0e7ff; }
-        .rt-type.rt-juniper { color: #15803d; background: #dcfce7; }
-        .rt-type.rt-tplink { color: #0f766e; background: #ccfbf1; }
-        .rt-type.rt-extreme { color: #7e22ce; background: #f3e8ff; }
+        .rt-type.rt-cisco {
+            color: #0369a1;
+            background: #e0f2fe;
+        }
 
-        html.dark .rt-type { color: #cbd5e1; background: rgba(255, 255, 255, .08); }
-        html.dark .rt-type.rt-cisco { color: #7dd3fc; background: rgba(14, 165, 233, .16); }
-        html.dark .rt-type.rt-arista { color: #a5b4fc; background: rgba(99, 102, 241, .18); }
-        html.dark .rt-type.rt-juniper { color: #86efac; background: rgba(34, 197, 94, .16); }
-        html.dark .rt-type.rt-tplink { color: #5eead4; background: rgba(20, 184, 166, .16); }
-        html.dark .rt-type.rt-extreme { color: #d8b4fe; background: rgba(168, 85, 247, .18); }
+        .rt-type.rt-arista {
+            color: #4338ca;
+            background: #e0e7ff;
+        }
+
+        .rt-type.rt-juniper {
+            color: #15803d;
+            background: #dcfce7;
+        }
+
+        .rt-type.rt-tplink {
+            color: #0f766e;
+            background: #ccfbf1;
+        }
+
+        .rt-type.rt-extreme {
+            color: #7e22ce;
+            background: #f3e8ff;
+        }
+
+        html.dark .rt-type {
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        html.dark .rt-type.rt-cisco {
+            color: #7dd3fc;
+            background: rgba(14, 165, 233, .16);
+        }
+
+        html.dark .rt-type.rt-arista {
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, .18);
+        }
+
+        html.dark .rt-type.rt-juniper {
+            color: #86efac;
+            background: rgba(34, 197, 94, .16);
+        }
+
+        html.dark .rt-type.rt-tplink {
+            color: #5eead4;
+            background: rgba(20, 184, 166, .16);
+        }
+
+        html.dark .rt-type.rt-extreme {
+            color: #d8b4fe;
+            background: rgba(168, 85, 247, .18);
+        }
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
@@ -381,6 +423,12 @@
                         <span>SPK</span>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= site_url('SuratTugas') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-text"></i></span>
+                        <span>Surat Tugas</span>
+                    </a>
+                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-check"></i></span>
@@ -446,8 +494,7 @@
                         <li><a href="<?= site_url('DataSwitch') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Switch</a></li>
                         <li><a href="<?= site_url('DataOlt') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data OLT</a></li>
                         <li><a href="<?= site_url('DataCctv') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data CCTV</a></li>
-                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
-                        <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
+                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Addres</a></li>
                         <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
                         <li><a href="<?= site_url('DataOdcOdp') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data ODC &amp; ODP</a></li>
                         <li><a href="<?= site_url('Kmz') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">KMZ</a></li>
@@ -631,14 +678,38 @@
                 <button type="button" onclick="closeViewModal()" aria-label="Tutup"><i class="ti ti-x text-2xl"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div><div class="text-gray-500">Nama Switch</div><div class="font-medium" id="v_nama_switch"></div></div>
-                <div><div class="text-gray-500">Type</div><div class="font-medium" id="v_type"></div></div>
-                <div><div class="text-gray-500">IP Switch</div><div class="font-medium" id="v_ip_switch"></div></div>
-                <div><div class="text-gray-500">Seri Switch</div><div class="font-medium" id="v_seri_switch"></div></div>
-                <div><div class="text-gray-500">SN</div><div class="font-medium" id="v_sn"></div></div>
-                <div><div class="text-gray-500">Versi Switch</div><div class="font-medium" id="v_versi_switch"></div></div>
-                <div class="md:col-span-2"><div class="text-gray-500">Lokasi Pemasangan</div><div class="font-medium" id="v_lokasi_pemasangan"></div></div>
-                <div><div class="text-gray-500">Dibuat</div><div class="font-medium" id="v_created"></div></div>
+                <div>
+                    <div class="text-gray-500">Nama Switch</div>
+                    <div class="font-medium" id="v_nama_switch"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Type</div>
+                    <div class="font-medium" id="v_type"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">IP Switch</div>
+                    <div class="font-medium" id="v_ip_switch"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Seri Switch</div>
+                    <div class="font-medium" id="v_seri_switch"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">SN</div>
+                    <div class="font-medium" id="v_sn"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Versi Switch</div>
+                    <div class="font-medium" id="v_versi_switch"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Lokasi Pemasangan</div>
+                    <div class="font-medium" id="v_lokasi_pemasangan"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Dibuat</div>
+                    <div class="font-medium" id="v_created"></div>
+                </div>
             </div>
             <div class="flex justify-end gap-3 mt-6">
                 <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
@@ -703,7 +774,7 @@
 
     <script>
         // Data switch yang sudah ada (cek data ganda sebelum dikirim; server tetap memeriksa ulang)
-        const DATA_SWITCH = <?= json_encode(array_map(fn ($r) => array_intersect_key($r, array_flip(['id', 'nama_switch', 'ip_switch', 'sn'])), $switches), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        const DATA_SWITCH = <?= json_encode(array_map(fn($r) => array_intersect_key($r, array_flip(['id', 'nama_switch', 'ip_switch', 'sn'])), $switches), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         const ISIAN = ['nama_switch', 'ip_switch', 'type', 'seri_switch', 'sn', 'versi_switch', 'lokasi_pemasangan'];
 
         // ====== POP UP FORM TAMBAH / EDIT ======
@@ -752,14 +823,23 @@
             }
             if (isi('ip_switch') && !ipValid(isi('ip_switch'))) pesan.push('IP Switch tidak valid.');
 
-            [['nama_switch', 'Nama Switch'], ['ip_switch', 'IP Switch'], ['sn', 'SN']].forEach(([k, label]) => {
+            [
+                ['nama_switch', 'Nama Switch'],
+                ['ip_switch', 'IP Switch'],
+                ['sn', 'SN']
+            ].forEach(([k, label]) => {
                 const r = isi(k) && lain.find(x => sama(x[k], isi(k)));
                 if (r) pesan.push(label + ' "' + isi(k) + '" sudah dipakai switch "' + r.nama_switch + '".');
             });
 
             if (pesan.length) {
                 e.preventDefault();
-                Swal.fire({ icon: 'warning', title: 'Data Belum Bisa Disimpan', html: pesan.map(p => '<div class="text-left">• ' + escapeHtml(p) + '</div>').join(''), confirmButtonColor: '#185a82' });
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Belum Bisa Disimpan',
+                    html: pesan.map(p => '<div class="text-left">• ' + escapeHtml(p) + '</div>').join(''),
+                    confirmButtonColor: '#185a82'
+                });
             }
         });
 
@@ -803,11 +883,18 @@
         }
 
         function isTableEmpty(table) {
-            return table.rows({ search: 'applied' }).data().length === 0;
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
         }
 
         function showEmptyExportAlert() {
-            Swal.fire({ icon: 'warning', title: 'Data Kosong', text: 'Tidak ada data yang bisa diexport.', confirmButtonColor: '#04a9f5' });
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Kosong',
+                text: 'Tidak ada data yang bisa diexport.',
+                confirmButtonColor: '#04a9f5'
+            });
         }
 
         <?php if ($popupGagal) : ?>
@@ -942,7 +1029,12 @@
                             orientation: 'landscape',
                             pageSize: 'A4',
                             customize: function(doc) {
-                                doc.styles.tableHeader = { fillColor: '#04a9f5', color: '#fff', bold: true, alignment: 'left' };
+                                doc.styles.tableHeader = {
+                                    fillColor: '#04a9f5',
+                                    color: '#fff',
+                                    bold: true,
+                                    alignment: 'left'
+                                };
                                 doc.defaultStyle.fontSize = 9;
                             }
                         })
@@ -965,7 +1057,11 @@
             // nomor urut mengikuti urutan & filter yang tampil
             table.on('draw.dt order.dt search.dt', function() {
                 let i = table.page.info().start;
-                table.column(0, { page: 'current', search: 'applied', order: 'applied' }).nodes().each(function(cell) {
+                table.column(0, {
+                    page: 'current',
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(function(cell) {
                     cell.innerHTML = ++i;
                 });
             });

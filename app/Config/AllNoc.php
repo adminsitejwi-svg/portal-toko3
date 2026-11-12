@@ -26,8 +26,8 @@ class AllNoc extends BaseConfig
         ['route' => 'DataRouter',      'judul' => 'Data Router',                 'ikon' => 'ti-router',          'info' => 'Inventaris router beserta lokasi & konfigurasi.', 'soon' => false],
         ['route' => 'DataSwitch',      'judul' => 'Data Switch',                 'ikon' => 'ti-switch-horizontal', 'info' => 'Inventaris switch beserta IP, versi & lokasi.', 'soon' => false],
         ['route' => 'DataOlt',         'judul' => 'Data OLT',                    'ikon' => 'ti-affiliate',       'info' => 'Inventaris OLT beserta IP, versi & lokasi.', 'soon' => false],
-        ['route' => 'DataCctv',        'judul' => 'Data CCTV',                   'ikon' => 'ti-device-cctv',     'info' => 'Inventaris kamera CCTV beserta IP & lokasi.', 'soon' => true],
-        ['route' => 'IpPublic',        'judul' => 'Data IP Public',              'ikon' => 'ti-world',           'info' => 'Alokasi blok & alamat IP public.', 'soon' => true],
+        ['route' => 'DataCctv', 'judul' => 'Data CCTV', 'ikon' => 'ti-device-cctv', 'info' => 'Inventaris kamera CCTV & NVR beserta IP & lokasi.', 'soon' => false],
+        ['route' => 'IpPublic',        'judul' => 'Data IP Public',              'ikon' => 'ti-world',           'info' => 'Alokasi blok & alamat IP public.', 'soon' => false],
         ['route' => 'IpPrivate',       'judul' => 'Data IP Private',             'ikon' => 'ti-lock',            'info' => 'Alokasi subnet & alamat IP private.', 'soon' => true],
         ['route' => 'FtpClient',       'judul' => 'FTP Client',                  'ikon' => 'ti-folder-share',    'info' => 'Akses file server FTP NOC dari portal.', 'soon' => true],
         ['route' => 'DataOdcOdp',     'judul' => 'Data ODC & ODP',            'ikon' => 'ti-box-model-2',      'info' => 'Data ODC (Optical Distribution Cabinet) & ODP (Optical Distribution Point).', 'soon' => false],
@@ -57,6 +57,7 @@ class AllNoc extends BaseConfig
         ['route' => 'BastAlfamart',   'judul' => 'BAST Alfamart',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamart.', 'soon' => false],
         ['route' => 'BastDandan',     'judul' => 'BAST Dandan',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Dandan.', 'soon' => false],
         ['route' => 'PksContract',    'judul' => 'PKS & Contract',          'ikon' => 'ti-file-text',           'info' => 'Perjanjian Kerja Sama & kontrak pelanggan.', 'soon' => false],
+        ['route' => 'SuratTugas',     'judul' => 'Surat Tugas',             'ikon' => 'ti-file-text',           'info' => 'Surat tugas untuk Dinas.', 'soon' => true],
     ];
 
     // Menu yang masih "Segera Hadir" (All NOC, Report NOC & Activation), dicari berdasarkan route

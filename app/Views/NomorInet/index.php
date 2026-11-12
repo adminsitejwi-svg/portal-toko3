@@ -4,8 +4,8 @@
     <head>
         <meta charset="utf-8" />
         <link rel="icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
-    <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
-    <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
+        <link rel="shortcut icon" type="image/png" href="<?= base_url('favicon-N.png') ?>?v=4">
+        <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
 
         <title>Nomor INET</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -458,76 +458,75 @@
                 font-size: 18px;
             }
 
-        /* ===== TOMBOL AKSI DI TABEL: berwarna + hover ===== */
-        #mediaKoneksiTable .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            min-width: 30px;
-            height: 30px;
-            margin: 2px 0;
-            padding: 0 7px;
-            border: 1px solid transparent;
-            border-radius: 6px;
-            font-size: 12.5px;
-            font-weight: 500;
-            color: #fff;
-            transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
-        }
+            /* ===== TOMBOL AKSI DI TABEL: berwarna + hover ===== */
+            #mediaKoneksiTable .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                min-width: 30px;
+                height: 30px;
+                margin: 2px 0;
+                padding: 0 7px;
+                border: 1px solid transparent;
+                border-radius: 6px;
+                font-size: 12.5px;
+                font-weight: 500;
+                color: #fff;
+                transition: background-color .15s ease, box-shadow .15s ease, transform .15s ease;
+            }
 
-        #mediaKoneksiTable .btn i {
-            font-size: 16px;
-        }
+            #mediaKoneksiTable .btn i {
+                font-size: 16px;
+            }
 
-        #mediaKoneksiTable .btn:hover {
-            color: #fff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
-        }
+            #mediaKoneksiTable .btn:hover {
+                color: #fff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
+            }
 
-        #mediaKoneksiTable .btn-primary {
-            background: #3b82f6;
-        }
+            #mediaKoneksiTable .btn-primary {
+                background: #3b82f6;
+            }
 
-        #mediaKoneksiTable .btn-primary:hover {
-            background: #2563eb;
-        }
+            #mediaKoneksiTable .btn-primary:hover {
+                background: #2563eb;
+            }
 
-        #mediaKoneksiTable .btn-danger {
-            background: #ef4444;
-        }
+            #mediaKoneksiTable .btn-danger {
+                background: #ef4444;
+            }
 
-        #mediaKoneksiTable .btn-danger:hover {
-            background: #dc2626;
-        }
+            #mediaKoneksiTable .btn-danger:hover {
+                background: #dc2626;
+            }
 
-        #mediaKoneksiTable .btn-info {
-            background: #0ea5e9;
-        }
+            #mediaKoneksiTable .btn-info {
+                background: #0ea5e9;
+            }
 
-        #mediaKoneksiTable .btn-info:hover {
-            background: #0284c7;
-        }
+            #mediaKoneksiTable .btn-info:hover {
+                background: #0284c7;
+            }
 
-        #mediaKoneksiTable .btn-success {
-            background: #22c55e;
-        }
+            #mediaKoneksiTable .btn-success {
+                background: #22c55e;
+            }
 
-        #mediaKoneksiTable .btn-success:hover {
-            background: #16a34a;
-        }
+            #mediaKoneksiTable .btn-success:hover {
+                background: #16a34a;
+            }
 
-        #mediaKoneksiTable .btn-warning {
-            background: #f59e0b;
-        }
+            #mediaKoneksiTable .btn-warning {
+                background: #f59e0b;
+            }
 
-        #mediaKoneksiTable .btn-warning:hover {
-            background: #d97706;
-        }
-
+            #mediaKoneksiTable .btn-warning:hover {
+                background: #d97706;
+            }
         </style>
-    <?= view('partials/theme') ?>
+        <?= view('partials/theme') ?>
     </head>
 
     <body class="text-[#37474f] dark:text-[#bfc8d6]">
@@ -660,6 +659,12 @@
                             <span>SPK</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="<?= site_url('SuratTugas') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                            <span class="pc-micon w-5"><i class="ti ti-file-text"></i></span>
+                            <span>Surat Tugas</span>
+                        </a>
+                    </li>
                     <li class="hasmenu">
                         <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                             <span class="pc-micon w-5"><i class="ti ti-file-check"></i></span>
@@ -725,8 +730,7 @@
                             <li><a href="<?= site_url('DataSwitch') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Switch</a></li>
                             <li><a href="<?= site_url('DataOlt') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data OLT</a></li>
                             <li><a href="<?= site_url('DataCctv') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data CCTV</a></li>
-                            <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
-                            <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
+                            <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Addres</a></li>
                             <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
                             <li><a href="<?= site_url('DataOdcOdp') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data ODC &amp; ODP</a></li>
                             <li><a href="<?= site_url('Kmz') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">KMZ</a></li>

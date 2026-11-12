@@ -218,6 +218,7 @@
         'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],
+        'surat tugas': ['ti-file-text', 'Surat Tugas'],
         'change log': ['ti-history', 'Riwayat Perubahan']
     };
 
@@ -281,11 +282,12 @@
         'profile': 'ti-user-circle',
         'inventorykantor': 'ti-package',
         'settings': 'ti-users',
+        'surattugas': 'ti-file-text',
         'logs': 'ti-history'
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
-    var MENU_SEGERA = ['ippublic', 'ipprivate', 'ftpclient', 'datacctv'];
+    var MENU_SEGERA = [ 'ftpclient', 'surattugas'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
     function pasangIkonJudul(link) {

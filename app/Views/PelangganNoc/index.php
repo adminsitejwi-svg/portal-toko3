@@ -252,8 +252,6 @@
         .dark .sat-tab.active {
             color: #8996a4;
         }
-
-
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
@@ -388,6 +386,12 @@
                         <span>SPK</span>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= site_url('SuratTugas') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-text"></i></span>
+                        <span>Surat Tugas</span>
+                    </a>
+                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-check"></i></span>
@@ -453,8 +457,7 @@
                         <li><a href="<?= site_url('DataSwitch') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Switch</a></li>
                         <li><a href="<?= site_url('DataOlt') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data OLT</a></li>
                         <li><a href="<?= site_url('DataCctv') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data CCTV</a></li>
-                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
-                        <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
+                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Addres</a></li>
                         <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
                         <li><a href="<?= site_url('DataOdcOdp') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data ODC &amp; ODP</a></li>
                         <li><a href="<?= site_url('Kmz') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">KMZ</a></li>
@@ -606,15 +609,15 @@
                                         <?php
                                         // Kolom bertumpuk: satu baris per vendor BTS / vendor pelanggan (sejajar antar kolom);
                                         // detail perangkat digabung satu kolom, satu perangkat per baris (Merk Jenis Type (SN ..) xJumlah - Lokasi: ..)
-                                        $isi    = static fn ($v) => (string) $v !== '' ? (string) $v : '-';
-                                        $ambil  = static fn (array $daftar, string $k) => array_map(fn ($r) => $isi($r[$k] ?? ''), $daftar);
+                                        $isi    = static fn($v) => (string) $v !== '' ? (string) $v : '-';
+                                        $ambil  = static fn(array $daftar, string $k) => array_map(fn($r) => $isi($r[$k] ?? ''), $daftar);
                                         $btsDet = $row['bts_detail'];
                                         $kolom  = [
                                             'ip'     => $ambil($btsDet, 'ip_address'),
                                             'kap'    => $ambil($btsDet, 'kapasitas'),
-                                            'vlan'   => array_map(fn ($r) => $r['vlan_id'] === null ? 'Tanpa VLAN' : (string) $r['vlan_id'], $btsDet),
+                                            'vlan'   => array_map(fn($r) => $r['vlan_id'] === null ? 'Tanpa VLAN' : (string) $r['vlan_id'], $btsDet),
                                             'vendor' => $ambil($row['vendor_detail'], 'nama_vendor'),
-                                            'note'   => array_map(fn ($r) => $isi(trim(preg_replace('/\s+/', ' ', (string) ($r['note'] ?? '')))), $row['vendor_detail']),
+                                            'note'   => array_map(fn($r) => $isi(trim(preg_replace('/\s+/', ' ', (string) ($r['note'] ?? '')))), $row['vendor_detail']),
                                             'perangkat' => $row['perangkat_teks'] !== '' ? explode("\n", $row['perangkat_teks']) : [],
                                         ];
                                         ?>

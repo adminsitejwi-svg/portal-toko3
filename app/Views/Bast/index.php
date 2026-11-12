@@ -741,6 +741,12 @@
                         <span>SPK</span>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= site_url('SuratTugas') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-text"></i></span>
+                        <span>Surat Tugas</span>
+                    </a>
+                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-check"></i></span>
@@ -806,8 +812,7 @@
                         <li><a href="<?= site_url('DataSwitch') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Switch</a></li>
                         <li><a href="<?= site_url('DataOlt') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data OLT</a></li>
                         <li><a href="<?= site_url('DataCctv') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data CCTV</a></li>
-                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Public</a></li>
-                        <li><a href="<?= site_url('IpPrivate') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Private</a></li>
+                        <li><a href="<?= site_url('IpPublic') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data IP Addres</a></li>
                         <li><a href="<?= site_url('FtpClient') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">FTP Client</a></li>
                         <li><a href="<?= site_url('DataOdcOdp') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data ODC &amp; ODP</a></li>
                         <li><a href="<?= site_url('Kmz') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">KMZ</a></li>
@@ -1081,8 +1086,21 @@
         // ====== PILIH / TARIK FILE: format, ukuran, tanggal & jam dibaca otomatis ======
         const MAKS_BYTE = <?= (int) $maksByte ?>;
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        const FORMAT = { pdf: 'PDF', doc: 'DOC', docx: 'DOCX', png: 'PNG', jpg: 'JPG', jpeg: 'JPG' };
-        const NAMA_FORMAT = { PDF: 'PDF (Dokumen)', DOC: 'Word 97-2003 (.doc)', DOCX: 'Word (.docx)', PNG: 'Gambar PNG', JPG: 'Gambar JPG' };
+        const FORMAT = {
+            pdf: 'PDF',
+            doc: 'DOC',
+            docx: 'DOCX',
+            png: 'PNG',
+            jpg: 'JPG',
+            jpeg: 'JPG'
+        };
+        const NAMA_FORMAT = {
+            PDF: 'PDF (Dokumen)',
+            DOC: 'Word 97-2003 (.doc)',
+            DOCX: 'Word (.docx)',
+            PNG: 'Gambar PNG',
+            JPG: 'Gambar JPG'
+        };
         const inputKmz = document.getElementById('fileKmz');
         const drop = document.getElementById('kzDrop');
         const info = document.getElementById('kzInfo');
@@ -1133,8 +1151,10 @@
         async function bacaPdf(file) {
             await muatScript(PUSTAKA.pdf);
             pdfjsLib.GlobalWorkerOptions.workerSrc = PUSTAKA.pdfWorker;
-            const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
-            const halaman = Math.min(pdf.numPages, 5);   // data BAST ada di halaman awal
+            const pdf = await pdfjsLib.getDocument({
+                data: await file.arrayBuffer()
+            }).promise;
+            const halaman = Math.min(pdf.numPages, 5); // data BAST ada di halaman awal
             let teks = '';
             for (let n = 1; n <= halaman; n++) {
                 const page = await pdf.getPage(n);
@@ -1154,11 +1174,16 @@
             if (teks.replace(/\s/g, '').length < 20) {
                 statusBaca('<i class="ti ti-loader-2 bc-putar"></i> PDF berupa hasil scan, membaca dengan OCR...');
                 const page = await pdf.getPage(1);
-                const vp = page.getViewport({ scale: 2 });
+                const vp = page.getViewport({
+                    scale: 2
+                });
                 const canvas = document.createElement('canvas');
                 canvas.width = vp.width;
                 canvas.height = vp.height;
-                await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+                await page.render({
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: vp
+                }).promise;
                 teks = await ocrGambar(canvas);
             }
             return teks;
@@ -1186,10 +1211,49 @@
         }
 
         const BULAN_ANGKA = {
-            jan: 1, januari: 1, january: 1, feb: 2, peb: 2, februari: 2, pebruari: 2, february: 2, mar: 3, maret: 3, march: 3,
-            apr: 4, april: 4, mei: 5, may: 5, jun: 6, juni: 6, june: 6, jul: 7, juli: 7, july: 7,
-            agu: 8, agt: 8, agst: 8, agus: 8, agustus: 8, aug: 8, august: 8, sep: 9, sept: 9, september: 9,
-            okt: 10, oktober: 10, oct: 10, october: 10, nov: 11, nop: 11, november: 11, nopember: 11, des: 12, desember: 12, dec: 12, december: 12
+            jan: 1,
+            januari: 1,
+            january: 1,
+            feb: 2,
+            peb: 2,
+            februari: 2,
+            pebruari: 2,
+            february: 2,
+            mar: 3,
+            maret: 3,
+            march: 3,
+            apr: 4,
+            april: 4,
+            mei: 5,
+            may: 5,
+            jun: 6,
+            juni: 6,
+            june: 6,
+            jul: 7,
+            juli: 7,
+            july: 7,
+            agu: 8,
+            agt: 8,
+            agst: 8,
+            agus: 8,
+            agustus: 8,
+            aug: 8,
+            august: 8,
+            sep: 9,
+            sept: 9,
+            september: 9,
+            okt: 10,
+            oktober: 10,
+            oct: 10,
+            october: 10,
+            nov: 11,
+            nop: 11,
+            november: 11,
+            nopember: 11,
+            des: 12,
+            desember: 12,
+            dec: 12,
+            december: 12
         };
 
         // cari tanggal di teks; kembalikan 'YYYY-MM-DD' atau null
@@ -1213,7 +1277,10 @@
             pola.forEach(([re, ubah]) => {
                 for (const m of teks.matchAll(re)) {
                     const h = ubah(m);
-                    if (h && (terbaik === null || m.index < terbaik.i)) terbaik = { i: m.index, v: h };
+                    if (h && (terbaik === null || m.index < terbaik.i)) terbaik = {
+                        i: m.index,
+                        v: h
+                    };
                 }
             });
             return terbaik && terbaik.v;
@@ -1265,7 +1332,10 @@
                 // nama badan usaha (PT / CV / ...) pertama yang bukan JWI sendiri
                 const re = /\b(?:PT|CV|UD|PD|Koperasi|Yayasan)\.?\s+[A-Z][A-Za-z0-9&.,'\- ]{2,60}?(?=\s*(?:\n|,|\(|$|yang|selaku|dengan|beralamat))/g;
                 for (const m of bersih.matchAll(re)) {
-                    if (!/jwi/i.test(m[0])) { perusahaan = m[0].trim(); break; }
+                    if (!/jwi/i.test(m[0])) {
+                        perusahaan = m[0].trim();
+                        break;
+                    }
                 }
             }
 
@@ -1278,10 +1348,15 @@
             }
 
             const potong = (v, n) => v ? v.slice(0, n) : null;
-            return { no: potong(no, 100), tanggal, perusahaan: potong(perusahaan, 150), layanan: potong(layanan, 150) };
+            return {
+                no: potong(no, 100),
+                tanggal,
+                perusahaan: potong(perusahaan, 150),
+                layanan: potong(layanan, 150)
+            };
         }
 
-        let bacaKe = 0;          // abaikan hasil bacaan file sebelumnya bila file diganti
+        let bacaKe = 0; // abaikan hasil bacaan file sebelumnya bila file diganti
         let sedangBaca = false;
 
         async function bacaDokumen(file, format) {
@@ -1298,18 +1373,23 @@
             document.getElementById('kzKirim').disabled = true;
             statusBaca('<i class="ti ti-loader-2 bc-putar"></i> Membaca isi dokumen...');
 
-            let hasil = { no: null, tanggal: null, perusahaan: null, layanan: null };
+            let hasil = {
+                no: null,
+                tanggal: null,
+                perusahaan: null,
+                layanan: null
+            };
             let gagal = null;
             try {
-                const teks = format === 'PDF' ? await bacaPdf(file)
-                    : format === 'DOCX' ? await bacaDocx(file)
-                    : format === 'DOC' ? await bacaDoc(file)
-                    : await ocrGambar(file);
+                const teks = format === 'PDF' ? await bacaPdf(file) :
+                    format === 'DOCX' ? await bacaDocx(file) :
+                    format === 'DOC' ? await bacaDoc(file) :
+                    await ocrGambar(file);
                 hasil = uraiBast(teks);
             } catch (err) {
                 gagal = err && err.message ? err.message : 'Isi dokumen tidak bisa dibaca.';
             }
-            if (ke !== bacaKe) return;   // file sudah diganti / dibatalkan
+            if (ke !== bacaKe) return; // file sudah diganti / dibatalkan
 
             const BLN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             // terbaca = tampil sebagai teks; tidak terbaca = muncul kotak isian manual (boleh dikosongkan)
@@ -1364,7 +1444,12 @@
 
         function tolak(pesan) {
             batalPilih();
-            Swal.fire({ icon: 'warning', title: 'Dokumen Tidak Bisa Diupload', text: pesan, confirmButtonColor: '#185a82' });
+            Swal.fire({
+                icon: 'warning',
+                title: 'Dokumen Tidak Bisa Diupload',
+                text: pesan,
+                confirmButtonColor: '#185a82'
+            });
         }
 
         function pilihFile(file) {
@@ -1413,7 +1498,7 @@
         });
 
         // No BAST yang sudah ada (cek dobel sebelum dikirim; server tetap memeriksa)
-        const NO_BAST = <?= json_encode(array_map(fn ($r) => ['no' => $r['no_bast'], 'perusahaan' => $r['perusahaan']], $files), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        const NO_BAST = <?= json_encode(array_map(fn($r) => ['no' => $r['no_bast'], 'perusahaan' => $r['perusahaan']], $files), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
         document.getElementById('formKmz').addEventListener('submit', function(e) {
             const f = this.elements;
@@ -1425,7 +1510,12 @@
             if (dobel) pesan.push('No BAST "' + dobel.no + '" sudah dipakai' + (dobel.perusahaan ? ' (' + dobel.perusahaan + ')' : '') + '.');
             if (pesan.length) {
                 e.preventDefault();
-                return Swal.fire({ icon: 'warning', title: 'Dokumen Belum Bisa Diupload', html: pesan.map(p => '<div class="text-left">• ' + escapeHtml(p) + '</div>').join(''), confirmButtonColor: '#185a82' });
+                return Swal.fire({
+                    icon: 'warning',
+                    title: 'Dokumen Belum Bisa Diupload',
+                    html: pesan.map(p => '<div class="text-left">• ' + escapeHtml(p) + '</div>').join(''),
+                    confirmButtonColor: '#185a82'
+                });
             }
             clearInterval(jamTimer);
             const btn = document.getElementById('kzKirim');
@@ -1492,11 +1582,18 @@
         }
 
         function isTableEmpty(table) {
-            return table.rows({ search: 'applied' }).data().length === 0;
+            return table.rows({
+                search: 'applied'
+            }).data().length === 0;
         }
 
         function showEmptyExportAlert() {
-            Swal.fire({ icon: 'warning', title: 'Data Kosong', text: 'Tidak ada data yang bisa diexport.', confirmButtonColor: '#04a9f5' });
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Kosong',
+                text: 'Tidak ada data yang bisa diexport.',
+                confirmButtonColor: '#04a9f5'
+            });
         }
     </script>
 
@@ -1608,7 +1705,9 @@
                     [10, 15, 25, 50, -1],
                     [10, 15, 25, 50, "Semua"]
                 ],
-                order: [[3, 'desc']],
+                order: [
+                    [3, 'desc']
+                ],
                 columnDefs: [{
                     targets: [0, 1],
                     orderable: false,
@@ -1627,7 +1726,12 @@
                             orientation: 'landscape',
                             pageSize: 'A4',
                             customize: function(doc) {
-                                doc.styles.tableHeader = { fillColor: '#04a9f5', color: '#fff', bold: true, alignment: 'left' };
+                                doc.styles.tableHeader = {
+                                    fillColor: '#04a9f5',
+                                    color: '#fff',
+                                    bold: true,
+                                    alignment: 'left'
+                                };
                                 doc.defaultStyle.fontSize = 9;
                             }
                         })
@@ -1650,7 +1754,11 @@
             // nomor urut mengikuti urutan & filter yang tampil
             table.on('draw.dt order.dt search.dt', function() {
                 let i = table.page.info().start;
-                table.column(0, { page: 'current', search: 'applied', order: 'applied' }).nodes().each(function(cell) {
+                table.column(0, {
+                    page: 'current',
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(function(cell) {
                     cell.innerHTML = ++i;
                 });
             });
