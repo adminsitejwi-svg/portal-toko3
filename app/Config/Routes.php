@@ -72,6 +72,12 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('settings', 'SettingsController::index');
     $routes->get('settings/delete/(:num)', 'SettingsController::delete/$1');
 
+    // Hak Akses (Informasi > Hak Akses) — khusus Administrator, lihat app/Config/HakAkses.php
+    $routes->get('HakAkses', 'HakAkses::index');
+    $routes->post('HakAkses/role/save', 'HakAkses::saveRole');
+    $routes->get('HakAkses/role/delete/(:num)', 'HakAkses::deleteRole/$1');
+    $routes->post('HakAkses/akun/save', 'HakAkses::saveAkun');
+
 
     // DC
     $routes->get('DCAdmin', [DCAdmin::class, 'index']);

@@ -45,7 +45,11 @@ class Login extends BaseController
 
         ]);
 
-          return redirect()->to('/dashboard-manager')
+        // arahkan ke halaman pertama yang boleh dibuka role-nya
+        \App\Libraries\HakAkses::reset();
+        $tujuan = \App\Libraries\HakAkses::instance()->halamanAwal();
+
+          return redirect()->to(site_url($tujuan))
             ->with('success', 'Selamat datang, ' . $user['username'] . '');
     }
 
@@ -70,6 +74,12 @@ class Login extends BaseController
 
             return redirect()->back()
                 ->with('error', 'Konfirmasi password tidak cocok');
+        }
+
+        // selain Administrator hanya boleh mengganti password akunnya sendiri
+        if (!\App\Libraries\HakAkses::instance()->isAdmin() && $username !== session('username')) {
+            return redirect()->back()
+                ->with('error', 'Anda hanya bisa mengganti password akun sendiri.');
         }
 
         $model = new \App\Models\LoginModel();

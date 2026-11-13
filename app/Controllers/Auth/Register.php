@@ -44,7 +44,19 @@ class Register extends BaseController
         }
 
         $model = new LoginModel();
-        $model->save([
+
+        // akun baru otomatis role "User" (bisa diganti Administrator di menu Hak Akses)
+        $db = \Config\Database::connect();
+        if ($db->tableExists('m_role') && $db->fieldExists('role_id', 'login')) {
+            $roleUser = $db->table('m_role')->where('nama', 'User')->get()->getRowArray();
+            if ($roleUser) {
+                $roleBaru = (int) $roleUser['id'];
+            }
+        }
+
+        $model->save(array_filter([
+            'role_id'  => $roleBaru ?? null,
+        ]) + [
             'username' => $this->request->getPost('username'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
         ]);

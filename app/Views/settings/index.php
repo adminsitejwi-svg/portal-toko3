@@ -417,10 +417,24 @@
                     <h1 class="rfo-title">Pengguna</h1>
                 </div>
 
-                <a href="<?= site_url('register?from=settings') ?>" class="rfo-btn rfo-btn-blue">
-                    <i class="ti ti-plus"></i> Tambah Akun
-                </a>
+                <?php if (!empty($isAdmin)) : ?>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <?php if (!empty($pakaiRole)) : ?>
+                            <a href="<?= site_url('HakAkses') ?>" class="rfo-btn rfo-ghost-btn">
+                                <i class="ti ti-shield-lock"></i> Atur Hak Akses
+                            </a>
+                        <?php endif; ?>
+                        <a href="<?= site_url('register?from=settings') ?>" class="rfo-btn rfo-btn-blue">
+                            <i class="ti ti-plus"></i> Tambah Akun
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
+            <?php if (session()->getFlashdata('error')) : ?>
+                <div class="mb-4 px-4 py-3 rounded-lg bg-red-50 text-red-700 border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30 text-sm">
+                    <i class="ti ti-alert-circle"></i> <?= esc(session()->getFlashdata('error')) ?>
+                </div>
+            <?php endif; ?>
             <div class="card">
                 <div class="card-body">
 
@@ -443,6 +457,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Username</th>
+                                    <?php if (!empty($pakaiRole)) : ?><th>Role</th><?php endif; ?>
                                     <th>Created At</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -456,18 +471,26 @@
 
                                             <td><?= esc($row['username']); ?></td>
 
+                                            <?php if (!empty($pakaiRole)) : ?>
+                                                <td>
+                                                    <?= esc($row['role_nama'] ?? 'Tanpa Role') ?>
+                                                    <?php if (!empty($row['akses_khusus'])) : ?><small style="opacity:.7">(akses khusus)</small><?php endif; ?>
+                                                </td>
+                                            <?php endif; ?>
 
-
-                                            <td><?= date('d-m-Y H:i', strtotime($row['created_at'])); ?></td>
+                                            <td><?= $row['created_at'] ? date('d-m-Y H:i', strtotime($row['created_at'])) : '-'; ?></td>
 
                                             <td>
-
-                                                <button
-                                                    type="button"
-                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
-                                                </button>
+                                                <?php if (!empty($isAdmin)) : ?>
+                                                    <button
+                                                        type="button"
+                                                        onclick="confirmDelete(<?= $row['id'] ?>)"
+                                                        class="btn btn-sm btn-danger">
+                                                        <i class="ti ti-trash"></i> <span>Hapus</span>
+                                                    </button>
+                                                <?php else : ?>
+                                                    -
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
