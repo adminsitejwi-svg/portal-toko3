@@ -220,8 +220,9 @@
         'pengguna': ['ti-users', 'Kelola Pengguna'],
         'surat tugas': ['ti-file-text', 'Surat Tugas'],
         'rekap data toko':['ti-report-analytics', 'Rekap Data Toko'],
-        'change log': ['ti-history', 'Riwayat Perubahan']
-        
+        'change log': ['ti-history', 'Riwayat Perubahan'],
+        'hak akses': ['ti-shield-lock', 'Role & Akses Halaman']
+
     };
 
     // ikon judul halaman, berdasarkan alamat menu yang aktif (huruf kecil)
@@ -286,7 +287,8 @@
         'settings': 'ti-users',
         'surattugas': 'ti-file-text',
         'rekapdatamidi': 'ti-report-analytics',
-        'logs': 'ti-history'
+        'logs': 'ti-history',
+        'hakakses': 'ti-shield-lock'
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)

@@ -34,24 +34,40 @@ if (session()->get('logged_in')) :
     </style>
 <?php endif; ?>
     <script>
+        <?php if ($tampilHakAkses) : ?>
+        // menu Hak Akses (khusus Administrator) di bawah Change Log.
+        // Disisipkan saat readyState "interactive" (sebelum DOMContentLoaded) supaya ikut dihias
+        // ruang.js (ikon + teks kecil "Role & Akses Halaman" dari MENU_ICON['hak akses']).
+        (function () {
+            function sisipkan() {
+                var sb = document.getElementById('sidebar');
+                if (!sb || sb.querySelector('a[href$="/HakAkses" i]')) return;
+                var logs = sb.querySelector('a[href$="/Logs" i]');
+                if (!logs) return;
+                var li = document.createElement('li');
+                li.innerHTML = '<a href="<?= site_url('HakAkses') ?>" class="pc-link' +
+                    ' flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">' +
+                    '<span class="pc-micon w-5"><i class="ti ti-shield-lock"></i></span><span>Hak Akses</span></a>';
+                logs.closest('li').after(li);
+                if (/\/HakAkses(\/|$)/i.test(location.pathname)) {
+                    sb.querySelectorAll('.pc-link.active').forEach(function (a) { a.classList.remove('active'); });
+                    li.firstChild.classList.add('active');
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('readystatechange', function () {
+                    if (document.readyState === 'interactive') sisipkan();
+                });
+            } else {
+                sisipkan();
+            }
+        })();
+        <?php endif; ?>
+
         document.addEventListener('DOMContentLoaded', function () {
             var sb = document.getElementById('sidebar');
             if (!sb) return;
             var tersembunyi = function (el) { return getComputedStyle(el).display === 'none'; };
-
-            <?php if ($tampilHakAkses) : ?>
-            // menu Hak Akses (khusus Administrator) di bawah Change Log
-            var logs = sb.querySelector('a[href$="/Logs" i]');
-            if (logs && !sb.querySelector('a[href$="/HakAkses" i]')) {
-                var li = document.createElement('li');
-                var aktif = /\/HakAkses(\/|$)/i.test(location.pathname);
-                li.innerHTML = '<a href="<?= site_url('HakAkses') ?>" class="pc-link' + (aktif ? ' active' : '') +
-                    ' flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">' +
-                    '<span class="pc-micon w-5"><i class="ti ti-shield-lock"></i></span><span>Hak Akses</span></a>';
-                logs.closest('li').after(li);
-                if (aktif) sb.querySelectorAll('.pc-link.active').forEach(function (a) { if (a !== li.firstChild) a.classList.remove('active'); });
-            }
-            <?php endif; ?>
 
             // grup dropdown yang semua isinya tersembunyi
             sb.querySelectorAll('li.hasmenu').forEach(function (g) {

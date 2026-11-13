@@ -250,6 +250,12 @@
                         <span>SPK</span>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= site_url('SuratTugas') ?>" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
+                        <span class="pc-micon w-5"><i class="ti ti-file-text"></i></span>
+                        <span>Surat Tugas</span>
+                    </a>
+                </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-file-check"></i></span>
@@ -420,80 +426,431 @@
         $totalHalaman = count($labelHalaman);
         ?>
         <style>
-            .ha-tabs { display: flex; gap: 6px; border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; }
-            .dark .ha-tabs { border-color: rgba(255,255,255,.1); }
-            .ha-tab { padding: 10px 18px; font-weight: 600; font-size: 14px; color: #6b7280; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-            .ha-tab.active { color: #04a9f5; border-color: #04a9f5; }
-            .ha-panel { display: none; }
-            .ha-panel.active { display: block; }
-            .ha-roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-            .ha-role { border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
-            .dark .ha-role { border-color: rgba(255,255,255,.1); }
-            .ha-role h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-            .ha-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #e3f5fe; color: #0284c7; }
-            .ha-badge.admin { background: #fef3c7; color: #b45309; }
-            .ha-badge.abu { background: #f1f5f9; color: #475569; }
-            .dark .ha-badge { background: rgba(4,169,245,.15); color: #7dd3fc; }
-            .dark .ha-badge.admin { background: rgba(245,158,11,.15); color: #fcd34d; }
-            .dark .ha-badge.abu { background: rgba(255,255,255,.08); color: #cbd5e1; }
-            .ha-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-            .ha-chip { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: #f1f5f9; color: #475569; }
-            .dark .ha-chip { background: rgba(255,255,255,.06); color: #cbd5e1; }
-            .ha-meta { font-size: 12px; color: #6b7280; }
-            .ha-actions { display: flex; gap: 6px; margin-top: auto; padding-top: 6px; }
-            .ha-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; color: #374151; cursor: pointer; }
-            .ha-btn:hover { background: #f9fafb; }
-            .ha-btn.biru { background: #04a9f5; border-color: #04a9f5; color: #fff; }
-            .ha-btn.biru:hover { background: #0396e2; }
-            .ha-btn.merah { color: #dc2626; border-color: #fecaca; }
-            .ha-btn.merah:hover { background: #fef2f2; }
-            .dark .ha-btn { background: #1d2630; border-color: rgba(255,255,255,.12); color: #e2e8f0; }
-            .dark .ha-btn.biru { background: #04a9f5; border-color: #04a9f5; color: #fff; }
-            .dark .ha-btn.merah { color: #fca5a5; border-color: rgba(220,38,38,.4); }
-            .ha-info { display: flex; gap: 10px; padding: 12px 16px; border-radius: 10px; background: #e3f5fe; color: #075985; font-size: 13px; margin-bottom: 18px; }
-            .dark .ha-info { background: rgba(4,169,245,.1); color: #bae6fd; }
-            .ha-alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
-            .ha-alert.err { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-            .dark .ha-alert.err { background: rgba(220,38,38,.1); color: #fca5a5; border-color: rgba(220,38,38,.3); }
-            .ha-tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
-            .ha-tbl th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: #6b7280; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
-            .ha-tbl td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-            .dark .ha-tbl th, .dark .ha-tbl td { border-color: rgba(255,255,255,.08); }
+            .ha-tabs {
+                display: flex;
+                gap: 6px;
+                border-bottom: 1px solid #e5e7eb;
+                margin-bottom: 20px;
+            }
+
+            .dark .ha-tabs {
+                border-color: rgba(255, 255, 255, .1);
+            }
+
+            .ha-tab {
+                padding: 10px 18px;
+                font-weight: 600;
+                font-size: 14px;
+                color: #6b7280;
+                border-bottom: 2px solid transparent;
+                margin-bottom: -1px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .ha-tab.active {
+                color: #04a9f5;
+                border-color: #04a9f5;
+            }
+
+            .ha-panel {
+                display: none;
+            }
+
+            .ha-panel.active {
+                display: block;
+            }
+
+            .ha-roles {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+            }
+
+            .ha-role {
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .dark .ha-role {
+                border-color: rgba(255, 255, 255, .1);
+            }
+
+            .ha-role h3 {
+                font-size: 16px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .ha-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 3px 9px;
+                border-radius: 999px;
+                background: #e3f5fe;
+                color: #0284c7;
+            }
+
+            .ha-badge.admin {
+                background: #fef3c7;
+                color: #b45309;
+            }
+
+            .ha-badge.abu {
+                background: #f1f5f9;
+                color: #475569;
+            }
+
+            .dark .ha-badge {
+                background: rgba(4, 169, 245, .15);
+                color: #7dd3fc;
+            }
+
+            .dark .ha-badge.admin {
+                background: rgba(245, 158, 11, .15);
+                color: #fcd34d;
+            }
+
+            .dark .ha-badge.abu {
+                background: rgba(255, 255, 255, .08);
+                color: #cbd5e1;
+            }
+
+            .ha-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .ha-chip {
+                font-size: 11px;
+                padding: 2px 8px;
+                border-radius: 6px;
+                background: #f1f5f9;
+                color: #475569;
+            }
+
+            .dark .ha-chip {
+                background: rgba(255, 255, 255, .06);
+                color: #cbd5e1;
+            }
+
+            .ha-meta {
+                font-size: 12px;
+                color: #6b7280;
+            }
+
+            .ha-actions {
+                display: flex;
+                gap: 6px;
+                margin-top: auto;
+                padding-top: 6px;
+            }
+
+            .ha-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                font-size: 13px;
+                font-weight: 600;
+                padding: 7px 12px;
+                border-radius: 8px;
+                border: 1px solid #e5e7eb;
+                background: #fff;
+                color: #374151;
+                cursor: pointer;
+            }
+
+            .ha-btn:hover {
+                background: #f9fafb;
+            }
+
+            .ha-btn.biru {
+                background: #04a9f5;
+                border-color: #04a9f5;
+                color: #fff;
+            }
+
+            .ha-btn.biru:hover {
+                background: #0396e2;
+            }
+
+            .ha-btn.merah {
+                color: #dc2626;
+                border-color: #fecaca;
+            }
+
+            .ha-btn.merah:hover {
+                background: #fef2f2;
+            }
+
+            .dark .ha-btn {
+                background: #1d2630;
+                border-color: rgba(255, 255, 255, .12);
+                color: #e2e8f0;
+            }
+
+            .dark .ha-btn.biru {
+                background: #04a9f5;
+                border-color: #04a9f5;
+                color: #fff;
+            }
+
+            .dark .ha-btn.merah {
+                color: #fca5a5;
+                border-color: rgba(220, 38, 38, .4);
+            }
+
+            .ha-info {
+                display: flex;
+                gap: 10px;
+                padding: 12px 16px;
+                border-radius: 10px;
+                background: #e3f5fe;
+                color: #075985;
+                font-size: 13px;
+                margin-bottom: 18px;
+            }
+
+            .dark .ha-info {
+                background: rgba(4, 169, 245, .1);
+                color: #bae6fd;
+            }
+
+            .ha-alert {
+                padding: 12px 16px;
+                border-radius: 10px;
+                font-size: 13px;
+                margin-bottom: 16px;
+            }
+
+            .ha-alert.err {
+                background: #fef2f2;
+                color: #b91c1c;
+                border: 1px solid #fecaca;
+            }
+
+            .dark .ha-alert.err {
+                background: rgba(220, 38, 38, .1);
+                color: #fca5a5;
+                border-color: rgba(220, 38, 38, .3);
+            }
+
+            .ha-tbl {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 14px;
+            }
+
+            .ha-tbl th {
+                text-align: left;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: .03em;
+                color: #6b7280;
+                padding: 10px 12px;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .ha-tbl td {
+                padding: 12px;
+                border-bottom: 1px solid #f1f5f9;
+                vertical-align: top;
+            }
+
+            .dark .ha-tbl th,
+            .dark .ha-tbl td {
+                border-color: rgba(255, 255, 255, .08);
+            }
 
             /* modal */
-            .ha-modal { position: fixed; inset: 0; z-index: 2000; background: rgba(15,23,42,.55); display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
-            .ha-modal.show { display: flex; }
-            .ha-box { background: #fff; border-radius: 14px; width: 100%; max-width: 860px; box-shadow: 0 25px 60px rgba(0,0,0,.25); }
-            .dark .ha-box { background: #263240; color: #e2e8f0; }
-            .ha-box-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #e5e7eb; }
-            .dark .ha-box-head, .dark .ha-box-foot { border-color: rgba(255,255,255,.1); }
-            .ha-box-head h3 { font-size: 17px; font-weight: 700; }
-            .ha-box-body { padding: 20px 22px; }
-            .ha-box-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid #e5e7eb; }
-            .ha-field { margin-bottom: 14px; }
-            .ha-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-            .ha-input { width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background: #fff; color: inherit; }
-            .dark .ha-input { background: #1d2630; border-color: rgba(255,255,255,.15); }
-            .ha-input:focus { outline: none; border-color: #04a9f5; box-shadow: 0 0 0 3px rgba(4,169,245,.15); }
-            .ha-grup { border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
-            .dark .ha-grup { border-color: rgba(255,255,255,.1); }
-            .ha-grup-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8fafc; font-weight: 700; font-size: 13px; }
-            .dark .ha-grup-head { background: rgba(255,255,255,.04); }
-            .ha-grup-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2px 12px; padding: 10px 14px; }
-            .ha-cek { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 5px 0; cursor: pointer; }
-            .ha-cek input { width: 16px; height: 16px; accent-color: #04a9f5; }
-            .ha-cek.kunci { opacity: .75; cursor: default; }
-            .ha-switch { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px dashed #cbd5e1; border-radius: 10px; margin-bottom: 14px; font-size: 13px; cursor: pointer; }
-            .ha-switch input { width: 18px; height: 18px; accent-color: #04a9f5; }
-            .ha-mati { opacity: .45; pointer-events: none; }
+            .ha-modal {
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                background: rgba(15, 23, 42, .55);
+                display: none;
+                align-items: flex-start;
+                justify-content: center;
+                padding: 40px 16px;
+                overflow-y: auto;
+            }
+
+            .ha-modal.show {
+                display: flex;
+            }
+
+            .ha-box {
+                background: #fff;
+                border-radius: 14px;
+                width: 100%;
+                max-width: 860px;
+                box-shadow: 0 25px 60px rgba(0, 0, 0, .25);
+            }
+
+            .dark .ha-box {
+                background: #263240;
+                color: #e2e8f0;
+            }
+
+            .ha-box-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 18px 22px;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .dark .ha-box-head,
+            .dark .ha-box-foot {
+                border-color: rgba(255, 255, 255, .1);
+            }
+
+            .ha-box-head h3 {
+                font-size: 17px;
+                font-weight: 700;
+            }
+
+            .ha-box-body {
+                padding: 20px 22px;
+            }
+
+            .ha-box-foot {
+                display: flex;
+                justify-content: flex-end;
+                gap: 8px;
+                padding: 14px 22px;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .ha-field {
+                margin-bottom: 14px;
+            }
+
+            .ha-field label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 6px;
+            }
+
+            .ha-input {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                font-size: 14px;
+                background: #fff;
+                color: inherit;
+            }
+
+            .dark .ha-input {
+                background: #1d2630;
+                border-color: rgba(255, 255, 255, .15);
+            }
+
+            .ha-input:focus {
+                outline: none;
+                border-color: #04a9f5;
+                box-shadow: 0 0 0 3px rgba(4, 169, 245, .15);
+            }
+
+            .ha-grup {
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                margin-bottom: 12px;
+                overflow: hidden;
+            }
+
+            .dark .ha-grup {
+                border-color: rgba(255, 255, 255, .1);
+            }
+
+            .ha-grup-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 14px;
+                background: #f8fafc;
+                font-weight: 700;
+                font-size: 13px;
+            }
+
+            .dark .ha-grup-head {
+                background: rgba(255, 255, 255, .04);
+            }
+
+            .ha-grup-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 2px 12px;
+                padding: 10px 14px;
+            }
+
+            .ha-cek {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                padding: 5px 0;
+                cursor: pointer;
+            }
+
+            .ha-cek input {
+                width: 16px;
+                height: 16px;
+                accent-color: #04a9f5;
+            }
+
+            .ha-cek.kunci {
+                opacity: .75;
+                cursor: default;
+            }
+
+            .ha-switch {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 14px;
+                border: 1px dashed #cbd5e1;
+                border-radius: 10px;
+                margin-bottom: 14px;
+                font-size: 13px;
+                cursor: pointer;
+            }
+
+            .ha-switch input {
+                width: 18px;
+                height: 18px;
+                accent-color: #04a9f5;
+            }
+
+            .ha-mati {
+                opacity: .45;
+                pointer-events: none;
+            }
         </style>
 
         <div class="rfo-page p-6">
             <!-- JUDUL -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-4">
-                    <span class="rfo-title-ic"><i class="ti ti-shield-lock"></i></span>
-                    <h1 class="rfo-title">Hak Akses</h1>
+                    <span class="rfo-title-ic is-sky"><i class="ti ti-shield-lock"></i></span>
+                    <div>
+                        <h1 class="rfo-title">Hak Akses</h1>
+                        <p class="rfo-subtitle">Atur role setiap akun &amp; halaman yang boleh dibuka oleh setiap role</p>
+                    </div>
                 </div>
                 <?php if ($tersedia) : ?>
                     <button type="button" class="rfo-btn rfo-btn-blue" onclick="bukaRole(0)">
@@ -601,7 +958,9 @@
                                                     $jml = count($a['halaman']);
                                                 } else {
                                                     foreach ($roles as $r) {
-                                                        if ((int) $r['id'] === (int) $a['role_id']) { $jml = count($r['halaman']); }
+                                                        if ((int) $r['id'] === (int) $a['role_id']) {
+                                                            $jml = count($r['halaman']);
+                                                        }
                                                     }
                                                 }
                                             }
@@ -716,14 +1075,20 @@
         </div>
 
         <script>
-            const HA_ROLES = <?= json_encode(array_map(static fn ($r) => [
-                'id' => (int) $r['id'], 'nama' => $r['nama'], 'keterangan' => $r['keterangan'],
-                'is_admin' => (int) $r['is_admin'] === 1, 'halaman' => $r['halaman'],
-            ], $roles), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
-            const HA_AKUN = <?= json_encode(array_map(static fn ($a) => [
-                'id' => (int) $a['id'], 'username' => $a['username'], 'role_id' => (int) $a['role_id'],
-                'akses_khusus' => (int) $a['akses_khusus'] === 1, 'halaman' => $a['halaman'],
-            ], $akun), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
+            const HA_ROLES = <?= json_encode(array_map(static fn($r) => [
+                                    'id' => (int) $r['id'],
+                                    'nama' => $r['nama'],
+                                    'keterangan' => $r['keterangan'],
+                                    'is_admin' => (int) $r['is_admin'] === 1,
+                                    'halaman' => $r['halaman'],
+                                ], $roles), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
+            const HA_AKUN = <?= json_encode(array_map(static fn($a) => [
+                                'id' => (int) $a['id'],
+                                'username' => $a['username'],
+                                'role_id' => (int) $a['role_id'],
+                                'akses_khusus' => (int) $a['akses_khusus'] === 1,
+                                'halaman' => $a['halaman'],
+                            ], $akun), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
 
             const roleById = id => HA_ROLES.find(r => r.id === id);
 
@@ -739,10 +1104,21 @@
             if (location.hash === '#akun') pilihTab('akun');
 
             // modal
-            function bukaModal(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow = 'hidden'; }
-            function tutupModal(id) { document.getElementById(id).classList.remove('show'); document.body.style.overflow = ''; }
-            document.querySelectorAll('.ha-modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) tutupModal(m.id); }));
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.ha-modal.show').forEach(m => tutupModal(m.id)); });
+            function bukaModal(id) {
+                document.getElementById(id).classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function tutupModal(id) {
+                document.getElementById(id).classList.remove('show');
+                document.body.style.overflow = '';
+            }
+            document.querySelectorAll('.ha-modal').forEach(m => m.addEventListener('click', e => {
+                if (e.target === m) tutupModal(m.id);
+            }));
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') document.querySelectorAll('.ha-modal.show').forEach(m => tutupModal(m.id));
+            });
 
             // centang halaman di dalam wadah
             function isiCentang(wadah, daftar) {
@@ -750,6 +1126,7 @@
                 wadah.querySelectorAll('input[name="halaman[]"]').forEach(c => c.checked = set.has(c.value.toLowerCase()));
                 perbaruiHitung(wadah);
             }
+
             function perbaruiHitung(wadah) {
                 wadah.querySelectorAll('.ha-grup').forEach(g => {
                     if (!g.querySelector('.ha-semua')) return; // grup Informasi (terkunci)
@@ -769,6 +1146,7 @@
                     perbaruiHitung(w);
                 });
             });
+
             function setAktif(wadah, aktif) {
                 wadah.classList.toggle('ha-mati', !aktif);
                 wadah.querySelectorAll('input[name="halaman[]"]').forEach(c => c.disabled = !aktif);
@@ -789,15 +1167,28 @@
                 bukaModal('modalRole');
                 setTimeout(() => document.getElementById('roleNama').focus(), 50);
             }
+
             function hapusRole(id, nama, jumlah) {
                 if (jumlah > 0) {
-                    Swal.fire({ icon: 'info', title: 'Role masih dipakai', text: 'Role "' + nama + '" masih dipakai ' + jumlah + ' akun. Pindahkan akunnya ke role lain dulu di tab Akun.', confirmButtonColor: '#04a9f5' });
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Role masih dipakai',
+                        text: 'Role "' + nama + '" masih dipakai ' + jumlah + ' akun. Pindahkan akunnya ke role lain dulu di tab Akun.',
+                        confirmButtonColor: '#04a9f5'
+                    });
                     return;
                 }
                 Swal.fire({
-                    title: 'Hapus role "' + nama + '"?', icon: 'warning', showCancelButton: true,
-                    confirmButtonColor: '#dc2626', cancelButtonColor: '#6b7280', confirmButtonText: 'Ya, Hapus', cancelButtonText: 'Batal'
-                }).then(r => { if (r.isConfirmed) location.href = '<?= site_url('HakAkses/role/delete/') ?>' + id; });
+                    title: 'Hapus role "' + nama + '"?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal'
+                }).then(r => {
+                    if (r.isConfirmed) location.href = '<?= site_url('HakAkses/role/delete/') ?>' + id;
+                });
             }
 
             // ===== akun =====
@@ -821,6 +1212,7 @@
                     setAktif(wadah, false);
                 }
             }
+
             function bukaAkun(id) {
                 akunAktif = HA_AKUN.find(a => a.id === id);
                 if (!akunAktif) return;
@@ -903,9 +1295,13 @@
 
     <script>
         // notifikasi sukses
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const box = document.getElementById('successAlert');
-            if (box) setTimeout(() => { box.style.transition = 'all .5s ease'; box.style.opacity = '0'; setTimeout(() => box.remove(), 500); }, 3000);
+            if (box) setTimeout(() => {
+                box.style.transition = 'all .5s ease';
+                box.style.opacity = '0';
+                setTimeout(() => box.remove(), 500);
+            }, 3000);
         });
     </script>
 </body>
