@@ -522,7 +522,7 @@
                         <div class="ha-info">
                             <i class="ti ti-info-circle text-xl"></i>
                             <div>
-                                Halaman di bagian <b>Informasi</b> (Profile, Pengguna, Change Log) selalu bisa dibuka semua role.
+                                Semua halaman, termasuk bagian <b>Informasi</b> (Profile, Pengguna, Change Log), diatur per role / per akun.
                                 Menu <b>Hak Akses</b>, tambah akun, dan hapus akun hanya untuk <b>Administrator</b>.
                                 Halaman yang tidak dicentang otomatis hilang dari sidebar dan ditolak bila URL-nya dibuka langsung.
                             </div>
@@ -561,7 +561,6 @@
                                                 <?php if (count($r['halaman']) > 6) : ?>
                                                     <span class="ha-chip">+<?= count($r['halaman']) - 6 ?> lainnya</span>
                                                 <?php endif; ?>
-                                                <span class="ha-chip">+ Informasi</span>
                                             </div>
                                         <?php endif; ?>
                                         <div class="ha-actions">
@@ -624,9 +623,9 @@
                                                     <?php if ($admin) : ?>
                                                         Semua halaman
                                                     <?php elseif ($khusus) : ?>
-                                                        <span class="ha-badge">Akses khusus</span> <?= $jml ?> halaman + Informasi
+                                                        <span class="ha-badge">Akses khusus</span> <?= $jml ?> halaman
                                                     <?php else : ?>
-                                                        Ikut role &middot; <?= $jml ?> halaman + Informasi
+                                                        Ikut role &middot; <?= $jml ?> halaman
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>

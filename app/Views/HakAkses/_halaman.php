@@ -25,16 +25,7 @@
         </div>
     <?php endforeach; ?>
 
-    <div class="ha-grup">
-        <div class="ha-grup-head">
-            <span><i class="ti ti-lock"></i> Informasi</span>
-            <span class="ha-meta">selalu terbuka</span>
-        </div>
-        <div class="ha-grup-list">
-            <?php foreach (['Profile', 'Pengguna', 'Change Log'] as $l) : ?>
-                <label class="ha-cek kunci"><input type="checkbox" checked disabled><span><?= $l ?></span></label>
-            <?php endforeach; ?>
-            <label class="ha-cek kunci"><input type="checkbox" disabled><span>Hak Akses (khusus Administrator)</span></label>
-        </div>
+    <div class="ha-meta" style="padding:2px 4px">
+        <i class="ti ti-lock"></i> Menu <b>Hak Akses</b>, tambah akun &amp; hapus akun selalu khusus Administrator.
     </div>
 </div>

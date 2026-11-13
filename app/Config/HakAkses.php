@@ -91,17 +91,21 @@ class HakAkses extends BaseConfig
             'Calendar'              => 'Jadwal NOC - Shift',
             'Piket'                 => 'Jadwal NOC - Piket',
         ],
+        'Informasi' => [
+            'Profile'  => 'Profile',
+            'settings' => 'Pengguna',
+            'Logs'     => 'Change Log',
+        ],
     ];
 
     /**
-     * Bagian Informasi: selalu bisa dibuka semua role (default).
+     * Selalu boleh untuk semua akun yang login (bukan halaman menu):
+     * logout & ganti password akun sendiri.
+     * Halaman Informasi (Profile, Pengguna, Change Log) diatur Administrator lewat grup 'Informasi' di atas.
      *
      * @var list<string>
      */
     public array $selaluBoleh = [
-        'Profile',
-        'settings',
-        'Logs',
         'forgot-password',
         'logout',
     ];

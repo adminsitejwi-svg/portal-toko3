@@ -43,7 +43,17 @@ class AuthFilter implements FilterInterface
                 ]);
             }
 
-            return redirect()->to(site_url($akses->halamanAwal()))
+            $tujuan = $akses->halamanAwal();
+
+            // akun tidak diberi halaman apa pun -> keluarkan (hindari redirect berputar)
+            if ($tujuan === null) {
+                session()->destroy();
+
+                return redirect()->to('/login')
+                    ->with('error', 'Akun Anda belum diberi hak akses ke halaman mana pun. Hubungi Administrator.');
+            }
+
+            return redirect()->to(site_url($tujuan))
                 ->with('akses_ditolak', 'Anda tidak punya hak akses ke halaman tersebut. Hubungi Administrator.');
         }
     }

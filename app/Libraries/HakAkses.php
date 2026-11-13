@@ -183,8 +183,11 @@ class HakAkses
         return $out;
     }
 
-    /** Halaman pertama yang boleh dibuka (tujuan setelah login / saat akses ditolak). */
-    public function halamanAwal(): string
+    /**
+     * Halaman pertama yang boleh dibuka (tujuan setelah login / saat akses ditolak).
+     * null = akun ini tidak diberi halaman apa pun.
+     */
+    public function halamanAwal(): ?string
     {
         if ($this->bisa('dashboard-manager')) {
             return 'dashboard-manager';
@@ -196,6 +199,6 @@ class HakAkses
             }
         }
 
-        return 'Profile';
+        return null;
     }
 }

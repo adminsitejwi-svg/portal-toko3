@@ -51,9 +51,13 @@ INSERT IGNORE INTO `m_role` (`nama`, `keterangan`, `is_admin`, `created_at`) VAL
   ('Support',       'Default: Rekap Data Toko + Informasi',              0, NOW()),
   ('User',          'Default: Rekap Data Toko + Informasi (role akun baru)', 0, NOW());
 
--- halaman default Support & User: Rekap Data Toko (Informasi selalu terbuka untuk semua role)
+-- halaman default Support & User: Rekap Data Toko + Informasi (Profile, Pengguna, Change Log)
+-- (semuanya bisa diubah Administrator lewat menu Hak Akses)
 INSERT IGNORE INTO `m_role_akses` (`role_id`, `halaman`)
-  SELECT `id`, 'RekapDataMidi' FROM `m_role` WHERE `nama` IN ('Support', 'User');
+  SELECT r.`id`, h.`halaman`
+    FROM `m_role` r
+    JOIN (SELECT 'RekapDataMidi' AS `halaman` UNION ALL SELECT 'Profile' UNION ALL SELECT 'settings' UNION ALL SELECT 'Logs') h
+   WHERE r.`nama` IN ('Support', 'User');
 
 -- akun lama -> Administrator
 UPDATE `login`

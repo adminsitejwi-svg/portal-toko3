@@ -49,6 +49,13 @@ class Login extends BaseController
         \App\Libraries\HakAkses::reset();
         $tujuan = \App\Libraries\HakAkses::instance()->halamanAwal();
 
+        if ($tujuan === null) {
+            session()->destroy();
+
+            return redirect()->to('/login')
+                ->with('error', 'Akun Anda belum diberi hak akses ke halaman mana pun. Hubungi Administrator.');
+        }
+
           return redirect()->to(site_url($tujuan))
             ->with('success', 'Selamat datang, ' . $user['username'] . '');
     }
