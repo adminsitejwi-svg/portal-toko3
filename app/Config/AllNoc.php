@@ -29,7 +29,7 @@ class AllNoc extends BaseConfig
         ['route' => 'DataCctv', 'judul' => 'Data CCTV', 'ikon' => 'ti-device-cctv', 'info' => 'Inventaris kamera CCTV & NVR beserta IP & lokasi.', 'soon' => false],
         ['route' => 'IpPublic',        'judul' => 'Data IP Public',              'ikon' => 'ti-world',           'info' => 'Alokasi blok & alamat IP public.', 'soon' => false],
         ['route' => 'IpPrivate',       'judul' => 'Data IP Private',             'ikon' => 'ti-lock',            'info' => 'Alokasi subnet & alamat IP private.', 'soon' => true],
-        ['route' => 'FtpClient',       'judul' => 'FTP Client',                  'ikon' => 'ti-folder-share',    'info' => 'Akses file server FTP NOC dari portal.', 'soon' => true],
+        ['route' => 'FtpClient',       'judul' => 'FTP Client',                  'ikon' => 'ti-folder-share',    'info' => 'Akses file server FTP NOC dari portal.', 'soon' => false],
         ['route' => 'DataOdcOdp',     'judul' => 'Data ODC & ODP',            'ikon' => 'ti-box-model-2',      'info' => 'Data ODC (Optical Distribution Cabinet) & ODP (Optical Distribution Point).', 'soon' => false],
         ['route' => 'Kmz',            'judul' => 'KMZ',                       'ikon' => 'ti-map-2',            'info' => 'File peta KMZ jalur kabel & titik jaringan.', 'soon' => false],
         ['route' => 'DevicesBackbone', 'judul' => 'Devices Backbone',            'ikon' => 'ti-router',          'info' => 'Perangkat jaringan backbone.', 'soon' => false],
@@ -58,7 +58,7 @@ class AllNoc extends BaseConfig
         ['route' => 'BastAlfamart',   'judul' => 'BAST Alfamart',           'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Alfamart.', 'soon' => false],
         ['route' => 'BastDandan',     'judul' => 'BAST Dandan',             'ikon' => 'ti-building-store',      'info' => 'Berita Acara Serah Terima toko Dandan.', 'soon' => false],
         ['route' => 'PksContract',    'judul' => 'PKS & Contract',          'ikon' => 'ti-file-text',           'info' => 'Perjanjian Kerja Sama & kontrak pelanggan.', 'soon' => false],
-        ['route' => 'SuratTugas',     'judul' => 'Surat Tugas',             'ikon' => 'ti-file-text',           'info' => 'Surat tugas untuk Dinas.', 'soon' => true],
+        ['route' => 'SuratTugas',     'judul' => 'Surat Tugas',             'ikon' => 'ti-file-text',           'info' => 'Surat tugas untuk Dinas.', 'soon' => false],
     ];
 
     // Menu yang masih "Segera Hadir" (All NOC, Report NOC & Activation), dicari berdasarkan route

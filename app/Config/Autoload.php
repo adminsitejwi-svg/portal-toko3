@@ -39,6 +39,10 @@ class Autoload extends AutoloadConfig
      */
     public $psr4 = [
         APP_NAMESPACE => APPPATH,
+        // SFTP untuk FTP Client (phpseclib/phpseclib + dependensinya); didaftarkan di sini supaya
+        // tetap terbaca walau vendor/composer/autoload belum di-generate ulang
+        'phpseclib3'             => ROOTPATH . 'vendor/phpseclib/phpseclib/phpseclib',
+        'ParagonIE\ConstantTime' => ROOTPATH . 'vendor/paragonie/constant_time_encoding/src',
     ];
 
     /**
@@ -75,7 +79,10 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $files = [];
+    public $files = [
+        // pemeriksaan awal phpseclib (bagian dari autoload composer phpseclib)
+        ROOTPATH . 'vendor/phpseclib/phpseclib/phpseclib/bootstrap.php',
+    ];
 
     /**
      * -------------------------------------------------------------------

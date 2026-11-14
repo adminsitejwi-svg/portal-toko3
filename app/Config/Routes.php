@@ -328,9 +328,33 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     // Menu All NOC yang belum dibuat: tampil halaman "Segera Hadir" (nama & ikon di Config/AllNoc.php)
     // (saat halamannya jadi, ganti handler route-nya & ubah 'soon' di Config/AllNoc.php)
-    $routes->get('FtpClient', 'ComingSoon::show/FtpClient');
+
+    // FTP Client (menu Data Teknis NOC): connect FTP/FTPS/SFTP, jelajahi file, import file/folder/ZIP
+    // (diekstrak) untuk backup, download, rename, hapus, buat folder & simpan akun (password terenkripsi)
+    $routes->get('FtpClient', 'FtpClient::index');
+    $routes->post('FtpClient/connect', 'FtpClient::connect');
+    $routes->post('FtpClient/disconnect', 'FtpClient::disconnect');
+    $routes->get('FtpClient/list', 'FtpClient::list');
+    $routes->post('FtpClient/mkdir', 'FtpClient::mkdir');
+    $routes->post('FtpClient/rename', 'FtpClient::rename');
+    $routes->post('FtpClient/delete', 'FtpClient::delete');
+    $routes->get('FtpClient/download', 'FtpClient::download');
+    $routes->post('FtpClient/upload', 'FtpClient::upload');
+    $routes->post('FtpClient/catat', 'FtpClient::catat');
+    $routes->post('FtpClient/akun/delete/(:num)', 'FtpClient::hapusAkun/$1');
+
     $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
-    $routes->get('SuratTugas', 'ComingSoon::show/SuratTugas');
+
+    // Surat Tugas (menu Activation): tampilan & fitur seperti RFO (tanpa kirim email),
+    // struktur dari 17 SPK NCIX KARET_OCT.pdf
+    $routes->get('SuratTugas', 'SuratTugas::index');
+    $routes->get('SuratTugas/create', 'SuratTugas::create');
+    $routes->post('SuratTugas/save', 'SuratTugas::save');
+    $routes->get('SuratTugas/edit/(:num)', 'SuratTugas::edit/$1');
+    $routes->post('SuratTugas/update', 'SuratTugas::update');
+    $routes->get('SuratTugas/delete/(:num)', 'SuratTugas::delete/$1');
+    $routes->get('SuratTugas/view/(:num)', 'SuratTugas::view/$1');
+    $routes->get('SuratTugas/ttd/(:num)', 'SuratTugas::ttd/$1');
 
     // Data IP Public (menu Data Teknis NOC): Judul (per perusahaan) -> Sub Judul -> Subnet, form berupa pop up
     $routes->get('IpPublic', 'IpPublic::index');
