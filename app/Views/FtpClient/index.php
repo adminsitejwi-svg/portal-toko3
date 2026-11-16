@@ -1137,8 +1137,31 @@
             return Swal.fire({ icon, title, text, confirmButtonColor: '#2f6bff' });
         }
 
+        // Notifikasi sama seperti halaman lain (kartu hijau/merah di tengah atas + progress bar)
         function toast(icon, title) {
-            Swal.fire({ toast: true, position: 'top-end', icon, title, showConfirmButton: false, timer: 2200, timerProgressBar: true });
+            const sukses = icon === 'success';
+            document.querySelectorAll('.fc-notif').forEach(el => el.remove());
+            const box = document.createElement('div');
+            box.className = 'fc-notif fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4';
+            box.innerHTML =
+                '<div class="' + (sukses ? 'bg-green-500' : 'bg-red-500') + ' text-white rounded-xl shadow-xl overflow-hidden">' +
+                    '<div class="flex items-center gap-3 px-5 py-4">' +
+                        '<i class="ti ' + (sukses ? 'ti-circle-check' : 'ti-alert-circle') + ' text-3xl"></i>' +
+                        '<div><h4 class="font-bold">' + (sukses ? 'Berhasil' : 'Gagal') + '</h4><p class="text-sm"></p></div>' +
+                    '</div>' +
+                    '<div class="h-1 ' + (sukses ? 'bg-green-400' : 'bg-red-400') + '"><div class="h-full bg-white w-full"></div></div>' +
+                '</div>';
+            box.querySelector('p').textContent = title || '';
+            document.body.appendChild(box);
+            const bar = box.querySelector('.h-1 > div');
+            bar.style.transition = 'width 3s linear';
+            setTimeout(() => { bar.style.width = '0%'; }, 100);
+            setTimeout(() => {
+                box.style.transition = 'all .5s ease';
+                box.style.opacity = '0';
+                box.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => box.remove(), 500);
+            }, 3000);
         }
 
         async function minta(url, data, method) {

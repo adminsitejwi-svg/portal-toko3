@@ -121,8 +121,9 @@ $baris = [
         }
 
         .st-alat {
-            margin: 26px 0 0 118px;
-            width: calc(100% - 118px);
+            /* Lebar tabel sama dengan paragraf "Bersama ini kami ..." */
+            margin: 26px 0 0;
+            width: 100%;
             border-collapse: collapse;
             font-size: 14px;
         }
@@ -270,7 +271,7 @@ $baris = [
 
             .st-logo { margin-left: -88px; }
             .st-detail { margin-left: 48px; }
-            .st-alat { margin-left: 118px; width: calc(100% - 118px); }
+            .st-alat { margin-left: 0; width: 100%; }
             .st-sign { margin-left: 338px; width: auto; }
             .st-foot { left: 96px; }
         }
