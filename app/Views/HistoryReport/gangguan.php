@@ -1713,7 +1713,15 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium">Kapasitas (Mbps) <span class="text-red-500">*</span></label>
-                        <input type="text" name="kapasitas_mbps" id="a_kapasitas_mbps" maxlength="50" required placeholder="Contoh: 100" class="w-full border rounded-lg p-3">
+                        <!-- pilihan kapasitas; "Isi Manual" memunculkan input teks. Nilai yang dikirim tetap dari input a_kapasitas_mbps -->
+                        <select id="a_kapasitas_pilih" onchange="pilihKapasitas()" required class="w-full border rounded-lg p-3">
+                            <option value="">-- Pilih Kapasitas --</option>
+                            <?php foreach (['35', '50', '100', '200'] as $kap) : ?>
+                                <option value="<?= $kap ?>"><?= $kap ?> Mbps</option>
+                            <?php endforeach; ?>
+                            <option value="manual">Isi Manual...</option>
+                        </select>
+                        <input type="text" name="kapasitas_mbps" id="a_kapasitas_mbps" maxlength="50" placeholder="Masukan kapasitas, contoh: 300" class="w-full border rounded-lg p-3 mt-2 hidden">
                     </div>
                     <div>
                         <label class="text-sm font-medium">SN <span class="text-red-500">*</span></label>
@@ -1978,8 +1986,35 @@
             urlUpdate: "<?= site_url('HistoryReport/aktivasi/update') ?>",
             fields: ['id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'],
             wajib: ['id_pelanggan', 'nama_pelanggan', 'kapasitas_mbps', 'sn', 'tanggal_aktivasi'],
+            // edit / gagal validasi: pilih opsi yang cocok, selain itu tampilkan sebagai isi manual
+            fill: function(d) {
+                const nilai = String(d.kapasitas_mbps || '').trim();
+                const angka = nilai.replace(/\s*mbps$/i, '');
+                const ada = PILIHAN_KAPASITAS.includes(angka);
+                document.getElementById('a_kapasitas_pilih').value = nilai === '' ? '' : (ada ? angka : 'manual');
+                if (ada) document.getElementById('a_kapasitas_mbps').value = angka;
+                pilihKapasitas(false);
+            },
         };
         const openAktivasiModal = d => openFormModal(FORM_AKTIVASI, d);
+
+        // Kapasitas (Mbps): dropdown 35/50/100/200 atau isi manual (input teks wajib diisi hanya saat manual)
+        const PILIHAN_KAPASITAS = ['35', '50', '100', '200'];
+
+        function pilihKapasitas(focus = true) {
+            const sel = document.getElementById('a_kapasitas_pilih');
+            const input = document.getElementById('a_kapasitas_mbps');
+            const manual = sel.value === 'manual';
+            input.classList.toggle('hidden', !manual);
+            input.required = manual;
+            if (manual) {
+                // nilai pilihan sebelumnya jangan terbawa ke isian manual
+                if (focus && PILIHAN_KAPASITAS.includes(input.value)) input.value = '';
+                if (focus) input.focus();
+            } else {
+                input.value = sel.value;
+            }
+        }
 
         // ====== CATATAN: beberapa baris poin catatan ======
         function addCatatanRow(value, focus) {

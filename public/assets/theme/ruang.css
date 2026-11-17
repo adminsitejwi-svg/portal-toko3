@@ -408,7 +408,7 @@ body::-webkit-scrollbar-track {
 #sidebar.pc-sidebar .submenu a:hover::before,
 #sidebar.pc-sidebar .submenu a.ra-current::before {
     background: #60a5fa;
-    box-shadow: 0 0 6px rgba(96, 165, 250, .9);
+    box-shadow: none;
 }
 
 /* scrollbar menu */
@@ -1282,7 +1282,7 @@ html:not(.dark) body::-webkit-scrollbar-track {
     z-index: -1;
     border-radius: inherit;
     background: linear-gradient(135deg, #14336b 0%, #0d2148 100%);
-    box-shadow: inset 3px 0 0 #38bdf8, 0 0 14px rgba(56, 189, 248, .18);
+    box-shadow: inset 3px 0 0 #38bdf8;
     opacity: 0;
     pointer-events: none;
     transition: opacity .5s cubic-bezier(.22, 1, .36, 1);
@@ -1349,7 +1349,7 @@ html:not(.dark) body::-webkit-scrollbar-track {
 #sidebar.pc-sidebar .pc-link.active .pc-micon {
     border-color: rgba(56, 189, 248, .55);
     background: rgba(56, 189, 248, .12);
-    box-shadow: 0 0 10px rgba(56, 189, 248, .25);
+    box-shadow: none;
     color: #7dd3fc !important;
 }
 

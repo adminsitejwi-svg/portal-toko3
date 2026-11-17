@@ -16,6 +16,13 @@ class App extends BaseConfig
         if (preg_match('/^[a-z0-9-]+(\.[a-z0-9-]+)*\.ngrok(-free)?\.(app|dev|io)$/i', $host)) {
             $this->baseURL = 'https://' . strtolower($host) . '/';
         }
+        // Akses lewat Apache XAMPP di port 80/443 (http(s)://localhost/portal-toko3/public/):
+        // link & aset mengikuti alamat itu. Akses lewat spark serve (localhost:8080) tidak berubah.
+        elseif (preg_match('/^(localhost|127\.0\.0\.1)$/i', $host)) {
+            $https  = ! empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off';
+            $folder = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+            $this->baseURL = ($https ? 'https' : 'http') . '://' . strtolower($host) . $folder . '/';
+        }
     }
 
     /**

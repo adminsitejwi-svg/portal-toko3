@@ -302,6 +302,23 @@
             color: #16a34a;
         }
 
+        /* deskripsi subnet di bawah alamat subnet pada pohon */
+        .ip-leaf-desk {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-top: 1px;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--rf-muted);
+        }
+
+        .ip-item.is-aktif .ip-leaf-desk {
+            color: rgba(255, 255, 255, .85);
+        }
+
         .ip-caret {
             font-size: 13px;
             color: var(--rf-muted);
@@ -754,16 +771,16 @@
                     </div>
                     <div class="ip-tree" id="ipTree">
                         <?php foreach ($pohon as $p => $daftarJudul) : ?>
-                            <?php $jmlP = array_sum(array_map($hitungJudul, $daftarJudul)); ?>
+                            <?php $jmlP = count($daftarJudul); // perusahaan: jumlah judul; judul: jumlah subnet ?>
                             <div class="ip-grup is-buka">
                                 <a class="ip-item ip-pt" data-pilih="perusahaan" data-nama="<?= esc($p, 'attr') ?>">
-                                    <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-building-skyscraper"></i><span><?= esc($p) ?></span><em><?= $jmlP ?></em>
+                                    <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-building-skyscraper"></i><span><?= esc($p) ?></span><em title="Jumlah judul"><?= $jmlP ?></em>
                                 </a>
                                 <div class="ip-anak">
                                     <?php foreach ($daftarJudul as $jid => $nj) : ?>
                                         <div class="ip-grup">
                                             <a class="ip-item ip-folder" data-pilih="judul" data-id="<?= (int) $jid ?>">
-                                                <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-folder"></i><span><?= esc($nj['data']['judul']) ?></span><em><?= $hitungJudul($nj) ?></em>
+                                                <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-folder"></i><span><?= esc($nj['data']['judul']) ?></span><em title="Jumlah subnet"><?= $hitungJudul($nj) ?></em>
                                             </a>
                                             <div class="ip-anak">
                                                 <?php foreach ($nj['sub'] as $sid => $ns) : ?>
@@ -773,13 +790,13 @@
                                                         </a>
                                                         <div class="ip-anak">
                                                             <?php foreach ($ns['subnet'] as $n) : ?>
-                                                                <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?></span></a>
+                                                                <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>" title="<?= esc(trim($n['subnet'] . ' - ' . ($n['deskripsi'] ?? ''), ' -'), 'attr') ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?><?php if (trim($n['deskripsi'] ?? '') !== '') : ?><small class="ip-leaf-desk"><?= esc($n['deskripsi']) ?></small><?php endif; ?></span></a>
                                                             <?php endforeach; ?>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
                                                 <?php foreach ($nj['subnet'] as $n) : ?>
-                                                    <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?></span></a>
+                                                    <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>" title="<?= esc(trim($n['subnet'] . ' - ' . ($n['deskripsi'] ?? ''), ' -'), 'attr') ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?><?php if (trim($n['deskripsi'] ?? '') !== '') : ?><small class="ip-leaf-desk"><?= esc($n['deskripsi']) ?></small><?php endif; ?></span></a>
                                                 <?php endforeach; ?>
                                             </div>
                                         </div>
