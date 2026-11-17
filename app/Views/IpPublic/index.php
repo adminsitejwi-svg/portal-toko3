@@ -1364,9 +1364,9 @@
 
             if (window.TABEL_SUBNET) {
                 if (jenis === 'sub') {
-                    // Ketika memencet Sub Judul: tampilkan hanya Subnet dan Aksi
-                    window.TABEL_SUBNET.columns([2, 7]).visible(true);
-                    window.TABEL_SUBNET.columns([0, 1, 3, 4, 5, 6]).visible(false);
+                    // Ketika memencet Sub Judul: tampilkan Subnet Description, Subnet, dan Aksi
+                    window.TABEL_SUBNET.columns([1, 2, 7]).visible(true);
+                    window.TABEL_SUBNET.columns([0, 3, 4, 5, 6]).visible(false);
                 } else if (jenis === 'subnet') {
                     // Ketika memencet Subnet: tampilkan hanya Subnet Description, Subnet, dan Aksi
                     window.TABEL_SUBNET.columns([1, 2, 7]).visible(true);
