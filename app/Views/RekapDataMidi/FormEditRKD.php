@@ -319,6 +319,7 @@
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                         <li><a href="<?= site_url('InventoryKantor') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Asset Management</a></li>
+                        <li><a href="<?= site_url('DataTopologi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Topologi</a></li>
                     </ul>
                 </li>
 
@@ -416,6 +417,12 @@
             <?php endif; ?>
 
             <div class="rfo-panel rfo-form">
+                <?php
+                // Dokumen tersimpan sebagai file upload (uploads/rekap_toko/...) atau link/teks (mis. Google Drive)
+                $isLocalDoc = static fn($p) => is_string($p) && str_starts_with($p, 'uploads/rekap_toko/');
+                $docMode    = static fn(string $f) => old('mode_' . $f) ?? ($isLocalDoc($row[$f] ?? null) ? 'file' : 'link');
+                $docLink    = static fn(string $f) => old('link_' . $f) ?? ($isLocalDoc($row[$f] ?? null) ? '' : ($row[$f] ?? ''));
+                ?>
                 <form action="<?= site_url('RekapDataMidi/update') ?>" method="POST" enctype="multipart/form-data" id="reportForm">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= esc($row['id']) ?>">
@@ -517,21 +524,39 @@
                         <!-- Foto SN Fortigate -->
                         <div class="form-group md:col-span-2">
                             <label>Foto SN Fortigate <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="foto_sn_fortigate" id="r_foto_sn_fortigate"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                            <?php if (!empty($row['foto_sn_fortigate'])) : ?>
-                                <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
-                                    <span class="text-gray-500">File saat ini:</span>
-                                    <a href="<?= base_url($row['foto_sn_fortigate']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
-                                        <i class="ti ti-paperclip"></i> <?= esc(basename($row['foto_sn_fortigate'])) ?>
-                                    </a>
-                                    <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
-                                        <input type="checkbox" name="hapus_foto_sn_fortigate" value="1"> Hapus file
-                                    </label>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
-                            <?php endif; ?>
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_sn_fortigate" value="link" onchange="toggleDoc('foto_sn_fortigate')" <?= $docMode('foto_sn_fortigate') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_sn_fortigate" value="file" onchange="toggleDoc('foto_sn_fortigate')" <?= $docMode('foto_sn_fortigate') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_sn_fortigate" class="<?= $docMode('foto_sn_fortigate') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_sn_fortigate" id="r_link_foto_sn_fortigate" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_sn_fortigate')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_sn_fortigate" class="<?= $docMode('foto_sn_fortigate') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_sn_fortigate" id="r_foto_sn_fortigate"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <?php if ($isLocalDoc($row['foto_sn_fortigate'] ?? null)) : ?>
+                                    <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
+                                        <span class="text-gray-500">File saat ini:</span>
+                                        <a href="<?= base_url($row['foto_sn_fortigate']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
+                                            <i class="ti ti-paperclip"></i> <?= esc(basename($row['foto_sn_fortigate'])) ?>
+                                        </a>
+                                        <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                            <input type="checkbox" name="hapus_foto_sn_fortigate" value="1"> Hapus file
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- ID Pelanggan Jika Ada FO -->
@@ -546,21 +571,39 @@
                         <!-- SN ONT FO -->
                         <div class="form-group">
                             <label>SN ONT FO <span class="text-gray-400 font-normal">(JPG, PNG, Word, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="sn_ont_fo" id="r_sn_ont_fo"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                            <?php if (!empty($row['sn_ont_fo'])) : ?>
-                                <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
-                                    <span class="text-gray-500">File saat ini:</span>
-                                    <a href="<?= base_url($row['sn_ont_fo']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
-                                        <i class="ti ti-paperclip"></i> <?= esc(basename($row['sn_ont_fo'])) ?>
-                                    </a>
-                                    <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
-                                        <input type="checkbox" name="hapus_sn_ont_fo" value="1"> Hapus file
-                                    </label>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
-                            <?php endif; ?>
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_sn_ont_fo" value="link" onchange="toggleDoc('sn_ont_fo')" <?= $docMode('sn_ont_fo') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_sn_ont_fo" value="file" onchange="toggleDoc('sn_ont_fo')" <?= $docMode('sn_ont_fo') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_sn_ont_fo" class="<?= $docMode('sn_ont_fo') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_sn_ont_fo" id="r_link_sn_ont_fo" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('sn_ont_fo')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_sn_ont_fo" class="<?= $docMode('sn_ont_fo') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="sn_ont_fo" id="r_sn_ont_fo"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <?php if ($isLocalDoc($row['sn_ont_fo'] ?? null)) : ?>
+                                    <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
+                                        <span class="text-gray-500">File saat ini:</span>
+                                        <a href="<?= base_url($row['sn_ont_fo']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
+                                            <i class="ti ti-paperclip"></i> <?= esc(basename($row['sn_ont_fo'])) ?>
+                                        </a>
+                                        <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                            <input type="checkbox" name="hapus_sn_ont_fo" value="1"> Hapus file
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- SECTION: MODEM GSM 1 -->
@@ -607,21 +650,39 @@
                         <!-- Foto IMEI Modem 1 -->
                         <div class="form-group md:col-span-2">
                             <label>Foto IMEI Modem 1 <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="foto_imei_modem_1" id="r_foto_imei_modem_1"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
-                            <?php if (!empty($row['foto_imei_modem_1'])) : ?>
-                                <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
-                                    <span class="text-gray-500">File saat ini:</span>
-                                    <a href="<?= base_url($row['foto_imei_modem_1']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
-                                        <i class="ti ti-paperclip"></i> <?= esc(basename($row['foto_imei_modem_1'])) ?>
-                                    </a>
-                                    <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
-                                        <input type="checkbox" name="hapus_foto_imei_modem_1" value="1"> Hapus file
-                                    </label>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
-                            <?php endif; ?>
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_1" value="link" onchange="toggleDoc('foto_imei_modem_1')" <?= $docMode('foto_imei_modem_1') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_1" value="file" onchange="toggleDoc('foto_imei_modem_1')" <?= $docMode('foto_imei_modem_1') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_imei_modem_1" class="<?= $docMode('foto_imei_modem_1') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_imei_modem_1" id="r_link_foto_imei_modem_1" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_imei_modem_1')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_imei_modem_1" class="<?= $docMode('foto_imei_modem_1') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_imei_modem_1" id="r_foto_imei_modem_1"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <?php if ($isLocalDoc($row['foto_imei_modem_1'] ?? null)) : ?>
+                                    <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
+                                        <span class="text-gray-500">File saat ini:</span>
+                                        <a href="<?= base_url($row['foto_imei_modem_1']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
+                                            <i class="ti ti-paperclip"></i> <?= esc(basename($row['foto_imei_modem_1'])) ?>
+                                        </a>
+                                        <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                            <input type="checkbox" name="hapus_foto_imei_modem_1" value="1"> Hapus file
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- Nomor Telepon / MSISDN Modem 1 -->
@@ -680,6 +741,44 @@
                                     placeholder="Ketik Tipe Modem GSM 2 secara manual"
                                     value="<?= esc($manualValModem2) ?>"
                                     class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Foto IMEI Modem 2 -->
+                        <div class="form-group md:col-span-2">
+                            <label>Foto IMEI Modem 2 <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_2" value="link" onchange="toggleDoc('foto_imei_modem_2')" <?= $docMode('foto_imei_modem_2') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_2" value="file" onchange="toggleDoc('foto_imei_modem_2')" <?= $docMode('foto_imei_modem_2') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_imei_modem_2" class="<?= $docMode('foto_imei_modem_2') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_imei_modem_2" id="r_link_foto_imei_modem_2" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_imei_modem_2')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_imei_modem_2" class="<?= $docMode('foto_imei_modem_2') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_imei_modem_2" id="r_foto_imei_modem_2"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                                <?php if ($isLocalDoc($row['foto_imei_modem_2'] ?? null)) : ?>
+                                    <div class="mt-2 text-sm flex flex-wrap items-center gap-3">
+                                        <span class="text-gray-500">File saat ini:</span>
+                                        <a href="<?= base_url($row['foto_imei_modem_2']) ?>" target="_blank" rel="noopener" class="text-blue-600 hover:underline inline-flex items-center gap-1">
+                                            <i class="ti ti-paperclip"></i> <?= esc(basename($row['foto_imei_modem_2'])) ?>
+                                        </a>
+                                        <label class="inline-flex items-center gap-2 mb-0 text-sm font-normal text-red-600">
+                                            <input type="checkbox" name="hapus_foto_imei_modem_2" value="1"> Hapus file
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Pilih file baru untuk mengganti file saat ini.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -780,6 +879,21 @@
         const MAX_FILE = 5 * 1024 * 1024; // 5 MB
         const EXT_FILE = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
 
+        // Dokumen: tampilkan input link/teks atau input upload sesuai pilihan
+        const DOC_FIELDS = ['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'];
+
+        function docMode(f) {
+            const r = document.querySelector('input[name="mode_' + f + '"]:checked');
+            return r ? r.value : 'link';
+        }
+
+        function toggleDoc(f) {
+            const file = docMode(f) === 'file';
+            document.getElementById('wrap_link_' + f).classList.toggle('hidden', file);
+            document.getElementById('wrap_file_' + f).classList.toggle('hidden', !file);
+        }
+        DOC_FIELDS.forEach(toggleDoc);
+
         function toggleManual(selectId, wrapId, inputId) {
             const val = document.getElementById(selectId).value;
             const wrap = document.getElementById(wrapId);
@@ -841,10 +955,15 @@
                 {
                     id: 'r_foto_imei_modem_1',
                     label: 'Foto IMEI Modem 1'
+                },
+                {
+                    id: 'r_foto_imei_modem_2',
+                    label: 'Foto IMEI Modem 2'
                 }
             ];
 
             for (const f of fileFields) {
+                if (docMode(f.id.replace(/^r_/, '')) !== 'file') continue;
                 const file = document.getElementById(f.id).files[0];
                 if (file) {
                     const ext = file.name.split('.').pop().toLowerCase();

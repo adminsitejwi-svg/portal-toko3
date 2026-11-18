@@ -287,6 +287,7 @@
         'settings': 'ti-users',
         'surattugas': 'ti-file-text',
         'rekapdatamidi': 'ti-report-analytics',
+        'datatopologi': 'ti-topology-star-3',
         'logs': 'ti-history',
         'hakakses': 'ti-shield-lock'
     };

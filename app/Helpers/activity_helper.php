@@ -140,6 +140,7 @@ if (! function_exists('activity_label_action')) {
                 'md_data_perangkat'    => 'Data Rak DC - Data Perangkat',
                 'd_vendor'             => 'Data Vendor',
                 'md_netmon'            => 'NetMon',
+                'd_topologi'           => 'Data Topologi',
                 'md_vlan'              => 'Data VLAN',
                 'md_vlan_perangkat'    => 'Data VLAN - Mapping Perangkat',
                 'd_router'             => 'Data Router',

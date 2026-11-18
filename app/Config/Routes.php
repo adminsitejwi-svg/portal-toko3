@@ -615,10 +615,21 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('DataCctv/updateCctv', 'DataCctv::updateCctv');
     $routes->get('DataCctv/deleteCctv/(:num)', 'DataCctv::deleteCctv/$1');
 
+    $routes->get('DataTopologi', 'DataTopologi::index');
+    $routes->post('DataTopologi/save', 'DataTopologi::save');
+    $routes->post('DataTopologi/update', 'DataTopologi::update');
+    $routes->get('DataTopologi/view/(:num)', 'DataTopologi::view/$1');
+    $routes->get('DataTopologi/editor/(:num)', 'DataTopologi::editor/$1');
+    $routes->post('DataTopologi/simpanDiagram', 'DataTopologi::simpanDiagram');
+    $routes->get('DataTopologi/download/(:num)', 'DataTopologi::download/$1');
+    $routes->get('DataTopologi/delete/(:num)', 'DataTopologi::delete/$1');
+
     $routes->get('RekapDataMidi', 'RekapDataMidi::index');
     $routes->get('RekapDataMidi/FormTambahRKD', 'RekapDataMidi::create');
     $routes->post('RekapDataMidi/save', 'RekapDataMidi::save');
     $routes->get('RekapDataMidi/FormEditRKD/(:num)', 'RekapDataMidi::edit/$1');
     $routes->post('RekapDataMidi/update', 'RekapDataMidi::update');
+    $routes->post('RekapDataMidi/import', 'RekapDataMidi::import');
+    $routes->post('RekapDataMidi/exportExcel', 'RekapDataMidi::exportExcel');
     $routes->get('RekapDataMidi/delete/(:num)', 'RekapDataMidi::delete/$1');
 });

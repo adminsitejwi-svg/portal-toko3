@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="<?= base_url('favicon-N.png') ?>?v=4">
     <title>Rekap Data Toko</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <?= csrf_meta() ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -252,6 +253,43 @@
         .dark .sat-tab.active {
             color: #8996a4;
         }
+        /* ===== form import (sama seperti halaman Jadwal Shift) ===== */
+        .f-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #37474f;
+            margin-bottom: 6px;
+        }
+
+        .f-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            color: #37474f;
+        }
+
+        .f-input:focus {
+            border-color: #04a9f5;
+            box-shadow: 0 0 0 3px rgba(4, 169, 245, .15);
+        }
+
+        .btn2 {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        /* SweetAlert (konfirmasi Ganti, info import, hapus) selalu di atas modal & sidebar */
+        .swal2-container {
+            z-index: 100001 !important;
+        }
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
@@ -259,17 +297,9 @@
 </head>
 
 <body class="text-[#37474f] dark:text-[#bfc8d6]">
-    <!-- ============ SIDEBAR ============ -->
-    <nav id="sidebar" class="pc-sidebar fixed top-0 left-0 h-screen w-sidebar bg-sidebar text-[#a9b7c6] z-[1030] flex flex-col">
-        <!-- brand -->
-        <div class="flex items-center h-header px-6 shrink-0">
-            <a href="#" class="flex items-center gap-2 text-white text-2xl font-semibold">
-                <span class="text-primary-500"></span>
-                <span class="brand-text">Sistem Operasional <br> JWI Group</span>
-            </a>
-        </div>
+    <!-- Banner berhasil/gagal: di luar sidebar supaya selalu tampil paling depan -->
         <?php if (session()->getFlashdata('success')) : ?>
-            <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+            <div id="successAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100000] w-full max-w-md px-4">
                 <div class="bg-green-500 text-white rounded-xl shadow-xl overflow-hidden">
                     <div class="flex items-center gap-3 px-5 py-4">
                         <i class="ti ti-circle-check text-3xl"></i>
@@ -285,7 +315,7 @@
             </div>
         <?php endif; ?>
         <?php if (session()->getFlashdata('error')) : ?>
-            <div id="errorAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+            <div id="errorAlert" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100000] w-full max-w-md px-4">
                 <div class="bg-red-500 text-white rounded-xl shadow-xl overflow-hidden">
                     <div class="flex items-center gap-3 px-5 py-4">
                         <i class="ti ti-alert-circle text-3xl"></i>
@@ -321,6 +351,15 @@
                 });
             </script>
         <?php endif; ?>
+    <!-- ============ SIDEBAR ============ -->
+    <nav id="sidebar" class="pc-sidebar fixed top-0 left-0 h-screen w-sidebar bg-sidebar text-[#a9b7c6] z-[1030] flex flex-col">
+        <!-- brand -->
+        <div class="flex items-center h-header px-6 shrink-0">
+            <a href="#" class="flex items-center gap-2 text-white text-2xl font-semibold">
+                <span class="text-primary-500"></span>
+                <span class="brand-text">Sistem Operasional <br> JWI Group</span>
+            </a>
+        </div>
         <!-- menu -->
         <div class="flex-1 overflow-y-auto overflow-x-hidden py-2.5">
             <ul class="px-0">
@@ -467,6 +506,7 @@
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                         <li><a href="<?= site_url('InventoryKantor') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Asset Management</a></li>
+                        <li><a href="<?= site_url('DataTopologi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Topologi</a></li>
                     </ul>
                 </li>
                 <li class="hasmenu">
@@ -545,9 +585,12 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Rekap Data Toko All</p>
                     </div>
                 </div>
-                <a href="<?= site_url('RekapDataMidi/FormTambahRKD') ?>" class="rfo-btn rfo-btn-blue">
-                    <i class="ti ti-plus"></i> Tambah
-                </a>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" class="rfo-btn rfo-btn-green" id="btnImport"><i class="ti ti-file-import"></i> Import</button>
+                    <a href="<?= site_url('RekapDataMidi/FormTambahRKD') ?>" class="rfo-btn rfo-btn-blue">
+                        <i class="ti ti-plus"></i> Tambah
+                    </a>
+                </div>
             </div>
 
             <div class="card">
@@ -614,6 +657,11 @@
                                     <th>MSISDN Modem 2</th>
                                     <th>ICCID Modem 2</th>
                                     <th>Dokumen / Lampiran</th>
+                                    <!-- kolom tersembunyi: nilai asli dokumen untuk export -->
+                                    <th>Foto SN Fortigate</th>
+                                    <th>SN ONT FO</th>
+                                    <th>Foto IMEI Modem 1</th>
+                                    <th>Foto IMEI Modem 2</th>
                                     <th>Sharelock / Tikor / Alamat</th>
                                 </tr>
                             </thead>
@@ -621,7 +669,7 @@
                                 <?php if (!empty($rekap_list)) : ?>
                                     <?php $no = 1; ?>
                                     <?php foreach ($rekap_list as $row) : ?>
-                                        <tr>
+                                        <tr data-id="<?= (int) $row['id'] ?>">
                                             <td><?= $no++; ?></td>
                                             <td>
                                                 <a href="<?= site_url('RekapDataMidi/FormEditRKD/' . $row['id']) ?>"
@@ -658,31 +706,27 @@
                                             <td><?= esc($row['iccid_modem_2'] ?: '-'); ?></td>
                                             <td class="min-w-[180px]">
                                                 <div class="flex flex-col gap-1 text-xs">
-                                                    <?php if (!empty($row['foto_sn_fortigate'])) : ?>
-                                                        <a href="<?= base_url($row['foto_sn_fortigate']) ?>" target="_blank" class="text-primary-600 hover:underline inline-flex items-center gap-1">
-                                                            <i class="ti ti-file-text"></i> SN Fortigate
-                                                        </a>
-                                                    <?php else : ?>
-                                                        <span class="text-gray-400">SN Fortigate: -</span>
-                                                    <?php endif; ?>
-
-                                                    <?php if (!empty($row['sn_ont_fo'])) : ?>
-                                                        <a href="<?= base_url($row['sn_ont_fo']) ?>" target="_blank" class="text-primary-600 hover:underline inline-flex items-center gap-1">
-                                                            <i class="ti ti-file-text"></i> SN ONT FO
-                                                        </a>
-                                                    <?php else : ?>
-                                                        <span class="text-gray-400">SN ONT FO: -</span>
-                                                    <?php endif; ?>
-
-                                                    <?php if (!empty($row['foto_imei_modem_1'])) : ?>
-                                                        <a href="<?= base_url($row['foto_imei_modem_1']) ?>" target="_blank" class="text-primary-600 hover:underline inline-flex items-center gap-1">
-                                                            <i class="ti ti-file-text"></i> IMEI Modem 1
-                                                        </a>
-                                                    <?php else : ?>
-                                                        <span class="text-gray-400">IMEI Modem 1: -</span>
-                                                    <?php endif; ?>
+                                                    <?php foreach (['foto_sn_fortigate' => 'SN Fortigate', 'sn_ont_fo' => 'SN ONT FO', 'foto_imei_modem_1' => 'IMEI Modem 1', 'foto_imei_modem_2' => 'IMEI Modem 2'] as $docKey => $docLabel) : ?>
+                                                        <?php
+                                                        $docVal   = trim((string) ($row[$docKey] ?? ''));
+                                                        $docUrl   = preg_match('~^https?://~i', $docVal) === 1;
+                                                        $docLocal = str_starts_with($docVal, 'uploads/');
+                                                        ?>
+                                                        <?php if ($docVal === '') : ?>
+                                                            <span class="text-gray-400"><?= $docLabel ?>: -</span>
+                                                        <?php elseif ($docUrl || $docLocal) : ?>
+                                                            <a href="<?= esc($docUrl ? $docVal : base_url($docVal), 'attr') ?>" target="_blank" rel="noopener" class="text-primary-600 hover:underline inline-flex items-center gap-1">
+                                                                <i class="ti <?= $docUrl ? 'ti-link' : 'ti-file-text' ?>"></i> <?= $docLabel ?>
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <span class="text-gray-500" title="<?= esc($docVal, 'attr') ?>"><?= $docLabel ?>: <?= esc(mb_strimwidth($docVal, 0, 30, '…')) ?></span>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
                                                 </div>
                                             </td>
+                                            <?php foreach (['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'] as $docKey) : ?>
+                                                <td class="doc-raw"><?= esc($row[$docKey] ?? ''); ?></td>
+                                            <?php endforeach; ?>
                                             <td class="whitespace-normal min-w-[240px]"><?= esc($row['sharelock_tikor_alamat'] ?: '-'); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -745,7 +789,7 @@
                 <!-- Lampiran Dokumen / Foto -->
                 <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 mt-1">
                     <div class="font-semibold mb-2 text-primary-600">Lampiran Dokumen & Foto</div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div class="text-xs text-gray-500 mb-1">Foto / Dok SN Fortigate</div>
                             <div id="v_foto_sn_fortigate"></div>
@@ -757,6 +801,10 @@
                         <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div class="text-xs text-gray-500 mb-1">Foto / Dok IMEI Modem 1</div>
                             <div id="v_foto_imei_modem_1"></div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
+                            <div class="text-xs text-gray-500 mb-1">Foto / Dok IMEI Modem 2</div>
+                            <div id="v_foto_imei_modem_2"></div>
                         </div>
                     </div>
                 </div>
@@ -812,6 +860,46 @@
         </div>
     </div>
 
+    <!-- ================= MODAL IMPORT EXCEL ================= -->
+    <div id="modalImport" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/40 px-4">
+        <div class="bg-white dark:bg-[#263240] w-full max-w-md rounded-xl shadow-xl">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10">
+                <h5 class="font-semibold text-[#2b3540] dark:text-white">Import Rekap Data Toko</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideImport()">&times;</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div>
+                    <label class="f-label">File Excel (.xlsx / .xls)</label>
+                    <input type="file" class="f-input" id="fileImport" accept=".xlsx,.xls">
+                </div>
+                <div>
+                    <label class="f-label">Perusahaan</label>
+                    <select class="f-input" id="perusahaanImport">
+                        <option value="">-- Pilih Perusahaan --</option>
+                        <option value="PT Genezis Mitra Technology">PT Genezis Mitra Technology</option>
+                        <option value="PT Rtiga Global Media">PT Rtiga Global Media</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Semua data di file akan dicatat sebagai data perusahaan ini.</p>
+                </div>
+                <div>
+                    <label class="f-label">Jika perusahaan tersebut sudah ada data</label>
+                    <label class="flex items-start gap-2 text-[13px] mb-1.5 cursor-pointer">
+                        <input type="radio" name="modeImport" value="ganti" class="mt-0.5" checked>
+                        <span><b>Ganti</b> &mdash; hapus semua data rekap toko perusahaan itu, lalu isi dari file</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-[13px] cursor-pointer">
+                        <input type="radio" name="modeImport" value="tambah" class="mt-0.5">
+                        <span><b>Tambahkan</b> &mdash; data lama tetap, kode toko yang sudah ada di tanggal yang sama dilewati</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-gray-100 dark:border-white/10">
+                <button type="button" class="btn2 bg-gray-100 hover:bg-gray-200 text-gray-700" onclick="hideImport()">Batal</button>
+                <button type="button" class="btn2 bg-green-600 hover:bg-green-700 text-white" id="btnProsesImport">Import</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const FIELDS = [
             'nama_pengisi', 'perusahaan', 'toko', 'branch', 'kode_toko', 'nama_toko',
@@ -828,22 +916,39 @@
             return Number(d) + ' ' + BULAN[Number(m) - 1] + ' ' + y;
         };
 
-        function renderFileLink(path) {
-            if (!path) return '<span class="text-gray-400 text-xs">Tidak ada file</span>';
-            const cleanPath = String(path).replace(/^\/+/, '');
-            const ext = cleanPath.split('.').pop().toLowerCase();
-            const isImg = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+        function escHtml(v) {
+            return String(v).replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            } [c]));
+        }
 
-            if (isImg) {
+        // Dokumen bisa berupa link (mis. Google Drive), file upload (uploads/...), atau teks biasa
+        function renderFileLink(path) {
+            const v = String(path ?? '').trim().replace(/^\/+/, '');
+            if (!v) return '<span class="text-gray-400 text-xs">Tidak ada file</span>';
+            const cls = 'inline-flex items-center gap-1 text-primary-600 hover:underline font-medium text-xs';
+
+            if (/^https?:\/\//i.test(v)) {
+                const drive = /(drive|docs)\.google\.com/i.test(v);
                 return `
-                    <a href="${BASE_UPLOAD_URL}${cleanPath}" target="_blank" class="inline-flex items-center gap-1 text-primary-600 hover:underline font-medium text-xs">
-                        <i class="ti ti-photo"></i> Lihat Foto (${ext.toUpperCase()})
+                    <a href="${escHtml(v)}" target="_blank" rel="noopener" class="${cls}">
+                        <i class="ti ${drive ? 'ti-brand-google-drive' : 'ti-link'}"></i> ${drive ? 'Buka di Google Drive' : 'Buka Link'}
                     </a>
                 `;
             }
+            if (!v.startsWith('uploads/')) {
+                return `<span class="text-xs break-words">${escHtml(v)}</span>`;
+            }
+
+            const ext = v.split('.').pop().toLowerCase();
+            const isImg = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
             return `
-                <a href="${BASE_UPLOAD_URL}${cleanPath}" target="_blank" class="inline-flex items-center gap-1 text-primary-600 hover:underline font-medium text-xs">
-                    <i class="ti ti-file-download"></i> Unduh Dokumen (${ext.toUpperCase()})
+                <a href="${BASE_UPLOAD_URL}${escHtml(v)}" target="_blank" rel="noopener" class="${cls}">
+                    <i class="ti ${isImg ? 'ti-photo' : 'ti-file-download'}"></i> ${isImg ? 'Lihat Foto' : 'Unduh Dokumen'} (${escHtml(ext.toUpperCase())})
                 </a>
             `;
         }
@@ -858,6 +963,7 @@
             document.getElementById('v_foto_sn_fortigate').innerHTML = renderFileLink(d.foto_sn_fortigate);
             document.getElementById('v_sn_ont_fo').innerHTML = renderFileLink(d.sn_ont_fo);
             document.getElementById('v_foto_imei_modem_1').innerHTML = renderFileLink(d.foto_imei_modem_1);
+            document.getElementById('v_foto_imei_modem_2').innerHTML = renderFileLink(d.foto_imei_modem_2);
 
             document.getElementById('viewModal').classList.remove('hidden');
         }
@@ -865,6 +971,134 @@
         function closeViewModal() {
             document.getElementById('viewModal').classList.add('hidden');
         }
+    </script>
+
+    <script>
+        // ---- import excel (sama seperti Import Jadwal Shift) ----
+        const IMPORT_URL = "<?= site_url('RekapDataMidi/import') ?>";
+
+        function getCsrf() {
+            const el = [...document.getElementsByTagName('meta')].find(m => m.name && m.content && m.name.toLowerCase().includes('csrf'));
+            return el ? {
+                key: el.name,
+                val: el.content
+            } : null;
+        }
+
+        // Banner sukses/gagal di tengah-atas — sama seperti halaman lain
+        function showFlash(type, message) {
+            const ok = type === 'success';
+            const wrap = document.createElement('div');
+            wrap.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-[100000] w-full max-w-md px-4';
+            wrap.innerHTML =
+                '<div class="' + (ok ? 'bg-green-500' : 'bg-red-500') + ' text-white rounded-xl shadow-xl overflow-hidden">' +
+                '<div class="flex items-center gap-3 px-5 py-4">' +
+                '<i class="ti ' + (ok ? 'ti-circle-check' : 'ti-alert-circle') + ' text-3xl"></i>' +
+                '<div><h4 class="font-bold">' + (ok ? 'Berhasil' : 'Gagal') + '</h4>' +
+                '<p class="text-sm">' + escHtml(message) + '</p></div>' +
+                '</div>' +
+                '<div class="h-1 ' + (ok ? 'bg-green-400' : 'bg-red-400') + '">' +
+                '<div class="bar h-full bg-white w-full"></div>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(wrap);
+
+            const bar = wrap.querySelector('.bar');
+            if (bar) {
+                bar.style.transition = 'width 3s linear';
+                setTimeout(() => bar.style.width = '0%', 100);
+            }
+            setTimeout(() => {
+                wrap.style.transition = 'all .5s ease';
+                wrap.style.opacity = '0';
+                wrap.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => wrap.remove(), 500);
+            }, 3000);
+        }
+
+        function hideImport() {
+            const m = document.getElementById('modalImport');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+        document.getElementById('modalImport').addEventListener('click', function(e) {
+            if (e.target === this) hideImport();
+        });
+        document.getElementById('btnImport').addEventListener('click', function() {
+            document.getElementById('fileImport').value = '';
+            document.getElementById('perusahaanImport').value = '';
+            document.querySelector('input[name="modeImport"][value="ganti"]').checked = true;
+            const m = document.getElementById('modalImport');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        });
+
+        document.getElementById('btnProsesImport').addEventListener('click', async function() {
+            const file = document.getElementById('fileImport').files[0];
+            if (!file) {
+                showFlash('error', 'Pilih file Excel terlebih dahulu.');
+                return;
+            }
+            const perusahaan = document.getElementById('perusahaanImport').value;
+            if (!perusahaan) {
+                showFlash('error', 'Pilih perusahaan untuk data di file ini.');
+                return;
+            }
+            const mode = document.querySelector('input[name="modeImport"]:checked').value;
+            if (mode === 'ganti') {
+                const r = await Swal.fire({
+                    title: 'Ganti data rekap toko?',
+                    text: 'Semua data rekap toko ' + perusahaan + ' akan dihapus lalu diisi ulang dari file.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#16a34a',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, import',
+                    cancelButtonText: 'Batal'
+                });
+                if (!r.isConfirmed) return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            const body = new FormData();
+            body.append('file_import', file);
+            body.append('perusahaan', perusahaan);
+            body.append('mode', mode);
+            const c = getCsrf();
+            if (c) body.append(c.key, c.val);
+
+            try {
+                const res = await fetch(IMPORT_URL, {
+                    method: 'POST',
+                    body: body
+                });
+                const json = await res.json().catch(() => ({}));
+                if (res.ok && json.status === 'ok') {
+                    hideImport();
+                    // baris yang dilewati dilaporkan supaya bisa dicek manual, lalu tabel dimuat ulang
+                    if (json.tidakDikenal && json.tidakDikenal.length) {
+                        await Swal.fire({
+                            icon: 'info',
+                            title: 'Sebagian baris dilewati',
+                            html: '<div class="text-left text-[13px] mt-2 max-h-60 overflow-y-auto">' +
+                                json.tidakDikenal.map(escHtml).join('<br>') + '</div>',
+                            confirmButtonColor: '#04a9f5'
+                        });
+                    }
+                    window.location.reload();
+                } else {
+                    showFlash('error', json.message || 'Import gagal.');
+                }
+            } catch (e) {
+                showFlash('error', 'Import gagal, coba lagi.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Import';
+            }
+        });
     </script>
 
     <script>
@@ -981,19 +1215,129 @@
 
     <script>
         $(document).ready(function() {
+            // Kolom: 0 No, 1 Aksi, 2-15 data, 16 Dokumen (tampilan), 17-20 dokumen asli (tersembunyi), 21 Sharelock
+            const DOC_COLS = [17, 18, 19, 20];
+            const SHARELOCK_COL = 21;
+            const EXPORT_COLS = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21];
+            const IMG_EXT = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+            const cellText = data => {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = String(data).replace(/<br\s*\/?>/gi, '\n');
+                return tmp.textContent.trim();
+            };
+            const isLocalDoc = v => /^uploads\//.test(v);
+            const docUrl = v => isLocalDoc(v) ? BASE_UPLOAD_URL + v : v;
+
+            // Copy / CSV: dokumen & link ditulis sebagai URL lengkap
             const exportConfig = {
                 exportOptions: {
-                    // Kolom 1 (Aksi) dikecualikan; total kolom sekarang 0 s/d 17
-                    columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    columns: EXPORT_COLS,
                     format: {
-                        body: function(data) {
-                            const tmp = document.createElement('div');
-                            tmp.innerHTML = String(data).replace(/<br\s*\/?>/gi, '\n');
-                            return tmp.textContent.trim();
+                        body: function(data, row, column, node) {
+                            const v = cellText(data);
+                            return node && node.classList && node.classList.contains('doc-raw') ? docUrl(v) : v;
                         }
                     }
                 }
             };
+            // PDF memakai nilai asli dokumen (path upload / link), diganti gambar/link di customize
+            const exportConfigPdf = {
+                exportOptions: {
+                    columns: EXPORT_COLS,
+                    format: {
+                        body: data => cellText(data)
+                    }
+                }
+            };
+
+            // PDF: foto upload jadi gambar, link bisa diklik
+            const IMG_CACHE = {};
+
+            function loadImageData(url) {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const max = 240;
+                        const k = Math.min(1, max / Math.max(img.width, img.height));
+                        const cv = document.createElement('canvas');
+                        cv.width = Math.max(1, Math.round(img.width * k));
+                        cv.height = Math.max(1, Math.round(img.height * k));
+                        const ctx = cv.getContext('2d');
+                        ctx.fillStyle = '#fff';
+                        ctx.fillRect(0, 0, cv.width, cv.height);
+                        ctx.drawImage(img, 0, 0, cv.width, cv.height);
+                        resolve(cv.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.onerror = () => resolve(null);
+                    img.src = url;
+                });
+            }
+
+            async function preloadDocImages(dt) {
+                const paths = new Set();
+                DOC_COLS.forEach(c => dt.column(c, {
+                    search: 'applied'
+                }).data().each(d => {
+                    const v = cellText(d);
+                    if (isLocalDoc(v) && IMG_EXT.includes(v.split('.').pop().toLowerCase()) && !(v in IMG_CACHE)) paths.add(v);
+                }));
+                await Promise.all([...paths].map(async v => {
+                    IMG_CACHE[v] = await loadImageData(BASE_UPLOAD_URL + v);
+                }));
+            }
+
+            function pdfDocCell(v, cell) {
+                if (!v) return cell;
+                if (isLocalDoc(v)) {
+                    if (IMG_CACHE[v]) return {
+                        image: IMG_CACHE[v],
+                        fit: [60, 60],
+                        link: docUrl(v)
+                    };
+                    return {
+                        text: 'Unduh ' + v.split('/').pop(),
+                        link: docUrl(v),
+                        color: '#0563c1',
+                        decoration: 'underline'
+                    };
+                }
+                if (/^https?:\/\/\S+$/i.test(v)) {
+                    return {
+                        text: /(drive|docs)\.google\.com/i.test(v) ? 'Buka Google Drive' : 'Buka Link',
+                        link: v,
+                        color: '#0563c1',
+                        decoration: 'underline'
+                    };
+                }
+                return cell;
+            }
+
+            // Excel dibuat di server: link jadi hyperlink, foto upload tertanam sebagai gambar
+            function exportExcelServer(dt) {
+                const ids = [];
+                dt.rows({
+                    search: 'applied',
+                    order: 'applied'
+                }).nodes().each(tr => ids.push(tr.dataset.id));
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "<?= site_url('RekapDataMidi/exportExcel') ?>";
+                const add = (n, v) => {
+                    const i = document.createElement('input');
+                    i.type = 'hidden';
+                    i.name = n;
+                    i.value = v;
+                    form.appendChild(i);
+                };
+                add('ids', ids.join(','));
+                const c = getCsrf();
+                if (c) add(c.key, c.val);
+                document.body.appendChild(form);
+                form.submit();
+                form.remove();
+            }
 
             const table = $('#reportTable').DataTable({
                 pageLength: 10,
@@ -1006,6 +1350,9 @@
                     targets: [0, 1],
                     orderable: false,
                     searchable: false
+                }, {
+                    targets: DOC_COLS,
+                    visible: false
                 }],
                 dom: "lBfrtip",
                 buttons: [{
@@ -1033,13 +1380,13 @@
                             }
                         },
                         {
-                            extend: 'excelHtml5',
+                            extend: 'excelHtml5', // hanya untuk tampilan tombol; file dibuat di server
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
                             title: 'Rekap Data Toko',
                             ...exportConfig,
-                            action: function(e, dt, button, config) {
+                            action: function(e, dt) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
-                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                                exportExcelServer(dt);
                             }
                         },
                         {
@@ -1048,10 +1395,18 @@
                             title: 'Rekap Data Toko',
                             orientation: 'landscape',
                             pageSize: 'A3',
-                            ...exportConfig,
-                            action: function(e, dt, button, config) {
+                            ...exportConfigPdf,
+                            action: async function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
+                                const self = this;
+                                Swal.fire({
+                                    title: 'Menyiapkan PDF...',
+                                    allowOutsideClick: false,
+                                    didOpen: () => Swal.showLoading()
+                                });
+                                await preloadDocImages(dt);
+                                Swal.close();
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
                             },
                             customize: function(doc) {
                                 doc.styles.tableHeader = {
@@ -1061,6 +1416,18 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 8;
+                                // kolom export: 15-18 = dokumen, 19 = sharelock
+                                const body = doc.content[1].table.body;
+                                for (let r = 1; r < body.length; r++) {
+                                    for (const c of [15, 16, 17, 18, 19]) {
+                                        const cell = body[r][c];
+                                        const v = String(cell && cell.text !== undefined ? cell.text : '').trim();
+                                        const out = pdfDocCell(v, cell);
+                                        if (out !== cell) body[r][c] = Object.assign({}, out, {
+                                            style: cell.style
+                                        });
+                                    }
+                                }
                                 doc.content[1].layout = {
                                     hLineWidth: () => 0.5,
                                     vLineWidth: () => 0.5,
@@ -1102,21 +1469,22 @@
 
             // ====== FILTER DROPDOWN ======
 
-            // Kolom 4 = Toko (Lawson / Midi)
+            // Urutan kolom: 0 No, 1 Aksi, 2 Tanggal, 3 Nama Pengisi, 4 Perusahaan, 5 Toko, 6 Branch
+            const exactSearch = v => v ? '^' + $.fn.dataTable.util.escapeRegex(v) + '$' : '';
+
+            // Kolom 4 = Perusahaan
             $('#filterPerusahaan').on('change', function() {
-                const val = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
-                table.column(4).search(val, true, false).draw();
+                table.column(4).search(exactSearch(this.value), true, false).draw();
             });
 
+            // Kolom 5 = Toko (Lawson / Midi)
             $('#filterToko').on('change', function() {
-                const val = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
-                table.column(4).search(val, true, false).draw();
+                table.column(5).search(exactSearch(this.value), true, false).draw();
             });
 
-            // Kolom 5 = Branch
+            // Kolom 6 = Branch
             $('#filterBranch').on('change', function() {
-                const val = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
-                table.column(5).search(val, true, false).draw();
+                table.column(6).search(exactSearch(this.value), true, false).draw();
             });
 
             // ====== SEARCH & RESET ======
@@ -1130,6 +1498,7 @@
             $('#btnResetFilter').on('click', function() {
                 $('#filterToko').val('');
                 $('#filterBranch').val('');
+                $('#filterPerusahaan').val('');
                 $('#customSearch').val('');
                 table.search('').columns().search('').draw();
             });

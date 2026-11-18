@@ -1,0 +1,1 @@
+v32.6.9 (draw.war resmi jgraph/drawio, 2026-10-30). Dipangkas: WEB-INF, META-INF, *.map, js/diagramly, js/grapheditor, js/integrate.min.js, js/viewer.min.js, integrasi Teams/OneDrive/Confluence/Monday.

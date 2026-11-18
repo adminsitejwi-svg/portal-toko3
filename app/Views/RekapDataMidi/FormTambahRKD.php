@@ -319,6 +319,7 @@
                         <li><a href="<?= site_url('PelangganNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Pelanggan</a></li>
                         <li><a href="<?= site_url('VendorNoc') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Vendor</a></li>
                         <li><a href="<?= site_url('InventoryKantor') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Asset Management</a></li>
+                        <li><a href="<?= site_url('DataTopologi') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Data Topologi</a></li>
                     </ul>
                 </li>
 
@@ -416,6 +417,11 @@
             <?php endif; ?>
 
             <div class="rfo-panel rfo-form">
+                <?php
+                // Dokumen bisa diisi link/teks (mis. Google Drive) atau upload file
+                $docMode = static fn(string $f) => old('mode_' . $f) ?? 'link';
+                $docLink = static fn(string $f) => old('link_' . $f) ?? '';
+                ?>
                 <form action="<?= site_url('RekapDataMidi/save') ?>" method="POST" enctype="multipart/form-data" id="reportForm">
                     <?= csrf_field() ?>
 
@@ -509,9 +515,27 @@
                         <!-- Foto SN Fortigate -->
                         <div class="form-group md:col-span-2">
                             <label>Foto SN Fortigate <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="foto_sn_fortigate" id="r_foto_sn_fortigate"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_sn_fortigate" value="link" onchange="toggleDoc('foto_sn_fortigate')" <?= $docMode('foto_sn_fortigate') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_sn_fortigate" value="file" onchange="toggleDoc('foto_sn_fortigate')" <?= $docMode('foto_sn_fortigate') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_sn_fortigate" class="<?= $docMode('foto_sn_fortigate') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_sn_fortigate" id="r_link_foto_sn_fortigate" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_sn_fortigate')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_sn_fortigate" class="<?= $docMode('foto_sn_fortigate') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_sn_fortigate" id="r_foto_sn_fortigate"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
                         </div>
 
                         <!-- ID Pelanggan Jika Ada FO -->
@@ -526,9 +550,27 @@
                         <!-- SN ONT FO -->
                         <div class="form-group">
                             <label>SN ONT FO <span class="text-gray-400 font-normal">(JPG, PNG, Word, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="sn_ont_fo" id="r_sn_ont_fo"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_sn_ont_fo" value="link" onchange="toggleDoc('sn_ont_fo')" <?= $docMode('sn_ont_fo') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_sn_ont_fo" value="file" onchange="toggleDoc('sn_ont_fo')" <?= $docMode('sn_ont_fo') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_sn_ont_fo" class="<?= $docMode('sn_ont_fo') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_sn_ont_fo" id="r_link_sn_ont_fo" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('sn_ont_fo')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_sn_ont_fo" class="<?= $docMode('sn_ont_fo') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="sn_ont_fo" id="r_sn_ont_fo"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
                         </div>
 
                         <!-- SECTION: MODEM GSM 1 -->
@@ -570,9 +612,27 @@
                         <!-- Foto IMEI Modem 1 -->
                         <div class="form-group md:col-span-2">
                             <label>Foto IMEI Modem 1 <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
-                            <input type="file" name="foto_imei_modem_1" id="r_foto_imei_modem_1"
-                                accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
-                                class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_1" value="link" onchange="toggleDoc('foto_imei_modem_1')" <?= $docMode('foto_imei_modem_1') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_1" value="file" onchange="toggleDoc('foto_imei_modem_1')" <?= $docMode('foto_imei_modem_1') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_imei_modem_1" class="<?= $docMode('foto_imei_modem_1') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_imei_modem_1" id="r_link_foto_imei_modem_1" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_imei_modem_1')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_imei_modem_1" class="<?= $docMode('foto_imei_modem_1') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_imei_modem_1" id="r_foto_imei_modem_1"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
                         </div>
 
                         <!-- Nomor Telepon / MSISDN Modem 1 -->
@@ -625,6 +685,32 @@
                                 <input type="text" name="tipe_modem_gsm_2_manual" id="r_tipe_modem_gsm_2_manual" maxlength="100"
                                     placeholder="Ketik Tipe Modem GSM 2 secara manual"
                                     value="<?= esc(old('tipe_modem_gsm_2_manual')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Foto IMEI Modem 2 -->
+                        <div class="form-group md:col-span-2">
+                            <label>Foto IMEI Modem 2 <span class="text-gray-400 font-normal">(JPG, PNG, Word DOC/DOCX, PDF - maks. 5 MB)</span></label>
+                            <div class="flex flex-wrap items-center gap-4 mb-2 text-sm">
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_2" value="link" onchange="toggleDoc('foto_imei_modem_2')" <?= $docMode('foto_imei_modem_2') !== 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-link"></i> Link / Teks
+                                </label>
+                                <label class="inline-flex items-center gap-2 mb-0 font-normal cursor-pointer">
+                                    <input type="radio" name="mode_foto_imei_modem_2" value="file" onchange="toggleDoc('foto_imei_modem_2')" <?= $docMode('foto_imei_modem_2') === 'file' ? 'checked' : '' ?>>
+                                    <i class="ti ti-upload"></i> Upload File
+                                </label>
+                            </div>
+                            <div id="wrap_link_foto_imei_modem_2" class="<?= $docMode('foto_imei_modem_2') === 'file' ? 'hidden' : '' ?>">
+                                <input type="text" name="link_foto_imei_modem_2" id="r_link_foto_imei_modem_2" maxlength="255"
+                                    placeholder="Tempel link Google Drive / isi keterangan"
+                                    value="<?= esc($docLink('foto_imei_modem_2')) ?>"
+                                    class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="wrap_file_foto_imei_modem_2" class="<?= $docMode('foto_imei_modem_2') === 'file' ? '' : 'hidden' ?>">
+                                <input type="file" name="foto_imei_modem_2" id="r_foto_imei_modem_2"
+                                    accept=".jpg,.jpeg,.png,.doc,.docx,.pdf"
                                     class="w-full min-h-[46px] px-4 py-3 text-sm border border-[#e3e8ee] rounded-lg text-[#3b4754] bg-white focus:border-primary-500 outline-none">
                             </div>
                         </div>
@@ -727,6 +813,21 @@
         const EXT_FILE = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
 
         // Tampilkan / sembunyikan input teks saat user memilih "-- Isi Manual --"
+        // Dokumen: tampilkan input link/teks atau input upload sesuai pilihan
+        const DOC_FIELDS = ['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'];
+
+        function docMode(f) {
+            const r = document.querySelector('input[name="mode_' + f + '"]:checked');
+            return r ? r.value : 'link';
+        }
+
+        function toggleDoc(f) {
+            const file = docMode(f) === 'file';
+            document.getElementById('wrap_link_' + f).classList.toggle('hidden', file);
+            document.getElementById('wrap_file_' + f).classList.toggle('hidden', !file);
+        }
+        DOC_FIELDS.forEach(toggleDoc);
+
         function toggleManual(selectId, wrapId, inputId) {
             const val = document.getElementById(selectId).value;
             const wrap = document.getElementById(wrapId);
@@ -779,7 +880,7 @@
                 return peringatan('Tipe Modem 2 Kosong', 'Silakan ketik Tipe Modem GSM 2 secara manual.');
             }
 
-            // Validasi ke-3 file upload (JPG, PNG, Word, PDF)
+            // Validasi ke-4 file upload (JPG, PNG, Word, PDF)
             const fileFields = [{
                     id: 'r_foto_sn_fortigate',
                     label: 'Foto SN Fortigate'
@@ -791,10 +892,15 @@
                 {
                     id: 'r_foto_imei_modem_1',
                     label: 'Foto IMEI Modem 1'
+                },
+                {
+                    id: 'r_foto_imei_modem_2',
+                    label: 'Foto IMEI Modem 2'
                 }
             ];
 
             for (const f of fileFields) {
+                if (docMode(f.id.replace(/^r_/, '')) !== 'file') continue;
                 const file = document.getElementById(f.id).files[0];
                 if (file) {
                     const ext = file.name.split('.').pop().toLowerCase();

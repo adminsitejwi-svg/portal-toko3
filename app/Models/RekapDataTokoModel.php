@@ -29,6 +29,7 @@ class RekapDataTokoModel extends Model
         'msisdn_modem_1',
         'iccid_modem_1',
         'tipe_modem_gsm_2',
+        'foto_imei_modem_2',
         'msisdn_modem_2',
         'iccid_modem_2',
         'sharelock_tikor_alamat',

@@ -86,6 +86,7 @@ class HakAkses extends BaseConfig
             'PelangganNoc'          => 'Data Teknis - Data Pelanggan',
             'VendorNoc'             => 'Data Teknis - Data Vendor',
             'InventoryKantor'       => 'Data Teknis - Asset Management',
+            'DataTopologi'          => 'Data Teknis - Data Topologi',
             'DataCenter'            => 'Data Teknis - Data Center (lama)',
             'ResiPengiriman'        => 'Resi Pengiriman',
             'Calendar'              => 'Jadwal NOC - Shift',

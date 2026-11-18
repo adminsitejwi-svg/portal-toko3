@@ -99,11 +99,19 @@ class DataExportService
         'd_simcard'          => 'Data SI (Simcard)',
         'd_nomor_inet'       => 'Nomor Inet (Data Penggunaan)',
         'jadwal_noc'         => 'Jadwal NOC',
-        'rekap_data_toko'      => 'Rekap Data Toko'
+        'rekap_data_toko'      => 'Rekap Data Toko',
+        'd_topologi'           => 'Data Topologi'
     ];
 
     /** Tabel Data Toko — dapat folder "foto" berisi lampiran asli, bukan PDF. */
     private const TOKO_TABLES = ['d_midi', 'd_lawson', 'd_alfamart', 'rekap_data_toko'];
+
+    /**
+     * Data Topologi: kolom `xml` (isi diagram draw.io) bisa sangat panjang (> batas 32.767 karakter
+     * per sel Excel), jadi di CSV/Excel diganti keterangan, dan tiap diagram disimpan utuh sebagai
+     * file .drawio di folder "diagram". Gambar PNG-nya disalin ke folder "gambar" (ikut $includePhotos).
+     */
+    private const TOPOLOGI_TABLE = 'd_topologi';
 
     private const HEADER_COLOR = '1F4E78';
     private const BAND_COLOR   = 'F2F6FB';
@@ -164,8 +172,18 @@ class DataExportService
 
         $headers = $rows === [] ? [] : array_keys($rows[0]);
 
-        $this->writeCsv($folder . DIRECTORY_SEPARATOR . $slug . '.csv', $headers, $rows);
-        $this->writeExcel($folder . DIRECTORY_SEPARATOR . $slug . '.xlsx', $label, $headers, $rows);
+        $isTopologi = $table === self::TOPOLOGI_TABLE;
+        $rowsTabel  = $rows;
+        if ($isTopologi) {
+            $rowsTabel = array_map(static function (array $row): array {
+                $row['xml'] = trim((string) ($row['xml'] ?? '')) === '' ? '' : 'lihat folder diagram/';
+
+                return $row;
+            }, $rows);
+        }
+
+        $this->writeCsv($folder . DIRECTORY_SEPARATOR . $slug . '.csv', $headers, $rowsTabel);
+        $this->writeExcel($folder . DIRECTORY_SEPARATOR . $slug . '.xlsx', $label, $headers, $rowsTabel);
 
         $isToko     = in_array($table, self::TOKO_TABLES, true);
         $photoCount = 0;
@@ -173,7 +191,62 @@ class DataExportService
             $photoCount = $this->exportPhotos($folder, $rows);
         }
 
-        $this->writeNotes($folder . DIRECTORY_SEPARATOR . 'catatan.txt', $label, $table, $rows, $photoCount, $includePhotos && $isToko);
+        $extraNotes = [];
+        if ($isTopologi) {
+            $extraNotes = $this->exportTopologi($folder, $rows, $includePhotos);
+        }
+
+        $this->writeNotes($folder . DIRECTORY_SEPARATOR . 'catatan.txt', $label, $table, $rows, $photoCount, $includePhotos && $isToko, $extraNotes);
+    }
+
+    /**
+     * Data Topologi: tiap diagram -> diagram/{id}_{nama}.drawio (bisa dibuka lagi di draw.io /
+     * diagrams.net), gambar PNG -> gambar/{id}_{nama}.png (PNG ini juga memuat diagramnya).
+     *
+     * @return list<string> baris tambahan untuk catatan.txt
+     */
+    private function exportTopologi(string $pageFolder, array $rows, bool $includePhotos): array
+    {
+        $diagramDir = $pageFolder . DIRECTORY_SEPARATOR . 'diagram';
+        $gambarDir  = $pageFolder . DIRECTORY_SEPARATOR . 'gambar';
+        $diagram    = 0;
+        $gambar     = 0;
+
+        foreach ($rows as $row) {
+            $nama = ($row['id'] ?? '0') . '_' . ($this->slug((string) ($row['nama'] ?? '')) ?: 'topologi');
+
+            $xml = trim((string) ($row['xml'] ?? ''));
+            if ($xml !== '') {
+                if (! is_dir($diagramDir)) {
+                    mkdir($diagramDir, 0755, true);
+                }
+                file_put_contents($diagramDir . DIRECTORY_SEPARATOR . $nama . '.drawio', $xml);
+                $diagram++;
+            }
+
+            // hanya file hasil simpan di public/uploads/topologi/ (proteksi path traversal)
+            $relPath = trim((string) ($row['gambar'] ?? ''));
+            if (! $includePhotos || $relPath === '' || ! str_starts_with($relPath, 'uploads/topologi/') || str_contains($relPath, '..')) {
+                continue;
+            }
+            $source = FCPATH . $relPath;
+            if (! is_file($source)) {
+                continue;
+            }
+            if (! is_dir($gambarDir)) {
+                mkdir($gambarDir, 0755, true);
+            }
+            copy($source, $gambarDir . DIRECTORY_SEPARATOR . $nama . '.png');
+            $gambar++;
+        }
+
+        $lines   = [];
+        $lines[] = "Diagram draw.io: {$diagram} file .drawio (lihat folder diagram/, buka di draw.io / diagrams.net)";
+        $lines[] = $includePhotos
+            ? "Gambar topologi: {$gambar} file PNG (lihat folder gambar/)"
+            : 'Gambar topologi: tidak disertakan pada export data saja';
+
+        return $lines;
     }
 
     private function writeCsv(string $path, array $headers, array $rows): void
@@ -328,7 +401,7 @@ class DataExportService
         return $copied;
     }
 
-    private function writeNotes(string $path, string $label, string $table, array $rows, int $photoCount, bool $isToko): void
+    private function writeNotes(string $path, string $label, string $table, array $rows, int $photoCount, bool $isToko, array $extraNotes = []): void
     {
         $count  = count($rows);
         $latest = null;
@@ -347,6 +420,10 @@ class DataExportService
 
         if ($isToko) {
             $lines[] = "Foto lampiran  : {$photoCount} file (lihat folder foto/)";
+        }
+
+        foreach ($extraNotes as $note) {
+            $lines[] = $note;
         }
 
         $lines[] = '';
