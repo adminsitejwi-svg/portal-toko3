@@ -29,6 +29,7 @@ class DataRakDC extends BaseController
     {
         return view('DataRakDC/index', [
             'dataDc'        => $this->dcModel->withJumlah(),
+            'kodeDcBaru'    => $this->kodeDcBerikutnya(),
             'dataRak'       => $this->rakModel->withRelasi(),
             'dataPerangkat' => $this->perangkatModel->withRelasi(),
         ]);
@@ -64,12 +65,25 @@ class DataRakDC extends BaseController
 
     // ----- Data Center -----
 
+    // Kode DC otomatis: DC001, DC002, ... (nomor terbesar yang sudah ada + 1; tidak bisa diisi manual)
+    private function kodeDcBerikutnya(): string
+    {
+        $maks = 0;
+        foreach ($this->dcModel->select('kode_dc')->like('kode_dc', 'DC', 'after')->findAll() as $row) {
+            if (preg_match('/^DC(\d+)$/', (string) $row['kode_dc'], $m)) {
+                $maks = max($maks, (int) $m[1]);
+            }
+        }
+
+        return 'DC' . str_pad((string) ($maks + 1), 3, '0', STR_PAD_LEFT);
+    }
+
     private function simpanDc($id = null)
     {
-        $fields = $this->ambilFields(['kode_dc', 'nama_dc', 'alamat', 'gedung', 'lantai', 'pic', 'kontak', 'status', 'keterangan']);
+        // kode_dc tidak diambil dari form: data baru diberi kode otomatis, saat edit kode lama tetap
+        $fields = $this->ambilFields(['nama_dc', 'alamat', 'gedung', 'lantai', 'pic', 'kontak', 'status', 'keterangan']);
 
         $rules = [
-            'kode_dc'    => 'required|max_length[50]|is_unique[md_data_center_dc.kode_dc,id,' . (int) $id . ']',
             'nama_dc'    => 'required|max_length[150]',
             'alamat'     => 'permit_empty',
             'gedung'     => 'permit_empty|max_length[100]',
@@ -79,15 +93,20 @@ class DataRakDC extends BaseController
             'status'     => 'required|in_list[0,1]',
             'keterangan' => 'permit_empty',
         ];
-        $pesan = ['kode_dc' => ['is_unique' => 'Kode Data Center sudah dipakai.']];
-
-        if (! $this->validateData($fields, $rules, $pesan)) {
+        if (! $this->validateData($fields, $rules)) {
             return $this->gagal('dc', $fields, $id, implode(' ', $this->validator->getErrors()));
         }
 
-        $id ? $this->dcModel->update($id, $fields) : $this->dcModel->insert($fields);
+        if ($id) {
+            $this->dcModel->update($id, $fields);
 
-        return redirect()->back()->with('success', 'Data Center berhasil ' . ($id ? 'diperbarui.' : 'ditambahkan.'));
+            return redirect()->back()->with('success', 'Data Center berhasil diperbarui.');
+        }
+
+        $fields['kode_dc'] = $this->kodeDcBerikutnya();
+        $this->dcModel->insert($fields);
+
+        return redirect()->back()->with('success', 'Data Center ' . $fields['kode_dc'] . ' berhasil ditambahkan.');
     }
 
     public function saveDc()

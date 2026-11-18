@@ -1727,7 +1727,11 @@
                 <?= csrf_field() ?>
                 <input type="hidden" name="id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                    <div class="rf-group"><label class="rf-label">Kode DC <span class="req">*</span></label><input class="rf-input" name="kode_dc" maxlength="50" required></div>
+                    <div class="rf-group">
+                        <label class="rf-label">Kode DC</label>
+                        <input class="rf-input" name="kode_dc" readonly tabindex="-1" style="cursor:not-allowed;opacity:.75" title="Kode DC dibuat otomatis">
+                        <div class="rf-hint">Otomatis (DC001, DC002, ...), tidak bisa diisi manual.</div>
+                    </div>
                     <div class="rf-group"><label class="rf-label">Nama DC <span class="req">*</span></label><input class="rf-input" name="nama_dc" maxlength="150" required></div>
                     <div class="rf-group"><label class="rf-label">Gedung</label><input class="rf-input" name="gedung" maxlength="100"></div>
                     <div class="rf-group"><label class="rf-label">Lantai</label><input class="rf-input" name="lantai" maxlength="50"></div>
@@ -1866,6 +1870,7 @@
             'akhir' => (int) round(((float) $p['posisi_u'] + (float) $p['ukuran_u']) * 100),
         ], array_filter($dataPerangkat, static fn ($p) => $p['posisi_u'] !== null)))) ?>;
         const ADA_DC = <?= empty($dataDc) ? 'false' : 'true' ?>;
+        const KODE_DC_BARU = <?= $json($kodeDcBaru ?? '') ?>;
         const JENIS = { dc: 'Data Center', rak: 'Rak', perangkat: 'Perangkat' };
 
         // 42.00 -> 42
@@ -1906,6 +1911,9 @@
                 if (!el || k === 'id' || data[k] === null || data[k] === undefined) return;
                 el.value = el.type === 'number' ? angka(data[k]) : data[k];
             });
+
+            // Kode DC otomatis: data baru = kode berikutnya, edit = kode lama (tidak bisa diubah)
+            if (jenis === 'dc' && !edit) form.elements.kode_dc.value = KODE_DC_BARU;
 
             if (jenis === 'perangkat') tampilkanSisaU(edit ? Number(data.id) : 0);
 
