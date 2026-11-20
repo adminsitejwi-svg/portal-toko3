@@ -450,6 +450,61 @@
         .ipam-btn-grup button[title="Hapus"]:hover {
             background: #dc2626;
         }
+
+        /* ===== Data Hostname di dalam subnet ===== */
+        .ip-host {
+            margin-top: 0;
+        }
+
+        .ip-host .ipam-head h2 i {
+            color: #16a34a;
+        }
+
+        .ip-host-info {
+            font-size: 12.5px;
+            color: var(--rf-muted);
+        }
+
+        .ip-host-info b {
+            color: #16a34a;
+        }
+
+        .ip-host-desk {
+            max-width: 360px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ip-jml-host {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            color: var(--rf-muted);
+            background: var(--rf-soft);
+            white-space: nowrap;
+        }
+
+        .ip-jml-host.ada {
+            color: #15803d;
+            background: rgba(22, 163, 74, .12);
+        }
+
+        /* jumlah sub judul di dalam sub judul (daftar kartu) */
+        .ip-anak-jml {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 999px;
+            color: #15803d;
+            background: rgba(22, 163, 74, .12);
+            white-space: nowrap;
+        }
+
+        #hierarkiKonten:not(.hidden)+#subnetTableWrap:not(.hidden) {
+            margin-top: 18px;
+        }
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/theme/rfo.css') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.css') ?: '1' ?>">
     <script src="<?= base_url('assets/theme/rfo.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/rfo.js') ?: '1' ?>" defer></script>
@@ -726,21 +781,61 @@
             foreach ($judul as $j) {
                 $pohon[$j['perusahaan']][$j['id']] = ['data' => $j, 'sub' => [], 'subnet' => []];
             }
+            // Sub Judul bertingkat: subnet per sub judul & daftar anak per induk (0 = langsung di bawah Judul)
+            $subnetPerSub = [];
+            $anakSub      = [];
+            $subAda       = [];
             foreach ($subjudul as $s) {
-                if (isset($pohon[$s['perusahaan']][$s['judul_id']])) {
-                    $pohon[$s['perusahaan']][$s['judul_id']]['sub'][$s['id']] = ['data' => $s, 'subnet' => []];
-                }
+                $subAda[(int) $s['id']] = $s;
             }
             foreach ($subnet as $n) {
-                $node = &$pohon[$n['perusahaan']][$n['judul_id']];
-                if ($n['subjudul_id'] && isset($node['sub'][$n['subjudul_id']])) {
-                    $node['sub'][$n['subjudul_id']]['subnet'][] = $n;
-                } else {
-                    $node['subnet'][] = $n;
+                if ($n['subjudul_id'] && isset($subAda[(int) $n['subjudul_id']])) {
+                    $subnetPerSub[(int) $n['subjudul_id']][] = $n;
+                } elseif (isset($pohon[$n['perusahaan']][$n['judul_id']])) {
+                    $pohon[$n['perusahaan']][$n['judul_id']]['subnet'][] = $n;
                 }
-                unset($node);
             }
-            $hitungJudul = static fn(array $node) => count($node['subnet']) + array_sum(array_map(static fn($s) => count($s['subnet']), $node['sub']));
+            foreach ($subjudul as $s) {
+                $anakSub[(int) $s['judul_id']][(int) ($s['parent_id'] ?? 0)][] = $s;
+            }
+            // jumlah subnet di sub judul + semua turunannya
+            $hitungSub = static function (array $s) use (&$hitungSub, $subnetPerSub, $anakSub): int {
+                $n = count($subnetPerSub[(int) $s['id']] ?? []);
+                foreach ($anakSub[(int) $s['judul_id']][(int) $s['id']] ?? [] as $a) {
+                    $n += $hitungSub($a);
+                }
+
+                return $n;
+            };
+            $hitungJudul = static function (array $node) use ($hitungSub, $anakSub): int {
+                $n = count($node['subnet']);
+                foreach ($anakSub[(int) $node['data']['id']][0] ?? [] as $s) {
+                    $n += $hitungSub($s);
+                }
+
+                return $n;
+            };
+            // baris subnet di pohon
+            $daunSubnet = static function (array $n): string {
+                $judul = esc(trim($n['subnet'] . ' - ' . ($n['deskripsi'] ?? ''), ' -'), 'attr');
+                $desk  = trim($n['deskripsi'] ?? '') !== '' ? '<small class="ip-leaf-desk">' . esc($n['deskripsi']) . '</small>' : '';
+                $host  = !empty($n['jml_host']) ? '<em title="Jumlah hostname">' . (int) $n['jml_host'] . '</em>' : '';
+
+                return '<a class="ip-item ip-leaf" data-pilih="subnet" data-id="' . (int) $n['id'] . '" title="' . $judul . '"><i class="ti ti-network"></i><span>' . esc($n['subnet']) . $desk . '</span>' . $host . '</a>';
+            };
+            // sub judul + anak-anaknya (rekursif)
+            $cabangSub = static function (array $s) use (&$cabangSub, $subnetPerSub, $anakSub, $hitungSub, $daunSubnet): string {
+                $html = '<div class="ip-grup"><a class="ip-item ip-folder" data-pilih="sub" data-id="' . (int) $s['id'] . '">'
+                    . '<i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-folder"></i><span>' . esc($s['sub_judul']) . '</span><em title="Jumlah subnet">' . $hitungSub($s) . '</em></a><div class="ip-anak">';
+                foreach ($anakSub[(int) $s['judul_id']][(int) $s['id']] ?? [] as $a) {
+                    $html .= $cabangSub($a);
+                }
+                foreach ($subnetPerSub[(int) $s['id']] ?? [] as $n) {
+                    $html .= $daunSubnet($n);
+                }
+
+                return $html . '</div></div>';
+            };
             ?>
 
             <!-- JUDUL HALAMAN DAN TOMBOL TAMBAH -->
@@ -756,6 +851,9 @@
                     <button type="button" onclick="openJudul()" class="rfo-btn rfo-btn-gray border-0 cursor-pointer"><i class="ti ti-folder-plus"></i> Tambah Judul</button>
                     <button type="button" onclick="openSubjudul()" class="rfo-btn rfo-btn-green border-0 cursor-pointer"><i class="ti ti-folders"></i> Tambah Sub Judul</button>
                     <button type="button" onclick="openSubnet()" class="rfo-btn rfo-btn-blue border-0 cursor-pointer"><i class="ti ti-plus"></i> Tambah Subnet</button>
+                    <?php if ($bertingkatSiap) : ?>
+                        <button type="button" onclick="openHost()" class="rfo-btn rfo-btn-blue border-0 cursor-pointer"><i class="ti ti-server"></i> Tambah Hostname</button>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -784,20 +882,11 @@
                                                 <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-folder"></i><span><?= esc($nj['data']['judul']) ?></span><em title="Jumlah subnet"><?= $hitungJudul($nj) ?></em>
                                             </a>
                                             <div class="ip-anak">
-                                                <?php foreach ($nj['sub'] as $sid => $ns) : ?>
-                                                    <div class="ip-grup">
-                                                        <a class="ip-item ip-folder" data-pilih="sub" data-id="<?= (int) $sid ?>">
-                                                            <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-folder"></i><span><?= esc($ns['data']['sub_judul']) ?></span><em><?= count($ns['subnet']) ?></em>
-                                                        </a>
-                                                        <div class="ip-anak">
-                                                            <?php foreach ($ns['subnet'] as $n) : ?>
-                                                                <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>" title="<?= esc(trim($n['subnet'] . ' - ' . ($n['deskripsi'] ?? ''), ' -'), 'attr') ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?><?php if (trim($n['deskripsi'] ?? '') !== '') : ?><small class="ip-leaf-desk"><?= esc($n['deskripsi']) ?></small><?php endif; ?></span></a>
-                                                            <?php endforeach; ?>
-                                                        </div>
-                                                    </div>
+                                                <?php foreach ($anakSub[(int) $jid][0] ?? [] as $s) : ?>
+                                                    <?= $cabangSub($s) ?>
                                                 <?php endforeach; ?>
                                                 <?php foreach ($nj['subnet'] as $n) : ?>
-                                                    <a class="ip-item ip-leaf" data-pilih="subnet" data-id="<?= (int) $n['id'] ?>" title="<?= esc(trim($n['subnet'] . ' - ' . ($n['deskripsi'] ?? ''), ' -'), 'attr') ?>"><i class="ti ti-network"></i><span><?= esc($n['subnet']) ?><?php if (trim($n['deskripsi'] ?? '') !== '') : ?><small class="ip-leaf-desk"><?= esc($n['deskripsi']) ?></small><?php endif; ?></span></a>
+                                                    <?= $daunSubnet($n) ?>
                                                 <?php endforeach; ?>
                                             </div>
                                         </div>
@@ -810,7 +899,7 @@
 
                 <!-- ====== KANAN: PANEL TABEL & EXPORT ====== -->
                 <section class="ip-isi card min-w-0 ipam-panel" id="panelSubnet">
-                    <div class="ipam-head">
+                    <div class="ipam-head" id="headSubnet">
                         <h2><i class="ti ti-network"></i> Data Subnet <small id="ipPilihanNama"></small></h2>
                         <div class="flex items-center gap-3 flex-wrap">
                             <!-- Input Search Pengganti Reset Pilihan -->
@@ -836,6 +925,7 @@
                                     <th>Judul</th>
                                     <th>Sub Judul</th>
                                     <th>Perusahaan</th>
+                                    <th>Hostname</th>
                                     <th class="no-export ipam-aksi-th">Aksi</th>
                                 </tr>
                             </thead>
@@ -849,8 +939,10 @@
                                         <td><?= esc($row['judul'] ?? '-') ?></td>
                                         <td><?= esc($row['sub_judul'] ?: '-') ?></td>
                                         <td><?= esc($row['perusahaan'] ?? '-') ?></td>
+                                        <td data-order="<?= (int) $row['jml_host'] ?>"><span class="ip-jml-host <?= $row['jml_host'] ? 'ada' : '' ?>" title="Hostname terdaftar / jumlah IP"><?= (int) $row['jml_host'] ?><?= is_int($row['jumlah_ip']) ? ' / ' . number_format($row['jumlah_ip'], 0, ',', '.') : '' ?></span></td>
                                         <td class="ipam-aksi">
                                             <span class="ipam-btn-grup">
+                                                <button type="button" title="Hostname" onclick="pilihDariCard('subnet', <?= (int) $row['id'] ?>)"><i class="ti ti-server"></i></button>
                                                 <button type="button" title="Detail" data-row="<?= esc(json_encode($row), 'attr') ?>" onclick="lihatSubnet(JSON.parse(this.dataset.row))"><i class="ti ti-eye"></i></button>
                                                 <button type="button" title="Edit" data-row="<?= esc(json_encode($row), 'attr') ?>" onclick="openSubnet(JSON.parse(this.dataset.row))"><i class="ti ti-pencil"></i></button>
                                                 <button type="button" title="Hapus" onclick="hapus('subnet', <?= (int) $row['id'] ?>, this.dataset.nama)" data-nama="<?= esc($row['subnet'], 'attr') ?>"><i class="ti ti-x"></i></button>
@@ -860,6 +952,53 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- ====== DATA HOSTNAME (muncul saat sebuah subnet dipilih) ====== -->
+                    <div class="ip-host hidden" id="panelHost">
+                        <div class="ipam-head">
+                            <h2><i class="ti ti-server"></i> Data Hostname <small id="hostSubnetNama"></small></h2>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <div class="relative">
+                                    <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" id="cariHost" class="pl-9 pr-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-[#1d2630] text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 w-56" placeholder="Cari IP / hostname..." />
+                                </div>
+                                <!-- Wadah Tombol Single Dropdown Export Hostname -->
+                                <div id="exportAreaHost" class="relative inline-block text-left"></div>
+                            </div>
+                        </div>
+                        <?php if (!$bertingkatSiap) : ?>
+                            <div class="ip-kosong">Tabel hostname belum ada. Jalankan bagian "UPDATE 2026-11-20" di database/d_ip_public.sql.</div>
+                        <?php else : ?>
+                            <div class="table-scroll">
+                                <table id="tabelHost" class="ipam-table display nowrap" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>IP Address</th>
+                                            <th>Hostname</th>
+                                            <th>Description</th>
+                                            <th class="no-export ipam-aksi-th">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($host as $h) : ?>
+                                            <tr data-subnet="<?= (int) $h['subnet_id'] ?>">
+                                                <td data-order="<?= esc(bin2hex(@inet_pton($h['ip_address']) ?: $h['ip_address']), 'attr') ?>"><a class="ipam-link cursor-pointer" onclick="lihatHost(<?= (int) $h['id'] ?>)"><?= esc($h['ip_address']) ?></a></td>
+                                                <td><a class="ipam-link cursor-pointer" onclick="lihatHost(<?= (int) $h['id'] ?>)"><?= esc($h['hostname']) ?></a></td>
+                                                <td class="ip-host-desk"><?= esc($h['deskripsi'] ?: '-') ?></td>
+                                                <td class="ipam-aksi">
+                                                    <span class="ipam-btn-grup">
+                                                        <button type="button" title="Detail" onclick="lihatHost(<?= (int) $h['id'] ?>)"><i class="ti ti-eye"></i></button>
+                                                        <button type="button" title="Edit" onclick="openHost(hostById(<?= (int) $h['id'] ?>))"><i class="ti ti-pencil"></i></button>
+                                                        <button type="button" title="Hapus" onclick="hapus('host', <?= (int) $h['id'] ?>, this.dataset.nama)" data-nama="<?= esc($h['hostname'] . ' (' . $h['ip_address'] . ')', 'attr') ?>"><i class="ti ti-x"></i></button>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </section>
             </div>
@@ -902,8 +1041,13 @@
                     <div class="text-gray-500">Sub Judul</div>
                     <div class="font-semibold" id="l_sub"></div>
                 </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Hostname Terdaftar</div>
+                    <div class="font-semibold" id="l_host"></div>
+                </div>
             </div>
-            <div class="flex justify-end gap-3 mt-6">
+            <div class="flex justify-end gap-3 mt-6 flex-wrap">
+                <button type="button" onclick="hostDariDetail()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center gap-1"><i class="ti ti-server"></i> Data Hostname</button>
                 <button type="button" onclick="editDariDetail()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1"><i class="ti ti-edit"></i> Edit</button>
                 <button type="button" onclick="tutup('modal_lihat_subnet')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
             </div>
@@ -949,6 +1093,10 @@
                 <div>
                     <div class="text-gray-500">Induk Judul</div>
                     <div class="font-semibold" id="v_s_judul"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Induk Sub Judul</div>
+                    <div class="font-semibold" id="v_s_induk"></div>
                 </div>
                 <div>
                     <div class="text-gray-500">Nama Sub Judul</div>
@@ -1011,6 +1159,13 @@
                     <label class="rf-label">Perusahaan</label>
                     <input class="rf-input ip-otomatis" data-perusahaan readonly tabindex="-1" placeholder="Otomatis dari Judul">
                 </div>
+                <?php if ($bertingkatSiap) : ?>
+                    <div class="rf-group">
+                        <label class="rf-label">Induk Sub Judul</label>
+                        <select class="rf-input" name="parent_id"></select>
+                        <div class="text-xs text-gray-500 mt-1">Pilih bila sub judul ini berada di dalam sub judul lain. Kosongkan bila langsung di bawah Judul.</div>
+                    </div>
+                <?php endif; ?>
                 <div class="rf-group">
                     <label class="rf-label">Sub Judul <span class="req">*</span></label>
                     <input class="rf-input" name="sub_judul" maxlength="150" required placeholder="Contoh: Blok POP Duren Tiga">
@@ -1063,12 +1218,95 @@
         </div>
     </div>
 
+    <!-- ====== POP UP DETAIL HOSTNAME ====== -->
+    <div id="modal_lihat_host" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="ti ti-server text-emerald-500"></i> Detail Hostname</h3>
+                <button type="button" onclick="tutup('modal_lihat_host')" aria-label="Tutup"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg">
+                    <div class="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase">IP Address</div>
+                    <div class="font-bold ip-subnet text-xl text-blue-700 dark:text-blue-300" id="h_ip"></div>
+                </div>
+                <div class="bg-emerald-50 dark:bg-emerald-900/30 p-3 rounded-lg">
+                    <div class="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase">Hostname</div>
+                    <div class="font-bold text-xl text-emerald-700 dark:text-emerald-300 break-all" id="h_hostname"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Description</div>
+                    <div class="font-medium whitespace-pre-line bg-gray-50 dark:bg-gray-800 p-2 rounded" id="h_deskripsi"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Subnet</div>
+                    <div class="font-semibold ip-subnet" id="h_subnet"></div>
+                </div>
+                <div>
+                    <div class="text-gray-500">Perusahaan</div>
+                    <div class="font-semibold" id="h_perusahaan"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="text-gray-500">Judul / Sub Judul</div>
+                    <div class="font-semibold" id="h_judul"></div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="editHostDariDetail()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1"><i class="ti ti-edit"></i> Edit</button>
+                <button type="button" onclick="tutup('modal_lihat_host')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== POP UP FORM HOSTNAME ====== -->
+    <div id="modal_host" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 rfo-form">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold" id="judulFormHost">Tambah Hostname</h3>
+                <button type="button" onclick="tutup('modal_host')"><i class="ti ti-x text-2xl"></i></button>
+            </div>
+            <form method="POST" id="formHost" data-save="<?= site_url('IpPublic/host/save') ?>" data-update="<?= site_url('IpPublic/host/update') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <div class="rf-group md:col-span-2">
+                        <label class="rf-label">Subnet <span class="req">*</span></label>
+                        <select class="rf-input ip-subnet" name="subnet_id" required></select>
+                    </div>
+                    <div class="rf-group md:col-span-2">
+                        <label class="rf-label">Range IP</label>
+                        <input class="rf-input ip-otomatis ip-subnet" data-range readonly tabindex="-1" placeholder="Otomatis dari Subnet">
+                    </div>
+                    <div class="rf-group">
+                        <label class="rf-label">IP Address <span class="req">*</span></label>
+                        <input class="rf-input ip-subnet" name="ip_address" maxlength="45" required placeholder="Contoh: 103.10.20.2" autocomplete="off">
+                        <div class="text-xs mt-1" data-cek-ip></div>
+                    </div>
+                    <div class="rf-group">
+                        <label class="rf-label">Hostname <span class="req">*</span></label>
+                        <input class="rf-input" name="hostname" maxlength="150" required placeholder="Contoh: rtr-core-jkt01" autocomplete="off">
+                    </div>
+                    <div class="rf-group md:col-span-2">
+                        <label class="rf-label">Description</label>
+                        <textarea class="rf-input" name="deskripsi" rows="3" placeholder="Keterangan pemakaian IP / perangkat"></textarea>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <button type="submit"><i class="ti ti-device-floppy"></i> Simpan</button>
+                    <button type="button" class="btn-back" onclick="tutup('modal_host')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- SCRIPT JAVASCRIPT LENGKAP -->
     <script>
         const DATA_JUDUL = <?= json_encode(array_map(fn($j) => ['id' => (int) $j['id'], 'perusahaan' => $j['perusahaan'], 'judul' => $j['judul']], $judul), $jsonAman) ?>;
-        const DATA_SUBJUDUL = <?= json_encode(array_map(fn($s) => ['id' => (int) $s['id'], 'judul_id' => (int) $s['judul_id'], 'sub_judul' => $s['sub_judul'], 'perusahaan' => $s['perusahaan'] ?? '', 'judul' => $s['judul'] ?? ''], $subjudul), $jsonAman) ?>;
-        const DATA_SUBNET = <?= json_encode(array_map(fn($n) => ['id' => (int) $n['id'], 'subnet' => $n['subnet'], 'deskripsi' => $n['deskripsi'] ?? '', 'perusahaan' => $n['perusahaan'] ?? '', 'judul' => $n['judul'] ?? '', 'sub_judul' => $n['sub_judul'] ?? '', 'awal' => $n['awal'] ?? '-', 'akhir' => $n['akhir'] ?? '-', 'jumlah_ip' => $n['jumlah_ip'] ?? '-'], $subnet), $jsonAman) ?>;
+        const DATA_SUBJUDUL = <?= json_encode(array_map(fn($s) => ['id' => (int) $s['id'], 'judul_id' => (int) $s['judul_id'], 'parent_id' => $s['parent_id'] ? (int) $s['parent_id'] : null, 'sub_judul' => $s['sub_judul'], 'jalur' => $s['jalur'] ?? $s['sub_judul'], 'perusahaan' => $s['perusahaan'] ?? '', 'judul' => $s['judul'] ?? ''], $subjudul), $jsonAman) ?>;
+        const DATA_SUBNET = <?= json_encode(array_map(fn($n) => ['id' => (int) $n['id'], 'judul_id' => (int) $n['judul_id'], 'subjudul_id' => (int) $n['subjudul_id'], 'subnet' => $n['subnet'], 'deskripsi' => $n['deskripsi'] ?? '', 'perusahaan' => $n['perusahaan'] ?? '', 'judul' => $n['judul'] ?? '', 'sub_judul' => $n['sub_judul'] ?? '', 'awal' => $n['awal'] ?? '-', 'akhir' => $n['akhir'] ?? '-', 'jumlah_ip' => $n['jumlah_ip'] ?? '-', 'jml_host' => (int) ($n['jml_host'] ?? 0)], $subnet), $jsonAman) ?>;
+        const DATA_HOST = <?= json_encode(array_map(fn($h) => ['id' => (int) $h['id'], 'subnet_id' => (int) $h['subnet_id'], 'ip_address' => $h['ip_address'], 'hostname' => $h['hostname'], 'deskripsi' => $h['deskripsi'] ?? ''], $host), $jsonAman) ?>;
         const PERUSAHAAN = <?= json_encode($opsiPerusahaan, $jsonAman) ?>;
+        const BERTINGKAT = <?= $bertingkatSiap ? 'true' : 'false' ?>;
 
         function escapeHtml(s) {
             return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -1077,6 +1315,32 @@
         const judulById = id => DATA_JUDUL.find(j => String(j.id) === String(id));
         const subjudulById = id => DATA_SUBJUDUL.find(s => String(s.id) === String(id));
         const subnetById = id => DATA_SUBNET.find(n => String(n.id) === String(id));
+        const hostById = id => DATA_HOST.find(h => String(h.id) === String(id));
+
+        // ===== Sub Judul bertingkat =====
+        // anak langsung (parent null = langsung di bawah Judul)
+        const anakSubjudul = (judulId, parentId) => DATA_SUBJUDUL.filter(s => String(s.judul_id) === String(judulId) && String(s.parent_id || '') === String(parentId || ''));
+        // id sub judul ini + semua turunannya
+        function turunanSubjudul(id) {
+            const hasil = [String(id)];
+            for (let i = 0; i < hasil.length; i++) {
+                DATA_SUBJUDUL.filter(s => String(s.parent_id || '') === hasil[i]).forEach(s => {
+                    if (!hasil.includes(String(s.id))) hasil.push(String(s.id));
+                });
+            }
+            return hasil;
+        }
+        // daftar sub judul satu judul, urut seperti pohon + kedalaman (untuk dropdown berjenjang)
+        function daftarBertingkat(judulId) {
+            const out = [];
+            const jalan = (parentId, dalam) => anakSubjudul(judulId, parentId).forEach(s => {
+                out.push({ s, dalam });
+                jalan(s.id, dalam + 1);
+            });
+            jalan(null, 0);
+            return out;
+        }
+        const indent = d => d ? '    '.repeat(d) + '└ ' : '';
 
         function isiPilihanJudul(select, terpilih) {
             let html = '<option value="">-- Pilih Judul --</option>';
@@ -1096,10 +1360,21 @@
 
         function isiPilihanSubjudul(form, terpilih) {
             const judulId = form.elements.judul_id.value;
-            const daftar = DATA_SUBJUDUL.filter(s => String(s.judul_id) === String(judulId));
+            const daftar = daftarBertingkat(judulId);
             form.elements.subjudul_id.innerHTML = '<option value="">' + (judulId ? (daftar.length ? '-- Tanpa Sub Judul --' : '-- Judul ini belum punya Sub Judul --') : '-- Pilih Judul dulu --') + '</option>' +
-                daftar.map(s => '<option value="' + s.id + '">' + escapeHtml(s.sub_judul) + '</option>').join('');
-            form.elements.subjudul_id.value = terpilih && daftar.some(s => String(s.id) === String(terpilih)) ? String(terpilih) : '';
+                daftar.map(x => '<option value="' + x.s.id + '" title="' + escapeHtml(x.s.jalur) + '">' + escapeHtml(indent(x.dalam) + x.s.sub_judul) + '</option>').join('');
+            form.elements.subjudul_id.value = terpilih && daftar.some(x => String(x.s.id) === String(terpilih)) ? String(terpilih) : '';
+        }
+
+        // dropdown Induk Sub Judul di form Sub Judul (tanpa dirinya & turunannya saat edit)
+        function isiPilihanInduk(form, terpilih, idSendiri) {
+            if (!form.elements.parent_id) return;
+            const judulId = form.elements.judul_id.value;
+            const larang = idSendiri ? turunanSubjudul(idSendiri) : [];
+            const daftar = daftarBertingkat(judulId).filter(x => !larang.includes(String(x.s.id)));
+            form.elements.parent_id.innerHTML = '<option value="">' + (judulId ? '-- Langsung di bawah Judul --' : '-- Pilih Judul dulu --') + '</option>' +
+                daftar.map(x => '<option value="' + x.s.id + '" title="' + escapeHtml(x.s.jalur) + '">' + escapeHtml(indent(x.dalam) + x.s.sub_judul) + '</option>').join('');
+            form.elements.parent_id.value = terpilih && daftar.some(x => String(x.s.id) === String(terpilih)) ? String(terpilih) : '';
         }
 
         function buka(id) {
@@ -1150,9 +1425,15 @@
             const f = document.getElementById('formSubjudul');
             siapkanForm(f, data, 'Tambah Sub Judul', 'Edit Sub Judul', 'judulFormSubjudul');
             isiPilihanJudul(f.elements.judul_id, data.judul_id);
+            isiPilihanInduk(f, data.parent_id, data.id);
             f.elements.sub_judul.value = data.sub_judul || '';
             tampilPerusahaan(f);
             buka('modal_subjudul');
+        }
+
+        // tambah sub judul langsung di dalam sub judul / judul tertentu
+        function tambahSubDi(judulId, parentId) {
+            openSubjudul({ judul_id: judulId, parent_id: parentId || null });
         }
 
         let SUBJUDUL_DILIHAT = null;
@@ -1164,6 +1445,8 @@
             const j = judulById(s.judul_id);
             document.getElementById('v_s_perusahaan').textContent = j ? j.perusahaan : '-';
             document.getElementById('v_s_judul').textContent = j ? j.judul : '-';
+            const induk = s.parent_id ? subjudulById(s.parent_id) : null;
+            document.getElementById('v_s_induk').textContent = induk ? induk.jalur : '- (langsung di bawah Judul)';
             document.getElementById('v_s_subjudul').textContent = s.sub_judul;
             buka('modal_lihat_subjudul');
         }
@@ -1198,6 +1481,8 @@
             set('l_perusahaan', d.perusahaan);
             set('l_judul', d.judul);
             set('l_sub', d.sub_judul);
+            const n = subnetById(d.id);
+            set('l_host', (n ? n.jml_host : 0) + ' hostname' + (typeof d.jumlah_ip === 'number' ? ' dari ' + d.jumlah_ip.toLocaleString('id-ID') + ' IP' : ''));
             buka('modal_lihat_subnet');
         }
 
@@ -1206,18 +1491,114 @@
             if (SUBNET_DILIHAT) openSubnet(SUBNET_DILIHAT);
         }
 
+        function hostDariDetail() {
+            tutup('modal_lihat_subnet');
+            if (SUBNET_DILIHAT) pilihDariCard('subnet', SUBNET_DILIHAT.id);
+        }
+
         document.querySelectorAll('.sel-judul').forEach(sel => sel.addEventListener('change', function() {
             const f = this.form;
             tampilPerusahaan(f);
             if (f.elements.subjudul_id) isiPilihanSubjudul(f, '');
+            if (f.elements.parent_id) isiPilihanInduk(f, '', f.elements.id.value);
         }));
+
+        // ===== HOSTNAME =====
+        // dropdown subnet dikelompokkan per Perusahaan › Judul
+        function isiPilihanSubnet(select, terpilih) {
+            let html = '<option value="">-- Pilih Subnet --</option>';
+            const grup = {};
+            DATA_SUBNET.forEach(n => {
+                const k = (n.perusahaan || '-') + ' › ' + (n.judul || '-');
+                (grup[k] = grup[k] || []).push(n);
+            });
+            Object.keys(grup).forEach(k => {
+                html += '<optgroup label="' + escapeHtml(k) + '">' + grup[k].map(n => '<option value="' + n.id + '">' +
+                    escapeHtml(n.subnet + (n.deskripsi ? ' — ' + n.deskripsi.split('\n')[0] : '')) + '</option>').join('') + '</optgroup>';
+            });
+            select.innerHTML = html;
+            select.value = terpilih ? String(terpilih) : '';
+        }
+
+        // IPv4 -> angka (untuk cek IP di dalam range)
+        const ipKeAngka = ip => /^\d{1,3}(\.\d{1,3}){3}$/.test(ip) && ip.split('.').every(x => +x <= 255) ? ip.split('.').reduce((a, x) => a * 256 + (+x), 0) : null;
+
+        function cekIpHost(form) {
+            const n = subnetById(form.elements.subnet_id.value);
+            form.querySelector('[data-range]').value = n ? (n.awal !== '-' ? n.awal + ' - ' + n.akhir : n.subnet) + (typeof n.jumlah_ip === 'number' ? '  (' + n.jumlah_ip.toLocaleString('id-ID') + ' IP)' : '') : '';
+            const info = form.querySelector('[data-cek-ip]');
+            const ip = form.elements.ip_address.value.trim();
+            info.textContent = '';
+            info.className = 'text-xs mt-1';
+            if (!n || !ip || n.awal === '-') return true;
+            const v = ipKeAngka(ip), a = ipKeAngka(n.awal), b = ipKeAngka(n.akhir);
+            let pesan = '';
+            if (v === null) pesan = 'Format IPv4 tidak valid.';
+            else if (v < a || v > b) pesan = 'IP di luar subnet ' + n.subnet + '.';
+            else if ((b - a) >= 3 && (v === a || v === b)) pesan = 'Alamat ' + (v === a ? 'network' : 'broadcast') + ' tidak bisa dipakai.';
+            else {
+                const dobel = DATA_HOST.find(h => String(h.subnet_id) === String(n.id) && h.ip_address === ip && String(h.id) !== String(form.elements.id.value));
+                if (dobel) pesan = 'IP sudah dipakai ' + dobel.hostname + '.';
+            }
+            info.textContent = pesan || '✓ IP tersedia di subnet ini';
+            info.classList.add(pesan ? 'text-red-600' : 'text-emerald-600');
+            return !pesan;
+        }
+
+        function openHost(data) {
+            data = data || {};
+            const f = document.getElementById('formHost');
+            siapkanForm(f, data, 'Tambah Hostname', 'Edit Hostname', 'judulFormHost');
+            isiPilihanSubnet(f.elements.subnet_id, data.subnet_id || (PILIH.jenis === 'subnet' ? PILIH.id : ''));
+            f.elements.ip_address.value = data.ip_address || '';
+            f.elements.hostname.value = data.hostname || '';
+            f.elements.deskripsi.value = data.deskripsi || '';
+            cekIpHost(f);
+            buka('modal_host');
+            setTimeout(() => (f.elements.subnet_id.value ? f.elements.ip_address : f.elements.subnet_id).focus(), 50);
+        }
+
+        let HOST_DILIHAT = null;
+
+        function lihatHost(id) {
+            const h = hostById(id);
+            if (!h) return;
+            HOST_DILIHAT = h;
+            const n = subnetById(h.subnet_id) || {};
+            const set = (k, v) => document.getElementById(k).textContent = (!v || String(v).trim() === '') ? '-' : v;
+            set('h_ip', h.ip_address);
+            set('h_hostname', h.hostname);
+            set('h_deskripsi', h.deskripsi);
+            set('h_subnet', n.subnet);
+            set('h_perusahaan', n.perusahaan);
+            set('h_judul', [n.judul, n.sub_judul].filter(Boolean).join(' › '));
+            buka('modal_lihat_host');
+        }
+
+        function editHostDariDetail() {
+            tutup('modal_lihat_host');
+            if (HOST_DILIHAT) openHost(HOST_DILIHAT);
+        }
+
+        (function() {
+            const f = document.getElementById('formHost');
+            f.elements.subnet_id.addEventListener('change', () => cekIpHost(f));
+            f.elements.ip_address.addEventListener('input', () => cekIpHost(f));
+            f.addEventListener('submit', e => {
+                if (!cekIpHost(f)) {
+                    e.preventDefault();
+                    f.elements.ip_address.focus();
+                }
+            });
+        })();
 
         // --- HAPUS ---
         function hapus(jenis, id, nama) {
             const label = {
                 judul: 'Judul',
                 subjudul: 'Sub Judul',
-                subnet: 'Subnet'
+                subnet: 'Subnet',
+                host: 'Hostname'
             } [jenis];
             Swal.fire({
                 title: 'Hapus ' + label + '?',
@@ -1242,9 +1623,46 @@
         function cocok(el) {
             if (PILIH.jenis === 'perusahaan') return el.dataset.perusahaan === PILIH.nama;
             if (PILIH.jenis === 'judul') return el.dataset.judul === String(PILIH.id);
-            if (PILIH.jenis === 'sub') return el.dataset.sub === String(PILIH.id);
+            // sub judul: subnet di sub judul itu + semua sub judul di dalamnya
+            if (PILIH.jenis === 'sub') return (PILIH.turunan || [String(PILIH.id)]).includes(el.dataset.sub);
             if (PILIH.jenis === 'subnet') return el.dataset.id === String(PILIH.id);
             return false;
+        }
+
+        // kolom tabel subnet: 0 No | 1 Description | 2 Subnet | 3 Range | 4 Judul | 5 Sub Judul | 6 Perusahaan | 7 Hostname | 8 Aksi
+        function kolomRingkas() {
+            if (!window.TABEL_SUBNET) return;
+            // cukup Subnet description, Subnet & aksi
+            window.TABEL_SUBNET.columns([1, 2, 8]).visible(true);
+            window.TABEL_SUBNET.columns([0, 3, 4, 5, 6, 7]).visible(false);
+        }
+
+        // atur bagian kanan: 'kartu' (daftar judul / sub judul), 'subnet' (tabel subnet), 'host' (Data Hostname)
+        function tampilBagian(mode) {
+            document.getElementById('hierarkiKonten').classList.toggle('hidden', mode !== 'kartu');
+            const wrapSubnet = document.getElementById('subnetTableWrap');
+            wrapSubnet.classList.toggle('hidden', mode !== 'subnet');
+            // info + pagination tabel subnet dipindah rfo.js ke luar wadah tabel: ikut disembunyikan
+            const footSubnet = wrapSubnet.nextElementSibling;
+            if (footSubnet && footSubnet.classList.contains('rfo-footer')) footSubnet.classList.toggle('hidden', mode !== 'subnet');
+            document.getElementById('headSubnet').classList.toggle('hidden', mode === 'host');
+            document.getElementById('panelHost').classList.toggle('hidden', mode !== 'host');
+            if (mode === 'subnet' && window.TABEL_SUBNET) {
+                kolomRingkas();
+                window.TABEL_SUBNET.search('').draw();
+                window.TABEL_SUBNET.columns.adjust();
+            }
+            if (mode === 'host') tampilHost();
+        }
+
+        // panel Data Hostname hanya untuk subnet yang dipilih
+        function tampilHost() {
+            const n = PILIH.jenis === 'subnet' ? subnetById(PILIH.id) : null;
+            if (!n) return;
+            document.getElementById('hostSubnetNama').textContent = '— ' + n.subnet;
+            if (window.TABEL_HOST) window.TABEL_HOST.search('').draw();
+            const cari = document.getElementById('cariHost');
+            if (cari) cari.value = '';
         }
 
         function namaPilihan() {
@@ -1256,11 +1674,11 @@
             if (PILIH.jenis === 'sub') {
                 const s = subjudulById(PILIH.id),
                     j = s ? judulById(s.judul_id) : null;
-                return j ? j.perusahaan + ' › ' + j.judul + ' › ' + s.sub_judul : '';
+                return j ? j.perusahaan + ' › ' + j.judul + ' › ' + s.jalur : '';
             }
             if (PILIH.jenis === 'subnet') {
                 const n = subnetById(PILIH.id);
-                return n ? n.perusahaan + ' › ' + n.judul + ' › Subnet: ' + n.subnet : '';
+                return n ? n.perusahaan + ' › ' + n.judul + (n.sub_judul ? ' › ' + n.sub_judul : '') + ' › Subnet: ' + n.subnet : '';
             }
             return '';
         }
@@ -1270,22 +1688,21 @@
             document.getElementById('subnetTableWrap').classList.toggle('hidden', daftar);
         }
 
+        // jenis: 'perusahaan' -> daftar Judul | 'judul' -> Sub Judul teratas | 'sub' -> Sub Judul di dalam sub judul terpilih
         function tampilkanHierarki(jenis) {
             const box = document.getElementById('hierarkiKonten'),
                 isJudul = jenis === 'perusahaan',
-                label = isJudul ? 'Judul' : 'Sub Judul';
+                isSub = jenis === 'sub',
+                label = isJudul ? 'Judul' : (isSub ? 'Sub Judul di dalamnya' : 'Sub Judul');
 
-            const items = isJudul ?
-                DATA_JUDUL.filter(j => j.perusahaan === PILIH.nama).map(j => ({
-                    id: j.id,
-                    nama: j.judul,
-                    jenis: 'judul'
-                })) :
-                DATA_SUBJUDUL.filter(s => String(s.judul_id) === String(PILIH.id)).map(s => ({
-                    id: s.id,
-                    nama: s.sub_judul,
-                    jenis: 'sub'
-                }));
+            let items;
+            if (isJudul) {
+                items = DATA_JUDUL.filter(j => j.perusahaan === PILIH.nama).map(j => ({ id: j.id, nama: j.judul, jenis: 'judul', anak: 0 }));
+            } else {
+                const induk = isSub ? subjudulById(PILIH.id) : null;
+                const judulId = isSub ? (induk ? induk.judul_id : 0) : PILIH.id;
+                items = anakSubjudul(judulId, isSub ? PILIH.id : null).map(s => ({ id: s.id, nama: s.sub_judul, jenis: 'sub', anak: anakSubjudul(s.judul_id, s.id).length }));
+            }
 
             document.getElementById('ipPilihanNama').textContent = '— ' + namaPilihan();
 
@@ -1293,26 +1710,29 @@
             if (items.length) {
                 html += '<div class="ip-card-list">';
                 items.forEach(x => {
+                    const subIni = x.jenis === 'sub';
                     html += `
                         <div class="ip-card-row">
-                            <div class="flex items-center gap-2 cursor-pointer" onclick="pilihDariCard('${x.jenis}', ${x.id})">
-                                <i class="ti ${isJudul ? 'ti-folder text-yellow-500' : 'ti-folders text-green-500'} text-xl"></i>
-                                <span class="font-medium">${escapeHtml(x.nama)}</span>
+                            <div class="flex items-center gap-2 cursor-pointer min-w-0" onclick="pilihDariCard('${x.jenis}', ${x.id})">
+                                <i class="ti ${!subIni ? 'ti-folder text-yellow-500' : 'ti-folders text-green-500'} text-xl"></i>
+                                <span class="font-medium truncate">${escapeHtml(x.nama)}</span>
+                                ${x.anak ? `<span class="ip-anak-jml" title="Sub judul di dalamnya">${x.anak} sub</span>` : ''}
                             </div>
                             <div class="flex items-center gap-1">
-                                <button type="button" class="p-1 text-gray-500 hover:text-blue-600" title="View" onclick="${isJudul ? `lihatJudul(${x.id})` : `lihatSubjudul(${x.id})`}"><i class="ti ti-eye"></i></button>
-                                <button type="button" class="p-1 text-gray-500 hover:text-blue-600" title="Edit" onclick="${isJudul ? `openJudul(judulById(${x.id}))` : `openSubjudul(subjudulById(${x.id}))`}"><i class="ti ti-pencil"></i></button>
-                                <button type="button" class="p-1 text-gray-500 hover:text-red-600" title="Hapus" onclick="hapus('${isJudul ? 'judul' : 'subjudul'}', ${x.id}, '${escapeHtml(x.nama)}')"><i class="ti ti-x"></i></button>
+                                ${subIni && BERTINGKAT ? `<button type="button" class="p-1 text-gray-500 hover:text-green-600" title="Tambah Sub Judul di dalamnya" onclick="tambahSubDi(${subjudulById(x.id).judul_id}, ${x.id})"><i class="ti ti-folder-plus"></i></button>` : ''}
+                                <button type="button" class="p-1 text-gray-500 hover:text-blue-600" title="View" onclick="${!subIni ? `lihatJudul(${x.id})` : `lihatSubjudul(${x.id})`}"><i class="ti ti-eye"></i></button>
+                                <button type="button" class="p-1 text-gray-500 hover:text-blue-600" title="Edit" onclick="${!subIni ? `openJudul(judulById(${x.id}))` : `openSubjudul(subjudulById(${x.id}))`}"><i class="ti ti-pencil"></i></button>
+                                <button type="button" class="p-1 text-gray-500 hover:text-red-600" title="Hapus" data-nama="${escapeHtml(x.nama)}" onclick="hapus('${!subIni ? 'judul' : 'subjudul'}', ${x.id}, this.dataset.nama)"><i class="ti ti-x"></i></button>
                             </div>
                         </div>`;
                 });
                 html += '</div>';
             } else {
-                html += '<div class="ip-kosong">Belum ada ' + label.toLowerCase() + '.</div>';
+                html += '<div class="ip-kosong">Belum ada ' + (isSub ? 'sub judul di dalam sub judul ini' : label.toLowerCase()) + '.</div>';
             }
 
             box.innerHTML = html;
-            modeKonten(true);
+            tampilBagian('kartu');
         }
 
         function pilihDariCard(jenis, id) {
@@ -1326,16 +1746,8 @@
                     jenis: 'subnet',
                     id: String(id)
                 };
-                document.getElementById('hierarkiKonten').classList.add('hidden');
-                document.getElementById('subnetTableWrap').classList.remove('hidden');
                 document.getElementById('ipPilihanNama').textContent = '— ' + namaPilihan();
-
-                if (window.TABEL_SUBNET) {
-                    window.TABEL_SUBNET.columns([1, 2, 7]).visible(true);
-                    window.TABEL_SUBNET.columns([0, 3, 4, 5, 6]).visible(false);
-                    window.TABEL_SUBNET.search('');
-                    window.TABEL_SUBNET.draw();
-                }
+                tampilBagian('host');
             }
         }
 
@@ -1347,36 +1759,39 @@
             PILIH = {
                 jenis,
                 id: el.dataset.id,
-                nama: el.dataset.nama
+                nama: el.dataset.nama,
+                turunan: jenis === 'sub' ? turunanSubjudul(el.dataset.id) : null
             };
 
-            if (el.parentElement.classList.contains('ip-grup')) el.parentElement.classList.add('is-buka');
+            // buka semua induknya di pohon supaya item terpilih terlihat
+            let g = el.parentElement;
+            while (g && g.id !== 'ipTree') {
+                if (g.classList.contains('ip-grup')) g.classList.add('is-buka');
+                g = g.parentElement;
+            }
+
+            document.getElementById('ipPilihanNama').textContent = '— ' + namaPilihan();
 
             if (jenis === 'perusahaan' || jenis === 'judul') {
-                if (window.TABEL_SUBNET) TABEL_SUBNET.search('').draw();
                 tampilkanHierarki(jenis);
                 return;
             }
 
-            // Apabila memilih Sub Judul atau Subnet -> Tampilkan tabel DataTables
-            document.getElementById('hierarkiKonten').classList.add('hidden');
-            document.getElementById('subnetTableWrap').classList.remove('hidden');
-            document.getElementById('ipPilihanNama').textContent = '— ' + namaPilihan();
-
-            if (window.TABEL_SUBNET) {
-                if (jenis === 'sub') {
-                    // Ketika memencet Sub Judul: tampilkan Subnet Description, Subnet, dan Aksi
-                    window.TABEL_SUBNET.columns([1, 2, 7]).visible(true);
-                    window.TABEL_SUBNET.columns([0, 3, 4, 5, 6]).visible(false);
-                } else if (jenis === 'subnet') {
-                    // Ketika memencet Subnet: tampilkan hanya Subnet Description, Subnet, dan Aksi
-                    window.TABEL_SUBNET.columns([1, 2, 7]).visible(true);
-                    window.TABEL_SUBNET.columns([0, 3, 4, 5, 6]).visible(false);
+            // Sub Judul yang masih punya sub judul di dalamnya: cukup daftar sub judulnya
+            // Sub Judul terakhir: tabel subnet (Description & Subnet)
+            if (jenis === 'sub') {
+                const s = subjudulById(PILIH.id);
+                if (s && anakSubjudul(s.judul_id, s.id).length) {
+                    tampilkanHierarki('sub');
+                } else {
+                    PILIH.turunan = [String(PILIH.id)];
+                    tampilBagian('subnet');
                 }
-
-                window.TABEL_SUBNET.search('');
-                window.TABEL_SUBNET.draw();
+                return;
             }
+
+            // Subnet: cukup Data Hostname (IP Address, Hostname, Description)
+            tampilBagian('host');
         }
 
         document.getElementById('ipTree').addEventListener('click', e => {
@@ -1428,7 +1843,7 @@
                         render: (d, t, r, meta) => meta.settings._iDisplayStart + meta.row + 1
                     },
                     {
-                        targets: [7],
+                        targets: [8],
                         orderable: false,
                         searchable: false
                     }
@@ -1442,6 +1857,12 @@
                 }
             });
             window.TABEL_SUBNET = tabel;
+            // footer (info + pagination) ikut tersembunyi selama tabel subnet belum tampil
+            (function() {
+                const wrap = document.getElementById('subnetTableWrap');
+                const foot = wrap.nextElementSibling;
+                if (foot && foot.classList.contains('rfo-footer')) foot.classList.toggle('hidden', wrap.classList.contains('hidden'));
+            })();
 
             // Inisialisasi Fitur Export DataTables secara terpisah tanpa Print & Colvis
             const buttons = new $.fn.dataTable.Buttons(tabel, {
@@ -1480,7 +1901,7 @@
             // Render Tombol Single Dropdown "Export"
             const exportContainer = $('#exportArea');
             const dropHtml = `
-                <button id="btnExportDrop" onclick="toggleExportMenu(event)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-2">
+                <button id="btnExportDrop" onclick="toggleExportMenu(event, 'exportMenu')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-2">
                     <i class="ti ti-download"></i> Export <i class="ti ti-chevron-down text-xs"></i>
                 </button>
                 <div id="exportMenu" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-[#263240] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden py-1">
@@ -1493,15 +1914,104 @@
             $('#customSearch').on('keyup input', function() {
                 tabel.search(this.value).draw();
             });
+
+            // ====== TABEL DATA HOSTNAME (hanya baris subnet yang dipilih) ======
+            if (document.getElementById('tabelHost')) {
+                $.fn.dataTable.ext.search.push(function(settings, data, i) {
+                    if (settings.nTable.id !== 'tabelHost') return true;
+                    return PILIH.jenis === 'subnet' && settings.aoData[i].nTr.dataset.subnet === String(PILIH.id);
+                });
+                const tabelHost = $('#tabelHost').DataTable({
+                    paging: false, // tanpa pagination, semua hostname tampil
+                    lengthChange: false,
+                    order: [[0, 'asc']],
+                    columnDefs: [{
+                        targets: [3],
+                        orderable: false,
+                        searchable: false
+                    }],
+                    dom: 'rti',
+                    language: {
+                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ hostname",
+                        infoEmpty: "Menampilkan 0 hostname",
+                        emptyTable: "Belum ada data hostname",
+                        zeroRecords: "Belum ada hostname di subnet ini"
+                    }
+                });
+                window.TABEL_HOST = tabelHost;
+
+                // Export hostname: hanya baris subnet yang sedang dipilih (ikut filter & pencarian)
+                const judulExportHost = () => {
+                    const n = PILIH.jenis === 'subnet' ? subnetById(PILIH.id) : null;
+                    return 'Data Hostname' + (n ? ' ' + n.subnet : '');
+                };
+                const kelasMenu = 'w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center';
+                const opsiExportHost = {
+                    columns: ':not(.no-export)'
+                };
+                const tombolHost = new $.fn.dataTable.Buttons(tabelHost, {
+                    buttons: [{
+                            extend: 'excelHtml5',
+                            text: '<i class="ti ti-file-spreadsheet text-green-600 mr-2"></i> Export Excel',
+                            title: judulExportHost,
+                            className: kelasMenu,
+                            exportOptions: opsiExportHost
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="ti ti-file-text text-blue-600 mr-2"></i> Export CSV',
+                            title: judulExportHost,
+                            className: kelasMenu,
+                            exportOptions: opsiExportHost
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            text: '<i class="ti ti-file-description text-red-600 mr-2"></i> Export PDF',
+                            title: judulExportHost,
+                            orientation: 'portrait',
+                            pageSize: 'A4',
+                            className: kelasMenu,
+                            exportOptions: opsiExportHost
+                        }
+                    ]
+                });
+                $('#exportAreaHost').html(`
+                    <button type="button" onclick="toggleExportMenu(event, 'exportMenuHost')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-2">
+                        <i class="ti ti-download"></i> Export <i class="ti ti-chevron-down text-xs"></i>
+                    </button>
+                    <div id="exportMenuHost" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-[#263240] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden py-1"></div>
+                `);
+                $('#exportMenuHost').append(tombolHost.container().find('.dt-button'));                $('#cariHost').on('keyup input', function() {
+                    tabelHost.search(this.value).draw();
+                });
+            }
+
+            // ====== buka lagi subnet terpilih setelah simpan / hapus hostname (?subnet=ID) ======
+            const idSubnet = new URLSearchParams(location.search).get('subnet');
+            if (idSubnet && subnetById(idSubnet)) {
+                pilihDariCard('subnet', idSubnet);
+                const item = document.querySelector('#ipTree [data-pilih="subnet"][data-id="' + idSubnet + '"]');
+                if (item) item.scrollIntoView({ block: 'center' });
+                <?php if (session()->getFlashdata('popup') === 'host') : ?>
+                // simpan gagal: buka lagi form hostname dengan isian sebelumnya
+                const lama = <?= json_encode([
+                    'id' => old('id', null, false), 'subnet_id' => old('subnet_id', null, false), 'ip_address' => old('ip_address', null, false),
+                    'hostname' => old('hostname', null, false), 'deskripsi' => old('deskripsi', null, false),
+                ], $jsonAman) ?>;
+                openHost(lama);
+                <?php endif; ?>
+            }
         });
 
-        function toggleExportMenu(e) {
+        function toggleExportMenu(e, idMenu) {
             e.stopPropagation();
-            $('#exportMenu').toggleClass('hidden');
+            idMenu = idMenu || 'exportMenu';
+            $('#exportMenu, #exportMenuHost').not('#' + idMenu).addClass('hidden');
+            $('#' + idMenu).toggleClass('hidden');
         }
 
         $(document).on('click', function() {
-            $('#exportMenu').addClass('hidden');
+            $('#exportMenu, #exportMenuHost').addClass('hidden');
         });
     </script>
 

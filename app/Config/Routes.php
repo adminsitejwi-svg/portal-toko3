@@ -382,6 +382,10 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('IpPublic/subnet/save', 'IpPublic::saveSubnet');
     $routes->post('IpPublic/subnet/update', 'IpPublic::updateSubnet');
     $routes->get('IpPublic/subnet/delete/(:num)', 'IpPublic::deleteSubnet/$1');
+    // Data Hostname di dalam subnet
+    $routes->post('IpPublic/host/save', 'IpPublic::saveHost');
+    $routes->post('IpPublic/host/update', 'IpPublic::updateHost');
+    $routes->get('IpPublic/host/delete/(:num)', 'IpPublic::deleteHost/$1');
 
     // Data Router (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Router / SN / IP tidak boleh dobel
     $routes->get('DataRouter', 'DataRouter::index');
