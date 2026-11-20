@@ -78,6 +78,21 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('HakAkses/role/delete/(:num)', 'HakAkses::deleteRole/$1');
     $routes->post('HakAkses/akun/save', 'HakAkses::saveAkun');
 
+    // Request (Informasi > Request, di bawah Hak Akses) — form buatan Administrator, lihat database/d_request.sql
+    // Request, Request/isi, Request/kirim, Request/file : semua akun (hanya request yang ditujukan ke akunnya)
+    // Request/kelola/... : khusus Administrator (app/Config/HakAkses.php -> $khususAdmin)
+    $routes->get('Request', 'RequestForm::index');
+    $routes->get('Request/isi/(:num)', 'RequestForm::isi/$1');
+    $routes->post('Request/kirim/(:num)', 'RequestForm::kirim/$1');
+    $routes->get('Request/file/(:num)/(:segment)', 'RequestForm::file/$1/$2');
+    $routes->get('Request/kelola/buat', 'RequestForm::buat');
+    $routes->get('Request/kelola/ubah/(:num)', 'RequestForm::ubah/$1');
+    $routes->post('Request/kelola/simpan', 'RequestForm::simpan');
+    $routes->get('Request/kelola/hapus/(:num)', 'RequestForm::hapus/$1');
+    $routes->get('Request/kelola/status/(:num)', 'RequestForm::status/$1');
+    $routes->get('Request/kelola/jawaban/(:num)', 'RequestForm::jawaban/$1');
+    $routes->post('Request/kelola/review', 'RequestForm::review');
+
 
     // DC
     $routes->get('DCAdmin', [DCAdmin::class, 'index']);

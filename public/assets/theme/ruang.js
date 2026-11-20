@@ -221,7 +221,8 @@
         'surat tugas': ['ti-file-text', 'Surat Tugas'],
         'rekap data toko':['ti-report-analytics', 'Rekap Data Toko'],
         'change log': ['ti-history', 'Riwayat Perubahan'],
-        'hak akses': ['ti-shield-lock', 'Role & Akses Halaman']
+        'hak akses': ['ti-shield-lock', 'Role & Akses Halaman'],
+        'request': ['ti-forms', 'Form Permintaan Admin']
 
     };
 

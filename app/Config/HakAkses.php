@@ -109,6 +109,9 @@ class HakAkses extends BaseConfig
     public array $selaluBoleh = [
         'forgot-password',
         'logout',
+        // Informasi > Request: tiap akun hanya melihat request yang ditujukan ke akunnya
+        // (siapa yang boleh mengisi dipilih Administrator di setiap request)
+        'Request',
     ];
 
     /**
@@ -121,6 +124,7 @@ class HakAkses extends BaseConfig
         'HakAkses',
         'register',
         'settings/delete',
+        'Request/kelola', // buat / ubah / hapus request + lihat & review jawaban
     ];
 
     /** Halaman default role Support & User saat SQL pertama kali dijalankan. */

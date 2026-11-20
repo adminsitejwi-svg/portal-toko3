@@ -24,6 +24,17 @@ if (session()->get('logged_in')) :
     $terlarang = $hakAkses->halamanTerlarang();
     $tampilHakAkses = $hakAkses->tersedia() && $hakAkses->isAdmin();
     $aksesDitolak   = session()->getFlashdata('akses_ditolak');
+
+    // ===== Request (Informasi > Request) =====
+    // menu Request untuk semua akun + badge jumlah request yang belum diisi,
+    // dan pengingat di halaman yang dipilih Administrator pada request tersebut.
+    $tampilRequest = \App\Libraries\RequestForm::tersedia();
+    $rqTertunda    = $tampilRequest ? \App\Libraries\RequestForm::tertunda((int) session()->get('user_id')) : [];
+    $rqSegmen      = strtolower(explode('/', trim(uri_string(), '/'))[0] ?? '');
+    $rqDiHalaman   = $rqSegmen === '' || $rqSegmen === 'request' ? [] : array_values(array_filter(
+        $rqTertunda,
+        static fn ($r) => $r['halaman'] && strtolower($r['halaman']) === $rqSegmen
+    ));
 ?>
 <?php if ($terlarang) : ?>
     <style id="hak-akses-css">
@@ -62,6 +73,75 @@ if (session()->get('logged_in')) :
                 sisipkan();
             }
         })();
+        <?php endif; ?>
+
+        <?php if ($tampilRequest) : ?>
+        // menu Request (semua akun) di bawah Hak Akses / Change Log, dengan badge request yang belum diisi
+        (function () {
+            function sisipkanRequest() {
+                var sb = document.getElementById('sidebar');
+                if (!sb || sb.querySelector('a[href$="/Request" i]')) return;
+                var acuan = sb.querySelector('a[href$="/HakAkses" i]') || sb.querySelector('a[href$="/Logs" i]');
+                if (!acuan) return;
+                var jml = <?= count($rqTertunda) ?>;
+                var li = document.createElement('li');
+                li.innerHTML = '<a href="<?= site_url('Request') ?>" class="pc-link' +
+                    ' flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">' +
+                    '<span class="pc-micon w-5"><i class="ti ti-forms"></i></span><span>Request</span>' +
+                    (jml ? '<b class="rq-badge" title="Request yang belum diisi" style="margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">' + jml + '</b>' : '') +
+                    '</a>';
+                acuan.closest('li').after(li);
+                if (/\/Request(\/|$)/i.test(location.pathname)) {
+                    sb.querySelectorAll('.pc-link.active').forEach(function (a) { a.classList.remove('active'); });
+                    li.firstChild.classList.add('active');
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('readystatechange', function () {
+                    if (document.readyState === 'interactive') sisipkanRequest();
+                });
+            } else {
+                sisipkanRequest();
+            }
+        })();
+        <?php endif; ?>
+
+        <?php if ($rqDiHalaman) : ?>
+        // pengingat request untuk halaman ini (dipilih Administrator saat membuat request)
+        document.addEventListener('DOMContentLoaded', function () {
+            var daftar = <?= json_encode(array_map(static fn ($r) => [
+                'url'   => site_url('Request/isi/' . $r['id']),
+                'judul' => $r['judul'],
+                'batas' => $r['batas_waktu'] ? date('d M Y H:i', strtotime($r['batas_waktu'])) : '',
+                'revisi' => $r['status_jawaban'] === 'revisi',
+            ], $rqDiHalaman), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+            var kunci = 'rq-tutup-' + location.pathname;
+            try { if (sessionStorage.getItem(kunci)) return; } catch (e) {}
+            var gelap = document.documentElement.classList.contains('dark');
+            var box = document.createElement('div');
+            box.setAttribute('role', 'status');
+            box.style.cssText = 'position:fixed;right:20px;bottom:20px;z-index:3000;width:340px;max-width:calc(100vw - 32px);' +
+                'border-radius:14px;box-shadow:0 18px 45px rgba(15,23,42,.25);overflow:hidden;font-size:13px;' +
+                (gelap ? 'background:#263240;color:#e2e8f0;border:1px solid rgba(255,255,255,.1)' : 'background:#fff;color:#334155;border:1px solid #e2e8f0');
+            var esc = function (s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+            var isi = '<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;background:#04a9f5;color:#fff;font-weight:700">' +
+                '<i class="ti ti-forms" style="font-size:18px"></i><span style="flex:1">Ada ' + daftar.length + ' request untuk halaman ini</span>' +
+                '<button type="button" aria-label="Tutup" style="background:none;border:0;color:#fff;font-size:18px;cursor:pointer;line-height:1">&times;</button></div>' +
+                '<div style="padding:8px 14px 12px">';
+            daftar.forEach(function (r) {
+                isi += '<a href="' + esc(r.url) + '" style="display:block;padding:8px 0;border-bottom:1px dashed ' + (gelap ? 'rgba(255,255,255,.1)' : '#e2e8f0') + ';color:inherit;text-decoration:none">' +
+                    '<b style="display:block">' + esc(r.judul) + '</b>' +
+                    '<span style="font-size:12px;opacity:.75">' + (r.revisi ? '<span style="color:#f59e0b;font-weight:600">Perlu revisi</span> · ' : '') +
+                    (r.batas ? 'Batas ' + esc(r.batas) : 'Tanpa batas waktu') + '</span>' +
+                    '<span style="display:inline-block;margin-top:4px;color:#04a9f5;font-weight:600">Isi sekarang &rarr;</span></a>';
+            });
+            box.innerHTML = isi + '</div>';
+            box.querySelector('button').addEventListener('click', function () {
+                try { sessionStorage.setItem(kunci, '1'); } catch (e) {}
+                box.remove();
+            });
+            document.body.appendChild(box);
+        });
         <?php endif; ?>
 
         document.addEventListener('DOMContentLoaded', function () {
