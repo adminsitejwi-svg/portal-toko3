@@ -215,6 +215,7 @@
         'notifikasi maintenance': ['ti-bell', 'Pemberitahuan Maintenance'],
         'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
         'data teknis noc': ['ti-topology-star-3', 'Data Center & BTS'],
+        'data teknis netmon': ['ti-activity-heartbeat', 'Monitoring Jaringan'],
         'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],
@@ -289,6 +290,12 @@
         'surattugas': 'ti-file-text',
         'rekapdatamidi': 'ti-report-analytics',
         'datatopologi': 'ti-topology-star-3',
+        'dashboardnetmon': 'ti-dashboard',
+        'devicemonitoring': 'ti-device-desktop-analytics',
+        'trafficmonitoring': 'ti-chart-area-line',
+        'nms': 'ti-network',
+        'alert': 'ti-bell-ringing',
+        'screen': 'ti-device-tv',
         'logs': 'ti-history',
         'hakakses': 'ti-shield-lock'
     };

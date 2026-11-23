@@ -36,6 +36,20 @@ if (session()->get('logged_in')) :
         static fn ($r) => $r['halaman'] && strtolower($r['halaman']) === $rqSegmen
     ));
 ?>
+<?php if ($hakAkses->bisa('Alert') && \App\Models\DeviceAlertModel::siap()) : ?>
+    <!-- lonceng notifikasi alert di navbar (untuk akun yang boleh membuka halaman Alert) -->
+    <link rel="stylesheet" href="<?= base_url('assets/theme/notifikasi.css') ?>?v=<?= $ver('assets/theme/notifikasi.css') ?>">
+    <script>
+        window.NOTIF_ALERT = <?= json_encode([
+            'alert' => site_url('Alert'),
+            'data'  => site_url('Alert/notifikasi'),
+            'baca'  => site_url('Alert/dibaca'),
+            'cek'   => site_url('Alert/cek'),
+            'token' => \App\Controllers\Alert::token(),
+        ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
+    </script>
+    <script src="<?= base_url('assets/theme/notifikasi.js') ?>?v=<?= $ver('assets/theme/notifikasi.js') ?>"></script>
+<?php endif; ?>
 <?php if ($terlarang) : ?>
     <style id="hak-akses-css">
 <?php foreach ($terlarang as $k) : $k = addcslashes($k, '"\\'); ?>
