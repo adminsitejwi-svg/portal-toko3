@@ -660,7 +660,7 @@
                                 <div class="flex flex-wrap items-center gap-3 mb-4">
                                     <div class="rfo-search">
                                         <i class="ti ti-search"></i>
-                                        <input type="text" id="ifCari" placeholder="Cari interface / comment / ifIndex..." />
+                                        <input type="text" id="ifCari" placeholder="Cari interface / comment..." />
                                     </div>
                                     <label class="rfo-field">
                                         <i class="ti ti-activity" style="color:#16a34a"></i>
@@ -690,7 +690,6 @@
                                                 <th>No</th>
                                                 <th>Aksi</th>
                                                 <th>Interface</th>
-                                                <th>ifIndex</th>
                                                 <th>Speed</th>
                                                 <th>Admin</th>
                                                 <th>Status</th>
@@ -777,7 +776,7 @@
                                             <option value="0">Belum ada interface</option>
                                         <?php endif; ?>
                                         <?php foreach ($live['ifaces'] as $i) : ?>
-                                            <option value="<?= $i['id'] ?>" <?= (int) $live['interface'] === $i['id'] ? 'selected' : '' ?>><?= esc($i['nama'] . ($i['alias'] ? ' (' . $i['alias'] . ')' : '')) ?> - ifIndex <?= $i['ifIndex'] ?></option>
+                                            <option value="<?= $i['id'] ?>" <?= (int) $live['interface'] === $i['id'] ? 'selected' : '' ?>><?= esc($i['nama'] . $i['beda'] . ($i['alias'] ? ' (' . $i['alias'] . ')' : '')) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </label>
@@ -935,6 +934,10 @@
         #hGrafik .nms-skop { background: rgba(110, 208, 224, .14); color: #6ed0e0; }
         #hGrafik .nms-skop.is-if { background: rgba(234, 184, 57, .15); color: #eab839; }
         #hGrafik .nms-chart-kosong, #panelLive .nms-chart-kosong { color: #a5abb5; }
+        #panelLive .nms-chart-box canvas { transition: opacity .2s ease; }
+        #panelLive.is-muat .nms-chart-box canvas { opacity: .35; }
+        #panelLive.is-muat .nms-chart-kosong { display: none; }
+        #panelLive.is-muat .nms-chart-box::after { content: "Memuat data..."; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #e3e5e8; }
         #hGrafik .nms-chart-box { transition: opacity .2s ease; }
         #hGrafik.is-muat .nms-chart-box { opacity: .35; }
         #hGrafik.is-muat .nms-chart-box::after { content: "Memuat data..."; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #e3e5e8; }
@@ -1089,7 +1092,7 @@
                 function renderLive() {
                     const sel = $('nmsIface');
                     sel.innerHTML = S.ifaces.length
-                        ? S.ifaces.map(i => '<option value="' + i.id + '"' + (i.id === S.interface ? ' selected' : '') + '>' + esc(i.nama + (i.alias ? ' (' + i.alias + ')' : '')) + ' - ifIndex ' + i.ifIndex + '</option>').join('')
+                        ? S.ifaces.map(i => '<option value="' + i.id + '"' + (i.id === S.interface ? ' selected' : '') + '>' + esc(i.nama + i.beda + (i.alias ? ' (' + i.alias + ')' : '')) + '</option>').join('')
                         : '<option value="">Belum ada interface</option>';
                     sel.disabled = !S.ifaces.length;
                     const i = S.ifaces.find(x => x.id === S.interface);
@@ -1107,7 +1110,7 @@
                     const st = $('ifStatus').value;
                     const per = parseInt($('ifPer').value, 10);
                     const list = S.ifaces.filter(i => (!st || i.status === st) &&
-                        (!cari || (i.nama + ' ' + (i.alias || '') + ' ' + (i.descr || '') + ' ' + i.ifIndex).toLowerCase().includes(cari)));
+                        (!cari || (i.nama + ' ' + (i.alias || '') + ' ' + (i.descr || '') + i.beda).toLowerCase().includes(cari)));
                     const hal = Math.max(1, Math.ceil(list.length / per));
                     halIf = Math.min(halIf, hal);
                     const awal = (halIf - 1) * per;
@@ -1118,12 +1121,12 @@
                         '<td>' + (awal + no + 1) + '</td>' +
                         '<td class="ra-aksi"><button type="button" class="act act-view" data-live="' + i.id + '" title="Tampilkan di Live Traffic"><i class="ti ti-chart-line"></i> Live</button> ' +
                         '<a class="act act-edit" href="' + URL_NMS + '?tab=history&device=' + S.device + '&interface=' + i.id + '&periode=24h" title="History 24 jam"><i class="ti ti-history"></i> History</a></td>' +
-                        '<td><div class="col-bold">' + esc(i.nama) + '</div>' + (i.alias ? '<div class="rb-sub">' + esc(i.alias) + '</div>' : '') + '</td>' +
-                        '<td>' + i.ifIndex + '</td><td>' + esc(i.speed) + '</td><td>' + esc(i.admin) + '</td><td>' + badge(i.status) + '</td>' +
+                        '<td><div class="col-bold">' + esc(i.nama + i.beda) + '</div>' + (i.alias ? '<div class="rb-sub">' + esc(i.alias) + '</div>' : '') + '</td>' +
+                        '<td>' + esc(i.speed) + '</td><td>' + esc(i.admin) + '</td><td>' + badge(i.status) + '</td>' +
                         '<td>' + esc(i.rx_teks) + '</td><td>' + esc(i.tx_teks) + '</td>' +
                         '<td>' + (i.util !== null ? '<div class="tm-bar"><span style="width:' + Math.min(100, i.util) + '%"></span></div>' + fmt(i.util, 1, '%') : '-') + '</td>' +
                         '<td>' + esc(i.waktu || '-') + '</td>' +
-                        '</tr>').join('') : '<tr><td colspan="11" class="nms-kosong">' + (S.ifaces.length ? 'Tidak ada interface yang cocok dengan filter.' : 'Belum ada data interface. Traffic mulai terhitung dari polling kedua.') + '</td></tr>';
+                        '</tr>').join('') : '<tr><td colspan="10" class="nms-kosong">' + (S.ifaces.length ? 'Tidak ada interface yang cocok dengan filter.' : 'Belum ada data interface. Traffic mulai terhitung dari polling kedua.') + '</td></tr>';
                     $('ifPager').innerHTML = '<span>Menampilkan ' + (list.length ? awal + 1 : 0) + '–' + Math.min(list.length, awal + per) + ' dari ' + list.length + ' interface</span>' +
                         '<span><button type="button" data-hal="' + (halIf - 1) + '"' + (halIf <= 1 ? ' disabled' : '') + '>‹ Prev</button> <span style="padding:0 8px">Halaman ' + halIf + ' / ' + hal + '</span> ' +
                         '<button type="button" data-hal="' + (halIf + 1) + '"' + (halIf >= hal ? ' disabled' : '') + '>Next ›</button></span>';
@@ -1161,14 +1164,23 @@
 
                 // ambil data terbaru (server mem-poll device yang sudah waktunya)
                 let sedang = false;
+                let nomorPilih = 0;
 
                 function muat(manual) {
                     if (sedang) return Promise.resolve();
                     sedang = true;
+                    const minta = S.interface;
                     return fetch(URL_DATA + '?device=' + S.device + '&interface=' + (S.interface || 0), { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
                         .then(r => r.json())
                         .then(res => {
                             if (!res.ok) return;
+                            if (S.interface !== minta) {
+                                // interface sudah diganti saat menunggu: pilihan & grafik yang baru tidak ditimpa data interface lama
+                                res.interface = S.interface;
+                                res.live = S.live;
+                            } else {
+                                $('panelLive').classList.remove('is-muat');
+                            }
                             S = res;
                             renderSemua();
                             $('infoPoll').textContent = 'Terakhir dicek ' + res.jam + (res.dipoll ? ' (' + res.dipoll + ' device di-poll).' : '.');
@@ -1182,9 +1194,28 @@
                 function pilihInterface(id) {
                     S.interface = parseInt(id, 10) || 0;
                     urlState();
+                    const n = ++nomorPilih;
+                    const panel = $('panelLive');
+                    panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
                     renderLive();
                     renderInterface();
-                    return muat(false);
+                    fetch(URL_DATA + '?device=' + S.device + '&interface=' + S.interface + '&poll=0', { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (n !== nomorPilih) return; // sudah pilih interface lain
+                            if (!res.ok) throw new Error(res.pesan || 'gagal');
+                            panel.classList.remove('is-muat');
+                            S = res;
+                            renderSemua();
+                        })
+                        .catch(() => {
+                            if (n !== nomorPilih || !panel.classList.contains('is-muat')) return;
+                            // grafik interface sebelumnya dikosongkan agar tidak dikira milik interface yang baru dipilih
+                            panel.classList.remove('is-muat');
+                            S.live = { label: [], rx: [], tx: [] };
+                            renderLive();
+                            Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data grafik gagal dimuat.', confirmButtonColor: '#2f6bff' });
+                        });
                 }
 
                 $('nmsIface').addEventListener('change', function() { pilihInterface(this.value); });

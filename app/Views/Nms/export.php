@@ -101,7 +101,7 @@ $logo     = is_file(FCPATH . $fileLogo) ? base_url($fileLogo) : null;
                 <tr><td>IP Address</td><td><?= esc($device['ip_address']) ?></td></tr>
                 <tr><td>Vendor / Model</td><td><?= esc($device['vendor'] . ' / ' . ($device['model'] ?: '-')) ?></td></tr>
                 <tr><td>Device Group / Lokasi</td><td><?= esc($device['device_group'] . ' / ' . ($device['lokasi'] ?: '-')) ?></td></tr>
-                <tr><td>Interface</td><td><?= $interface ? esc($interface['if_name'] . ($interface['if_alias'] ? ' (' . $interface['if_alias'] . ')' : '')) . ' - ifIndex ' . (int) $interface['if_index'] : '-' ?></td></tr>
+                <tr><td>Interface</td><td><?= $interface ? esc($interface['if_name'] . ($interface['if_alias'] ? ' (' . $interface['if_alias'] . ')' : '')) : '-' ?></td></tr>
                 <tr><td>Periode</td><td><?= esc($label) ?></td></tr>
                 <tr><td>Status Saat Ini</td><td><?= esc($s['status'] ?? '-') ?><?= ! empty($s['uptime']) ? ' · uptime ' . esc($s['uptime']) : '' ?></td></tr>
             </table>

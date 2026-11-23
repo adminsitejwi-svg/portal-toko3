@@ -479,8 +479,11 @@
             ];
 
             // Data interface untuk tabel, pilihan grafik & JS
-            $baris = [];
+            $baris  = [];
+            $kembar = array_count_values(array_map(static fn ($i) => $i['device_id'] . '|' . $i['if_name'], $interface));
             foreach ($interface as $i) {
+                // nomor pembeda hanya untuk nama yang kembar di device yang sama (mis. sesi PPPoE lama & baru)
+                $nama  = $i['if_name'] . ($kembar[$i['device_id'] . '|' . $i['if_name']] > 1 ? ' #' . (int) $i['if_index'] : '');
                 $rx    = $i['rx_bps'] !== null ? (int) $i['rx_bps'] : null;
                 $tx    = $i['tx_bps'] !== null ? (int) $i['tx_bps'] : null;
                 $speed = (int) $i['speed_mbps'];
@@ -489,7 +492,8 @@
                     'rx'    => $rx,
                     'tx'    => $tx,
                     'util'  => $speed > 0 && ($rx !== null || $tx !== null) ? round(max($rx, $tx) / ($speed * 1e6) * 100, 1) : null,
-                    'label' => $i['if_name'] . ($i['if_alias'] ? ' (' . $i['if_alias'] . ')' : ''),
+                    'nama'  => $nama,
+                    'label' => $nama . ($i['if_alias'] ? ' (' . $i['if_alias'] . ')' : ''),
                 ];
             }
 
@@ -503,12 +507,11 @@
             $infoJs = [];
             foreach ($baris as $b) {
                 $infoJs[(int) $b['id']] = [
-                    'nama'     => $b['if_name'],
+                    'nama'     => $b['nama'],
                     'alias'    => $b['if_alias'],
                     'descr'    => $b['if_descr'],
                     'hostname' => $b['hostname'],
                     'ip'       => $b['ip_address'],
-                    'ifIndex'  => (int) $b['if_index'],
                     'speed'    => $tm::formatSpeed($b['speed_mbps']),
                     'status'   => $b['st'],
                     'rx'       => $tm::formatBps($b['rx']),
@@ -616,7 +619,7 @@
                             </label>
                             <label class="rfo-field">
                                 <i class="ti ti-plug-connected" style="color:#6d5dfc"></i>
-                                <select id="pilihInterface" class="tm-select" title="Pilih Interface" onchange="pilihInterface(this.value)" <?= $baris ? '' : 'disabled' ?>>
+                                <select id="pilihInterface" class="tm-select" title="Pilih Interface" onchange="tampilkanInterface(this.value)" <?= $baris ? '' : 'disabled' ?>>
                                     <?php if (! $baris) : ?>
                                         <option value="">Belum ada interface</option>
                                     <?php endif; ?>
@@ -712,7 +715,6 @@
                                 <th class="no-export">Aksi</th>
                                 <th>Device</th>
                                 <th>Interface</th>
-                                <th>ifIndex</th>
                                 <th>Speed</th>
                                 <th>Status</th>
                                 <th>RX / Download</th>
@@ -728,7 +730,7 @@
                                 <tr data-id="<?= (int) $b['id'] ?>" class="<?= $pilihId === (int) $b['id'] ? 'tm-dipilih' : '' ?>">
                                     <td><?= $no++; ?></td>
                                     <td>
-                                        <button type="button" onclick="pilihInterface(<?= (int) $b['id'] ?>, true)" class="act act-view" title="Tampilkan grafik">
+                                        <button type="button" onclick="tampilkanInterface(<?= (int) $b['id'] ?>, true)" class="act act-view" title="Tampilkan grafik">
                                             <i class="ti ti-chart-line"></i> Grafik
                                         </button>
                                     </td>
@@ -737,12 +739,11 @@
                                         <div class="rb-sub"><?= esc($b['ip_address']) ?></div>
                                     </td>
                                     <td>
-                                        <div class="col-bold"><?= esc($b['if_name']) ?></div>
+                                        <div class="col-bold"><?= esc($b['nama']) ?></div>
                                         <?php if ($b['if_alias']) : ?>
                                             <div class="rb-sub"><span class="cell-clip" title="<?= esc($b['if_alias'], 'attr') ?>"><?= esc($b['if_alias']) ?></span></div>
                                         <?php endif; ?>
                                     </td>
-                                    <td data-order="<?= (int) $b['if_index'] ?>"><?= (int) $b['if_index'] ?></td>
                                     <td data-order="<?= (int) $b['speed_mbps'] ?>"><?= $tm::formatSpeed($b['speed_mbps']) ?></td>
                                     <td class="tm-status" data-search="<?= esc($b['st']) ?>"><span class="rb <?= $sKelas ?>"><i class="ti <?= $sIkon ?>"></i><?= esc($b['st']) ?></span></td>
                                     <td class="tm-rx" data-order="<?= $b['rx'] ?? -1 ?>"><?= $tm::formatBps($b['rx']) ?></td>
@@ -784,6 +785,11 @@
         .tm-chart-box { position: relative; height: 320px; padding: 14px; background: #181b1f; border: 1px solid #2c3036; border-radius: 6px; }
         .tm-chart-kosong { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; color: #a5abb5; font-size: 14px; }
         .tm-chart-kosong[hidden] { display: none; }
+        /* tanda sedang memuat, sama dengan History Monitoring (NMS Management) */
+        .tm-chart-box canvas, .tm-mini-dua { transition: opacity .2s ease; }
+        #panelGrafik.is-muat .tm-chart-box canvas, #panelGrafik.is-muat .tm-mini-dua { opacity: .35; }
+        #panelGrafik.is-muat .tm-chart-kosong { display: none; }
+        #panelGrafik.is-muat .tm-chart-box::after { content: "Memuat data..."; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #e3e5e8; }
         .tm-bar { display: inline-block; vertical-align: middle; width: 60px; height: 6px; border-radius: 3px; background: var(--rf-border); margin-right: 8px; overflow: hidden; }
         .tm-bar span { display: block; height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b 70%, #ef4444); }
         .tm-cek { cursor: pointer; gap: 8px; }
@@ -836,20 +842,21 @@
             const i = INFO[pilihId];
             if (!i || !document.getElementById('ifNama')) return;
             document.getElementById('ifNama').textContent = i.nama + (i.alias ? ' (' + i.alias + ')' : '');
-            document.getElementById('ifInfo').textContent = i.hostname + ' / ' + i.ip + ' / ifIndex ' + i.ifIndex + ' / Speed ' + i.speed + (i.descr && i.descr !== i.nama ? ' / ' + i.descr : '');
+            document.getElementById('ifInfo').textContent = i.hostname + ' / ' + i.ip + ' / Speed ' + i.speed + (i.descr && i.descr !== i.nama.replace(/ #[0-9]+$/, '') ? ' / ' + i.descr : '');
             document.getElementById('ifStatus').innerHTML = badge(i.status);
             document.getElementById('nowRx').textContent = i.rx;
             document.getElementById('nowTx').textContent = i.tx;
             document.getElementById('nowWaktu').textContent = i.waktu ? 'Sampel ' + i.waktu : 'Belum ada sampel';
         }
 
-        // Pilih interface (dropdown / tombol Grafik di tabel)
-        function pilihInterface(id, gulir) {
+        // Pilih interface (dropdown / tombol Grafik di tabel).
+        // Namanya jangan sama dengan id dropdown (pilihInterface): di dalam <form>, onchange akan membaca elemennya, bukan fungsi ini.
+        function tampilkanInterface(id, gulir) {
             id = parseInt(id, 10);
             if (!INFO[id]) return;
             pilihId = id;
             document.getElementById('pilihInterface').value = id;
-            document.querySelectorAll('#tmTable tbody tr').forEach(tr => tr.classList.toggle('tm-dipilih', parseInt(tr.dataset.id, 10) === id));
+            (window.TM_TABLE ? window.TM_TABLE.rows().nodes().toArray() : document.querySelectorAll('#tmTable tbody tr')).forEach(tr => tr.classList.toggle('tm-dipilih', parseInt(tr.dataset.id, 10) === id));
             const url = new URL(window.location.href);
             url.searchParams.set('interface', id);
             if (DEVICE_ID) url.searchParams.set('device', DEVICE_ID);
@@ -871,13 +878,18 @@
 
         let nomorMuat = 0;
 
-        function muatGrafik() {
+        // diam = true: refresh otomatis dari polling, tanpa tanda "Memuat data..."
+        function muatGrafik(diam) {
             if (!grafik || !pilihId) return;
             const nomor = ++nomorMuat;
+            const panel = document.getElementById('panelGrafik');
+            if (!diam) panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
             fetch(URL_GRAFIK + pilihId + '?rentang=' + rentang, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
                 .then(r => r.json())
                 .then(res => {
-                    if (nomor !== nomorMuat || !res.ok) return; // sudah ada permintaan yang lebih baru
+                    if (nomor !== nomorMuat) return; // sudah ada permintaan yang lebih baru
+                    if (!res.ok) throw new Error(res.pesan || 'gagal');
+                    panel.classList.remove('is-muat');
                     grafik.data.labels = res.label;
                     grafik.data.datasets[0].data = res.rx;
                     grafik.data.datasets[1].data = res.tx;
@@ -890,7 +902,17 @@
                     document.getElementById('maxTx').innerHTML = '<i class="ti ti-arrow-up"></i> ' + escapeHtml(r.tx_max);
                     document.querySelectorAll('.tm-label-rentang').forEach(el => el.textContent = LABEL_RENTANG[rentang] + ' terakhir (' + r.sampel + ' sampel)');
                 })
-                .catch(() => {});
+                .catch(() => {
+                    if (nomor !== nomorMuat || !panel.classList.contains('is-muat')) return; // refresh otomatis gagal: dicoba lagi pada polling berikutnya
+                    // grafik interface sebelumnya dikosongkan agar tidak dikira milik interface yang baru dipilih
+                    panel.classList.remove('is-muat');
+                    grafik.data.labels = [];
+                    grafik.data.datasets.forEach(d => d.data = []);
+                    grafik.update('none');
+                    ['avgRx', 'avgTx', 'maxRx', 'maxTx'].forEach(id => document.getElementById(id).textContent = '-');
+                    document.getElementById('grafikKosong').hidden = false;
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: 'Data grafik gagal dimuat.', confirmButtonColor: '#2f6bff' });
+                });
         }
 
         document.querySelectorAll('.tm-rentang button').forEach(btn => btn.addEventListener('click', function() {
@@ -946,7 +968,7 @@
                     perbaruiStatistik(res.interface);
                     window.TM_TABLE && window.TM_TABLE.draw(false);
                     tampilInfo();
-                    if (grafikBaru) muatGrafik();
+                    if (grafikBaru) muatGrafik(true);
                     // interface baru (belum ada di halaman): muat ulang agar ikut tampil
                     if (res.interface.some(d => !INFO[d.id])) window.location.reload();
                     const jam = new Date().toLocaleTimeString('id-ID');
@@ -1054,7 +1076,7 @@
             $('#exportArea').append($('.dt-buttons'));
 
             // ====== FILTER ======
-            const STATUS_COL = 6, RX_COL = 7;
+            const STATUS_COL = 5, RX_COL = 6;
             $('#filterStatus').on('change', function() {
                 const re = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
                 table.column(STATUS_COL).search(re, true, false).draw();

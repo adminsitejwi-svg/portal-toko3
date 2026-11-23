@@ -86,7 +86,10 @@ class Nms extends BaseController
             return [];
         }
 
-        return array_map(static function ($i) {
+        $daftar = (new DeviceTrafficModel())->daftar($deviceId);
+        $kembar = array_count_values(array_column($daftar, 'if_name')); // nama yang sama lebih dari satu (mis. sesi PPPoE lama & baru)
+
+        return array_map(static function ($i) use ($kembar) {
             $rx    = $i['rx_bps'] !== null ? (int) $i['rx_bps'] : null;
             $tx    = $i['tx_bps'] !== null ? (int) $i['tx_bps'] : null;
             $speed = (int) $i['speed_mbps'];
@@ -96,7 +99,8 @@ class Nms extends BaseController
                 'nama'    => $i['if_name'],
                 'alias'   => $i['if_alias'],
                 'descr'   => $i['if_descr'],
-                'ifIndex' => (int) $i['if_index'],
+                // pembeda hanya untuk nama yang kembar, selain itu kosong
+                'beda'    => ($kembar[$i['if_name']] ?? 0) > 1 ? ' #' . (int) $i['if_index'] : '',
                 'speed'   => DeviceTrafficModel::formatSpeed($i['speed_mbps']),
                 'admin'   => (int) $i['admin_status'] === 1 ? 'Up' : ((int) $i['admin_status'] === 2 ? 'Down' : '-'),
                 'status'  => DeviceTrafficModel::statusTampil($i, $i['device_status']),
@@ -107,7 +111,7 @@ class Nms extends BaseController
                 'util'    => $speed > 0 && ($rx !== null || $tx !== null) ? round(max($rx, $tx) / ($speed * 1e6) * 100, 1) : null,
                 'waktu'   => $i['traffic_at'] ? date('d-m-Y H:i:s', strtotime($i['traffic_at'])) : null,
             ];
-        }, (new DeviceTrafficModel())->daftar($deviceId));
+        }, $daftar);
     }
 
     /** Pilih id dari daftar; tidak valid -> $cadangan. */
@@ -170,7 +174,8 @@ class Nms extends BaseController
         ]);
     }
 
-    // Refresh Live (GET Nms/data?device=ID&interface=ID): poll device yang sudah waktunya lalu kirim data terbaru
+    // Refresh Live (GET Nms/data?device=ID&interface=ID): poll device yang sudah waktunya lalu kirim data terbaru.
+    // poll=0 = tanpa polling, langsung kirim data (dipakai saat ganti interface agar grafik cepat tampil)
     public function data()
     {
         if (! $this->tabelSiap()) {
@@ -178,7 +183,7 @@ class Nms extends BaseController
         }
         session_write_close(); // request lain (pindah halaman) tidak menunggu polling selesai
 
-        $n = (new DeviceMonitoringModel())->pollJatuhTempo(8.0);
+        $n = $this->request->getGet('poll') === '0' ? 0 : (new DeviceMonitoringModel())->pollJatuhTempo(8.0);
 
         return $this->response->setJSON(['ok' => true, 'dipoll' => $n]
             + $this->dataLive((int) $this->request->getGet('device'), (int) $this->request->getGet('interface')));
