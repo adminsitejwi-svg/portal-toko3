@@ -74,6 +74,16 @@ if (session()->get('logged_in')) :
                     ' flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">' +
                     '<span class="pc-micon w-5"><i class="ti ti-shield-lock"></i></span><span>Hak Akses</span></a>';
                 logs.closest('li').after(li);
+                // menu Terminal (khusus Administrator) di bawah Hak Akses
+                var liTerminal = document.createElement('li');
+                liTerminal.innerHTML = '<a href="<?= site_url('Terminal') ?>" class="pc-link' +
+                    ' flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">' +
+                    '<span class="pc-micon w-5"><i class="ti ti-terminal-2"></i></span><span>Terminal</span></a>';
+                li.after(liTerminal);
+                if (/\/Terminal(\/|$)/i.test(location.pathname)) {
+                    sb.querySelectorAll('.pc-link.active').forEach(function (a) { a.classList.remove('active'); });
+                    liTerminal.firstChild.classList.add('active');
+                }
                 if (/\/HakAkses(\/|$)/i.test(location.pathname)) {
                     sb.querySelectorAll('.pc-link.active').forEach(function (a) { a.classList.remove('active'); });
                     li.firstChild.classList.add('active');

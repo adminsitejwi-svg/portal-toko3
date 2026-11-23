@@ -216,6 +216,7 @@
         'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
         'data teknis noc': ['ti-topology-star-3', 'Data Center & BTS'],
         'nms jwi group': ['ti-activity-heartbeat', 'Monitoring Jaringan'],
+        'acs jwi group': ['ti-server-cog', 'Auto Configuration Server'],
         'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],
@@ -223,7 +224,8 @@
         'rekap data toko':['ti-report-analytics', 'Rekap Data Toko'],
         'change log': ['ti-history', 'Riwayat Perubahan'],
         'hak akses': ['ti-shield-lock', 'Role & Akses Halaman'],
-        'request': ['ti-forms', 'Form Permintaan Admin']
+        'request': ['ti-forms', 'Form Permintaan Admin'],
+        'terminal': ['ti-terminal-2', 'Alat Jaringan & SSH']
 
     };
 
@@ -291,17 +293,24 @@
         'rekapdatamidi': 'ti-report-analytics',
         'datatopologi': 'ti-topology-star-3',
         'dashboardnetmon': 'ti-dashboard',
+        'dashboardacs': 'ti-dashboard',
+        'acsdevice': 'ti-router',
+        'acsparameter': 'ti-list-search',
+        'acsprovisioning': 'ti-adjustments-cog',
+        'acssetting': 'ti-settings',
+        'acslog': 'ti-history',
         'devicemonitoring': 'ti-device-desktop-analytics',
         'trafficmonitoring': 'ti-chart-area-line',
         'nms': 'ti-network',
         'alert': 'ti-bell-ringing',
         'screen': 'ti-device-tv',
         'logs': 'ti-history',
-        'hakakses': 'ti-shield-lock'
+        'hakakses': 'ti-shield-lock',
+        'terminal': 'ti-terminal-2'
     };
 
     // menu sidebar yang masih "Segera Hadir" (samakan dengan 'soon' => true / $reportNoc di app/Config/AllNoc.php)
-    var MENU_SEGERA = [];
+    var MENU_SEGERA = ['dashboardacs'];
 
     // ---- Ikon judul halaman: kotak yang sudah ada diganti ikonnya, yang belum punya dipasangkan ----
     function pasangIkonJudul(link) {

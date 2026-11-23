@@ -171,6 +171,7 @@ if (! function_exists('activity_label_action')) {
                 'd_surat_tugas'        => 'Surat Tugas',
                 'd_ftp_akun'           => 'FTP Client - Akun',
                 'ftp_client'           => 'FTP Client',
+                'terminal'             => 'Terminal',
                 'md_wilayah'           => 'Data ODC & ODP - Wilayah',
                 'd_odc'                => 'Data ODC & ODP - ODC',
                 'd_odp'                => 'Data ODC & ODP - ODP',

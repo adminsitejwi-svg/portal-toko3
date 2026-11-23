@@ -51,6 +51,12 @@ $routes->post('telegram-webhook/(:segment)', 'TelegramWebhook::handle/$1');
 // Boleh dihapus lagi setelah dipakai sekali.
 $routes->get('telegram-webhook-setup/(:segment)', 'TelegramWebhook::setup/$1');
 
+// Server TR-069 untuk ONT (ACS JWI Group) — tanpa login portal, ONT masuk dengan ACS Username & Password
+// dari halaman ACS Settings (HTTP Basic), lihat App\Controllers\AcsCwmp
+$routes->match(['GET', 'POST'], 'acs/cwmp', 'AcsCwmp::index');
+// ACS URL di ONT cukup domain saja (dev.jwi.id): ONT mengirim POST ke alamat utama; GET tetap halaman login
+$routes->post('/', 'AcsCwmp::index');
+
 
 
 /* =========================================================
@@ -77,6 +83,12 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('HakAkses/role/save', 'HakAkses::saveRole');
     $routes->get('HakAkses/role/delete/(:num)', 'HakAkses::deleteRole/$1');
     $routes->post('HakAkses/akun/save', 'HakAkses::saveAkun');
+
+    // Terminal (Informasi > Terminal): alat jaringan & SSH ke perangkat — khusus Administrator, lihat app/Config/HakAkses.php
+    $routes->get('Terminal', 'Terminal::index');
+    $routes->post('Terminal/jalankan', 'Terminal::jalankan');
+    $routes->post('Terminal/ssh', 'Terminal::ssh');
+    $routes->post('Terminal/putus', 'Terminal::putus');
 
     // Request (Informasi > Request, di bawah Hak Akses) — form buatan Administrator, lihat database/d_request.sql
     // Request, Request/isi, Request/kirim, Request/file : semua akun (hanya request yang ditujukan ke akunnya)
@@ -405,6 +417,48 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     // grafik traffic live banyak interface dalam satu layar (fullscreen untuk layar NOC)
     $routes->get('Screen', 'Screen::index');
     $routes->get('Screen/data', 'Screen::data');
+
+    // ACS JWI Group (dropdown di bawah NMS JWI Group): halamannya belum dibuat (Segera Hadir)
+    $routes->get('DashboardAcs', 'ComingSoon::show/DashboardAcs');
+
+    // Devices (dropdown ACS JWI Group): ONT yang terhubung & detailnya (hanya membaca)
+    $routes->get('AcsDevice', 'AcsDevice::index');
+    $routes->get('AcsDevice/detail/(:num)', 'AcsDevice::detail/$1');
+    $routes->get('AcsDevice/tugas/(:num)', 'AcsDevice::tugas/$1');
+    $routes->post('AcsDevice/baca/(:num)', 'AcsDevice::baca/$1');
+    // perintah yang mengubah ONT (hak akses AcsKontrol)
+    $routes->post('AcsKontrol/wifi/(:num)', 'AcsKontrol::wifi/$1');
+    $routes->post('AcsKontrol/blokir/(:num)', 'AcsKontrol::blokir/$1');
+    $routes->post('AcsKontrol/buka/(:num)', 'AcsKontrol::buka/$1');
+    $routes->post('AcsKontrol/ping/(:num)', 'AcsKontrol::ping/$1');
+    $routes->post('AcsKontrol/reboot/(:num)', 'AcsKontrol::reboot/$1');
+    $routes->post('AcsKontrol/batal/(:num)', 'AcsKontrol::batal/$1');
+    $routes->post('AcsDevice/password/(:num)', 'AcsDevice::password/$1');
+    $routes->post('AcsDevice/rahasia/(:num)', 'AcsDevice::rahasia/$1');
+
+    // Parameter Master (dropdown ACS JWI Group): daftar parameter TR-069 per model ONT
+    $routes->get('AcsParameter', 'AcsParameter::index');
+
+    // Provisioning (dropdown ACS JWI Group): profil parameter TR-069 & daftar ONT yang menerimanya otomatis
+    $routes->get('AcsProvisioning', 'AcsProvisioning::index');
+    $routes->get('AcsProvisioning/parameter', 'AcsProvisioning::parameter');
+    $routes->post('AcsProvisioning/profil', 'AcsProvisioning::profil');
+    $routes->post('AcsProvisioning/hapusProfil/(:num)', 'AcsProvisioning::hapusProfil/$1');
+    $routes->post('AcsProvisioning/ont', 'AcsProvisioning::ont');
+    $routes->post('AcsProvisioning/ubahOnt/(:num)', 'AcsProvisioning::ubahOnt/$1');
+    $routes->post('AcsProvisioning/ulangi/(:num)', 'AcsProvisioning::ulangi/$1');
+    $routes->post('AcsProvisioning/hapusOnt/(:num)', 'AcsProvisioning::hapusOnt/$1');
+
+    // ACS Settings (dropdown ACS JWI Group): alamat & akun ACS untuk ONT
+    $routes->get('AcsSetting', 'AcsSetting::index');
+    $routes->get('AcsSetting/status', 'AcsSetting::status');
+    $routes->post('AcsSetting/simpan', 'AcsSetting::simpan');
+    $routes->post('AcsSetting/password', 'AcsSetting::password');
+    $routes->post('AcsSetting/uji', 'AcsSetting::uji');
+
+    // Log Koneksi (dropdown ACS JWI Group): Inform ONT, login ONT ditolak, error dari ONT
+    $routes->get('AcsLog', 'AcsLog::index');
+    $routes->get('AcsLog/data', 'AcsLog::data');
 
     // Surat Tugas (menu Activation): tampilan & fitur seperti RFO (tanpa kirim email),
     // struktur dari 17 SPK NCIX KARET_OCT.pdf

@@ -94,6 +94,13 @@ class HakAkses extends BaseConfig
             'Nms'                   => 'NMS JWI Group - NMS Management',
             'Alert'                 => 'NMS JWI Group - Alert & Notifikasi',
             'Screen'                => 'NMS JWI Group - Screen',
+            'DashboardAcs'          => 'ACS JWI Group - Dashboard ACS',
+            'AcsDevice'             => 'ACS JWI Group - Devices',
+            'AcsParameter'          => 'ACS JWI Group - Parameter Master',
+            'AcsProvisioning'       => 'ACS JWI Group - Provisioning (mengubah konfigurasi ONT)',
+            'AcsSetting'            => 'ACS JWI Group - Settings',
+            'AcsLog'                => 'ACS JWI Group - Log Koneksi',
+            'AcsKontrol'            => 'ACS JWI Group - Kontrol ONT (ubah WiFi, blokir MAC, ping, reboot)',
             'ResiPengiriman'        => 'Resi Pengiriman',
             'Calendar'              => 'Jadwal NOC - Shift',
             'Piket'                 => 'Jadwal NOC - Piket',
@@ -128,6 +135,7 @@ class HakAkses extends BaseConfig
      */
     public array $khususAdmin = [
         'HakAkses',
+        'Terminal', // alat jaringan & SSH ke perangkat
         'register',
         'settings/delete',
         'Request/kelola', // buat / ubah / hapus request + lihat & review jawaban

@@ -1721,3 +1721,8 @@ html.ra-sb-dark .ra-logo .ra-logo-gelap {
 html.ra-sb-dark .ra-logo.ra-logo-full img {
     filter: none;
 }
+
+/* ---------- Pesan pop up (SweetAlert) selalu paling depan, di atas pop up form & elemen lain ---------- */
+html body .swal2-container {
+    z-index: 2147483000 !important;
+}
