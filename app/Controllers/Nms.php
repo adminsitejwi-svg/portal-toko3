@@ -6,6 +6,7 @@ use App\Libraries\SnmpKlien;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceNmsModel;
 use App\Models\DeviceTrafficModel;
+use App\Models\RFOModel;
 
 // Halaman NMS / Network Management System (menu Data Teknis NETMON > NMS), mengikuti netmon/nms.php:
 //   - Live Monitoring   : ringkasan device, latency/packet loss (ICMP), CPU/RAM (SNMP), traffic live
@@ -165,6 +166,7 @@ class Nms extends BaseController
             'mulai'     => (string) $this->request->getGet('mulai'),
             'akhir'     => (string) $this->request->getGet('akhir'),
             'bisaPing'  => DeviceNmsModel::bisaPing(),
+            'perusahaan' => RFOModel::PERUSAHAAN, // pilihan logo Export PDF
         ]);
     }
 
@@ -225,7 +227,8 @@ class Nms extends BaseController
         return $this->response->setJSON(['ok' => true] + $this->grafikHistory($p));
     }
 
-    // Laporan cetak / PDF (GET Nms/export?device=ID&interface=ID&periode=... | mulai&akhir)
+    // Laporan cetak / PDF (GET Nms/export?device=ID&interface=ID&periode=... | mulai&akhir, perusahaan=...)
+    // perusahaan = pilihan logo, daftar & warnanya sama dengan RFO (RFOModel); tidak valid = logo Network Operasional
     public function export()
     {
         if (! $this->tabelSiap()) {
@@ -235,6 +238,9 @@ class Nms extends BaseController
         if (! $p) {
             return redirect()->to(site_url('Nms'))->with('error', 'Device tidak ditemukan.');
         }
+
+        $perusahaan = $this->request->getGet('perusahaan');
+        $perusahaan = is_string($perusahaan) && isset(RFOModel::PERUSAHAAN[$perusahaan]) ? $perusahaan : null;
 
         $snapshot = null;
         foreach ($this->daftarDevice() as $d) {
@@ -251,6 +257,11 @@ class Nms extends BaseController
             'grafik'    => $this->grafikHistory($p),
             'dibuat'    => date('d-m-Y H:i:s'),
             'oleh'      => (string) session('username'),
+            'kop'       => $perusahaan === null ? null : [
+                'nama'  => RFOModel::NAMA_TTD[$perusahaan] ?? $perusahaan,
+                'logo'  => RFOModel::PERUSAHAAN[$perusahaan],
+                'warna' => RFOModel::WARNA_KOP[$perusahaan][0] ?? '#2f6bff',
+            ],
         ]);
     }
 }

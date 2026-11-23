@@ -393,7 +393,7 @@
                         <li><a href="<?= site_url('DashboardNetmon') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Dashboard Netmon</a></li>
                         <li><a href="<?= site_url('DeviceMonitoring') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Device Monitoring</a></li>
                         <li><a href="<?= site_url('TrafficMonitoring') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Traffic Monitoring</a></li>
-                        <li><a href="<?= site_url('Nms') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] text-white font-semibold">NMS</a></li>
+                        <li><a href="<?= site_url('Nms') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] text-white font-semibold">NMS JWI Group</a></li>
                         <li><a href="<?= site_url('Alert') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Alert</a></li>
                         <li><a href="<?= site_url('Screen') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Screen</a></li>
                     </ul>
@@ -786,6 +786,32 @@
                             <p class="rf-hint mt-3"><i class="ti ti-calendar"></i> <span id="hLabel">-</span>. Riwayat latency, packet loss, CPU &amp; RAM disimpan <?= $nm::RETENSI_HARI ?> hari, traffic interface <?= \App\Models\DeviceTrafficModel::RETENSI_HARI ?> hari.</p>
                         </div>
 
+                        <!-- POP UP EXPORT PDF: pilih perusahaan / logo (sama dengan form RFO) -->
+                        <div id="pdfModal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-black/50 p-4">
+                            <form id="pdfForm" class="nms-pdf" role="dialog" aria-modal="true" aria-labelledby="pdfJudul">
+                                <div class="nms-pdf-head">
+                                    <h3 id="pdfJudul" class="nms-judul"><i class="ti ti-file-type-pdf"></i> Export PDF</h3>
+                                    <button type="button" class="nms-pdf-x" data-tutup aria-label="Tutup">&times;</button>
+                                </div>
+                                <div class="nms-pdf-isi">
+                                    <label for="pdfPerusahaan" class="nms-label"><i class="ti ti-building-skyscraper"></i> Perusahaan / Logo <span style="color:#ef4444">*</span></label>
+                                    <select id="pdfPerusahaan" class="nms-input" required>
+                                        <option value="">-- Pilih Perusahaan --</option>
+                                        <?php foreach ($perusahaan as $nama => $fileLogo) : ?>
+                                            <option value="<?= esc($nama, 'attr') ?>" data-logo="<?= base_url($fileLogo) ?>"><?= esc($nama) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div id="pdfLogoBox" class="rfo-logo-box hidden mt-3">
+                                        <img id="pdfLogo" src="" alt="logo perusahaan" class="h-20 w-auto max-w-full object-contain">
+                                    </div>
+                                </div>
+                                <div class="nms-pdf-kaki">
+                                    <button type="button" class="rfo-ghost-btn" data-tutup>Batal</button>
+                                    <button type="submit" class="rfo-btn rfo-btn-blue border-0 cursor-pointer nms-pdf-ok"><i class="ti ti-file-export"></i> Export</button>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- RINGKASAN HISTORY -->
                         <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
                             <div class="nms-kpi">
@@ -893,6 +919,13 @@
         #ifBody[hidden] { display: none !important; }
         .nms-skop { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(47, 107, 255, .10); color: #2f6bff; }
         .nms-skop.is-if { background: rgba(109, 93, 252, .12); color: #6d5dfc; }
+        .nms-pdf { width: 100%; max-width: 460px; border-radius: 16px; background: var(--rf-card); border: 1px solid var(--rf-border); box-shadow: 0 24px 60px rgba(15, 23, 42, .35); overflow: hidden; }
+        .nms-pdf-head, .nms-pdf-kaki { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--rf-border); }
+        .nms-pdf-kaki { justify-content: flex-end; gap: 10px; border: 0; border-top: 1px solid var(--rf-border); }
+        .nms-pdf-isi { padding: 18px 20px; }
+        .nms-pdf-isi .nms-input { width: 100%; }
+        .nms-pdf-x { border: 0; background: transparent; font-size: 24px; line-height: 1; color: var(--rf-muted); cursor: pointer; }
+        .nms-pdf-ok { height: 42px; padding: 0 20px; font-size: 13px; }
         /* Panel grafik gelap (public/d/tampilann grafik.jpg), sama di mode terang & gelap */
         #hGrafik .rfo-panel, #panelLive .nms-chart-box { background: #181b1f !important; border: 1px solid #2c3036; border-radius: 6px; }
         #panelLive .nms-chart-box { padding: 14px; }
@@ -1281,9 +1314,46 @@
                         });
                 }
 
+                // ====== EXPORT PDF: pilih perusahaan / logo dulu ======
+                const pdfModal = $('pdfModal'), pdfPilih = $('pdfPerusahaan');
+                const KEY_LOGO = 'nms.pdf.perusahaan'; // pilihan terakhir diingat di browser ini
+
+                function pdfTampil(ya) {
+                    pdfModal.classList.toggle('hidden', !ya);
+                    pdfModal.classList.toggle('flex', ya);
+                    (ya ? pdfPilih : $('hExport')).focus();
+                }
+
+                function pdfLogo() {
+                    const logo = pdfPilih.selectedOptions[0]?.dataset.logo;
+                    if (logo) $('pdfLogo').src = logo;
+                    $('pdfLogoBox').classList.toggle('hidden', !logo);
+                }
+
                 $('hExport').addEventListener('click', () => {
+                    if (!param()) return; // tanggal custom belum valid: peringatan sudah tampil
+                    if (!pdfPilih.value) {
+                        try { pdfPilih.value = localStorage.getItem(KEY_LOGO) || ''; } catch (e) { }
+                        if (pdfPilih.selectedIndex < 0) pdfPilih.value = '';
+                    }
+                    pdfLogo();
+                    pdfTampil(true);
+                });
+                pdfPilih.addEventListener('change', pdfLogo);
+                pdfModal.addEventListener('click', e => {
+                    if (e.target === pdfModal || e.target.closest('[data-tutup]')) pdfTampil(false);
+                });
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape' && pdfModal.classList.contains('flex')) pdfTampil(false);
+                });
+                $('pdfForm').addEventListener('submit', e => {
+                    e.preventDefault();
                     const p = param();
-                    if (p) window.open(URL_EXPORT + '?' + new URLSearchParams(p), '_blank', 'noopener');
+                    if (!p || !pdfPilih.value) return;
+                    try { localStorage.setItem(KEY_LOGO, pdfPilih.value); } catch (err) { }
+                    p.perusahaan = pdfPilih.value;
+                    pdfTampil(false);
+                    window.open(URL_EXPORT + '?' + new URLSearchParams(p), '_blank', 'noopener');
                 });
 
                 muat();

@@ -5,8 +5,10 @@ $s   = $snapshot ?? [];
 $r   = $grafik['device']['ringkas'];
 $t   = $grafik['traffic'];
 $fmt = static fn ($v, int $d, string $sat) => $v === null ? '-' : number_format((float) $v, $d, ',', '.') . $sat;
-// logo sama dengan halaman login (auth/Login)
-$logo = is_file(FCPATH . 'Logo/Logo-N2.png') ? base_url('Logo/Logo-N2.png') : null;
+// logo perusahaan yang dipilih saat export (sama dengan RFO); tanpa pilihan = logo halaman login (auth/Login)
+$kop      = $kop ?? null;
+$fileLogo = $kop['logo'] ?? 'Logo/Logo-N2.png';
+$logo     = is_file(FCPATH . $fileLogo) ? base_url($fileLogo) : null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -25,6 +27,9 @@ $logo = is_file(FCPATH . 'Logo/Logo-N2.png') ? base_url('Logo/Logo-N2.png') : nu
         .header { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-bottom: 3px solid #2f6bff; padding-bottom: 18px; }
         .brand { display: flex; align-items: center; gap: 14px; }
         .brand img { height: 46px; }
+        .brand.is-kop img { height: 64px; max-width: 260px; object-fit: contain; }
+        .header.is-kop, .brand.is-kop .brand-teks { border-color: var(--kop); }
+        .brand.is-kop .brand-teks { color: var(--kop); font-size: 19px; }
         .brand-teks { font-size: 22px; font-weight: 800; color: #1d4ed8; letter-spacing: .5px; }
         .subtitle { font-size: 11px; color: #64748b; margin-top: 4px; letter-spacing: 1px; }
         h1 { font-size: 22px; margin: 25px 0 5px; }
@@ -72,11 +77,11 @@ $logo = is_file(FCPATH . 'Logo/Logo-N2.png') ? base_url('Logo/Logo-N2.png') : nu
     <div class="report">
         <div class="actions"><button type="button" onclick="window.print()">Cetak / Simpan PDF</button></div>
 
-        <div class="header">
-            <div class="brand">
-                <?php if ($logo) : ?><img src="<?= $logo ?>" alt="Logo Network Operasional"><?php endif; ?>
+        <div class="header <?= $kop ? 'is-kop' : '' ?>" <?= $kop ? 'style="--kop:' . esc($kop['warna'], 'attr') . '"' : '' ?>>
+            <div class="brand <?= $kop ? 'is-kop' : '' ?>">
+                <?php if ($logo) : ?><img id="logoKop" src="<?= $logo ?>" alt="Logo <?= esc($kop['nama'] ?? 'Network Operasional') ?>"><?php endif; ?>
                 <div>
-                    <div class="brand-teks">NMS · JWI Group</div>
+                    <div class="brand-teks"><?= esc($kop['nama'] ?? 'NMS · JWI Group') ?></div>
                     <div class="subtitle">NETWORK MANAGEMENT SYSTEM</div>
                 </div>
             </div>
@@ -137,10 +142,50 @@ $logo = is_file(FCPATH . 'Logo/Logo-N2.png') ? base_url('Logo/Logo-N2.png') : nu
         </div>
 
         <div class="footer">
-            <span>NMS · Sistem Operasional JWI Group</span>
+            <span>NMS · <?= esc($kop['nama'] ?? 'Sistem Operasional JWI Group') ?></span>
             <span>Confidential - Internal Network Report</span>
         </div>
     </div>
+
+    <?php if ($kop && $logo) : ?>
+    <script>
+        // file logo punya banyak ruang kosong: dipotong di browser agar logo tampil besar (kalau gagal, logo asli tetap dipakai)
+        (function () {
+            const img = document.getElementById('logoKop');
+            function potong() {
+                try {
+                    const k = Math.min(1, 1000 / img.naturalWidth);
+                    const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+                    const c = document.createElement('canvas');
+                    c.width = w;
+                    c.height = h;
+                    const x = c.getContext('2d');
+                    x.drawImage(img, 0, 0, w, h);
+                    const p = x.getImageData(0, 0, w, h).data;
+                    let kiri = w, atas = h, kanan = -1, bawah = -1;
+                    for (let i = 0; i < w * h; i++) {
+                        const a = i * 4;
+                        if (p[a + 3] < 16 || (p[a] > 245 && p[a + 1] > 245 && p[a + 2] > 245)) continue; // transparan / putih
+                        const px = i % w, py = (i - px) / w;
+                        if (px < kiri) kiri = px;
+                        if (px > kanan) kanan = px;
+                        if (py < atas) atas = py;
+                        if (py > bawah) bawah = py;
+                    }
+                    if (kanan < kiri || bawah < atas) return;
+                    const lw = kanan - kiri + 1, lh = bawah - atas + 1;
+                    const o = document.createElement('canvas');
+                    o.width = lw;
+                    o.height = lh;
+                    o.getContext('2d').drawImage(c, kiri, atas, lw, lh, 0, 0, lw, lh);
+                    img.src = o.toDataURL('image/png');
+                } catch (e) { /* logo asli */ }
+            }
+            if (img.complete && img.naturalWidth) potong();
+            else img.addEventListener('load', potong, { once: true });
+        })();
+    </script>
+    <?php endif; ?>
 
     <script>
         const D = <?= json_encode($grafik, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE) ?>;
