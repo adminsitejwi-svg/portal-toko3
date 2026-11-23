@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// Alert & Notifikasi (menu Data Teknis NETMON > Alert + lonceng di navbar), mengikuti netmon/workers/check_alerts.php.
+// Alert & Notifikasi (menu NMS JWI Group > Alert + lonceng di navbar), mengikuti netmon/workers/check_alerts.php.
 // periksa() dipanggil DeviceMonitoringModel::poll() setelah device di-poll: hasil ping, CPU/RAM & interface terbaru
 // dibandingkan dengan AMBANG -> alert baru / alert pulih, sekaligus notifikasinya.
 // Model biasa (bukan BaseModel): pengecekan tiap menit tidak dicatat di Change Log.

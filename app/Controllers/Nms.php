@@ -8,7 +8,7 @@ use App\Models\DeviceNmsModel;
 use App\Models\DeviceTrafficModel;
 use App\Models\RFOModel;
 
-// Halaman NMS / Network Management System (menu Data Teknis NETMON > NMS), mengikuti netmon/nms.php:
+// Halaman NMS / Network Management System (menu NMS JWI Group > NMS Management), mengikuti netmon/nms.php:
 //   - Live Monitoring   : ringkasan device, latency/packet loss (ICMP), CPU/RAM (SNMP), traffic live
 //                         interface terpilih, daftar interface & semua device; diperbarui otomatis.
 //   - History Monitoring: grafik latency, packet loss, CPU, RAM & traffic interface per periode / tanggal custom.

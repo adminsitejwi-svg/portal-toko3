@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Libraries\SnmpKlien;
 
-// Traffic Monitoring (menu Data Teknis NETMON > Traffic Monitoring): interface & traffic RX/TX per device
+// Traffic Monitoring (menu NMS JWI Group > Traffic Monitoring): interface & traffic RX/TX per device
 // dari d_device_monitoring. Alurnya sama dengan netmon/workers/poll_traffic.php:
 //   walk IF-MIB -> simpan counter octets terakhir di d_device_interface
 //   -> rate = selisih counter x 8 / selisih detik -> riwayat di d_device_interface_traffic.

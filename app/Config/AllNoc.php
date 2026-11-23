@@ -62,17 +62,17 @@ class AllNoc extends BaseConfig
         ['route' => 'SuratTugas',     'judul' => 'Surat Tugas',             'ikon' => 'ti-file-text',           'info' => 'Surat tugas untuk Dinas.', 'soon' => false],
     ];
 
-    // Menu dropdown "Data Teknis NETMON" di sidebar
+    // Menu dropdown "NMS JWI Group" di sidebar
     public array $netmon = [
         ['route' => 'DashboardNetmon', 'judul' => 'Dashboard Netmon', 'ikon' => 'ti-dashboard', 'info' => 'Ringkasan status & performa seluruh perangkat jaringan.', 'soon' => false],
         ['route' => 'DeviceMonitoring', 'judul' => 'Device Monitoring', 'ikon' => 'ti-device-desktop-analytics', 'info' => 'Monitoring perangkat jaringan lewat SNMP.', 'soon' => false],
         ['route' => 'TrafficMonitoring', 'judul' => 'Traffic Monitoring', 'ikon' => 'ti-chart-area-line', 'info' => 'Traffic RX/TX interface perangkat lewat SNMP.', 'soon' => false],
-        ['route' => 'Nms', 'judul' => 'NMS', 'ikon' => 'ti-network', 'info' => 'Network Management System: live & history latency, CPU, RAM, traffic.', 'soon' => false],
+        ['route' => 'Nms', 'judul' => 'NMS Management', 'ikon' => 'ti-network', 'info' => 'Network Management System: live & history latency, CPU, RAM, traffic.', 'soon' => false],
         ['route' => 'Alert', 'judul' => 'Alert', 'ikon' => 'ti-bell-ringing', 'info' => 'Alert Center: gangguan perangkat & interface, notifikasi di navbar.', 'soon' => false],
         ['route' => 'Screen', 'judul' => 'Screen', 'ikon' => 'ti-device-tv', 'info' => 'Network Wallboard: traffic live banyak interface dalam satu layar.', 'soon' => false],
     ];
 
-    // Menu yang masih "Segera Hadir" (All NOC, Report NOC, Activation & Data Teknis NETMON), dicari berdasarkan route
+    // Menu yang masih "Segera Hadir" (All NOC, Report NOC, Activation & NMS JWI Group), dicari berdasarkan route
     public function cari(string $route): ?array
     {
         foreach (array_merge($this->menu, $this->reportNoc, $this->activation, $this->netmon) as $m) {

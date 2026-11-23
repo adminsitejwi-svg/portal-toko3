@@ -215,7 +215,7 @@
         'notifikasi maintenance': ['ti-bell', 'Pemberitahuan Maintenance'],
         'report noc': ['ti-report-analytics', 'Daily & Maintenance'],
         'data teknis noc': ['ti-topology-star-3', 'Data Center & BTS'],
-        'data teknis netmon': ['ti-activity-heartbeat', 'Monitoring Jaringan'],
+        'nms jwi group': ['ti-activity-heartbeat', 'Monitoring Jaringan'],
         'jadwal noc': ['ti-calendar-week', 'Shift & Piket'],
         'profile': ['ti-user-circle', 'Akun Saya'],
         'pengguna': ['ti-users', 'Kelola Pengguna'],

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Libraries\SnmpKlien;
 
-// Device Monitoring (menu Data Teknis NETMON > Device Monitoring): data perangkat + konfigurasi SNMP.
+// Device Monitoring (menu NMS JWI Group > Device Monitoring): data perangkat + konfigurasi SNMP.
 // Status Up/Down diisi polling SNMP v2c (SnmpKlien); perubahan status dicatat di d_device_monitoring_log.
 class DeviceMonitoringModel extends BaseModel
 {

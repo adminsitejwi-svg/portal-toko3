@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Libraries\SnmpKlien;
 use App\Models\DeviceMonitoringModel;
 
-// Halaman Device Monitoring (menu Data Teknis NETMON > Device Monitoring). Tampilan & alur sama dengan
+// Halaman Device Monitoring (menu NMS JWI Group > Device Monitoring). Tampilan & alur sama dengan
 // Preventive Maintenance: daftar + kartu statistik + filter + export, form tambah/edit (halaman sendiri), View.
 // Status perangkat dari SNMP v2c (community): dicek saat simpan, tombol Poll, dan otomatis sesuai
 // polling interval selama halaman daftar terbuka (GET DeviceMonitoring/poll-due) atau lewat cron:

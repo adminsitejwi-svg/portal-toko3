@@ -7,7 +7,7 @@ use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceNmsModel;
 use App\Models\DeviceTrafficModel;
 
-// Halaman Alert (menu Data Teknis NETMON > Alert) + data lonceng notifikasi di navbar, mengikuti netmon/alerts.php:
+// Halaman Alert (menu NMS JWI Group > Alert) + data lonceng notifikasi di navbar, mengikuti netmon/alerts.php:
 // kartu ringkasan, filter, Acknowledge / Resolve, export CSV, pengaturan alert per interface.
 class Alert extends BaseController
 {

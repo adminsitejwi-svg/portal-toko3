@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceTrafficModel;
 
-// Halaman Screen / Network Wallboard (menu Data Teknis NETMON > Screen), mengikuti netmon/screen.php:
+// Halaman Screen / Network Wallboard (menu NMS JWI Group > Screen), mengikuti netmon/screen.php:
 // grafik traffic live banyak interface dari banyak device dalam satu layar (untuk layar NOC, bisa fullscreen).
 // Pilihan grafik & layout disimpan di browser; data dari polling Device Monitoring.
 class Screen extends BaseController

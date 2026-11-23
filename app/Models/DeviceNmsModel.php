@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Libraries\SnmpKlien;
 
-// NMS / Network Management System (menu Data Teknis NETMON > NMS), mengikuti netmon/nms.php:
+// NMS / Network Management System (menu NMS JWI Group > NMS Management), mengikuti netmon/nms.php:
 // tiap device Device Monitoring di-poll -> ping ICMP (latency, packet loss) + CPU/RAM lewat SNMP
 // -> satu baris di d_device_nms_metric. Dipanggil dari DeviceMonitoringModel::poll().
 // Model biasa (bukan BaseModel): hasil polling tiap menit tidak dicatat di Change Log.

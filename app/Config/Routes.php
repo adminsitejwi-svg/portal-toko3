@@ -360,11 +360,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     $routes->get('IpPrivate', 'ComingSoon::show/IpPrivate');
 
-    // Dashboard Netmon (dropdown Data Teknis NETMON), mengikuti netmon/index.php: ringkasan status & performa perangkat
+    // Dashboard Netmon (dropdown NMS JWI Group), mengikuti netmon/index.php: ringkasan status & performa perangkat
     $routes->get('DashboardNetmon', 'DashboardNetmon::index');
     $routes->get('DashboardNetmon/data', 'DashboardNetmon::data');
 
-    // Device Monitoring (dropdown Data Teknis NETMON): data perangkat + konfigurasi SNMP, status Up/Down
+    // Device Monitoring (dropdown NMS JWI Group): data perangkat + konfigurasi SNMP, status Up/Down
     // dari polling SNMP v2c (otomatis selama halaman terbuka, atau cron: php spark devicemonitoring:poll)
     $routes->get('DeviceMonitoring', 'DeviceMonitoring::index');
     $routes->get('DeviceMonitoring/create', 'DeviceMonitoring::create');
@@ -377,20 +377,20 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('DeviceMonitoring/poll-due', 'DeviceMonitoring::pollDue');
     $routes->post('DeviceMonitoring/test', 'DeviceMonitoring::test');
 
-    // Traffic Monitoring (dropdown Data Teknis NETMON): traffic RX/TX per interface device Device Monitoring,
+    // Traffic Monitoring (dropdown NMS JWI Group): traffic RX/TX per interface device Device Monitoring,
     // dari polling SNMP v2c IF-MIB (otomatis selama halaman terbuka, atau cron: php spark devicemonitoring:poll)
     $routes->get('TrafficMonitoring', 'TrafficMonitoring::index');
     $routes->get('TrafficMonitoring/data', 'TrafficMonitoring::data');
     $routes->get('TrafficMonitoring/grafik/(:num)', 'TrafficMonitoring::grafik/$1');
 
-    // NMS / Network Management System (dropdown Data Teknis NETMON), mengikuti netmon/nms.php: Live & History
+    // NMS / Network Management System (dropdown NMS JWI Group), mengikuti netmon/nms.php: Live & History
     // latency/packet loss (ping ICMP), CPU/RAM (SNMP) & traffic interface device Device Monitoring + export PDF
     $routes->get('Nms', 'Nms::index');
     $routes->get('Nms/data', 'Nms::data');
     $routes->get('Nms/history', 'Nms::history');
     $routes->get('Nms/export', 'Nms::export');
 
-    // Alert (dropdown Data Teknis NETMON), mengikuti netmon/alerts.php: Alert Center + lonceng notifikasi di navbar.
+    // Alert (dropdown NMS JWI Group), mengikuti netmon/alerts.php: Alert Center + lonceng notifikasi di navbar.
     // Alert dideteksi setiap device di-poll (App\Models\DeviceAlertModel)
     $routes->get('Alert', 'Alert::index');
     $routes->get('Alert/export', 'Alert::export');
@@ -401,7 +401,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('Alert/dibaca', 'Alert::dibaca');
     $routes->get('Alert/cek', 'Alert::cek');
 
-    // Screen / Network Wallboard (dropdown Data Teknis NETMON), mengikuti netmon/screen.php:
+    // Screen / Network Wallboard (dropdown NMS JWI Group), mengikuti netmon/screen.php:
     // grafik traffic live banyak interface dalam satu layar (fullscreen untuk layar NOC)
     $routes->get('Screen', 'Screen::index');
     $routes->get('Screen/data', 'Screen::data');

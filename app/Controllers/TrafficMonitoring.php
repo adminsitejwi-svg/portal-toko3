@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceTrafficModel;
 
-// Halaman Traffic Monitoring (menu Data Teknis NETMON > Traffic Monitoring), mengikuti netmon/traffic.php:
+// Halaman Traffic Monitoring (menu NMS JWI Group > Traffic Monitoring), mengikuti netmon/traffic.php:
 // kartu ringkasan interface, grafik RX/TX interface terpilih, daftar interface + filter + export.
 // Device diambil dari Device Monitoring; traffic di-poll otomatis sesuai polling interval device
 // selama halaman terbuka (GET TrafficMonitoring/data) atau lewat cron: php spark devicemonitoring:poll

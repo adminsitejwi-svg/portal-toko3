@@ -7,7 +7,7 @@ use App\Models\DeviceAlertModel;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceNmsModel;
 
-// Halaman Dashboard Netmon (menu Data Teknis NETMON > Dashboard Netmon), mengikuti netmon/index.php:
+// Halaman Dashboard Netmon (menu NMS JWI Group > Dashboard Netmon), mengikuti netmon/index.php:
 // ringkasan status device, availability, rata-rata latency/CPU/RAM, grafik Network Performance,
 // Device Distribution, device terbaru dan alert terbaru. Data dari polling Device Monitoring.
 class DashboardNetmon extends BaseController
