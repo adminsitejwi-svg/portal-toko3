@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\NmsDetik;
 use App\Libraries\SnmpKlien;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceNmsModel;
@@ -102,6 +103,7 @@ class Nms extends BaseController
                 // pembeda hanya untuk nama yang kembar, selain itu kosong
                 'beda'    => ($kembar[$i['if_name']] ?? 0) > 1 ? ' #' . (int) $i['if_index'] : '',
                 'speed'   => DeviceTrafficModel::formatSpeed($i['speed_mbps']),
+                'mbps'    => $speed,
                 'admin'   => (int) $i['admin_status'] === 1 ? 'Up' : ((int) $i['admin_status'] === 2 ? 'Down' : '-'),
                 'status'  => DeviceTrafficModel::statusTampil($i, $i['device_status']),
                 'rx'      => $rx,
@@ -209,6 +211,14 @@ class Nms extends BaseController
 
     private function grafikHistory(array $p): array
     {
+        if ($p['detik'] === NmsDetik::JENDELA) { // periode 10 Menit: data per detik
+            return [
+                'label_rentang' => $p['label'],
+                'device'        => NmsDetik::historyDevice((int) $p['device']['id']),
+                'traffic'       => $p['interface'] ? NmsDetik::historyTraffic((int) $p['interface']['id']) : null,
+            ];
+        }
+
         return [
             'label_rentang' => $p['label'],
             'device'        => $this->model->history((int) $p['device']['id'], $p['dari'], $p['sampai'], $p['detik']),
@@ -230,6 +240,23 @@ class Nms extends BaseController
         }
 
         return $this->response->setJSON(['ok' => true] + $this->grafikHistory($p));
+    }
+
+    // Grafik 10 Menit per detik (GET Nms/detik?device=ID&interface=ID&sejak=ms), dipanggil tiap 1 detik selama grafik tampil
+    public function detik()
+    {
+        if (! $this->tabelSiap()) {
+            return $this->response->setStatusCode(503)->setJSON(['ok' => false, 'pesan' => 'Tabel belum ada.']);
+        }
+        session_write_close(); // request lain tidak menunggu balasan perangkat
+
+        $d = (new DeviceMonitoringModel())->find((int) $this->request->getGet('device'));
+        if (! $d) {
+            return $this->response->setStatusCode(404)->setJSON(['ok' => false, 'pesan' => 'Device tidak ditemukan.']);
+        }
+        $i = (new DeviceTrafficModel())->where('device_id', $d['id'])->find((int) $this->request->getGet('interface'));
+
+        return $this->response->setJSON(['ok' => true] + NmsDetik::ambil($d, $i, true, max(0, (int) $this->request->getGet('sejak'))));
     }
 
     // Laporan cetak / PDF (GET Nms/export?device=ID&interface=ID&periode=... | mulai&akhir, perusahaan=...)

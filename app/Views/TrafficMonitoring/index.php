@@ -29,6 +29,7 @@
     <!-- Chart.js (grafik traffic) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="<?= base_url('assets/theme/nms-grafik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-grafik.js') ?>"></script>
+    <script src="<?= base_url('assets/theme/nms-detik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-detik.js') ?>"></script>
 
     <script>
         tailwind.config = {
@@ -400,21 +401,6 @@
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-server-cog"></i></span>
-                        <span class="flex-1">ACS JWI Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('DashboardAcs') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Dashboard ACS</a></li>
-                        <li><a href="<?= site_url('AcsDevice') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices</a></li>
-                        <li><a href="<?= site_url('AcsParameter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Parameter Master</a></li>
-                        <li><a href="<?= site_url('AcsProvisioning') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Provisioning</a></li>
-                        <li><a href="<?= site_url('AcsSetting') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Settings</a></li>
-                        <li><a href="<?= site_url('AcsLog') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Log Koneksi</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
                         <span class="flex-1">Jadwal NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -568,7 +554,7 @@
                     <p class="font-semibold"><i class="ti ti-devices"></i> Belum ada device.</p>
                     <p class="rfo-subtitle mt-1">Tambahkan perangkat di <a class="rfo-link" href="<?= site_url('DeviceMonitoring/create') ?>">Device Monitoring</a> (SNMP v2c aktif), traffic interface-nya akan muncul di sini setelah di-poll.</p>
                 </div>
-            <?php elseif (! $baris && $deviceId === 0) : ?>
+            <?php elseif (! $baris) : ?>
                 <div class="rfo-panel mb-6">
                     <p class="font-semibold"><i class="ti ti-hourglass-high"></i> Belum ada data interface.</p>
                     <p class="rfo-subtitle mt-1">Klik <b>Poll Sekarang</b> atau tunggu polling berikutnya. Traffic (RX/TX) mulai terhitung dari polling kedua, karena rate dihitung dari selisih counter antar polling.</p>
@@ -582,7 +568,7 @@
                     <div>
                         <div class="rfo-stat-label">Total Interface</div>
                         <div class="rfo-stat-value" id="statTotal"><?= $total ?></div>
-                        <div class="rfo-stat-note"><?= $deviceId ? 'Pada device terpilih' : 'Dari ' . count($device) . ' device' ?></div>
+                        <div class="rfo-stat-note">Pada device terpilih</div>
                     </div>
                     <i class="ti ti-chart-bar rfo-stat-chart"></i>
                 </a>
@@ -626,7 +612,6 @@
                             <label class="rfo-field">
                                 <i class="ti ti-router" style="color:#2f6bff"></i>
                                 <select name="device" class="tm-select" title="Pilih Device" onchange="this.form.submit()">
-                                    <option value="0">Semua Device</option>
                                     <?php foreach ($device as $d) : ?>
                                         <option value="<?= (int) $d['id'] ?>" <?= $deviceId === (int) $d['id'] ? 'selected' : '' ?>><?= esc($d['hostname']) ?> (<?= esc($d['ip_address']) ?>)</option>
                                     <?php endforeach; ?>
@@ -639,14 +624,14 @@
                                         <option value="">Belum ada interface</option>
                                     <?php endif; ?>
                                     <?php foreach ($baris as $b) : ?>
-                                        <option value="<?= (int) $b['id'] ?>" <?= $pilihId === (int) $b['id'] ? 'selected' : '' ?>><?= esc(($deviceId ? '' : $b['hostname'] . ' - ') . $b['label']) ?></option>
+                                        <option value="<?= (int) $b['id'] ?>" <?= $pilihId === (int) $b['id'] ? 'selected' : '' ?>><?= esc($b['label']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </label>
                         </form>
                         <div class="tm-rentang" role="group" aria-label="Rentang grafik">
                             <?php foreach ($tm::RENTANG as $kode => [$labelRentang]) : ?>
-                                <button type="button" data-rentang="<?= $kode ?>" class="<?= $kode === '1h' ? 'is-active' : '' ?>"><?= $labelRentang ?></button>
+                                <button type="button" data-rentang="<?= $kode ?>"><?= $labelRentang ?></button>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -687,6 +672,7 @@
                             <canvas id="grafikTraffic"></canvas>
                             <div id="grafikKosong" class="tm-chart-kosong" hidden><i class="ti ti-chart-line"></i> Belum ada riwayat traffic pada rentang ini.</div>
                         </div>
+                        <p class="rf-hint tm-detik mt-3" id="detikInfo" hidden><i class="ti ti-activity"></i> <span></span></p>
                     <?php else : ?>
                         <p class="rfo-subtitle"><i class="ti ti-info-circle"></i> Belum ada interface untuk ditampilkan grafiknya.</p>
                     <?php endif; ?>
@@ -799,7 +785,8 @@
         /* panel grafik gelap di mode terang & gelap, sama dengan halaman NMS */
         .tm-chart-box { position: relative; height: 320px; padding: 14px; background: #181b1f; border: 1px solid #2c3036; border-radius: 6px; }
         .tm-chart-kosong { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; color: #a5abb5; font-size: 14px; }
-        .tm-chart-kosong[hidden] { display: none; }
+        .tm-chart-kosong[hidden], .tm-detik[hidden] { display: none; }
+        .tm-detik.is-galat, .tm-detik.is-galat .ti { color: #ef4444; }
         /* tanda sedang memuat, sama dengan History Monitoring (NMS Management) */
         .tm-chart-box canvas, .tm-mini-dua { transition: opacity .2s ease; }
         #panelGrafik.is-muat .tm-chart-box canvas, #panelGrafik.is-muat .tm-mini-dua { opacity: .35; }
@@ -840,11 +827,31 @@
         const INFO = <?= json_encode((object) $infoJs, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         const DEVICE_ID = <?= (int) $deviceId ?>;
         const URL_GRAFIK = '<?= site_url('TrafficMonitoring/grafik/') ?>';
+        const URL_DETIK = '<?= site_url('TrafficMonitoring/detik/') ?>';
         const URL_DATA = '<?= site_url('TrafficMonitoring/data') ?>' + '?device=' + DEVICE_ID;
         const LABEL_RENTANG = <?= json_encode(array_map(static fn ($r) => $r[0], $tm::RENTANG)) ?>;
 
         let pilihId = <?= $pilihId ?>;
+        // rentang terakhir diingat di browser: muat ulang halaman / ganti device tidak kembali ke 1 Jam
+        const KUNCI_RENTANG = 'tm.rentang';
         let rentang = '1h';
+        try {
+            const r = localStorage.getItem(KUNCI_RENTANG);
+            if (Object.prototype.hasOwnProperty.call(LABEL_RENTANG, r)) rentang = r;
+        } catch (e) {}
+
+        function tandaiRentang() {
+            document.querySelectorAll('.tm-rentang button').forEach(b => b.classList.toggle('is-active', b.dataset.rentang === rentang));
+        }
+
+        // device & interface yang tampil ditulis di alamat, jadi muat ulang halaman tetap di pilihan yang sama
+        function tulisAlamat() {
+            if (!DEVICE_ID) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set('device', DEVICE_ID);
+            if (pilihId) url.searchParams.set('interface', pilihId); else url.searchParams.delete('interface');
+            history.replaceState(null, '', url);
+        }
         let grafik = null;
 
         const badge = st => {
@@ -862,6 +869,7 @@
             document.getElementById('nowRx').textContent = i.rx;
             document.getElementById('nowTx').textContent = i.tx;
             document.getElementById('nowWaktu').textContent = i.waktu ? 'Sampel ' + i.waktu : 'Belum ada sampel';
+            if (detik && detik.aktif() && detik.data()) sekarangDetik(detik.data()); // nilai per detik tidak ditimpa nilai polling
         }
 
         // Pilih interface (dropdown / tombol Grafik di tabel).
@@ -872,10 +880,7 @@
             pilihId = id;
             document.getElementById('pilihInterface').value = id;
             (window.TM_TABLE ? window.TM_TABLE.rows().nodes().toArray() : document.querySelectorAll('#tmTable tbody tr')).forEach(tr => tr.classList.toggle('tm-dipilih', parseInt(tr.dataset.id, 10) === id));
-            const url = new URL(window.location.href);
-            url.searchParams.set('interface', id);
-            if (DEVICE_ID) url.searchParams.set('device', DEVICE_ID);
-            history.replaceState(null, '', url);
+            tulisAlamat();
             tampilInfo();
             muatGrafik();
             if (gulir) document.getElementById('panelGrafik').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -889,22 +894,82 @@
                 { label: 'RX / Download', borderColor: NmsGrafik.WARNA.hijau },
                 { label: 'TX / Upload', borderColor: NmsGrafik.WARNA.kuning }
             ], formatBps, { maks: 1000 });
+            siapkanDetik();
         }
 
         let nomorMuat = 0;
+
+        // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+        let detik = null;
+
+        function sekarangDetik(D) {
+            const t = D.akhir.traffic;
+            if (!t || !t.nilai) return;
+            document.getElementById('nowRx').textContent = formatBps(t.nilai[0]);
+            document.getElementById('nowTx').textContent = formatBps(t.nilai[1]);
+            document.getElementById('nowWaktu').textContent = 'Sampel ' + t.waktu;
+        }
+
+        function terimaDetik(D) {
+            const r = D.ringkas;
+            document.getElementById('panelGrafik').classList.remove('is-muat');
+            sekarangDetik(D);
+            document.getElementById('grafikKosong').hidden = NmsDetik.isi(grafik, D.label, D.traffic);
+            document.getElementById('avgRx').innerHTML = '<i class="ti ti-arrow-down"></i> ' + formatBps(r.rx.rata);
+            document.getElementById('avgTx').innerHTML = '<i class="ti ti-arrow-up"></i> ' + formatBps(r.tx.rata);
+            document.getElementById('maxRx').innerHTML = '<i class="ti ti-arrow-down"></i> ' + formatBps(r.rx.maks);
+            document.getElementById('maxTx').innerHTML = '<i class="ti ti-arrow-up"></i> ' + formatBps(r.tx.maks);
+            document.querySelectorAll('.tm-label-rentang').forEach(el => el.textContent = LABEL_RENTANG['10m'] + ' terakhir (' + r.rx.n + ' sampel)');
+        }
+
+        function tampilDetik(ya) {
+            const el = document.getElementById('detikInfo');
+            el.hidden = !ya;
+            el.classList.remove('is-galat');
+            el.lastElementChild.textContent = ya ? 'Mengambil data per detik...' : '';
+        }
+
+        function siapkanDetik() {
+            if (!grafik || !window.NmsDetik) return;
+            detik = NmsDetik.buat({
+                url: sejak => URL_DETIK + pilihId + '?sejak=' + sejak,
+                terima: terimaDetik,
+                gagal: () => {
+                    document.getElementById('panelGrafik').classList.remove('is-muat');
+                    if (detik.data()) return;
+                    // belum ada data: grafik interface sebelumnya dikosongkan agar tidak dikira milik interface yang baru dipilih
+                    document.getElementById('grafikKosong').hidden = NmsDetik.isi(grafik, [], [[], []]);
+                    ['avgRx', 'avgTx', 'maxRx', 'maxTx'].forEach(id => document.getElementById(id).textContent = '-');
+                },
+                status: (teks, galat) => {
+                    const el = document.getElementById('detikInfo');
+                    el.classList.toggle('is-galat', galat);
+                    el.lastElementChild.textContent = teks;
+                }
+            });
+        }
 
         // diam = true: refresh otomatis dari polling, tanpa tanda "Memuat data..."
         function muatGrafik(diam) {
             if (!grafik || !pilihId) return;
             const nomor = ++nomorMuat;
             const panel = document.getElementById('panelGrafik');
+            const perDetik = !!detik && rentang === '10m';
+            if (perDetik && diam) return; // sudah diperbarui tiap detik
             if (!diam) panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
+            tampilDetik(perDetik);
+            if (perDetik) {
+                if (detik.aktif()) detik.ulang(); else detik.nyala();
+                return;
+            }
+            if (detik) detik.mati();
             fetch(URL_GRAFIK + pilihId + '?rentang=' + rentang, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
                 .then(r => r.json())
                 .then(res => {
                     if (nomor !== nomorMuat) return; // sudah ada permintaan yang lebih baru
                     if (!res.ok) throw new Error(res.pesan || 'gagal');
                     panel.classList.remove('is-muat');
+                    NmsGrafik.modeDetik(grafik, false);
                     grafik.data.labels = res.label;
                     grafik.data.datasets[0].data = res.rx;
                     grafik.data.datasets[1].data = res.tx;
@@ -921,6 +986,7 @@
                     if (nomor !== nomorMuat || !panel.classList.contains('is-muat')) return; // refresh otomatis gagal: dicoba lagi pada polling berikutnya
                     // grafik interface sebelumnya dikosongkan agar tidak dikira milik interface yang baru dipilih
                     panel.classList.remove('is-muat');
+                    NmsGrafik.modeDetik(grafik, false);
                     grafik.data.labels = [];
                     grafik.data.datasets.forEach(d => d.data = []);
                     grafik.update('none');
@@ -932,7 +998,8 @@
 
         document.querySelectorAll('.tm-rentang button').forEach(btn => btn.addEventListener('click', function() {
             rentang = this.dataset.rentang;
-            document.querySelectorAll('.tm-rentang button').forEach(b => b.classList.toggle('is-active', b === this));
+            try { localStorage.setItem(KUNCI_RENTANG, rentang); } catch (e) {}
+            tandaiRentang();
             muatGrafik();
         }));
 
@@ -1034,6 +1101,21 @@
 
             const table = $('#tmTable').DataTable({
                 pageLength: 10,
+                // halaman, urutan, pencarian & filter tabel tetap saat halaman dimuat ulang (per tab browser)
+                stateSave: true,
+                stateDuration: -1,
+                stateSaveParams: (s, d) => {
+                    d.tm = { device: DEVICE_ID, status: $('#filterStatus').val(), traffic: $('#hanyaTraffic').prop('checked') };
+                },
+                stateLoadParams: (s, d) => {
+                    if (!d.tm) return;
+                    if (d.tm.device !== DEVICE_ID) { // device lain: pencarian & halaman milik device sebelumnya tidak dibawa
+                        d.search.search = '';
+                        d.start = 0;
+                    }
+                    $('#filterStatus').val(d.tm.status || '');
+                    $('#hanyaTraffic').prop('checked', !!d.tm.traffic);
+                },
                 lengthMenu: [
                     [10, 15, 25, 50, -1],
                     [10, 15, 25, 50, "Semua"]
@@ -1085,7 +1167,7 @@
                     cell.innerHTML = ++i;
                 });
             });
-            table.draw();
+            table.draw(false);
 
             $('#lengthArea').append($('.dataTables_length'));
             $('#exportArea').append($('.dt-buttons'));
@@ -1113,6 +1195,11 @@
             });
             $('#hanyaTraffic').on('change', () => table.draw());
 
+            // tampilkan lagi filter yang tersimpan
+            $('#customSearch').val(table.search());
+            $('.tm-kartu').removeClass('is-active').filter('[data-status="' + $('#filterStatus').val() + '"]').addClass('is-active');
+            if ($('#hanyaTraffic').prop('checked')) table.draw(false);
+
             $('#customSearch').on('keyup', function() {
                 table.search(this.value).draw();
             });
@@ -1125,6 +1212,8 @@
             });
 
             // ====== GRAFIK + POLLING OTOMATIS: cek tiap 15 detik, server hanya mem-poll device yang sudah waktunya ======
+            tandaiRentang();
+            tulisAlamat();
             buatGrafik();
             tampilInfo();
             muatGrafik();

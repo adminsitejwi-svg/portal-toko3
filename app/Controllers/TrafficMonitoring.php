@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\NmsDetik;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceTrafficModel;
 
@@ -34,16 +35,23 @@ class TrafficMonitoring extends BaseController
         }
 
         $device   = (new DeviceMonitoringModel())->orderBy('hostname', 'ASC')->findAll();
+        $idDevice = array_map('intval', array_column($device, 'id'));
         $deviceId = (int) $this->request->getGet('device');
-        if (! in_array($deviceId, array_map('intval', array_column($device, 'id')), true)) {
-            $deviceId = 0;
+        $pilihId  = (int) $this->request->getGet('interface');
+        // tautan hanya berisi interface: device mengikuti interface itu
+        if (! in_array($deviceId, $idDevice, true) && $pilihId > 0) {
+            $deviceId = (int) ($this->model->find($pilihId)['device_id'] ?? 0);
+        }
+        // selalu satu device; belum dipilih / tidak valid = device pertama
+        if (! in_array($deviceId, $idDevice, true)) {
+            $deviceId = $idDevice[0] ?? 0;
         }
 
-        $interface = $this->model->daftar($deviceId);
+        // isi dropdown interface, grafik & tabel hanya milik device terpilih
+        $interface = $deviceId ? $this->model->daftar($deviceId) : [];
 
         // interface terpilih: dari URL, kalau tidak ada = interface Up dengan traffic terbesar
-        $pilihId = (int) $this->request->getGet('interface');
-        $pilih   = null;
+        $pilih = null;
         foreach ($interface as $i) {
             if ((int) $i['id'] === $pilihId) {
                 $pilih = $i;
@@ -101,7 +109,7 @@ class TrafficMonitoring extends BaseController
         ]);
     }
 
-    // Data grafik satu interface (GET TrafficMonitoring/grafik/{id}?rentang=1h|6h|24h|7d)
+    // Data grafik satu interface (GET TrafficMonitoring/grafik/{id}?rentang=10m|1h|6h|24h|7d)
     public function grafik($id)
     {
         if (! $this->tabelSiap()) {
@@ -116,5 +124,22 @@ class TrafficMonitoring extends BaseController
         }
 
         return $this->response->setJSON(['ok' => true, 'rentang' => $rentang] + $this->model->grafik((int) $id, $rentang));
+    }
+
+    // Grafik 10 Menit per detik (GET TrafficMonitoring/detik/{id}?sejak=ms), dipanggil tiap 1 detik selama grafik tampil
+    public function detik($id)
+    {
+        if (! $this->tabelSiap()) {
+            return $this->response->setStatusCode(503)->setJSON(['ok' => false, 'pesan' => 'Tabel belum ada.']);
+        }
+        session_write_close(); // request lain tidak menunggu balasan perangkat
+
+        $i = $this->model->find((int) $id);
+        $d = $i ? (new DeviceMonitoringModel())->find((int) $i['device_id']) : null;
+        if (! $d) {
+            return $this->response->setStatusCode(404)->setJSON(['ok' => false, 'pesan' => 'Interface tidak ditemukan.']);
+        }
+
+        return $this->response->setJSON(['ok' => true] + NmsDetik::ambil($d, $i, false, max(0, (int) $this->request->getGet('sejak'))));
     }
 }

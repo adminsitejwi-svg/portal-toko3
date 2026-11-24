@@ -45,6 +45,24 @@
         }));
     }
 
+    // rentang 10 Menit per detik: tanda sumbu waktu hanya di tiap menit bulat
+    function tikMenit(s) {
+        if (s.chart.$detik) s.ticks = s.ticks.filter(t => String(s.getLabelForValue(t.value)).endsWith(':00'));
+    }
+
+    function teksX(v) {
+        const l = this.getLabelForValue(v);
+        return this.chart.$detik ? String(l).slice(0, 5) : l;
+    }
+
+    // ya = jendela 600 detik (lihat nms-detik.js): tooltip mengambil titik terdekat karena bisa ada detik tanpa sampel
+    function modeDetik(c, ya) {
+        if (!c || !!c.$detik === !!ya) return;
+        c.$detik = !!ya;
+        c.options.interaction = ya ? { intersect: false, mode: 'nearest', axis: 'x' } : { intersect: false, mode: 'index' };
+        if (!ya) c.data.datasets.forEach(s => s.titikTunggal = false);
+    }
+
     function buat(el, label, sets, fmtY, opsi) {
         if (!el || !window.Chart) return null;
         opsi = opsi || {};
@@ -56,7 +74,7 @@
                     data: [], fill: 'origin', backgroundColor: s.borderColor + ISIAN, spanGaps: true,
                     tension: 0, borderWidth: 1.5, borderJoinStyle: 'round',
                     // satu titik saja tidak membentuk garis, jadi ditampilkan sebagai titik
-                    pointRadius: c => c.dataset.data.length === 1 ? 3 : 0,
+                    pointRadius: c => c.dataset.titikTunggal || c.dataset.data.length === 1 ? 3 : 0,
                     pointBackgroundColor: s.borderColor, pointBorderWidth: 0,
                     pointHoverRadius: 4, pointHoverBackgroundColor: s.borderColor, pointHoverBorderColor: T.panel, pointHoverBorderWidth: 2,
                     pointHitRadius: 12
@@ -84,7 +102,7 @@
                     }
                 },
                 scales: {
-                    x: { grid: { color: T.grid, drawTicks: false }, border: { color: T.grid }, ticks: { color: T.teks, maxTicksLimit: 8, maxRotation: 0, padding: 8, font: { size: 11 } } },
+                    x: { afterBuildTicks: tikMenit, grid: { color: T.grid, drawTicks: false }, border: { color: T.grid }, ticks: { color: T.teks, callback: teksX, maxTicksLimit: 8, maxRotation: 0, padding: 8, font: { size: 11 } } },
                     y: {
                         beginAtZero: true, suggestedMax: opsi.maks, border: { display: false }, grid: { color: T.grid, drawTicks: false },
                         ticks: { color: T.teks, maxTicksLimit: 6, padding: 8, font: { size: 11 }, callback: v => fmtY(v) }
@@ -95,5 +113,5 @@
         });
     }
 
-    window.NmsGrafik = { buat: buat, WARNA: WARNA };
+    window.NmsGrafik = { buat: buat, modeDetik: modeDetik, WARNA: WARNA };
 })();

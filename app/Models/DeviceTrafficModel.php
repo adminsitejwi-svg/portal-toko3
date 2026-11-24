@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Libraries\NmsDetik;
 use App\Libraries\SnmpKlien;
 
 // Traffic Monitoring (menu NMS JWI Group > Traffic Monitoring): interface & traffic RX/TX per device
@@ -170,8 +171,8 @@ class DeviceTrafficModel extends \CodeIgniter\Model
         foreach ($indeks as $idx) {
             $nama  = $teks($info['name'][$idx] ?? null) ?? $teks($info['descr'][$idx] ?? null) ?? 'ifIndex-' . $idx;
             $speed = $angka($info['speed'][$idx] ?? null);
-            $rxC   = $this->counterValid($counter['in'][$idx] ?? null);
-            $txC   = $this->counterValid($counter['out'][$idx] ?? null);
+            $rxC   = self::counterValid($counter['in'][$idx] ?? null);
+            $txC   = self::counterValid($counter['out'][$idx] ?? null);
 
             $baris = [
                 'if_name'      => $nama,
@@ -192,8 +193,8 @@ class DeviceTrafficModel extends \CodeIgniter\Model
                 if ($jeda < self::JEDA_MIN) {
                     $simpanBase = false; // terlalu dekat: tunggu polling berikutnya, patokan lama dipakai
                 } else {
-                    $dRx = $this->selisih($rxC, $l['in_octets'], $bit);
-                    $dTx = $this->selisih($txC, $l['out_octets'], $bit);
+                    $dRx = self::selisih($rxC, $l['in_octets'], $bit);
+                    $dTx = self::selisih($txC, $l['out_octets'], $bit);
                     if ($dRx !== null && $dTx !== null) {
                         $rx   = (int) round($dRx * 8 / $jeda);
                         $tx   = (int) round($dTx * 8 / $jeda);
@@ -232,7 +233,7 @@ class DeviceTrafficModel extends \CodeIgniter\Model
     }
 
     /** Counter octets valid = angka bulat >= 0 (int atau string angka untuk Counter64 besar). */
-    private function counterValid($v): ?string
+    public static function counterValid($v): ?string
     {
         if (is_int($v) && $v >= 0) {
             return (string) $v;
@@ -245,7 +246,7 @@ class DeviceTrafficModel extends \CodeIgniter\Model
      * Selisih counter (baru - lama). Counter 32-bit yang berputar balik dihitung wrap,
      * counter 64-bit yang turun = reset/reboot (null, tidak dicatat).
      */
-    private function selisih(string $baru, string $lama, int $bit): ?float
+    public static function selisih(string $baru, string $lama, int $bit): ?float
     {
         $cmp = strlen($baru) <=> strlen($lama) ?: strcmp($baru, $lama);
         if ($cmp >= 0) {
@@ -291,6 +292,7 @@ class DeviceTrafficModel extends \CodeIgniter\Model
 
     /** Pilihan rentang grafik: kode => [label, detik]. */
     public const RENTANG = [
+        '10m' => ['10 Menit', 600], // per detik, lihat App\Libraries\NmsDetik
         '1h'  => ['1 Jam', 3600],
         '6h'  => ['6 Jam', 21600],
         '24h' => ['24 Jam', 86400],
@@ -304,6 +306,9 @@ class DeviceTrafficModel extends \CodeIgniter\Model
      */
     public function grafik(int $interfaceId, string $rentang): array
     {
+        if ($rentang === '10m') {
+            return NmsDetik::historyTraffic($interfaceId);
+        }
         $detik  = (self::RENTANG[$rentang] ?? self::RENTANG['1h'])[1];
         $bucket = max(60, (int) ceil($detik / 360));
         $dari   = date('Y-m-d H:i:s', time() - $detik);

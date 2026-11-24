@@ -29,6 +29,7 @@
     <!-- Chart.js (grafik traffic) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="<?= base_url('assets/theme/nms-grafik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-grafik.js') ?>"></script>
+    <script src="<?= base_url('assets/theme/nms-detik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-detik.js') ?>"></script>
 
     <script>
         tailwind.config = {
@@ -400,21 +401,6 @@
                 </li>
                 <li class="hasmenu">
                     <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
-                        <span class="pc-micon w-5"><i class="ti ti-server-cog"></i></span>
-                        <span class="flex-1">ACS JWI Group</span>
-                        <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
-                    </a>
-                    <ul class="submenu bg-black/20">
-                        <li><a href="<?= site_url('DashboardAcs') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Dashboard ACS</a></li>
-                        <li><a href="<?= site_url('AcsDevice') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Devices</a></li>
-                        <li><a href="<?= site_url('AcsParameter') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Parameter Master</a></li>
-                        <li><a href="<?= site_url('AcsProvisioning') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Provisioning</a></li>
-                        <li><a href="<?= site_url('AcsSetting') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Settings</a></li>
-                        <li><a href="<?= site_url('AcsLog') ?>" class="block pl-[52px] pr-6 py-2 text-[13px] hover:text-white">Log Koneksi</a></li>
-                    </ul>
-                </li>
-                <li class="hasmenu">
-                    <a href="#" onclick="toggleSub(this);return false;" class="pc-link flex items-center gap-3 px-6 py-2.5 text-[14px] hover:text-white">
                         <span class="pc-micon w-5"><i class="ti ti-calendar-week"></i></span>
                         <span class="flex-1">Jadwal NOC</span>
                         <i data-feather="chevron-right" class="arrow w-4 h-4 transition-transform"></i>
@@ -629,10 +615,16 @@
                         <div class="rfo-panel mb-6" id="panelLive">
                             <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
                                 <h3 class="nms-judul"><i class="ti ti-chart-area-line"></i> Live Traffic <span class="rb-sub" id="liveNama"></span></h3>
-                                <label class="rfo-field">
-                                    <i class="ti ti-plug-connected" style="color:#6d5dfc"></i>
-                                    <select id="nmsIface" class="nms-select nms-select-lebar" title="Pilih Interface"></select>
-                                </label>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <label class="rfo-field">
+                                        <i class="ti ti-plug-connected" style="color:#6d5dfc"></i>
+                                        <select id="nmsIface" class="nms-select nms-select-lebar" title="Pilih Interface"></select>
+                                    </label>
+                                    <div class="nms-seg" id="lMode" role="group" aria-label="Rentang grafik">
+                                        <button type="button" data-mode="10m" title="10 menit terakhir, diperbarui tiap detik">10 Menit</button>
+                                        <button type="button" data-mode="1h" class="is-active" title="1 jam terakhir, sesuai polling interval device">1 Jam</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
                                 <div class="tm-mini">
@@ -653,13 +645,14 @@
                                 <div class="tm-mini">
                                     <div class="tm-mini-label"><i class="ti ti-clock" style="color:#16a34a"></i> Sampel Terakhir</div>
                                     <div class="tm-mini-value nms-kecil" id="lWaktu">-</div>
-                                    <div class="rb-sub">Sesuai polling interval device</div>
+                                    <div class="rb-sub" id="lWaktuSub">Sesuai polling interval device</div>
                                 </div>
                             </div>
                             <div class="nms-chart-box">
                                 <canvas id="cLive"></canvas>
-                                <div id="cLiveKosong" class="nms-chart-kosong" hidden><i class="ti ti-chart-line"></i> Menunggu sampel traffic interface ini (1 jam terakhir).</div>
+                                <div id="cLiveKosong" class="nms-chart-kosong" hidden><i class="ti ti-chart-line"></i> <span id="cLiveKosongTeks">Menunggu sampel traffic interface ini (1 jam terakhir).</span></div>
                             </div>
+                            <p class="rf-hint nms-detik mt-3" id="detikInfo" hidden><i class="ti ti-activity"></i> <span></span></p>
                         </div>
 
                         <!-- DAFTAR INTERFACE -->
@@ -798,6 +791,7 @@
                                 <button type="button" id="hExport" class="rfo-btn rfo-btn-gray border-0 cursor-pointer"><i class="ti ti-file-type-pdf"></i> Export PDF</button>
                             </div>
                             <p class="rf-hint mt-3"><i class="ti ti-calendar"></i> <span id="hLabel">-</span>. Riwayat latency, packet loss, CPU &amp; RAM disimpan <?= $nm::RETENSI_HARI ?> hari, traffic interface <?= \App\Models\DeviceTrafficModel::RETENSI_HARI ?> hari.</p>
+                            <p class="rf-hint nms-detik mt-2" id="detikInfo" hidden><i class="ti ti-activity"></i> <span></span></p>
                         </div>
 
                         <!-- POP UP EXPORT PDF: pilih perusahaan / logo (sama dengan form RFO) -->
@@ -900,6 +894,8 @@
         .nms-seg button { height: 40px; padding: 0 14px; font-size: 13px; font-weight: 600; color: var(--rf-muted); background: var(--rf-card); border: 0; cursor: pointer; }
         .nms-seg button + button { border-left: 1px solid var(--rf-border); }
         .nms-seg button.is-active { background: #2f6bff; color: #fff; }
+        .nms-detik[hidden] { display: none; }
+        .nms-detik.is-galat, .nms-detik.is-galat .ti { color: #ef4444; }
         .nms-dev-nama { font-size: 16px; font-weight: 700; color: var(--rf-text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .nms-dev-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12px; color: var(--rf-muted); }
         .nms-dev-meta b { display: block; color: var(--rf-text); font-size: 13px; }
@@ -974,6 +970,7 @@
             const URL_NMS = '<?= site_url('Nms') ?>';
             const URL_DATA = '<?= site_url('Nms/data') ?>';
             const URL_HISTORY = '<?= site_url('Nms/history') ?>';
+            const URL_DETIK = '<?= site_url('Nms/detik') ?>';
             const URL_EXPORT = '<?= site_url('Nms/export') ?>';
             let S = <?= json_encode($live, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE) ?>;
 
@@ -1014,10 +1011,35 @@
 
             function isiGrafik(g, idKosong, label, data) {
                 if (!g) return;
+                NmsGrafik.modeDetik(g, false);
                 g.data.labels = label;
                 data.forEach((d, i) => g.data.datasets[i].data = d);
                 g.update('none');
                 $(idKosong).hidden = label.length > 0;
+            }
+
+            // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+            function isiGrafikDetik(g, idKosong, label, data) {
+                if (g) $(idKosong).hidden = NmsDetik.isi(g, label, data);
+            }
+
+            function buatDetik(terima, gagal) {
+                if (!window.NmsDetik || !window.NmsGrafik) return null;
+                return NmsDetik.buat({
+                    url: sejak => URL_DETIK + '?device=' + S.device + '&interface=' + (S.interface || 0) + '&sejak=' + sejak,
+                    terima: terima,
+                    gagal: gagal,
+                    status: (teks, galat) => {
+                        $('detikInfo').classList.toggle('is-galat', galat);
+                        $('detikInfo').lastElementChild.textContent = teks;
+                    }
+                });
+            }
+
+            function tampilDetik(ya) {
+                $('detikInfo').hidden = !ya;
+                $('detikInfo').classList.remove('is-galat');
+                $('detikInfo').lastElementChild.textContent = ya ? 'Mengambil data per detik...' : '';
             }
 
             const fmtMs = v => fmt(v, 1, ' ms');
@@ -1087,6 +1109,57 @@
                 const gLive = buatGrafik('cLive', [setRx, setTx], formatBps, { maks: 1000 });
                 let halIf = 1;
 
+                // rentang grafik Live: 1h = sesuai polling, 10m = per detik (pilihan diingat di browser)
+                const KUNCI_MODE = 'nms.live.mode';
+                let modeLive = '1h';
+                const detik = buatDetik(terapkanDetik);
+
+                // KPI, kartu RX/TX & grafik dari sampel per detik (menimpa nilai polling)
+                function terapkanDetik(D) {
+                    const m = D.akhir.metrik && D.akhir.metrik.nilai;
+                    const d = devPilih();
+                    if (m) {
+                        const sumber = D.sumber === 'snmp' ? 'Waktu respon SNMP' : 'ICMP ping';
+                        $('kLat').textContent = fmt(m[0], 2, ' ms');
+                        $('kLatSub').textContent = sumber + ' · per detik';
+                        $('kLoss').textContent = fmt(D.ringkas.loss.rata, 2, '%');
+                        $('kLoss').style.color = D.ringkas.loss.rata > 0 ? '#ef4444' : '';
+                        $('kLossSub').textContent = sumber + ' · rata-rata 10 menit';
+                        [['kCpu', m[2], d && d.cpu], ['kMem', m[3], d && d.mem]].forEach(([id, baru, lama]) => {
+                            const v = baru === null ? lama : baru; // sampel tanpa CPU/RAM: nilai polling tetap tampil
+                            $(id).textContent = fmt(v, 1, '%');
+                            $(id + 'Bar').style.width = Math.min(100, v || 0) + '%';
+                            $(id + 'Bar').style.background = warnaPersen(v === undefined ? null : v);
+                        });
+                    }
+                    const t = D.akhir.traffic, i = S.ifaces.find(x => x.id === S.interface);
+                    if (t && t.nilai) {
+                        $('lRx').textContent = formatBps(t.nilai[0]);
+                        $('lTx').textContent = formatBps(t.nilai[1]);
+                        $('lUtil').textContent = i && i.mbps > 0 ? fmt(Math.max(t.nilai[0], t.nilai[1]) / (i.mbps * 1e6) * 100, 1, '%') : '-';
+                        $('lWaktu').textContent = t.waktu;
+                    }
+                    isiGrafikDetik(gLive, 'cLiveKosong', D.label, D.traffic);
+                }
+
+                function aturMode(mode) {
+                    modeLive = detik && mode === '10m' ? '10m' : '1h';
+                    const ya = modeLive === '10m';
+                    $('lMode').querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b.dataset.mode === modeLive));
+                    $('lWaktuSub').textContent = ya ? 'Diperbarui tiap detik' : 'Sesuai polling interval device';
+                    $('cLiveKosongTeks').textContent = 'Menunggu sampel traffic interface ini (' + (ya ? '10 menit' : '1 jam') + ' terakhir).';
+                    tampilDetik(ya);
+                    if (ya) detik.nyala(); else if (detik) detik.mati();
+                    renderKpi();
+                    renderLive();
+                    try { localStorage.setItem(KUNCI_MODE, modeLive); } catch (e) {}
+                }
+
+                $('lMode').addEventListener('click', e => {
+                    const b = e.target.closest('button');
+                    if (b && b.dataset.mode !== modeLive) aturMode(b.dataset.mode);
+                });
+
                 function renderKpi() {
                     const d = devPilih();
                     const sumber = d && d.sumber === 'snmp' ? 'Waktu respon SNMP' : 'ICMP ping';
@@ -1117,7 +1190,13 @@
                     $('lUtil').textContent = i && i.util !== null ? fmt(i.util, 1, '%') : '-';
                     $('lSpeed').textContent = 'Speed ' + (i ? i.speed : '-');
                     $('lWaktu').textContent = (i && i.waktu) || '-';
-                    isiGrafik(gLive, 'cLiveKosong', S.live.label, [S.live.rx, S.live.tx]);
+                    if (modeLive !== '10m') {
+                        isiGrafik(gLive, 'cLiveKosong', S.live.label, [S.live.rx, S.live.tx]);
+                    } else if (detik.data()) {
+                        terapkanDetik(detik.data());
+                    } else {
+                        isiGrafik(gLive, 'cLiveKosong', [], [[], []]); // sampel per detik pertama belum datang
+                    }
                 }
 
                 function renderInterface() {
@@ -1210,6 +1289,7 @@
                     S.interface = parseInt(id, 10) || 0;
                     urlState();
                     const n = ++nomorPilih;
+                    if (modeLive === '10m') detik.ulang();
                     const panel = $('panelLive');
                     panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
                     renderLive();
@@ -1269,6 +1349,7 @@
 
                 renderSemua();
                 urlState();
+                try { if (localStorage.getItem(KUNCI_MODE) === '10m') aturMode('10m'); } catch (e) {}
                 muat(false);
                 setInterval(() => { if (!document.hidden) muat(false); }, 15000);
             } else {
@@ -1321,6 +1402,32 @@
                     return p;
                 }
 
+                // periode 10 Menit: semua grafik & ringkasan diperbarui tiap detik
+                const detik = buatDetik(D => {
+                    const r = D.ringkas;
+                    $('hGrafik').classList.remove('is-muat');
+                    $('hLabel').textContent = 'Rentang: 10 Menit terakhir (per detik)';
+                    $('hAvail').textContent = fmt(r.uptime, 2, '%');
+                    $('hSampel').textContent = r.sampel + ' sampel';
+                    $('hLat').textContent = fmt(r.latency.rata, 2, ' ms') + ' / ' + fmt(r.latency.maks, 2, ' ms');
+                    $('hLoss').textContent = 'Packet loss rata-rata ' + fmt(r.loss.rata, 2, '%');
+                    $('hCpu').textContent = fmt(r.cpu.rata, 1, '%') + ' / ' + fmt(r.cpu.maks, 1, '%');
+                    $('hMem').textContent = fmt(r.mem.rata, 1, '%') + ' / ' + fmt(r.mem.maks, 1, '%');
+                    [[gLat, 'cLatKosong'], [gLoss, 'cLossKosong'], [gCpu, 'cCpuKosong'], [gMem, 'cMemKosong']]
+                        .forEach(([g, id], k) => isiGrafikDetik(g, id, D.label, [D.metrik[k]]));
+                    const opsi = $('hIface').selectedOptions[0];
+                    $('hIfNama').innerHTML = S.interface && opsi ? '<b>' + esc(opsi.textContent) + '</b> ·' : '';
+                    $('hTrafRingkas').textContent = S.interface ? 'RX rata-rata ' + formatBps(r.rx.rata) + ' (puncak ' + formatBps(r.rx.maks) + ') · TX rata-rata ' + formatBps(r.tx.rata) + ' (puncak ' + formatBps(r.tx.maks) + ')' : '';
+                    isiGrafikDetik(gTraf, 'cTrafKosong', D.label, D.traffic);
+                }, () => {
+                    $('hGrafik').classList.remove('is-muat');
+                    if (detik.data()) return;
+                    // belum ada data: grafik pilihan sebelumnya dikosongkan agar tidak dikira milik pilihan yang baru
+                    [[gLat, 'cLatKosong'], [gLoss, 'cLossKosong'], [gCpu, 'cCpuKosong'], [gMem, 'cMemKosong']].forEach(([g, id]) => isiGrafikDetik(g, id, [], [[]]));
+                    isiGrafikDetik(gTraf, 'cTrafKosong', [], [[], []]);
+                    ['hAvail', 'hSampel', 'hLat', 'hCpu', 'hMem'].forEach(id => $(id).textContent = '-');
+                });
+
                 let nomor = 0;
 
                 function muat(diam) {
@@ -1330,6 +1437,13 @@
                     urlState({ periode: p.periode || null, mulai: p.mulai || null, akhir: p.akhir || null });
                     const n = ++nomor;
                     $('hGrafik').classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan)
+                    const perDetik = !!detik && p.periode === '10m';
+                    tampilDetik(perDetik);
+                    if (perDetik) {
+                        if (detik.aktif()) detik.ulang(); else detik.nyala();
+                        return;
+                    }
+                    if (detik) detik.mati();
                     fetch(URL_HISTORY + '?' + new URLSearchParams(p), { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
                         .then(r => r.json())
                         .then(res => {

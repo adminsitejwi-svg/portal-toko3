@@ -72,20 +72,10 @@ class AllNoc extends BaseConfig
         ['route' => 'Screen', 'judul' => 'Screen', 'ikon' => 'ti-device-tv', 'info' => 'Network Wallboard: traffic live banyak interface dalam satu layar.', 'soon' => false],
     ];
 
-    // Menu dropdown "ACS JWI Group" di sidebar
-    public array $acs = [
-        ['route' => 'DashboardAcs', 'judul' => 'Dashboard ACS', 'ikon' => 'ti-dashboard', 'info' => 'Ringkasan Auto Configuration Server (ACS) JWI Group.', 'soon' => true],
-        ['route' => 'AcsDevice', 'judul' => 'Devices', 'ikon' => 'ti-router', 'info' => 'ONT yang terhubung ke ACS JWI Group lewat TR-069.', 'soon' => false],
-        ['route' => 'AcsParameter', 'judul' => 'Parameter Master', 'ikon' => 'ti-list-search', 'info' => 'Daftar parameter TR-069 per model ONT.', 'soon' => false],
-        ['route' => 'AcsProvisioning', 'judul' => 'Provisioning', 'ikon' => 'ti-adjustments-cog', 'info' => 'Profil konfigurasi ONT yang diterapkan otomatis lewat TR-069.', 'soon' => false],
-        ['route' => 'AcsSetting', 'judul' => 'Settings', 'ikon' => 'ti-settings', 'info' => 'Koneksi ONT ke ACS JWI Group lewat TR-069.', 'soon' => false],
-        ['route' => 'AcsLog', 'judul' => 'Log Koneksi', 'ikon' => 'ti-history', 'info' => 'Riwayat koneksi ONT ke ACS JWI Group.', 'soon' => false],
-    ];
-
-    // Menu yang masih "Segera Hadir" (All NOC, Report NOC, Activation, NMS JWI Group & ACS JWI Group), dicari berdasarkan route
+    // Menu yang masih "Segera Hadir" (All NOC, Report NOC, Activation, & NMS JWI Group), dicari berdasarkan route
     public function cari(string $route): ?array
     {
-        foreach (array_merge($this->menu, $this->reportNoc, $this->activation, $this->netmon, $this->acs) as $m) {
+        foreach (array_merge($this->menu, $this->reportNoc, $this->activation, $this->netmon) as $m) {
             if (strcasecmp($m['route'], $route) === 0) {
                 return $m;
             }

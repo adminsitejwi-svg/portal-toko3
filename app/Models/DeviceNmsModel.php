@@ -18,6 +18,7 @@ class DeviceNmsModel extends \CodeIgniter\Model
 
     /** Pilihan periode history: kode => [label, detik]. */
     public const PERIODE = [
+        '10m' => ['10 Menit', 600], // per detik, lihat App\Libraries\NmsDetik
         '1h'  => ['1 Jam', 3600],
         '6h'  => ['6 Jam', 21600],
         '12h' => ['12 Jam', 43200],
@@ -188,6 +189,71 @@ class DeviceNmsModel extends \CodeIgniter\Model
         }
 
         return $hasil;
+    }
+
+    /**
+     * OID CPU & RAM satu perangkat untuk dibaca dengan satu SNMP GET (grafik per detik, App\Libraries\NmsDetik).
+     * Urutannya sama dengan cpuRam(): HOST-RESOURCES-MIB dulu, lalu MIB Cisco / Juniper sesuai vendor.
+     * ram = size (ramUsed / ramSize), free (ramUsed / (ramUsed + ramFree)), persen (ram* langsung persen), null = tidak ada.
+     *
+     * @return array{oid: array<string, string>, cpu_maks: bool, ram: string|null}
+     */
+    public static function oidCpuRam(SnmpKlien $k, string $vendor = ''): array
+    {
+        $spek   = ['oid' => [], 'cpu_maks' => false, 'ram' => null];
+        $tambah = static function (string $awal, string $kolom, array $baris, int $maks) use (&$spek): bool {
+            foreach (array_slice(array_keys($baris), 0, $maks) as $n => $idx) {
+                $spek['oid'][$awal . $n] = $kolom . '.' . $idx;
+            }
+
+            return $baris !== [];
+        };
+
+        $cpu    = $k->walkTabel(self::OID_HR_CPU, 10, 256);
+        $adaCpu = $cpu['ok'] && $tambah('cpu', self::OID_HR_CPU['load'], array_filter($cpu['data']['load'], 'is_numeric'), 16);
+
+        $st = $k->walkTabel(self::OID_HR_STORAGE, 10, 256);
+        foreach ($st['ok'] ? $st['data']['type'] : [] as $idx => $tipe) {
+            if (trim((string) $tipe, '.') === self::HR_RAM && (float) ($st['data']['size'][$idx] ?? 0) > 0) {
+                $spek['oid']['ramUsed'] = self::OID_HR_STORAGE['used'] . '.' . $idx;
+                $spek['oid']['ramSize'] = self::OID_HR_STORAGE['size'] . '.' . $idx;
+                $spek['ram']            = 'size';
+                break;
+            }
+        }
+
+        $v = strtolower($vendor);
+        if (str_contains($v, 'cisco')) {
+            if (! $adaCpu) {
+                $c = $k->walkTabel(self::OID_CISCO_CPU, 10, 64);
+                $c['ok'] && $tambah('cpu', self::OID_CISCO_CPU['load'], $c['data']['load'], 16);
+            }
+            if ($spek['ram'] === null) {
+                $m   = $k->walkTabel(self::OID_CISCO_MEM, 10, 64);
+                $idx = $m['ok'] ? array_key_first($m['data']['used']) : null; // pool pertama = Processor
+                if ($idx !== null && isset($m['data']['free'][$idx])) {
+                    $spek['oid']['ramUsed'] = self::OID_CISCO_MEM['used'] . '.' . $idx;
+                    $spek['oid']['ramFree'] = self::OID_CISCO_MEM['free'] . '.' . $idx;
+                    $spek['ram']            = 'free';
+                }
+            }
+        }
+        if (str_contains($v, 'juniper') && (! $adaCpu || $spek['ram'] === null)) {
+            $j = $k->walkTabel(self::OID_JUNIPER, 10, 128);
+            if ($j['ok']) {
+                // komponen dengan nilai terbesar saja (yang dipakai cpuRam), agar GET tetap kecil
+                arsort($j['data']['cpu']);
+                arsort($j['data']['mem']);
+                if (! $adaCpu) {
+                    $spek['cpu_maks'] = $tambah('cpu', self::OID_JUNIPER['cpu'], $j['data']['cpu'], 4);
+                }
+                if ($spek['ram'] === null && $tambah('ram', self::OID_JUNIPER['mem'], $j['data']['mem'], 4)) {
+                    $spek['ram'] = 'persen';
+                }
+            }
+        }
+
+        return $spek;
     }
 
     /**
