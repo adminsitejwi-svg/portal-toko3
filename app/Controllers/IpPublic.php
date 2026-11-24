@@ -12,6 +12,8 @@ use App\Models\IpPublicSubnetModel;
 //   Sub Judul : Judul (dropdown) + Induk Sub Judul (opsional, sub judul di dalam sub judul) + Sub Judul
 //   Subnet    : Judul & Sub Judul (dropdown, Perusahaan otomatis dari Judul) + Subnet + Subnet Description
 //   Hostname  : Subnet (dropdown) + IP Address (harus di dalam range subnet) + Hostname + Description
+//   Import    : hostname dari Excel / CSV (export phpIPAM) ke subnet yang dipilih, ada pratinjau sebelum disimpan;
+//               hostname boleh kosong bila description terisi
 // Tidak boleh dobel: judul per perusahaan, sub judul per induk, subnet di semua data, IP per subnet.
 class IpPublic extends BaseController
 {
@@ -574,8 +576,12 @@ class IpPublic extends BaseController
         if ($info['awal'] !== '-' && $pfx <= 30 && in_array($f['ip_address'], [$info['awal'], $info['akhir']], true)) {
             return 'IP ' . $f['ip_address'] . ' adalah alamat ' . ($f['ip_address'] === $info['awal'] ? 'network' : 'broadcast') . ' subnet, pilih IP lain.';
         }
+        // hasil import bisa tanpa hostname (hanya description): boleh tetap kosong saat diedit
         if ($f['hostname'] === '') {
-            return 'Hostname wajib diisi.';
+            $lama = $id ? $this->hostModel->find($id) : null;
+            if (! $lama || $lama['hostname'] !== '' || $f['deskripsi'] === null) {
+                return 'Hostname wajib diisi.';
+            }
         }
         if (mb_strlen($f['hostname']) > 150) {
             return 'Hostname maksimal 150 karakter.';
@@ -636,7 +642,7 @@ class IpPublic extends BaseController
             return $this->kembaliHost($f['subnet_id'], 'error', 'Hostname gagal diperbarui, kemungkinan IP sudah dipakai.');
         }
 
-        return $this->kembaliHost($f['subnet_id'], 'success', 'Hostname "' . $f['hostname'] . '" berhasil diperbarui.');
+        return $this->kembaliHost($f['subnet_id'], 'success', 'Hostname "' . ($f['hostname'] ?: $f['ip_address']) . '" berhasil diperbarui.');
     }
 
     public function deleteHost($id)
@@ -647,6 +653,288 @@ class IpPublic extends BaseController
         }
         $this->hostModel->delete((int) $id);
 
-        return $this->kembaliHost((int) $h['subnet_id'], 'success', 'Hostname "' . $h['hostname'] . '" berhasil dihapus.');
+        return $this->kembaliHost((int) $h['subnet_id'], 'success', 'Hostname "' . ($h['hostname'] ?: $h['ip_address']) . '" berhasil dihapus.');
+    }
+
+    // ================= IMPORT HOSTNAME (Excel / CSV, contoh export phpIPAM) =================
+
+    /**
+     * Import hostname ke subnet yang dipilih. Balasan JSON.
+     * aksi=cek    : hanya membaca file & mengembalikan pratinjau (tidak ada yang disimpan)
+     * aksi=simpan : menyimpan baris yang lolos
+     * mode=lewati (bawaan) / perbarui : perlakuan untuk IP yang sudah terdaftar di subnet itu
+     */
+    public function importHost()
+    {
+        if (! $this->bertingkatSiap()) {
+            return $this->importGagal('Tabel hostname belum ada. Jalankan SQL update di database/d_ip_public.sql dulu.');
+        }
+        $subnetId = (int) $this->request->getPost('subnet_id');
+        $subnet   = $subnetId ? $this->subnetModel->find($subnetId) : null;
+        if (! $subnet) {
+            return $this->importGagal('Pilih subnet tujuan import dulu.');
+        }
+        $file = $this->request->getFile('file_import');
+        if (! $file || ! $file->isValid()) {
+            return $this->importGagal('File belum dipilih atau gagal diupload.');
+        }
+        $ext = strtolower($file->getClientExtension());
+        if (! in_array($ext, ['xls', 'xlsx', 'csv'], true)) {
+            return $this->importGagal('File harus berformat Excel (.xls / .xlsx) atau CSV.');
+        }
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            return $this->importGagal('Ukuran file maksimal 5 MB.');
+        }
+
+        $isi = self::bacaFileHost($file->getTempName(), $ext);
+        if (is_string($isi)) {
+            return $this->importGagal($isi);
+        }
+        $baris = $this->periksaBarisHost($isi['baris'], $subnet, $this->request->getPost('mode') === 'perbarui');
+
+        $jumlah = ['baru' => 0, 'ubah' => 0, 'lewati' => 0, 'tolak' => 0];
+        foreach ($baris as $b) {
+            $jumlah[$b['status']]++;
+        }
+
+        if ($this->request->getPost('aksi') !== 'simpan') {
+            // yang bermasalah ditampilkan paling atas; pratinjau dibatasi supaya file besar tetap ringan
+            $urut = ['tolak' => 0, 'ubah' => 1, 'lewati' => 2, 'baru' => 3];
+            usort($baris, static fn ($a, $b) => [$urut[$a['status']], $a['no']] <=> [$urut[$b['status']], $b['no']]);
+
+            return $this->response->setJSON([
+                'status'      => 'ok',
+                'subnet'      => $subnet['subnet'],
+                'subnet_file' => $isi['subnet'],
+                'beda_subnet' => $isi['subnet'] !== null && self::kunciSubnet($isi['subnet']) !== self::kunciSubnet($subnet['subnet']),
+                'jumlah'      => $jumlah,
+                'total'       => count($baris),
+                'baris'       => array_slice($baris, 0, 500),
+            ]);
+        }
+
+        if ($jumlah['baru'] + $jumlah['ubah'] === 0) {
+            return $this->importGagal('Tidak ada hostname yang bisa disimpan dari file ini.');
+        }
+
+        $db = \Config\Database::connect();
+        $db->transBegin();
+        try {
+            $baru = [];
+            foreach ($baris as $b) {
+                $data = ['hostname' => $b['hostname'], 'deskripsi' => $b['deskripsi'] !== '' ? $b['deskripsi'] : null];
+                if ($b['status'] === 'baru') {
+                    $baru[] = ['subnet_id' => $subnetId, 'ip_address' => $b['ip']] + $data;
+                } elseif ($b['status'] === 'ubah' && $this->hostModel->update($b['id'], $data) === false) {
+                    throw new \RuntimeException('update hostname ditolak');
+                }
+            }
+            if ($baru && $this->hostModel->insertBatch($baru, null, 200) === false) {
+                throw new \RuntimeException('insert hostname ditolak');
+            }
+            if (! $db->transStatus()) {
+                throw new \RuntimeException('transaksi gagal');
+            }
+            $db->transCommit();
+        } catch (\Throwable $e) {
+            $db->transRollback();
+            log_message('error', 'Import hostname gagal: ' . $e->getMessage());
+
+            return $this->importGagal('Hostname gagal disimpan, tidak ada data yang berubah. Coba lagi.');
+        }
+
+        // insertBatch tidak dicatat per baris di Change Log: cukup satu baris ringkasan
+        if ($baru) {
+            helper('activity');
+            log_activity('create', 'd_ip_public_host', null, 'Import ' . count($baru) . ' hostname ke subnet ' . $subnet['subnet']);
+        }
+
+        $bagian = [];
+        foreach (['baru' => 'ditambahkan', 'ubah' => 'diperbarui', 'lewati' => 'dilewati', 'tolak' => 'ditolak'] as $k => $label) {
+            if ($jumlah[$k]) {
+                $bagian[] = $jumlah[$k] . ' ' . $label;
+            }
+        }
+        session()->setFlashdata('success', 'Import hostname ke ' . esc($subnet['subnet']) . ': ' . implode(', ', $bagian) . '.');
+
+        return $this->response->setJSON(['status' => 'ok', 'jumlah' => $jumlah]);
+    }
+
+    private function importGagal(string $pesan)
+    {
+        return $this->response->setStatusCode(422)->setJSON(['status' => 'error', 'message' => $pesan]);
+    }
+
+    /** subnet CIDR dalam bentuk alamat network + prefix, untuk membandingkan 10.61.0.5/16 dengan 10.61.0.0/16 */
+    private static function kunciSubnet(string $cidr): string
+    {
+        $cidr = self::rapikanSubnet($cidr) ?? $cidr;
+        $awal = self::infoSubnet($cidr)['awal'];
+
+        return ($awal !== '-' ? $awal : strstr($cidr, '/', true)) . strrchr($cidr, '/');
+    }
+
+    /**
+     * Baca baris hostname dari file. Baris header dicari dari kolom "ip address" + "hostname",
+     * jadi urutan kolom bebas dan kolom lain (mac, owner, device, dst.) diabaikan.
+     *
+     * @return array{subnet: ?string, baris: list<array>}|string teks = pesan gagal
+     */
+    private static function bacaFileHost(string $path, string $ext)
+    {
+        try {
+            $tipe   = $ext === 'csv' ? 'Csv' : \PhpOffice\PhpSpreadsheet\IOFactory::identify($path, ['Xls', 'Xlsx']);
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($tipe);
+            $reader->setReadDataOnly(true);
+            $book = $reader->load($path);
+        } catch (\Throwable $e) {
+            return 'File tidak bisa dibaca. Pastikan file Excel / CSV tidak rusak.';
+        }
+
+        $norm = static fn ($v) => preg_replace('/[^a-z0-9]/', '', strtolower((string) $v));
+        $nama = [
+            'ip'        => ['ipaddress', 'ip', 'ipaddr', 'alamatip'],
+            'hostname'  => ['hostname', 'namahost', 'host'],
+            'deskripsi' => ['description', 'deskripsi', 'keterangan'],
+        ];
+        $teks = static function ($sheet, ?int $c, int $r): string {
+            if ($c === null) {
+                return '';
+            }
+            $v = $sheet->getCell([$c, $r])->getValue();
+            if ($v instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+                $v = $v->getPlainText();
+            }
+            // angka panjang (mis. ID pelanggan) jangan sampai jadi 2.13E+15
+            if (is_float($v) && floor($v) === $v && abs($v) < 1e20) {
+                $v = sprintf('%.0f', $v);
+            }
+            $v = mb_scrub((string) $v, 'UTF-8');
+
+            return trim(preg_replace('/\s+/u', ' ', $v));
+        };
+
+        $baris      = [];
+        $subnetFile = null;
+        $ketemu     = false;
+        foreach ($book->getAllSheets() as $sheet) {
+            $maxR   = $sheet->getHighestDataRow();
+            $maxC   = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($sheet->getHighestDataColumn());
+            $kolom  = [];
+            $header = 0;
+            for ($r = 1; $r <= min(20, $maxR) && ! $header; $r++) {
+                $kolom = [];
+                for ($c = 1; $c <= $maxC; $c++) {
+                    $h = $norm($teks($sheet, $c, $r));
+                    foreach ($nama as $field => $daftar) {
+                        if (! isset($kolom[$field]) && in_array($h, $daftar, true)) {
+                            $kolom[$field] = $c;
+                        }
+                    }
+                }
+                if (isset($kolom['ip'], $kolom['hostname'])) {
+                    $header = $r;
+                }
+            }
+            if (! $header) {
+                continue;
+            }
+            $ketemu = true;
+
+            // phpIPAM menulis alamat subnet di atas header: dipakai untuk peringatan salah subnet
+            for ($r = 1; $r < $header && $subnetFile === null; $r++) {
+                $subnetFile = self::rapikanSubnet($teks($sheet, 1, $r));
+            }
+            for ($r = $header + 1; $r <= $maxR; $r++) {
+                $b = [
+                    'no'        => $r,
+                    'ip'        => strtolower(str_replace(' ', '', $teks($sheet, $kolom['ip'], $r))),
+                    'hostname'  => $teks($sheet, $kolom['hostname'], $r),
+                    'deskripsi' => $teks($sheet, $kolom['deskripsi'] ?? null, $r),
+                ];
+                if ($b['ip'] !== '' || $b['hostname'] !== '' || $b['deskripsi'] !== '') {
+                    $baris[] = $b;
+                }
+            }
+        }
+        $book->disconnectWorksheets();
+
+        if (! $ketemu) {
+            return 'Kolom "ip address" dan "hostname" tidak ditemukan. Pastikan baris judul kolom ikut di file.';
+        }
+        if (! $baris) {
+            return 'File ini tidak berisi data IP address (hanya judul kolom).';
+        }
+
+        return ['subnet' => $subnetFile, 'baris' => $baris];
+    }
+
+    /**
+     * Beri status tiap baris: baru | ubah | lewati | tolak (+ alasan). Aturannya sama dengan form Tambah Hostname.
+     */
+    private function periksaBarisHost(array $baris, array $subnet, bool $perbarui): array
+    {
+        $info = self::infoSubnet($subnet['subnet']);
+        $pfx  = (int) substr(strrchr($subnet['subnet'], '/'), 1);
+        $ada  = array_column($this->hostModel->where('subnet_id', $subnet['id'])->findAll(), null, 'ip_address');
+
+        $dilihat = [];
+        foreach ($baris as &$b) {
+            $b['id']     = null;
+            $b['status'] = 'tolak';
+            if (! filter_var($b['ip'], FILTER_VALIDATE_IP)) {
+                $b['alasan'] = $b['ip'] === '' ? 'IP address kosong' : 'IP address tidak valid';
+                continue;
+            }
+            $b['ip'] = inet_ntop(inet_pton($b['ip']));
+            if (! self::ipDalamSubnet($b['ip'], $subnet['subnet'])) {
+                $b['alasan'] = 'Di luar subnet ' . $subnet['subnet'];
+                continue;
+            }
+            if ($info['awal'] !== '-' && $pfx <= 30 && in_array($b['ip'], [$info['awal'], $info['akhir']], true)) {
+                $b['alasan'] = 'Alamat ' . ($b['ip'] === $info['awal'] ? 'network' : 'broadcast');
+                continue;
+            }
+            // export phpIPAM sering tanpa hostname: cukup salah satu dari hostname / description terisi
+            if ($b['hostname'] === '' && $b['deskripsi'] === '') {
+                $b['alasan'] = 'Hostname & description kosong';
+                continue;
+            }
+            if (mb_strlen($b['hostname']) > 150) {
+                $b['alasan'] = 'Hostname lebih dari 150 karakter';
+                continue;
+            }
+            if (isset($dilihat[$b['ip']])) {
+                $b['alasan'] = 'IP dobel di file (baris ' . $dilihat[$b['ip']] . ')';
+                continue;
+            }
+            $dilihat[$b['ip']] = $b['no'];
+
+            $lama = $ada[$b['ip']] ?? null;
+            if (! $lama) {
+                $b['status'] = 'baru';
+                $b['alasan'] = '';
+                continue;
+            }
+            $b['id'] = (int) $lama['id'];
+            if (! $perbarui) {
+                $b['status'] = 'lewati';
+                $b['alasan'] = 'Sudah ada: ' . ($lama['hostname'] ?: $lama['deskripsi']);
+                continue;
+            }
+            // hostname / description kosong di file tidak menghapus isi yang sudah ada
+            if ($b['hostname'] === '') {
+                $b['hostname'] = (string) $lama['hostname'];
+            }
+            if ($b['deskripsi'] === '') {
+                $b['deskripsi'] = (string) $lama['deskripsi'];
+            }
+            $sama        = $b['hostname'] === $lama['hostname'] && $b['deskripsi'] === (string) $lama['deskripsi'];
+            $b['status'] = $sama ? 'lewati' : 'ubah';
+            $b['alasan'] = $sama ? 'Sudah sama' : 'Menggantikan: ' . implode(' / ', array_filter([$lama['hostname'], (string) $lama['deskripsi']], 'strlen'));
+        }
+        unset($b);
+
+        return $baris;
     }
 }

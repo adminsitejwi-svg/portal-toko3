@@ -502,6 +502,76 @@
             white-space: nowrap;
         }
 
+        /* ===== pratinjau Import Hostname ===== */
+        .ip-imp-ringkas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .ip-imp-st {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            color: var(--rf-muted);
+            background: var(--rf-soft);
+        }
+
+        .ip-imp-st.is-baru {
+            color: #15803d;
+            background: rgba(22, 163, 74, .12);
+        }
+
+        .ip-imp-st.is-ubah {
+            color: #2f6bff;
+            background: rgba(47, 107, 255, .12);
+        }
+
+        .ip-imp-st.is-tolak {
+            color: #dc2626;
+            background: rgba(220, 38, 38, .12);
+        }
+
+        .ip-imp-pesan {
+            margin-bottom: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .ip-imp-pesan.is-gagal {
+            color: #dc2626;
+            background: rgba(220, 38, 38, .1);
+        }
+
+        .ip-imp-pesan.is-awas {
+            color: #b45309;
+            background: rgba(245, 158, 11, .14);
+        }
+
+        .ip-imp-tabel {
+            max-height: 260px;
+            overflow: auto;
+            border: 1px solid var(--rf-border);
+            border-radius: 8px;
+        }
+
+        .ip-imp-tabel thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        .ip-imp-tabel small {
+            display: block;
+            margin-top: 2px;
+            font-size: 11px;
+            color: var(--rf-muted);
+        }
+
         #hierarkiKonten:not(.hidden)+#subnetTableWrap:not(.hidden) {
             margin-top: 18px;
         }
@@ -885,7 +955,8 @@
                     </div>
                     <div class="ip-tree" id="ipTree">
                         <?php foreach ($pohon as $p => $daftarJudul) : ?>
-                            <?php $jmlP = count($daftarJudul); // perusahaan: jumlah judul; judul: jumlah subnet ?>
+                            <?php $jmlP = count($daftarJudul); // perusahaan: jumlah judul; judul: jumlah subnet 
+                            ?>
                             <div class="ip-grup is-buka">
                                 <a class="ip-item ip-pt" data-pilih="perusahaan" data-nama="<?= esc($p, 'attr') ?>">
                                     <i class="ti ti-chevron-right ip-caret"></i><i class="ti ti-building-skyscraper"></i><span><?= esc($p) ?></span><em title="Jumlah judul"><?= $jmlP ?></em>
@@ -978,6 +1049,9 @@
                                     <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                                     <input type="text" id="cariHost" class="pl-9 pr-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-[#1d2630] text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-500 w-56" placeholder="Cari IP / hostname..." />
                                 </div>
+                                <?php if ($bertingkatSiap) : ?>
+                                    <button type="button" onclick="openImportHost()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium flex items-center gap-2"><i class="ti ti-file-import"></i> Import</button>
+                                <?php endif; ?>
                                 <!-- Wadah Tombol Single Dropdown Export Hostname -->
                                 <div id="exportAreaHost" class="relative inline-block text-left"></div>
                             </div>
@@ -999,13 +1073,13 @@
                                         <?php foreach ($host as $h) : ?>
                                             <tr data-subnet="<?= (int) $h['subnet_id'] ?>">
                                                 <td data-order="<?= esc(bin2hex(@inet_pton($h['ip_address']) ?: $h['ip_address']), 'attr') ?>"><a class="ipam-link cursor-pointer" onclick="lihatHost(<?= (int) $h['id'] ?>)"><?= esc($h['ip_address']) ?></a></td>
-                                                <td><a class="ipam-link cursor-pointer" onclick="lihatHost(<?= (int) $h['id'] ?>)"><?= esc($h['hostname']) ?></a></td>
+                                                <td><a class="ipam-link cursor-pointer" onclick="lihatHost(<?= (int) $h['id'] ?>)"><?= esc($h['hostname'] ?: '-') ?></a></td>
                                                 <td class="ip-host-desk"><?= esc($h['deskripsi'] ?: '-') ?></td>
                                                 <td class="ipam-aksi">
                                                     <span class="ipam-btn-grup">
                                                         <button type="button" title="Detail" onclick="lihatHost(<?= (int) $h['id'] ?>)"><i class="ti ti-eye"></i></button>
                                                         <button type="button" title="Edit" onclick="openHost(hostById(<?= (int) $h['id'] ?>))"><i class="ti ti-pencil"></i></button>
-                                                        <button type="button" title="Hapus" onclick="hapus('host', <?= (int) $h['id'] ?>, this.dataset.nama)" data-nama="<?= esc($h['hostname'] . ' (' . $h['ip_address'] . ')', 'attr') ?>"><i class="ti ti-x"></i></button>
+                                                        <button type="button" title="Hapus" onclick="hapus('host', <?= (int) $h['id'] ?>, this.dataset.nama)" data-nama="<?= esc(trim($h['hostname'] . ' (' . $h['ip_address'] . ')'), 'attr') ?>"><i class="ti ti-x"></i></button>
                                                     </span>
                                                 </td>
                                             </tr>
@@ -1314,6 +1388,46 @@
         </div>
     </div>
 
+    <?php if ($bertingkatSiap) : ?>
+        <!-- ====== POP UP IMPORT HOSTNAME ====== -->
+        <div id="modal_import_host" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-3xl p-6 rfo-form max-h-[92vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-bold flex items-center gap-2"><i class="ti ti-file-import text-emerald-500"></i> Import Hostname</h3>
+                    <button type="button" onclick="tutup('modal_import_host')" aria-label="Tutup"><i class="ti ti-x text-2xl"></i></button>
+                </div>
+                <form id="formImportHost">
+                    <?= csrf_field() ?>
+                    <div class="rf-group">
+                        <label class="rf-label">Subnet Tujuan <span class="req">*</span></label>
+                        <select class="rf-input ip-subnet" name="subnet_id" required></select>
+                    </div>
+                    <div class="rf-group">
+                        <label class="rf-label">File Excel / CSV <span class="req">*</span></label>
+                        <input type="file" class="rf-input" name="file_import" accept=".xls,.xlsx,.csv" required>
+                        <div class="text-xs text-gray-500 mt-1">Export phpIPAM atau file dengan kolom <b>ip address</b>, <b>hostname</b> dan <b>description</b> (hostname boleh kosong bila description terisi). Kolom lain diabaikan. Maksimal 5 MB.</div>
+                    </div>
+                    <div class="rf-group">
+                        <label class="rf-label">Jika IP sudah terdaftar di subnet ini</label>
+                        <label class="flex items-start gap-2 text-[13px] mb-1.5 cursor-pointer">
+                            <input type="radio" name="mode" value="lewati" class="mt-0.5" checked>
+                            <span><b>Lewati</b> &mdash; data lama tidak diubah</span>
+                        </label>
+                        <label class="flex items-start gap-2 text-[13px] cursor-pointer">
+                            <input type="radio" name="mode" value="perbarui" class="mt-0.5">
+                            <span><b>Perbarui</b> &mdash; hostname &amp; description diganti isi file</span>
+                        </label>
+                    </div>
+                    <div id="hasilCekImport" class="hidden mb-4"></div>
+                    <div class="d-flex">
+                        <button type="submit" id="btnImportHost"><i class="ti ti-search"></i> Cek File</button>
+                        <button type="button" class="btn-back" onclick="tutup('modal_import_host')">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- SCRIPT JAVASCRIPT LENGKAP -->
     <script>
         const DATA_JUDUL = <?= json_encode(array_map(fn($j) => ['id' => (int) $j['id'], 'perusahaan' => $j['perusahaan'], 'judul' => $j['judul']], $judul), $jsonAman) ?>;
@@ -1349,7 +1463,10 @@
         function daftarBertingkat(judulId) {
             const out = [];
             const jalan = (parentId, dalam) => anakSubjudul(judulId, parentId).forEach(s => {
-                out.push({ s, dalam });
+                out.push({
+                    s,
+                    dalam
+                });
                 jalan(s.id, dalam + 1);
             });
             jalan(null, 0);
@@ -1448,7 +1565,10 @@
 
         // tambah sub judul langsung di dalam sub judul / judul tertentu
         function tambahSubDi(judulId, parentId) {
-            openSubjudul({ judul_id: judulId, parent_id: parentId || null });
+            openSubjudul({
+                judul_id: judulId,
+                parent_id: parentId || null
+            });
         }
 
         let SUBJUDUL_DILIHAT = null;
@@ -1546,14 +1666,16 @@
             info.textContent = '';
             info.className = 'text-xs mt-1';
             if (!n || !ip || n.awal === '-') return true;
-            const v = ipKeAngka(ip), a = ipKeAngka(n.awal), b = ipKeAngka(n.akhir);
+            const v = ipKeAngka(ip),
+                a = ipKeAngka(n.awal),
+                b = ipKeAngka(n.akhir);
             let pesan = '';
             if (v === null) pesan = 'Format IPv4 tidak valid.';
             else if (v < a || v > b) pesan = 'IP di luar subnet ' + n.subnet + '.';
             else if ((b - a) >= 3 && (v === a || v === b)) pesan = 'Alamat ' + (v === a ? 'network' : 'broadcast') + ' tidak bisa dipakai.';
             else {
                 const dobel = DATA_HOST.find(h => String(h.subnet_id) === String(n.id) && h.ip_address === ip && String(h.id) !== String(form.elements.id.value));
-                if (dobel) pesan = 'IP sudah dipakai ' + dobel.hostname + '.';
+                if (dobel) pesan = 'IP sudah dipakai ' + (dobel.hostname || dobel.deskripsi) + '.';
             }
             info.textContent = pesan || '✓ IP tersedia di subnet ini';
             info.classList.add(pesan ? 'text-red-600' : 'text-emerald-600');
@@ -1567,6 +1689,9 @@
             isiPilihanSubnet(f.elements.subnet_id, data.subnet_id || (PILIH.jenis === 'subnet' ? PILIH.id : ''));
             f.elements.ip_address.value = data.ip_address || '';
             f.elements.hostname.value = data.hostname || '';
+            // hasil import bisa tanpa hostname: saat diedit boleh tetap kosong
+            const asal = data.id ? hostById(data.id) : null;
+            f.elements.hostname.required = !(asal && !asal.hostname);
             f.elements.deskripsi.value = data.deskripsi || '';
             cekIpHost(f);
             buka('modal_host');
@@ -1604,6 +1729,114 @@
                     e.preventDefault();
                     f.elements.ip_address.focus();
                 }
+            });
+        })();
+
+        // ===== IMPORT HOSTNAME: cek file dulu (pratinjau), baru disimpan =====
+        let IMPORT_SIAP = false; // true: pratinjau cocok dengan isian form, tombol menjadi Import
+        let IMPORT_KE = 0; // nomor permintaan; balasan untuk isian lama diabaikan
+        let IMPORT_JALAN = false; // sedang menyimpan
+
+        function resetCekImport() {
+            IMPORT_SIAP = false;
+            IMPORT_KE++;
+            const kotak = document.getElementById('hasilCekImport');
+            kotak.classList.add('hidden');
+            kotak.innerHTML = '';
+            const btn = document.getElementById('btnImportHost');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ti ti-search"></i> Cek File';
+        }
+
+        function openImportHost() {
+            if (!IMPORT_JALAN) {
+                const f = document.getElementById('formImportHost');
+                f.reset();
+                isiPilihanSubnet(f.elements.subnet_id, PILIH.jenis === 'subnet' ? PILIH.id : '');
+                resetCekImport();
+            }
+            buka('modal_import_host');
+        }
+
+        function pesanImport(pesan) {
+            const kotak = document.getElementById('hasilCekImport');
+            kotak.innerHTML = '<div class="ip-imp-pesan is-gagal"><i class="ti ti-alert-circle"></i> ' + escapeHtml(pesan) + '</div>';
+            kotak.classList.remove('hidden');
+        }
+
+        function tampilCekImport(d) {
+            const label = {
+                baru: 'Baru',
+                ubah: 'Diperbarui',
+                lewati: 'Dilewati',
+                tolak: 'Ditolak'
+            };
+            let html = '<div class="ip-imp-ringkas">' + Object.keys(label).map(k => '<span class="ip-imp-st is-' + k + '">' + label[k] + ': ' + d.jumlah[k] + '</span>').join('') + '</div>';
+            if (d.beda_subnet) {
+                html += '<div class="ip-imp-pesan is-awas"><i class="ti ti-alert-triangle"></i> File ini berasal dari subnet <b>' + escapeHtml(d.subnet_file) + '</b>, sedangkan tujuan import <b>' + escapeHtml(d.subnet) + '</b>. Pastikan subnet sudah benar.</div>';
+            }
+            html += '<div class="ip-imp-tabel"><table class="ipam-table" style="width:100%"><thead><tr><th>Baris</th><th>IP Address</th><th>Hostname</th><th>Description</th><th>Status</th></tr></thead><tbody>' +
+                d.baris.map(b => '<tr><td>' + b.no + '</td><td>' + escapeHtml(b.ip || '-') + '</td><td>' + escapeHtml(b.hostname || '-') + '</td><td>' + escapeHtml(b.deskripsi || '-') + '</td><td><span class="ip-imp-st is-' + b.status + '">' + label[b.status] + '</span>' +
+                    (b.alasan ? '<small>' + escapeHtml(b.alasan) + '</small>' : '') + '</td></tr>').join('') + '</tbody></table></div>';
+            if (d.total > d.baris.length) html += '<div class="text-xs text-gray-500 mt-1">Menampilkan ' + d.baris.length + ' dari ' + d.total + ' baris.</div>';
+            const kotak = document.getElementById('hasilCekImport');
+            kotak.innerHTML = html;
+            kotak.classList.remove('hidden');
+        }
+
+        (function() {
+            const f = document.getElementById('formImportHost');
+            if (!f) return;
+            // subnet / file / mode diganti: pratinjau lama tidak berlaku lagi
+            f.addEventListener('change', resetCekImport);
+            f.addEventListener('submit', async e => {
+                e.preventDefault();
+                const btn = document.getElementById('btnImportHost');
+                if (btn.disabled) return;
+                const simpan = IMPORT_SIAP;
+                const ke = ++IMPORT_KE;
+                const body = new FormData(f);
+                body.append('aksi', simpan ? 'simpan' : 'cek');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="ti ti-loader-2"></i> ' + (simpan ? 'Mengimport...' : 'Membaca file...');
+                // selama menyimpan, isian tidak boleh diganti
+                IMPORT_JALAN = simpan;
+                if (simpan)[...f.elements].forEach(x => x.disabled = true);
+
+                let d = {};
+                try {
+                    const res = await fetch('<?= site_url('IpPublic/host/import') ?>', {
+                        method: 'POST',
+                        body,
+                        headers: {
+                            Accept: 'application/json'
+                        }
+                    });
+                    d = await res.json();
+                } catch (err) {
+                    d = {
+                        status: 'error',
+                        message: 'Import gagal, koneksi bermasalah atau sesi login habis. Coba lagi.'
+                    };
+                }
+                if (simpan && d.status === 'ok') {
+                    location.href = '<?= site_url('IpPublic') ?>?subnet=' + encodeURIComponent(body.get('subnet_id'));
+                    return;
+                }
+                if (simpan)[...f.elements].forEach(x => x.disabled = false);
+                IMPORT_JALAN = false;
+                if (ke !== IMPORT_KE) return;
+
+                if (d.status !== 'ok') {
+                    resetCekImport();
+                    pesanImport(d.message || 'Import gagal, coba lagi.');
+                    return;
+                }
+                tampilCekImport(d);
+                const n = d.jumlah.baru + d.jumlah.ubah;
+                IMPORT_SIAP = n > 0;
+                btn.disabled = !n;
+                btn.innerHTML = n ? '<i class="ti ti-file-import"></i> Import ' + n + ' Hostname' : '<i class="ti ti-ban"></i> Tidak ada yang bisa diimport';
             });
         })();
 
@@ -1712,11 +1945,21 @@
 
             let items;
             if (isJudul) {
-                items = DATA_JUDUL.filter(j => j.perusahaan === PILIH.nama).map(j => ({ id: j.id, nama: j.judul, jenis: 'judul', anak: 0 }));
+                items = DATA_JUDUL.filter(j => j.perusahaan === PILIH.nama).map(j => ({
+                    id: j.id,
+                    nama: j.judul,
+                    jenis: 'judul',
+                    anak: 0
+                }));
             } else {
                 const induk = isSub ? subjudulById(PILIH.id) : null;
                 const judulId = isSub ? (induk ? induk.judul_id : 0) : PILIH.id;
-                items = anakSubjudul(judulId, isSub ? PILIH.id : null).map(s => ({ id: s.id, nama: s.sub_judul, jenis: 'sub', anak: anakSubjudul(s.judul_id, s.id).length }));
+                items = anakSubjudul(judulId, isSub ? PILIH.id : null).map(s => ({
+                    id: s.id,
+                    nama: s.sub_judul,
+                    jenis: 'sub',
+                    anak: anakSubjudul(s.judul_id, s.id).length
+                }));
             }
 
             document.getElementById('ipPilihanNama').textContent = '— ' + namaPilihan();
@@ -1939,7 +2182,9 @@
                 const tabelHost = $('#tabelHost').DataTable({
                     paging: false, // tanpa pagination, semua hostname tampil
                     lengthChange: false,
-                    order: [[0, 'asc']],
+                    order: [
+                        [0, 'asc']
+                    ],
                     columnDefs: [{
                         targets: [3],
                         orderable: false,
@@ -1996,7 +2241,8 @@
                     </button>
                     <div id="exportMenuHost" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-[#263240] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden py-1"></div>
                 `);
-                $('#exportMenuHost').append(tombolHost.container().find('.dt-button'));                $('#cariHost').on('keyup input', function() {
+                $('#exportMenuHost').append(tombolHost.container().find('.dt-button'));
+                $('#cariHost').on('keyup input', function() {
                     tabelHost.search(this.value).draw();
                 });
             }
@@ -2006,14 +2252,19 @@
             if (idSubnet && subnetById(idSubnet)) {
                 pilihDariCard('subnet', idSubnet);
                 const item = document.querySelector('#ipTree [data-pilih="subnet"][data-id="' + idSubnet + '"]');
-                if (item) item.scrollIntoView({ block: 'center' });
+                if (item) item.scrollIntoView({
+                    block: 'center'
+                });
                 <?php if (session()->getFlashdata('popup') === 'host') : ?>
-                // simpan gagal: buka lagi form hostname dengan isian sebelumnya
-                const lama = <?= json_encode([
-                    'id' => old('id', null, false), 'subnet_id' => old('subnet_id', null, false), 'ip_address' => old('ip_address', null, false),
-                    'hostname' => old('hostname', null, false), 'deskripsi' => old('deskripsi', null, false),
-                ], $jsonAman) ?>;
-                openHost(lama);
+                    // simpan gagal: buka lagi form hostname dengan isian sebelumnya
+                    const lama = <?= json_encode([
+                                        'id' => old('id', null, false),
+                                        'subnet_id' => old('subnet_id', null, false),
+                                        'ip_address' => old('ip_address', null, false),
+                                        'hostname' => old('hostname', null, false),
+                                        'deskripsi' => old('deskripsi', null, false),
+                                    ], $jsonAman) ?>;
+                    openHost(lama);
                 <?php endif; ?>
             }
         });

@@ -441,6 +441,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     // Data Hostname di dalam subnet
     $routes->post('IpPublic/host/save', 'IpPublic::saveHost');
     $routes->post('IpPublic/host/update', 'IpPublic::updateHost');
+    $routes->post('IpPublic/host/import', 'IpPublic::importHost'); // import Excel / CSV ke subnet terpilih
     $routes->get('IpPublic/host/delete/(:num)', 'IpPublic::deleteHost/$1');
 
     // Data Router (menu Data Teknis NOC di sidebar): form berupa pop up, Nama Router / SN / IP tidak boleh dobel
@@ -699,8 +700,12 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('DataTopologi/download/(:num)', 'DataTopologi::download/$1');
     $routes->get('DataTopologi/delete/(:num)', 'DataTopologi::delete/$1');
 
-    $routes->get('RekapDataMidi', 'RekapDataMidi::index');
-    $routes->get('RekapDataMidi/FormTambahRKD', 'RekapDataMidi::create');
+    // Rekap Data Toko: 3 tab (FO + Modem 2, Modem 1 + Modem 2, VSAT + Modem)
+    $routes->get('RekapDataMidi', 'RekapDataMidi::index/fo');
+    $routes->get('RekapDataMidi/modem', 'RekapDataMidi::index/modem');
+    $routes->get('RekapDataMidi/vsat', 'RekapDataMidi::index/vsat');
+    $routes->get('RekapDataMidi/FormTambahRKD', 'RekapDataMidi::create/fo');
+    $routes->get('RekapDataMidi/FormTambahRKD/(fo|modem|vsat)', 'RekapDataMidi::create/$1');
     $routes->post('RekapDataMidi/save', 'RekapDataMidi::save');
     $routes->get('RekapDataMidi/FormEditRKD/(:num)', 'RekapDataMidi::edit/$1');
     $routes->post('RekapDataMidi/update', 'RekapDataMidi::update');

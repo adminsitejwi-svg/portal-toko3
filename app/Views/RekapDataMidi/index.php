@@ -197,7 +197,61 @@
             font-size: 18px;
         }
 
-        /* ===== TAB HALAMAN ===== */
+        /* ===== NAVBAR REKAP DATA TOKO (gaya sama dengan Daily Report SAT Group) ===== */
+        /* ===== KARTU HEADER: tab bergaris bawah di dalam kartu ===== */
+        .rfo-page .sat-head {
+            padding-bottom: 0;
+        }
+
+        .rfo-page .sat-head .sat-tabs {
+            margin: 18px -22px 0;
+            padding: 0 22px !important;
+            gap: 6px;
+            background: transparent !important;
+            border: 0 !important;
+            border-top: 1px solid var(--rf-border) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .rfo-page .sat-head .sat-tab {
+            padding: 12px 6px;
+            margin-right: 14px;
+            border: 0;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--rf-muted);
+            background: transparent !important;
+            box-shadow: none;
+        }
+
+        .rfo-page .sat-head .sat-tab:hover {
+            color: #2f6bff;
+        }
+
+        .rfo-page .sat-head .sat-tab.active {
+            color: #2f6bff;
+            box-shadow: inset 0 -2px 0 #2f6bff;
+        }
+
+        /* ===== TOMBOL AKSI TABEL: ikon saja (nama tombol tampil saat kursor diarahkan) ===== */
+        #reportTable .btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            justify-content: center;
+            margin: 2px 2px 2px 0;
+        }
+
+        #reportTable .btn span {
+            display: none;
+        }
+
+        #reportTable .btn i {
+            font-size: 16px;
+        }
+
         .sat-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -231,8 +285,10 @@
         }
 
         .sat-tab.active {
-            background: #eef0f3;
-            color: #94a3b8;
+            background: var(--ra-primary-soft, #eef0fd);
+            color: var(--ra-primary, #6777ef);
+            font-weight: 600;
+            box-shadow: inset 0 -2px 0 var(--ra-primary, #6777ef);
             cursor: default;
         }
 
@@ -245,14 +301,16 @@
             color: #bfc8d6;
         }
 
-        .dark .sat-tab:hover,
-        .dark .sat-tab.active {
+        .dark .sat-tab:hover {
             background: rgba(255, 255, 255, .06);
         }
 
         .dark .sat-tab.active {
-            color: #8996a4;
+            background: rgba(103, 119, 239, .22);
+            color: #c7cdfb;
+            box-shadow: inset 0 -2px 0 #8f9cf5;
         }
+
         /* ===== form import (sama seperti halaman Jadwal Shift) ===== */
         .f-label {
             display: block;
@@ -276,6 +334,21 @@
         .f-input:focus {
             border-color: #04a9f5;
             box-shadow: 0 0 0 3px rgba(4, 169, 245, .15);
+        }
+
+        .dark .f-label {
+            color: #cbd5e1;
+        }
+
+        .dark .f-input {
+            background: rgba(255, 255, 255, .06);
+            border-color: rgba(255, 255, 255, .14);
+            color: #e2e8f0;
+        }
+
+        .dark .f-input option {
+            background: #1e293b;
+            color: #e2e8f0;
         }
 
         .btn2 {
@@ -590,23 +663,51 @@
             </ul>
         </header>
 
+        <?php
+        // $bagian: fo / modem / vsat (lihat RekapDataTokoModel::BAGIAN)
+        $info      = \App\Models\RekapDataTokoModel::BAGIAN[$bagian];
+        $isian     = \App\Models\RekapDataTokoModel::ISIAN;
+        $kolom     = \App\Models\RekapDataTokoModel::kolomIsian($bagian);
+        $namaBulan = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $opsiUnik  = static function (array $rows, string $k): array {
+            $nilai = array_unique(array_filter(array_map('trim', array_column($rows, $k)), 'strlen'));
+            natcasesort($nilai);
+            return $nilai;
+        };
+        ?>
         <div class="rfo-page p-6">
-            <!-- JUDUL -->
-            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <div class="flex items-center gap-4">
-                    <span class="rfo-title-ic is-green"><i class="ti ti-report-analytics"></i></span>
-                    <div>
-                        <h1 class="rfo-title">Rekap Data Toko</h1>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Rekap Data Toko All</p>
+            <!-- KARTU HEADER: judul + tab FO + Modem 2 / Modem 1 + Modem 2 / VSAT + Modem -->
+            <div class="rfo-panel sat-head mb-5">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <span class="rfo-title-ic is-green"><i class="ti ti-report-analytics"></i></span>
+                        <div>
+                            <h1 class="rfo-title">Rekap Data Toko</h1>
+                            <p class="rfo-subtitle">Rekap data toko FO, Modem &amp; VSAT SAT Group</p>
+                        </div>
                     </div>
+                    <?php if ($siap) : ?>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button type="button" class="rfo-btn rfo-btn-green" id="btnImport"><i class="ti ti-file-import"></i> Import</button>
+                            <a href="<?= site_url('RekapDataMidi/FormTambahRKD/' . $bagian) ?>" class="rfo-btn rfo-btn-blue">
+                                <i class="ti ti-plus"></i> Tambah
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" class="rfo-btn rfo-btn-green" id="btnImport"><i class="ti ti-file-import"></i> Import</button>
-                    <a href="<?= site_url('RekapDataMidi/FormTambahRKD') ?>" class="rfo-btn rfo-btn-blue">
-                        <i class="ti ti-plus"></i> Tambah
-                    </a>
-                </div>
+
+                <nav class="sat-tabs" aria-label="Rekap Data Toko">
+                    <?php foreach (\App\Models\RekapDataTokoModel::BAGIAN as $kodeBagian => $b) : ?>
+                        <a href="<?= site_url($b['url']) ?>" class="sat-tab <?= $kodeBagian === $bagian ? 'active' : '' ?>" <?= $kodeBagian === $bagian ? 'aria-current="page"' : '' ?>><i class="ti <?= $b['ikon'] ?>"></i> <?= esc($b['nama']) ?></a>
+                    <?php endforeach; ?>
+                </nav>
             </div>
+
+            <?php if (! $siap) : ?>
+                <div class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                    <i class="ti ti-alert-circle"></i> Database belum diperbarui. Jalankan blok <b>UPDATE 2026-11-24</b> di <b>database/rekap_data_toko.sql</b>.
+                </div>
+            <?php endif; ?>
 
             <div class="card">
                 <div class="card-body">
@@ -615,37 +716,48 @@
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div class="flex items-center gap-3 flex-wrap">
                             <div id="lengthArea"></div>
-                            <!-- FILTER TOKO -->
+                            <?php
+                            // Filter Bulan: daftar bulan (YYYY-MM) dari tanggal, terbaru di atas
+                            $opsiBulan = [];
+                            foreach ($rekap_list as $row) {
+                                $tgl = (string) ($row['tanggal'] ?? '');
+                                if ((int) substr($tgl, 5, 2) > 0) {
+                                    $opsiBulan[substr($tgl, 0, 7)] = $namaBulan[(int) substr($tgl, 5, 2)] . ' ' . substr($tgl, 0, 4);
+                                }
+                            }
+                            krsort($opsiBulan);
+                            ?>
+                            <select id="filterBulan" class="filter-select" title="Filter Bulan">
+                                <option value="">Semua Bulan</option>
+                                <?php foreach ($opsiBulan as $ym => $label) : ?>
+                                    <option value="<?= esc($ym, 'attr') ?>"><?= esc($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                             <select id="filterToko" class="filter-select" title="Filter Toko">
                                 <option value="">Semua Toko</option>
-                                <option value="Lawson">Lawson</option>
-                                <option value="Midi">Midi</option>
+                                <?php foreach (\App\Models\RekapDataTokoModel::TOKO as $t) : ?>
+                                    <option value="<?= esc($t, 'attr') ?>"><?= esc($t) ?></option>
+                                <?php endforeach; ?>
                             </select>
-                            <!-- FILTER BRANCH -->
-                            <?php
-                            $opsiBranch = array_unique(array_filter(array_column($rekap_list ?? [], 'branch')));
-                            natcasesort($opsiBranch);
-                            ?>
                             <select id="filterBranch" class="filter-select" title="Filter Branch">
                                 <option value="">Semua Branch</option>
-                                <?php foreach ($opsiBranch as $b) : ?>
+                                <?php foreach ($opsiUnik($rekap_list, 'branch') as $b) : ?>
                                     <option value="<?= esc($b, 'attr') ?>"><?= esc($b) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <!-- FILTER PERUSAHAAN -->
                             <select id="filterPerusahaan" class="filter-select" title="Filter Perusahaan">
                                 <option value="">Semua Perusahaan</option>
-                                <option value="PT Genezis Mitra Technology">PT Genezis Mitra Technology</option>
-                                <option value="PT Rtiga Global Media">PT Rtiga Global Media</option>
+                                <?php foreach (array_unique(array_merge(\App\Models\RekapDataTokoModel::PERUSAHAAN, $opsiUnik($rekap_list, 'perusahaan'))) as $p) : ?>
+                                    <option value="<?= esc($p, 'attr') ?>"><?= esc($p) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
-
                         <div class="flex items-center gap-3 flex-wrap">
                             <div class="rfo-search">
                                 <i class="ti ti-search"></i>
                                 <input type="text" id="customSearch" placeholder="Cari data..." />
                             </div>
-                            <button type="button" id="btnResetFilter" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
+                            <button type="button" class="rfo-ghost-btn rfo-reset"><i class="ti ti-refresh"></i> Reset</button>
                             <div id="exportArea"></div>
                         </div>
                     </div>
@@ -664,88 +776,73 @@
                                     <th>Branch</th>
                                     <th>Kode Toko</th>
                                     <th>Nama Toko</th>
-                                    <th>ID Pelanggan FO</th>
-                                    <th>Tipe Modem GSM 1</th>
-                                    <th>MSISDN Modem 1</th>
-                                    <th>ICCID Modem 1</th>
-                                    <th>Tipe Modem GSM 2</th>
-                                    <th>MSISDN Modem 2</th>
-                                    <th>ICCID Modem 2</th>
-                                    <th>Dokumen / Lampiran</th>
-                                    <!-- kolom tersembunyi: nilai asli dokumen untuk export -->
-                                    <th>Foto SN Fortigate</th>
-                                    <th>SN ONT FO</th>
-                                    <th>Foto IMEI Modem 1</th>
-                                    <th>Foto IMEI Modem 2</th>
-                                    <th>Sharelock / Tikor / Alamat</th>
+                                    <?php foreach ($kolom as $k) : ?>
+                                        <th><?= esc($isian[$k][3]) ?></th>
+                                    <?php endforeach; ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($rekap_list)) : ?>
-                                    <?php $no = 1; ?>
-                                    <?php foreach ($rekap_list as $row) : ?>
-                                        <tr data-id="<?= (int) $row['id'] ?>">
-                                            <td><?= $no++; ?></td>
-                                            <td>
-                                                <a href="<?= site_url('RekapDataMidi/FormEditRKD/' . $row['id']) ?>"
-                                                    class="btn btn-sm btn-primary">
-                                                    <i class="ti ti-edit"></i> <span>Edit</span>
-                                                </a>
-
-                                                <button type="button"
-                                                    onclick="confirmDelete(<?= $row['id'] ?>)"
-                                                    class="btn btn-sm btn-danger">
-                                                    <i class="ti ti-trash"></i> <span>Hapus</span>
-                                                </button>
-
-                                                <button type="button"
-                                                    data-row="<?= esc(json_encode($row), 'attr') ?>"
-                                                    onclick="openViewModal(JSON.parse(this.dataset.row))"
-                                                    class="btn btn-sm btn-info" title="Lihat">
-                                                    <i class="ti ti-eye"></i> <span>View</span>
-                                                </button>
-                                            </td>
-                                            <td><?= esc($row['tanggal'] ?: '-'); ?></td>
-                                            <td class="min-w-[150px]"><?= esc($row['nama_pengisi'] ?: '-'); ?></td>
-                                            <td class="min-w-[210px]"><?= esc($row['perusahaan'] ?: '-'); ?></td>
-                                            <td><?= esc($row['toko'] ?: '-'); ?></td>
-                                            <td><?= esc($row['branch'] ?: '-'); ?></td>
-                                            <td class="col-bold"><?= esc($row['kode_toko'] ?: '-'); ?></td>
-                                            <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_toko'] ?: '-'); ?></td>
-                                            <td><?= esc($row['id_pelanggan_fo'] ?: '-'); ?></td>
-                                            <td class="min-w-[160px]"><?= esc($row['tipe_modem_gsm_1'] ?: '-'); ?></td>
-                                            <td><?= esc($row['msisdn_modem_1'] ?: '-'); ?></td>
-                                            <td><?= esc($row['iccid_modem_1'] ?: '-'); ?></td>
-                                            <td class="min-w-[160px]"><?= esc($row['tipe_modem_gsm_2'] ?: '-'); ?></td>
-                                            <td><?= esc($row['msisdn_modem_2'] ?: '-'); ?></td>
-                                            <td><?= esc($row['iccid_modem_2'] ?: '-'); ?></td>
-                                            <td class="min-w-[180px]">
-                                                <div class="flex flex-col gap-1 text-xs">
-                                                    <?php foreach (['foto_sn_fortigate' => 'SN Fortigate', 'sn_ont_fo' => 'SN ONT FO', 'foto_imei_modem_1' => 'IMEI Modem 1', 'foto_imei_modem_2' => 'IMEI Modem 2'] as $docKey => $docLabel) : ?>
-                                                        <?php
-                                                        $docVal   = trim((string) ($row[$docKey] ?? ''));
-                                                        $docUrl   = preg_match('~^https?://~i', $docVal) === 1;
-                                                        $docLocal = str_starts_with($docVal, 'uploads/');
-                                                        ?>
-                                                        <?php if ($docVal === '') : ?>
-                                                            <span class="text-gray-400"><?= $docLabel ?>: -</span>
-                                                        <?php elseif ($docUrl || $docLocal) : ?>
-                                                            <a href="<?= esc($docUrl ? $docVal : base_url($docVal), 'attr') ?>" target="_blank" rel="noopener" class="text-primary-600 hover:underline inline-flex items-center gap-1">
-                                                                <i class="ti <?= $docUrl ? 'ti-link' : 'ti-file-text' ?>"></i> <?= $docLabel ?>
-                                                            </a>
-                                                        <?php else : ?>
-                                                            <span class="text-gray-500" title="<?= esc($docVal, 'attr') ?>"><?= $docLabel ?>: <?= esc(mb_strimwidth($docVal, 0, 30, '…')) ?></span>
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </td>
-                                            <?php foreach (['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'] as $docKey) : ?>
-                                                <td class="doc-raw"><?= esc($row[$docKey] ?? ''); ?></td>
-                                            <?php endforeach; ?>
-                                            <td class="whitespace-normal min-w-[240px]"><?= esc($row['sharelock_tikor_alamat'] ?: '-'); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php $no = 1; ?>
+                                <?php foreach ($rekap_list as $row) : ?>
+                                    <?php
+                                    // Tanggal. Format: 1 Oktober 2026
+                                    $ts  = ! empty($row['tanggal']) ? strtotime($row['tanggal']) : false;
+                                    $tgl = $ts ? date('j', $ts) . ' ' . $namaBulan[(int) date('n', $ts)] . ' ' . date('Y', $ts) : '-';
+                                    ?>
+                                    <tr data-id="<?= (int) $row['id'] ?>" data-bulan="<?= esc(substr((string) ($row['tanggal'] ?? ''), 0, 7), 'attr') ?>">
+                                        <td><?= $no++; ?></td>
+                                        <td>
+                                            <!-- tombol aksi seperti Daily Report SAT Group: lihat, edit, hapus -->
+                                            <button type="button"
+                                                data-row="<?= esc(json_encode($row), 'attr') ?>"
+                                                onclick="openViewModal(JSON.parse(this.dataset.row))"
+                                                class="btn btn-sm btn-info" title="View">
+                                                <i class="ti ti-eye"></i> <span>View</span>
+                                            </button>
+                                            <a href="<?= site_url('RekapDataMidi/FormEditRKD/' . $row['id']) ?>"
+                                                class="btn btn-sm btn-primary" title="Edit">
+                                                <i class="ti ti-edit"></i> <span>Edit</span>
+                                            </a>
+                                            <button type="button"
+                                                onclick="confirmDelete(<?= (int) $row['id'] ?>)"
+                                                class="btn btn-sm btn-danger" title="Hapus">
+                                                <i class="ti ti-trash"></i> <span>Hapus</span>
+                                            </button>
+                                        </td>
+                                        <td data-order="<?= esc($row['tanggal'] ?? '', 'attr') ?>"><?= esc($tgl) ?></td>
+                                        <td class="min-w-[150px]"><?= esc($row['nama_pengisi'] ?: '-') ?></td>
+                                        <td class="min-w-[210px]"><?= esc($row['perusahaan'] ?: '-') ?></td>
+                                        <td><?= esc($row['toko'] ?: '-') ?></td>
+                                        <td data-search="<?= esc(trim((string) $row['branch']), 'attr') ?>"><?= esc($row['branch'] ?: '-') ?></td>
+                                        <td class="col-bold"><?= esc($row['kode_toko'] ?: '-') ?></td>
+                                        <td class="col-bold whitespace-normal min-w-[200px]"><?= esc($row['nama_toko'] ?: '-') ?></td>
+                                        <?php foreach ($kolom as $k) : ?>
+                                            <?php $v = trim((string) ($row[$k] ?? '')); ?>
+                                            <?php if ($isian[$k][1] === 'dok') : ?>
+                                                <?php
+                                                $docUrl   = preg_match('~^https?://~i', $v) === 1;
+                                                $docLocal = str_starts_with($v, 'uploads/');
+                                                ?>
+                                                <!-- data-raw: nilai asli dokumen untuk export -->
+                                                <td data-raw="<?= esc($v, 'attr') ?>" data-search="<?= esc($docUrl || $docLocal ? '' : $v, 'attr') ?>">
+                                                    <?php if ($v === '') : ?>
+                                                        -
+                                                    <?php elseif ($docUrl || $docLocal) : ?>
+                                                        <a href="<?= esc($docUrl ? $v : base_url($v), 'attr') ?>" target="_blank" rel="noopener" class="text-primary-600 hover:underline inline-flex items-center gap-1">
+                                                            <i class="ti <?= $docUrl ? 'ti-link' : 'ti-file-text' ?>"></i> <?= $docUrl ? 'Buka Link' : 'Lihat File' ?>
+                                                        </a>
+                                                    <?php else : ?>
+                                                        <span title="<?= esc($v, 'attr') ?>"><?= esc(mb_strimwidth($v, 0, 40, '…')) ?></span>
+                                                    <?php endif; ?>
+                                                </td>
+                                            <?php elseif ($isian[$k][1] === 'area') : ?>
+                                                <td class="whitespace-pre-line min-w-[240px]"><?= esc($v === '' ? '-' : $v) ?></td>
+                                            <?php else : ?>
+                                                <td class="<?= $isian[$k][1] === 'modem' ? 'min-w-[160px]' : '' ?>"><?= esc($v === '' ? '-' : $v) ?></td>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -757,118 +854,39 @@
 
     <!-- ====== POP UP VIEW ====== -->
     <div id="viewModal" class="fixed inset-0 bg-black/50 hidden z-[1100] flex items-center justify-center p-4" onclick="if (event.target === this) closeViewModal()">
-        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-5 border-b border-gray-200 dark:border-white/10 pb-3">
-                <h3 class="text-xl font-bold">Detail Rekap Data Toko</h3>
+        <div class="bg-white dark:bg-[#263240] rounded-xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold">View <?= esc($info['nama']) ?></h3>
                 <button type="button" onclick="closeViewModal()"><i class="ti ti-x text-2xl"></i></button>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <div class="text-gray-500">Nama Pengisi</div>
-                    <div class="font-medium" id="v_nama_pengisi"></div>
+                <?php foreach (\App\Models\RekapDataTokoModel::UMUM as $k => $judul) : ?>
+                    <div class="<?= $k === 'nama_toko' ? 'md:col-span-2' : '' ?>">
+                        <div class="text-gray-500"><?= esc($judul) ?></div>
+                        <div class="font-medium" id="v_<?= $k ?>"></div>
+                    </div>
+                <?php endforeach; ?>
+                <?php foreach ($info['grup'] as $judulGrup => $kolomGrup) : ?>
+                    <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 font-semibold text-primary-600"><?= esc($judulGrup) ?></div>
+                    <?php foreach ($kolomGrup as $k) : ?>
+                        <div class="<?= $isian[$k][1] === 'area' ? 'md:col-span-2' : '' ?>">
+                            <div class="text-gray-500"><?= esc($isian[$k][0]) ?></div>
+                            <div class="font-medium break-words <?= $isian[$k][1] === 'area' ? 'whitespace-pre-line' : '' ?>" id="v_<?= $k ?>"></div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+
+                <!-- isian di luar form bagian ini (data lama / import), hanya tampil bila ada isinya -->
+                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 hidden" id="vLain">
+                    <div class="font-semibold text-primary-600 mb-3">Data Lama</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="vLainIsi"></div>
                 </div>
-                <div>
-                    <div class="text-gray-500">Perusahaan</div>
-                    <div class="font-medium" id="v_perusahaan"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Tanggal</div>
-                    <div class="font-medium" id="v_tanggal"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Toko</div>
-                    <div class="font-medium" id="v_toko"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Branch</div>
-                    <div class="font-medium" id="v_branch"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Kode Toko</div>
-                    <div class="font-medium" id="v_kode_toko"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Nama Toko</div>
-                    <div class="font-medium" id="v_nama_toko"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">ID Pelanggan FO</div>
-                    <div class="font-medium" id="v_id_pelanggan_fo"></div>
-                </div>
-                <div>
-                    <div class="text-gray-500">Dibuat Pada</div>
+
+                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3">
+                    <div class="text-gray-500">Dibuat</div>
                     <div class="font-medium" id="v_created"></div>
                 </div>
-
-                <!-- Lampiran Dokumen / Foto -->
-                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 mt-1">
-                    <div class="font-semibold mb-2 text-primary-600">Lampiran Dokumen & Foto</div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div class="text-xs text-gray-500 mb-1">Foto / Dok SN Fortigate</div>
-                            <div id="v_foto_sn_fortigate"></div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div class="text-xs text-gray-500 mb-1">Foto / Dok SN ONT FO</div>
-                            <div id="v_sn_ont_fo"></div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div class="text-xs text-gray-500 mb-1">Foto / Dok IMEI Modem 1</div>
-                            <div id="v_foto_imei_modem_1"></div>
-                        </div>
-                        <div class="p-3 rounded-lg bg-gray-50 dark:bg-white/5">
-                            <div class="text-xs text-gray-500 mb-1">Foto / Dok IMEI Modem 2</div>
-                            <div id="v_foto_imei_modem_2"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modem GSM 1 -->
-                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 mt-1">
-                    <div class="font-semibold mb-2 text-primary-600">Modem GSM 1</div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div>
-                            <div class="text-gray-500">Tipe Modem GSM 1</div>
-                            <div class="font-medium" id="v_tipe_modem_gsm_1"></div>
-                        </div>
-                        <div>
-                            <div class="text-gray-500">Nomor Telepon / MSISDN</div>
-                            <div class="font-medium" id="v_msisdn_modem_1"></div>
-                        </div>
-                        <div>
-                            <div class="text-gray-500">Nomor ICCID (16 Angka)</div>
-                            <div class="font-medium" id="v_iccid_modem_1"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modem GSM 2 -->
-                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 mt-1">
-                    <div class="font-semibold mb-2 text-primary-600">Modem GSM 2</div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div>
-                            <div class="text-gray-500">Tipe Modem GSM 2</div>
-                            <div class="font-medium" id="v_tipe_modem_gsm_2"></div>
-                        </div>
-                        <div>
-                            <div class="text-gray-500">Nomor Telepon / MSISDN</div>
-                            <div class="font-medium" id="v_msisdn_modem_2"></div>
-                        </div>
-                        <div>
-                            <div class="text-gray-500">Nomor ICCID (16 Angka)</div>
-                            <div class="font-medium" id="v_iccid_modem_2"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lokasi -->
-                <div class="md:col-span-2 border-t border-gray-200 dark:border-white/10 pt-3 mt-1">
-                    <div class="text-gray-500">Sharelock / Tikor / Alamat</div>
-                    <div class="font-medium whitespace-pre-line break-words" id="v_sharelock_tikor_alamat"></div>
-                </div>
             </div>
-
             <div class="flex justify-end gap-3 mt-6">
                 <button type="button" onclick="closeViewModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">Tutup</button>
             </div>
@@ -883,6 +901,16 @@
                 <button type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none" onclick="hideImport()">&times;</button>
             </div>
             <div class="px-5 py-4 space-y-4">
+                <!-- tabel tujuan import: awalnya mengikuti tab yang sedang dibuka -->
+                <div>
+                    <label class="f-label">Import ke Tabel</label>
+                    <select class="f-input" id="bagianImport">
+                        <?php foreach (\App\Models\RekapDataTokoModel::BAGIAN as $kodeBagian => $b) : ?>
+                            <option value="<?= esc($kodeBagian, 'attr') ?>" data-url="<?= esc(site_url($b['url']), 'attr') ?>" <?= $kodeBagian === $bagian ? 'selected' : '' ?>><?= esc($b['nama']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Semua baris di file masuk ke tabel <b class="nama-bagian-import"><?= esc($info['nama']) ?></b>.</p>
+                </div>
                 <div>
                     <label class="f-label">File Excel (.xlsx / .xls)</label>
                     <input type="file" class="f-input" id="fileImport" accept=".xlsx,.xls">
@@ -891,16 +919,17 @@
                     <label class="f-label">Perusahaan</label>
                     <select class="f-input" id="perusahaanImport">
                         <option value="">-- Pilih Perusahaan --</option>
-                        <option value="PT Genezis Mitra Technology">PT Genezis Mitra Technology</option>
-                        <option value="PT Rtiga Global Media">PT Rtiga Global Media</option>
+                        <?php foreach (\App\Models\RekapDataTokoModel::PERUSAHAAN as $p) : ?>
+                            <option value="<?= esc($p, 'attr') ?>"><?= esc($p) ?></option>
+                        <?php endforeach; ?>
                     </select>
                     <p class="text-xs text-gray-500 mt-1">Semua data di file akan dicatat sebagai data perusahaan ini.</p>
                 </div>
                 <div>
-                    <label class="f-label">Jika perusahaan tersebut sudah ada data</label>
+                    <label class="f-label">Jika perusahaan tersebut sudah ada data di tabel itu</label>
                     <label class="flex items-start gap-2 text-[13px] mb-1.5 cursor-pointer">
                         <input type="radio" name="modeImport" value="ganti" class="mt-0.5" checked>
-                        <span><b>Ganti</b> &mdash; hapus semua data rekap toko perusahaan itu, lalu isi dari file</span>
+                        <span><b>Ganti</b> &mdash; hapus semua data <span class="nama-bagian-import"><?= esc($info['nama']) ?></span> perusahaan itu, lalu isi dari file (tabel lain tidak berubah)</span>
                     </label>
                     <label class="flex items-start gap-2 text-[13px] cursor-pointer">
                         <input type="radio" name="modeImport" value="tambah" class="mt-0.5">
@@ -916,11 +945,21 @@
     </div>
 
     <script>
-        const FIELDS = [
-            'nama_pengisi', 'perusahaan', 'toko', 'branch', 'kode_toko', 'nama_toko',
-            'id_pelanggan_fo', 'tipe_modem_gsm_1', 'msisdn_modem_1', 'iccid_modem_1',
-            'tipe_modem_gsm_2', 'msisdn_modem_2', 'iccid_modem_2', 'sharelock_tikor_alamat'
-        ];
+        <?php
+        $jsFlag = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE;
+        $dokKolom = \App\Models\RekapDataTokoModel::kolomDok();
+        $lain = [];
+        foreach (\App\Models\RekapDataTokoModel::kolomLain($bagian) as $k) {
+            $lain[$k] = $isian[$k][0];
+        }
+        ?>
+        const BAGIAN = <?= json_encode($bagian, $jsFlag) ?>;
+        const NAMA_BAGIAN = <?= json_encode($info['nama'], $jsFlag) ?>;
+        const JUDUL_EXPORT = 'Rekap Data Toko - ' + NAMA_BAGIAN;
+        const FIELDS = <?= json_encode(array_merge(array_keys(\App\Models\RekapDataTokoModel::UMUM), array_diff($kolom, $dokKolom)), $jsFlag) ?>;
+        const FIELDS_DOK = <?= json_encode(array_values(array_intersect($kolom, $dokKolom)), $jsFlag) ?>;
+        const DOK_SEMUA = <?= json_encode($dokKolom, $jsFlag) ?>;
+        const FIELDS_LAIN = <?= json_encode($lain ?: new \stdClass(), $jsFlag) ?>;
 
         const BASE_UPLOAD_URL = "<?= base_url() ?>";
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -975,10 +1014,14 @@
             set('v_tanggal', d.tanggal ? tglIndo(d.tanggal.substring(0, 10)) : '-');
             set('v_created', d.created_at ? tglIndo(d.created_at.substring(0, 10)) + ' ' + d.created_at.substring(11, 16) : '-');
 
-            document.getElementById('v_foto_sn_fortigate').innerHTML = renderFileLink(d.foto_sn_fortigate);
-            document.getElementById('v_sn_ont_fo').innerHTML = renderFileLink(d.sn_ont_fo);
-            document.getElementById('v_foto_imei_modem_1').innerHTML = renderFileLink(d.foto_imei_modem_1);
-            document.getElementById('v_foto_imei_modem_2').innerHTML = renderFileLink(d.foto_imei_modem_2);
+            FIELDS_DOK.forEach(k => document.getElementById('v_' + k).innerHTML = renderFileLink(d[k]));
+
+            // isian di luar form bagian ini
+            const lain = Object.keys(FIELDS_LAIN).filter(k => String(d[k] ?? '').trim() !== '');
+            document.getElementById('vLainIsi').innerHTML = lain.map(k =>
+                '<div><div class="text-gray-500">' + escHtml(FIELDS_LAIN[k]) + '</div><div class="font-medium break-words">' +
+                (DOK_SEMUA.includes(k) ? renderFileLink(d[k]) : escHtml(d[k])) + '</div></div>').join('');
+            document.getElementById('vLain').classList.toggle('hidden', !lain.length);
 
             document.getElementById('viewModal').classList.remove('hidden');
         }
@@ -1036,12 +1079,23 @@
             m.classList.add('hidden');
             m.classList.remove('flex');
         }
+        // Dropdown tabel tujuan import
+        const bagianImport = document.getElementById('bagianImport');
+        const namaBagianImport = () => bagianImport.options[bagianImport.selectedIndex].text;
+
+        function tampilBagianImport() {
+            document.querySelectorAll('.nama-bagian-import').forEach(el => el.textContent = namaBagianImport());
+        }
+        bagianImport.addEventListener('change', tampilBagianImport);
+
         document.getElementById('modalImport').addEventListener('click', function(e) {
             if (e.target === this) hideImport();
         });
-        document.getElementById('btnImport').addEventListener('click', function() {
+        document.getElementById('btnImport')?.addEventListener('click', function() {
             document.getElementById('fileImport').value = '';
             document.getElementById('perusahaanImport').value = '';
+            bagianImport.value = BAGIAN; // awalnya tab yang sedang dibuka
+            tampilBagianImport();
             document.querySelector('input[name="modeImport"][value="ganti"]').checked = true;
             const m = document.getElementById('modalImport');
             m.classList.remove('hidden');
@@ -1054,6 +1108,10 @@
                 showFlash('error', 'Pilih file Excel terlebih dahulu.');
                 return;
             }
+            // dibaca sekali di awal supaya tabel tujuan tidak berubah selama proses
+            const tujuan = bagianImport.value;
+            const namaTujuan = namaBagianImport();
+            const urlTujuan = bagianImport.options[bagianImport.selectedIndex].dataset.url;
             const perusahaan = document.getElementById('perusahaanImport').value;
             if (!perusahaan) {
                 showFlash('error', 'Pilih perusahaan untuk data di file ini.');
@@ -1062,8 +1120,8 @@
             const mode = document.querySelector('input[name="modeImport"]:checked').value;
             if (mode === 'ganti') {
                 const r = await Swal.fire({
-                    title: 'Ganti data rekap toko?',
-                    text: 'Semua data rekap toko ' + perusahaan + ' akan dihapus lalu diisi ulang dari file.',
+                    title: 'Ganti data ' + namaTujuan + '?',
+                    text: 'Semua data ' + namaTujuan + ' ' + perusahaan + ' akan dihapus lalu diisi ulang dari file.',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#16a34a',
@@ -1080,6 +1138,7 @@
 
             const body = new FormData();
             body.append('file_import', file);
+            body.append('kategori', tujuan);
             body.append('perusahaan', perusahaan);
             body.append('mode', mode);
             const c = getCsrf();
@@ -1103,7 +1162,9 @@
                             confirmButtonColor: '#04a9f5'
                         });
                     }
-                    window.location.reload();
+                    // buka tab tabel tujuan supaya data yang baru masuk langsung terlihat
+                    if (tujuan === BAGIAN) window.location.reload();
+                    else window.location.href = urlTujuan;
                 } else {
                     showFlash('error', json.message || 'Import gagal.');
                 }
@@ -1230,10 +1291,10 @@
 
     <script>
         $(document).ready(function() {
-            // Kolom: 0 No, 1 Aksi, 2-15 data, 16 Dokumen (tampilan), 17-20 dokumen asli (tersembunyi), 21 Sharelock
-            const DOC_COLS = [17, 18, 19, 20];
-            const SHARELOCK_COL = 21;
-            const EXPORT_COLS = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21];
+            // Kolom: 0 No, 1 Aksi, 2 Tanggal, 3 Nama Pengisi, 4 Perusahaan, 5 Toko, 6 Branch, 7 Kode, 8 Nama Toko, 9 dst. isian bagian
+            const DOC_COLS = <?= json_encode(array_map(static fn ($i) => $i + 9, array_keys(array_intersect($kolom, $dokKolom)))) ?>;
+            const LINK_COLS = DOC_COLS.concat(<?= array_search('sharelock_tikor_alamat', $kolom, true) + 9 ?>);
+            const EXPORT_COLS = <?= json_encode(array_merge([0], range(2, count($kolom) + 8))) ?>;
             const IMG_EXT = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
             const cellText = data => {
@@ -1244,15 +1305,14 @@
             const isLocalDoc = v => /^uploads\//.test(v);
             const docUrl = v => isLocalDoc(v) ? BASE_UPLOAD_URL + v : v;
 
+            // Nilai asli sel: dokumen memakai data-raw (path upload / link), selain itu teksnya
+            const rawCell = (data, node) => node && node.dataset && node.dataset.raw !== undefined ? node.dataset.raw : cellText(data);
             // Copy / CSV: dokumen & link ditulis sebagai URL lengkap
             const exportConfig = {
                 exportOptions: {
                     columns: EXPORT_COLS,
                     format: {
-                        body: function(data, row, column, node) {
-                            const v = cellText(data);
-                            return node && node.classList && node.classList.contains('doc-raw') ? docUrl(v) : v;
-                        }
+                        body: (data, row, column, node) => docUrl(rawCell(data, node))
                     }
                 }
             };
@@ -1261,7 +1321,7 @@
                 exportOptions: {
                     columns: EXPORT_COLS,
                     format: {
-                        body: data => cellText(data)
+                        body: (data, row, column, node) => rawCell(data, node)
                     }
                 }
             };
@@ -1293,8 +1353,8 @@
                 const paths = new Set();
                 DOC_COLS.forEach(c => dt.column(c, {
                     search: 'applied'
-                }).data().each(d => {
-                    const v = cellText(d);
+                }).nodes().each(td => {
+                    const v = td.dataset.raw || '';
                     if (isLocalDoc(v) && IMG_EXT.includes(v.split('.').pop().toLowerCase()) && !(v in IMG_CACHE)) paths.add(v);
                 }));
                 await Promise.all([...paths].map(async v => {
@@ -1346,6 +1406,7 @@
                     i.value = v;
                     form.appendChild(i);
                 };
+                add('kategori', BAGIAN);
                 add('ids', ids.join(','));
                 const c = getCsrf();
                 if (c) add(c.key, c.val);
@@ -1365,9 +1426,6 @@
                     targets: [0, 1],
                     orderable: false,
                     searchable: false
-                }, {
-                    targets: DOC_COLS,
-                    visible: false
                 }],
                 dom: "lBfrtip",
                 buttons: [{
@@ -1377,7 +1435,7 @@
                     buttons: [{
                             extend: 'copyHtml5',
                             text: '<i class="ti ti-copy"></i> Copy',
-                            title: 'Rekap Data Toko',
+                            title: JUDUL_EXPORT,
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1387,7 +1445,7 @@
                         {
                             extend: 'csvHtml5',
                             text: '<i class="ti ti-file-text"></i> Export CSV',
-                            title: 'Rekap Data Toko',
+                            title: JUDUL_EXPORT,
                             ...exportConfig,
                             action: function(e, dt, button, config) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1397,7 +1455,7 @@
                         {
                             extend: 'excelHtml5', // hanya untuk tampilan tombol; file dibuat di server
                             text: '<i class="ti ti-file-spreadsheet"></i> Export Excel',
-                            title: 'Rekap Data Toko',
+                            title: JUDUL_EXPORT,
                             ...exportConfig,
                             action: function(e, dt) {
                                 if (isTableEmpty(dt)) return showEmptyExportAlert();
@@ -1407,7 +1465,7 @@
                         {
                             extend: 'pdfHtml5',
                             text: '<i class="ti ti-file-type-pdf"></i> Export PDF',
-                            title: 'Rekap Data Toko',
+                            title: JUDUL_EXPORT,
                             orientation: 'landscape',
                             pageSize: 'A3',
                             ...exportConfigPdf,
@@ -1431,10 +1489,10 @@
                                     alignment: 'left'
                                 };
                                 doc.defaultStyle.fontSize = 8;
-                                // kolom export: 15-18 = dokumen, 19 = sharelock
+                                // nomor kolom export = nomor kolom tabel - 1 (kolom Aksi tidak ikut)
                                 const body = doc.content[1].table.body;
                                 for (let r = 1; r < body.length; r++) {
-                                    for (const c of [15, 16, 17, 18, 19]) {
+                                    for (const c of LINK_COLS.map(i => i - 1)) {
                                         const cell = body[r][c];
                                         const v = String(cell && cell.text !== undefined ? cell.text : '').trim();
                                         const out = pdfDocCell(v, cell);
@@ -1458,7 +1516,7 @@
                     info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
                     infoEmpty: "Menampilkan 0 - 0 dari 0 data",
                     infoFiltered: "(disaring dari _MAX_ data)",
-                    emptyTable: "Rekap Data Toko belum tersedia",
+                    emptyTable: "Data " + NAMA_BAGIAN + " belum tersedia",
                     zeroRecords: "Tidak ada data yang cocok dengan pencarian",
                     paginate: {
                         previous: "Sebelumnya",
@@ -1510,12 +1568,13 @@
                 if (e.which === 13) table.search(this.value).draw();
             });
 
-            $('#btnResetFilter').on('click', function() {
-                $('#filterToko').val('');
-                $('#filterBranch').val('');
-                $('#filterPerusahaan').val('');
-                $('#customSearch').val('');
-                table.search('').columns().search('').draw();
+            // Filter Bulan: cocokkan data-bulan (YYYY-MM) di <tr>
+            $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                const bulan = $('#filterBulan').val();
+                return settings.nTable.id !== 'reportTable' || !bulan || settings.aoData[dataIndex].nTr.dataset.bulan === bulan;
+            });
+            $('#filterBulan').on('change', function() {
+                table.draw();
             });
         });
     </script>

@@ -5,12 +5,14 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\RekapDataTokoModel;
 
+// Halaman Rekap Data Toko, dibagi 3 tab: FO + Modem 2, Modem 1 + Modem 2, VSAT + Modem.
+// Susunan form & kolom tiap tab diatur di RekapDataTokoModel::BAGIAN.
 class RekapDataMidi extends BaseController
 {
     protected $rekapModel;
     protected $uploadPath = 'uploads/rekap_toko/'; // Lokasi di dalam folder public/
 
-    private const PERUSAHAAN = ['PT Genezis Mitra Technology', 'PT Rtiga Global Media'];
+    private const EXT_DOK = ['jpg', 'jpeg', 'png', 'doc', 'docx', 'pdf'];
 
     public function __construct()
     {
@@ -18,187 +20,258 @@ class RekapDataMidi extends BaseController
         helper('activity');
     }
 
-    // Mengarah ke app/Views/RekapDataMidi/index.php
-    public function index()
+    // Halaman utama per bagian (view RekapDataMidi/index.php)
+    public function index(string $bagian = 'fo')
     {
-        $data = [
-            'title'      => 'Rekap Data Toko',
-            'rekap_list' => $this->rekapModel->orderBy('id', 'ASC')->findAll(), // urut sesuai file import (baris 1 s/d akhir)
-        ];
+        $siap = $this->siap();
 
-        return view('RekapDataMidi/index', $data);
+        return view('RekapDataMidi/index', [
+            'title'      => 'Rekap Data Toko',
+            'bagian'     => $bagian,
+            'siap'       => $siap,
+            'rekap_list' => $siap
+                ? $this->rekapModel->where('kategori', $bagian)->orderBy('id', 'ASC')->findAll() // urut sesuai file import (baris 1 s/d akhir)
+                : [],
+        ]);
     }
 
-    // Menampilkan halaman FormTambahRKD.php
-    public function create()
+    // Halaman form tambah (view RekapDataMidi/FormTambahRKD.php)
+    public function create(string $bagian = 'fo')
     {
-        $data = [
-            'title' => 'Form Rekap Data Toko',
-        ];
+        if (! $this->siap()) {
+            return $this->belumSiap();
+        }
 
-        return view('RekapDataMidi/FormTambahRKD', $data);
+        return view('RekapDataMidi/FormTambahRKD', [
+            'title'  => 'Form Rekap Data Toko',
+            'bagian' => $bagian,
+            'row'    => [],
+        ]);
+    }
+
+    // Halaman form edit (view RekapDataMidi/FormEditRKD.php)
+    public function edit($id)
+    {
+        if (! $this->siap()) {
+            return $this->belumSiap();
+        }
+
+        $row = $this->rekapModel->find($id);
+        if (! $row) {
+            return redirect()->to(site_url('RekapDataMidi'))->with('error', 'Data rekap toko tidak ditemukan.');
+        }
+
+        return view('RekapDataMidi/FormEditRKD', [
+            'title'  => 'Edit Rekap Data Toko',
+            'bagian' => $row['kategori'],
+            'row'    => $row,
+        ]);
     }
 
     // Simpan data baru (POST: RekapDataMidi/save)
     public function save()
     {
-        if (!$this->validate($this->getValidationRules())) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        if (! $this->siap()) {
+            return $this->belumSiap();
         }
 
-        // Tangani pilihan dropdown vs isi manual
-        $branch = ($this->request->getPost('branch') === 'manual')
-            ? $this->request->getPost('branch_manual')
-            : $this->request->getPost('branch');
+        $bagian = (string) $this->request->getPost('kategori');
+        if (! isset(RekapDataTokoModel::BAGIAN[$bagian])) {
+            return redirect()->to(site_url('RekapDataMidi'))->with('error', 'Bagian rekap data toko tidak dikenal.');
+        }
 
-        $modem1 = ($this->request->getPost('tipe_modem_gsm_1') === 'manual')
-            ? $this->request->getPost('tipe_modem_gsm_1_manual')
-            : $this->request->getPost('tipe_modem_gsm_1');
+        $fields = $this->collectFields($bagian);
+        $errors = $this->cekIsian($bagian, $fields);
+        if ($errors) {
+            return redirect()->back()->withInput()->with('errors', $errors);
+        }
 
-        $modem2 = ($this->request->getPost('tipe_modem_gsm_2') === 'manual')
-            ? $this->request->getPost('tipe_modem_gsm_2_manual')
-            : $this->request->getPost('tipe_modem_gsm_2');
+        $data = ['kategori' => $bagian] + $fields + $this->collectDok($bagian, $fields['kode_toko']);
 
-        $kodeToko = esc($this->request->getPost('kode_toko'));
+        $id = $this->rekapModel->insert($data);
+        log_activity('create', 'rekap_data_toko', $id, null, null, $data);
 
-        // Dokumen/foto: upload file (jpg, png, doc, docx, pdf) atau isi link/teks (mis. link Google Drive)
-        $fileFortigate  = $this->resolveDoc('foto_sn_fortigate', $kodeToko . '_fortigate');
-        $fileOntFo      = $this->resolveDoc('sn_ont_fo', $kodeToko . '_ont_fo');
-        $fileImeiModem  = $this->resolveDoc('foto_imei_modem_1', $kodeToko . '_imei_modem1');
-        $fileImeiModem2 = $this->resolveDoc('foto_imei_modem_2', $kodeToko . '_imei_modem2');
-
-        $dataSimpan = [
-            'nama_pengisi'           => $this->request->getPost('nama_pengisi'),
-            'perusahaan'             => $this->request->getPost('perusahaan'),
-            'tanggal'                => $this->request->getPost('tanggal'),
-            'toko'                   => $this->request->getPost('toko'),
-            'branch'                 => $branch,
-            'kode_toko'              => $kodeToko,
-            'nama_toko'              => $this->request->getPost('nama_toko'),
-            'foto_sn_fortigate'      => $fileFortigate,
-            'id_pelanggan_fo'        => $this->request->getPost('id_pelanggan_fo'),
-            'sn_ont_fo'              => $fileOntFo,
-            'tipe_modem_gsm_1'       => $modem1,
-            'foto_imei_modem_1'      => $fileImeiModem,
-            'msisdn_modem_1'         => $this->request->getPost('msisdn_modem_1'),
-            'iccid_modem_1'          => $this->request->getPost('iccid_modem_1'),
-            'tipe_modem_gsm_2'       => $modem2,
-            'foto_imei_modem_2'      => $fileImeiModem2,
-            'msisdn_modem_2'         => $this->request->getPost('msisdn_modem_2'),
-            'iccid_modem_2'          => $this->request->getPost('iccid_modem_2'),
-            'sharelock_tikor_alamat' => $this->request->getPost('sharelock_tikor_alamat'),
-        ];
-
-        $this->rekapModel->save($dataSimpan);
-
-        $newId = $this->rekapModel->getInsertID();
-        log_activity('create', 'rekap_data_toko', $newId, null, null, $dataSimpan);
-
-        return redirect()->to('/RekapDataMidi')->with('success', 'Data rekap toko berhasil ditambahkan.');
+        return redirect()->to($this->urlBagian($bagian))
+            ->with('success', 'Data ' . RekapDataTokoModel::BAGIAN[$bagian]['nama'] . ' berhasil ditambahkan.');
     }
 
-    // Update data dari form edit (POST: RekapDataMidi/update)
+    // Update data dari form edit (POST: RekapDataMidi/update). Kolom di luar form bagian tidak diubah.
     public function update()
     {
+        if (! $this->siap()) {
+            return $this->belumSiap();
+        }
+
         $id       = $this->request->getPost('id');
-        $existing = $this->rekapModel->find($id);
-
-        if (!$existing) {
-            return redirect()->to('/RekapDataMidi')->with('error', 'Data tidak ditemukan.');
+        $existing = $id ? $this->rekapModel->find((int) $id) : null;
+        if (! $existing) {
+            return redirect()->to(site_url('RekapDataMidi'))->with('error', 'Data tidak ditemukan.');
         }
 
-        if (!$this->validate($this->getValidationRules())) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        $bagian = $existing['kategori'];
+        $fields = $this->collectFields($bagian);
+        $errors = $this->cekIsian($bagian, $fields, $existing);
+        if ($errors) {
+            return redirect()->back()->withInput()->with('errors', $errors);
         }
 
-        $branch = ($this->request->getPost('branch') === 'manual')
-            ? $this->request->getPost('branch_manual')
-            : $this->request->getPost('branch');
+        $data = $fields + $this->collectDok($bagian, $fields['kode_toko'], $existing);
 
-        $modem1 = ($this->request->getPost('tipe_modem_gsm_1') === 'manual')
-            ? $this->request->getPost('tipe_modem_gsm_1_manual')
-            : $this->request->getPost('tipe_modem_gsm_1');
+        $this->rekapModel->update($existing['id'], $data);
+        log_activity('update', 'rekap_data_toko', $existing['id'], null, $existing, $data);
 
-        $modem2 = ($this->request->getPost('tipe_modem_gsm_2') === 'manual')
-            ? $this->request->getPost('tipe_modem_gsm_2_manual')
-            : $this->request->getPost('tipe_modem_gsm_2');
-
-        $kodeToko = esc($this->request->getPost('kode_toko'));
-
-        // Dokumen/foto: upload file baru / hapus file / isi link-teks, sesuai pilihan di form
-        $fileFortigate  = $this->resolveDoc('foto_sn_fortigate', $kodeToko . '_fortigate', $existing['foto_sn_fortigate'] ?? null);
-        $fileOntFo      = $this->resolveDoc('sn_ont_fo', $kodeToko . '_ont_fo', $existing['sn_ont_fo'] ?? null);
-        $fileImeiModem  = $this->resolveDoc('foto_imei_modem_1', $kodeToko . '_imei_modem1', $existing['foto_imei_modem_1'] ?? null);
-        $fileImeiModem2 = $this->resolveDoc('foto_imei_modem_2', $kodeToko . '_imei_modem2', $existing['foto_imei_modem_2'] ?? null);
-
-        $dataUpdate = [
-            'nama_pengisi'           => $this->request->getPost('nama_pengisi'),
-            'perusahaan'             => $this->request->getPost('perusahaan'),
-            'tanggal'                => $this->request->getPost('tanggal'),
-            'toko'                   => $this->request->getPost('toko'),
-            'branch'                 => $branch,
-            'kode_toko'              => $kodeToko,
-            'nama_toko'              => $this->request->getPost('nama_toko'),
-            'foto_sn_fortigate'      => $fileFortigate,
-            'id_pelanggan_fo'        => $this->request->getPost('id_pelanggan_fo'),
-            'sn_ont_fo'              => $fileOntFo,
-            'tipe_modem_gsm_1'       => $modem1,
-            'foto_imei_modem_1'      => $fileImeiModem,
-            'msisdn_modem_1'         => $this->request->getPost('msisdn_modem_1'),
-            'iccid_modem_1'          => $this->request->getPost('iccid_modem_1'),
-            'tipe_modem_gsm_2'       => $modem2,
-            'foto_imei_modem_2'      => $fileImeiModem2,
-            'msisdn_modem_2'         => $this->request->getPost('msisdn_modem_2'),
-            'iccid_modem_2'          => $this->request->getPost('iccid_modem_2'),
-            'sharelock_tikor_alamat' => $this->request->getPost('sharelock_tikor_alamat'),
-        ];
-
-        $this->rekapModel->update($id, $dataUpdate);
-        log_activity('update', 'rekap_data_toko', $id, null, $existing, $dataUpdate);
-
-        return redirect()->to('/RekapDataMidi')->with('success', 'Data rekap toko berhasil diperbarui.');
-    }
-
-    // Menampilkan halaman FormEditRKD.php
-    public function edit($id)
-    {
-        $row = $this->rekapModel->find($id);
-        if (!$row) {
-            return redirect()->to('/RekapDataMidi')->with('error', 'Data rekap toko tidak ditemukan.');
-        }
-
-        $data = [
-            'title' => 'Edit Rekap Data Toko',
-            'row'   => $row,
-        ];
-
-        return view('RekapDataMidi/FormEditRKD', $data);
+        return redirect()->to($this->urlBagian($bagian))
+            ->with('success', 'Data ' . RekapDataTokoModel::BAGIAN[$bagian]['nama'] . ' berhasil diperbarui.');
     }
 
     // Hapus data (GET: RekapDataMidi/delete/(:num))
     public function delete($id)
     {
         $existing = $this->rekapModel->find($id);
-        if ($existing) {
-            $this->deleteFileIfExists($existing['foto_sn_fortigate']);
-            $this->deleteFileIfExists($existing['sn_ont_fo']);
-            $this->deleteFileIfExists($existing['foto_imei_modem_1']);
-            $this->deleteFileIfExists($existing['foto_imei_modem_2'] ?? null);
-
-            $this->rekapModel->delete($id);
-            log_activity('delete', 'rekap_data_toko', $id, null, $existing, null);
-
-            return redirect()->to('/RekapDataMidi')->with('success', 'Data rekap toko berhasil dihapus.');
+        if (! $existing) {
+            return redirect()->to(site_url('RekapDataMidi'))->with('error', 'Data tidak ditemukan.');
         }
 
-        return redirect()->to('/RekapDataMidi')->with('error', 'Data tidak ditemukan.');
+        foreach (RekapDataTokoModel::kolomDok() as $f) {
+            $this->deleteFileIfExists($existing[$f] ?? null);
+        }
+        $this->rekapModel->delete($id);
+        log_activity('delete', 'rekap_data_toko', $id, null, $existing, null);
+
+        $bagian = $existing['kategori'] ?? 'fo';
+
+        return redirect()->to($this->urlBagian($bagian))
+            ->with('success', 'Data ' . RekapDataTokoModel::BAGIAN[$bagian]['nama'] . ' berhasil dihapus.');
+    }
+
+    // Kolom `kategori` baru ada setelah blok UPDATE 2026-11-24 di database/rekap_data_toko.sql dijalankan
+    private function siap(): bool
+    {
+        return \Config\Database::connect()->fieldExists('kategori', 'rekap_data_toko');
+    }
+
+    private function belumSiap()
+    {
+        return redirect()->to(site_url('RekapDataMidi'))
+            ->with('error', 'Database belum diperbarui. Jalankan blok UPDATE 2026-11-24 di database/rekap_data_toko.sql.');
+    }
+
+    private function urlBagian(string $bagian): string
+    {
+        return site_url(RekapDataTokoModel::BAGIAN[$bagian]['url']);
+    }
+
+    // Isian form satu bagian (selain dokumen)
+    private function collectFields(string $bagian): array
+    {
+        $post = fn (string $k) => trim((string) $this->request->getPost($k));
+        // dropdown dengan pilihan "Isi Manual"
+        $pilih = fn (string $k) => $post($k) === 'manual' ? $post($k . '_manual') : $post($k);
+
+        $fields = [];
+        foreach (array_keys(RekapDataTokoModel::UMUM) as $k) {
+            $fields[$k] = $k === 'branch' ? $pilih($k) : $post($k);
+        }
+        foreach (RekapDataTokoModel::kolomIsian($bagian) as $k) {
+            $jenis = RekapDataTokoModel::ISIAN[$k][1];
+            if ($jenis === 'dok') {
+                continue;
+            }
+            $v          = $jenis === 'modem' ? $pilih($k) : $post($k);
+            $fields[$k] = $v === '' && $k !== 'sharelock_tikor_alamat' ? null : $v;
+        }
+
+        return $fields;
+    }
+
+    // Periksa isian & file sebelum disimpan. Hasil: daftar pesan salah (kosong = lolos)
+    private function cekIsian(string $bagian, array $fields, array $existing = []): array
+    {
+        // perusahaan lama yang sudah tidak ada di pilihan tetap boleh saat data lamanya diedit
+        $perusahaan = array_filter(array_merge(RekapDataTokoModel::PERUSAHAAN, [$existing['perusahaan'] ?? '']), 'strlen');
+
+        $rules = [
+            'nama_pengisi' => ['label' => 'Nama Pengisi', 'rules' => 'required|max_length[100]'],
+            'perusahaan'   => ['label' => 'Perusahaan', 'rules' => 'required|in_list[' . implode(',', $perusahaan) . ']'],
+            'tanggal'      => ['label' => 'Tanggal', 'rules' => 'required|valid_date[Y-m-d]'],
+            'toko'         => ['label' => 'Toko', 'rules' => 'required|in_list[' . implode(',', RekapDataTokoModel::TOKO) . ']'],
+            'branch'       => ['label' => 'Branch', 'rules' => 'required|max_length[100]'],
+            'kode_toko'    => ['label' => 'Kode Toko', 'rules' => 'required|max_length[50]'],
+            'nama_toko'    => ['label' => 'Nama Toko', 'rules' => 'required|max_length[150]'],
+        ];
+        foreach (RekapDataTokoModel::kolomIsian($bagian) as $k) {
+            [$judul, $jenis, $maks] = RekapDataTokoModel::ISIAN[$k];
+            if ($jenis === 'dok') {
+                continue;
+            }
+            $wajib     = in_array($k, RekapDataTokoModel::BAGIAN[$bagian]['wajib'], true);
+            $rules[$k] = ['label' => $judul, 'rules' => ($wajib ? 'required' : 'permit_empty') . ($maks ? '|max_length[' . $maks . ']' : '')];
+        }
+
+        foreach ($rules as &$r) {
+            $r['errors'] = [
+                'required'   => '{field} wajib diisi.',
+                'in_list'    => '{field} tidak ada di pilihan.',
+                'max_length' => '{field} maksimal {param} karakter.',
+                'valid_date' => '{field} tidak valid.',
+            ];
+        }
+        unset($r);
+
+        $errors = $this->validateData($fields, $rules) ? [] : $this->validator->getErrors();
+
+        foreach (RekapDataTokoModel::kolomIsian($bagian) as $k) {
+            [$judul, $jenis, $maks] = RekapDataTokoModel::ISIAN[$k];
+            if ($jenis !== 'dok') {
+                continue;
+            }
+            if ($this->request->getPost('mode_' . $k) === 'link') {
+                if (mb_strlen(trim((string) $this->request->getPost('link_' . $k))) > $maks) {
+                    $errors[$k] = $judul . ' maksimal ' . $maks . ' karakter.';
+                }
+                continue;
+            }
+            $file = $this->request->getFile($k);
+            if (! $file || $file->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if (! $file->isValid()) {
+                $errors[$k] = $judul . ' gagal diupload: ' . $file->getErrorString();
+            } elseif (! in_array(strtolower($file->getClientExtension()), self::EXT_DOK, true) || ! in_array(strtolower($file->getExtension()), self::EXT_DOK, true)) {
+                $errors[$k] = $judul . ' harus berformat JPG, PNG, Word (DOC/DOCX), atau PDF.';
+            } elseif ($file->getSize() > 5 * 1024 * 1024) {
+                $errors[$k] = $judul . ' maksimal berukuran 5 MB.';
+            }
+        }
+
+        return $errors;
+    }
+
+    // Dokumen/foto satu bagian: upload file (jpg, png, doc, docx, pdf) atau link/teks (mis. link Google Drive)
+    private function collectDok(string $bagian, string $kodeToko, array $existing = []): array
+    {
+        $hasil = [];
+        foreach (array_intersect(RekapDataTokoModel::kolomIsian($bagian), RekapDataTokoModel::kolomDok()) as $k) {
+            $hasil[$k] = $this->resolveDoc($k, $kodeToko . '_' . str_replace('_', '', $k), $existing[$k] ?? null);
+        }
+
+        return $hasil;
     }
 
     // Import dari Excel (contoh: "REKAP PENDATAAN&PERGANTIAN PERANGKAT ... (Jawaban).xlsx").
     // Kolom dibaca dari judul di baris header (KODE TOKO, NAMA TOKO, dst.), jadi urutan kolom bebas.
-    // Semua baris diberi perusahaan yang dipilih di form import.
+    // Semua baris diberi perusahaan yang dipilih di form import, dan masuk ke tabel (bagian) yang dipilih di dropdown.
     public function import()
     {
+        if (! $this->siap()) {
+            return $this->importError('Database belum diperbarui. Jalankan blok UPDATE 2026-11-24 di database/rekap_data_toko.sql.');
+        }
+        $bagian = (string) $this->request->getPost('kategori');
+        if (! isset(RekapDataTokoModel::BAGIAN[$bagian])) {
+            return $this->importError('Bagian rekap data toko tidak dikenal.');
+        }
+        $namaBagian = RekapDataTokoModel::BAGIAN[$bagian]['nama'];
+
         $file = $this->request->getFile('file_import');
         if (! $file || ! $file->isValid()) {
             return $this->importError('File belum dipilih atau gagal diupload.');
@@ -211,7 +284,7 @@ class RekapDataMidi extends BaseController
         }
 
         $perusahaan = (string) $this->request->getPost('perusahaan');
-        if (! in_array($perusahaan, self::PERUSAHAAN, true)) {
+        if (! in_array($perusahaan, RekapDataTokoModel::PERUSAHAAN, true)) {
             return $this->importError('Pilih perusahaan untuk data di file ini.');
         }
 
@@ -268,6 +341,10 @@ class RekapDataMidi extends BaseController
             'msisdn_modem_2'         => static fn ($h) => str_contains($h, 'msisdn') && str_contains($h, 'modem2'),
             'iccid_modem_2'          => static fn ($h) => str_contains($h, 'iccid') && str_contains($h, 'modem2'),
             'sharelock_tikor_alamat' => static fn ($h) => str_contains($h, 'sharelock') || str_contains($h, 'tikor'),
+            'kategori_koneksi_vsat'  => static fn ($h) => str_contains($h, 'kategorikoneksi'),
+            'nama_vendor'            => static fn ($h) => str_contains($h, 'namavendor'),
+            'nomor_inet'             => static fn ($h) => str_contains($h, 'nomorinet') || str_contains($h, 'nomerinet'),
+            'kategori_produk'        => static fn ($h) => str_contains($h, 'kategoriproduk'),
         ];
         $kolom = [];
         for ($c = 1; $c <= $maxCol; $c++) {
@@ -346,6 +423,7 @@ class RekapDataMidi extends BaseController
             }
 
             $data[] = [
+                'kategori'               => $bagian,
                 'nama_pengisi'           => $teks('nama_pengisi', $r, 100),
                 'perusahaan'             => $perusahaan,
                 'tanggal'                => $tgl,
@@ -356,7 +434,7 @@ class RekapDataMidi extends BaseController
                 'foto_sn_fortigate'      => $teks('foto_sn_fortigate', $r, 255) ?: null,
                 'id_pelanggan_fo'        => $teks('id_pelanggan_fo', $r, 100) ?: null,
                 'sn_ont_fo'              => $teks('sn_ont_fo', $r, 255) ?: null,
-                'tipe_modem_gsm_1'       => $teks('tipe_modem_gsm_1', $r, 100),
+                'tipe_modem_gsm_1'       => $teks('tipe_modem_gsm_1', $r, 100) ?: null,
                 'foto_imei_modem_1'      => $teks('foto_imei_modem_1', $r, 255) ?: null,
                 'msisdn_modem_1'         => $msisdn($teks('msisdn_modem_1', $r, 150)) ?: null,
                 'iccid_modem_1'          => $teks('iccid_modem_1', $r, 150) ?: null,
@@ -365,6 +443,10 @@ class RekapDataMidi extends BaseController
                 'msisdn_modem_2'         => $msisdn($teks('msisdn_modem_2', $r, 150)) ?: null,
                 'iccid_modem_2'          => $teks('iccid_modem_2', $r, 150) ?: null,
                 'sharelock_tikor_alamat' => $teks('sharelock_tikor_alamat', $r),
+                'kategori_koneksi_vsat'  => $teks('kategori_koneksi_vsat', $r, 100) ?: null,
+                'nama_vendor'            => $teks('nama_vendor', $r, 150) ?: null,
+                'nomor_inet'             => $teks('nomor_inet', $r, 100) ?: null,
+                'kategori_produk'        => $teks('kategori_produk', $r, 100) ?: null,
             ];
         }
 
@@ -379,15 +461,16 @@ class RekapDataMidi extends BaseController
 
         $dihapus = 0;
         if ($ganti) {
-            $lama = $this->rekapModel->where('perusahaan', $perusahaan)->findAll();
+            // hanya data perusahaan itu di bagian ini; bagian lain tidak disentuh
+            $lama = $this->rekapModel->where('kategori', $bagian)->where('perusahaan', $perusahaan)->findAll();
             foreach ($lama as $row) {
-                foreach (['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'] as $f) {
+                foreach (RekapDataTokoModel::kolomDok() as $f) {
                     $this->deleteFileIfExists($row[$f] ?? null);
                 }
             }
             $dihapus = count($lama);
             if ($dihapus) {
-                $this->rekapModel->where('perusahaan', $perusahaan)->delete();
+                $this->rekapModel->where('kategori', $bagian)->where('perusahaan', $perusahaan)->delete();
             }
         }
 
@@ -396,7 +479,7 @@ class RekapDataMidi extends BaseController
         // supaya file yang sama tidak masuk dua kali.
         $ada = [];
         if (! $ganti) {
-            foreach ($this->rekapModel->select('kode_toko, tanggal')->where('perusahaan', $perusahaan)->findAll() as $row) {
+            foreach ($this->rekapModel->select('kode_toko, tanggal')->where('kategori', $bagian)->where('perusahaan', $perusahaan)->findAll() as $row) {
                 $ada[strtolower($row['kode_toko']) . '|' . substr((string) $row['tanggal'], 0, 10)] = true;
             }
         }
@@ -421,10 +504,10 @@ class RekapDataMidi extends BaseController
         }
 
         $masuk = count($baru);
-        log_activity('create', 'rekap_data_toko', null, 'Import Excel ' . $masuk . ' data rekap toko (' . $perusahaan . ')'
+        log_activity('create', 'rekap_data_toko', null, 'Import Excel ' . $masuk . ' data rekap toko ' . $namaBagian . ' (' . $perusahaan . ')'
             . ($ganti ? ', mengganti ' . $dihapus . ' data lama' : ''));
 
-        $pesan = $masuk . ' data toko ' . $perusahaan . ' berhasil diimport';
+        $pesan = $masuk . ' data ' . $namaBagian . ' ' . $perusahaan . ' berhasil diimport';
         if ($dilewati) {
             $pesan .= ', ' . $dilewati . ' dilewati (kode toko & tanggal sudah ada)';
         }
@@ -439,13 +522,16 @@ class RekapDataMidi extends BaseController
     }
 
     // Export Excel (POST: RekapDataMidi/exportExcel). ids = urutan baris hasil filter/pencarian di tabel.
+    // Kolom mengikuti bagian (tab); kolom di luar bagian hanya ikut bila ada isinya (data lama / import).
     // Link -> hyperlink yang bisa diklik, foto hasil upload -> gambar tertanam, dokumen upload -> link unduh.
     public function exportExcel()
     {
         $ids = array_values(array_filter(array_map('intval', explode(',', (string) $this->request->getPost('ids')))));
-        if (! $ids) {
-            return redirect()->to('/RekapDataMidi')->with('error', 'Tidak ada data yang bisa diexport.');
+        $bagian = (string) $this->request->getPost('kategori');
+        if (! $ids || ! isset(RekapDataTokoModel::BAGIAN[$bagian])) {
+            return redirect()->to(site_url('RekapDataMidi'))->with('error', 'Tidak ada data yang bisa diexport.');
         }
+        $judulFile = 'Rekap Data Toko - ' . RekapDataTokoModel::BAGIAN[$bagian]['nama'];
 
         $byId = [];
         foreach (array_chunk($ids, 500) as $chunk) {
@@ -455,39 +541,29 @@ class RekapDataMidi extends BaseController
         }
         $rows = array_values(array_filter(array_map(static fn ($id) => $byId[$id] ?? null, $ids)));
 
-        $kolom = [
-            'No'                        => null,
-            'Tanggal'                   => 'tanggal',
-            'Nama Pengisi'              => 'nama_pengisi',
-            'Perusahaan'                => 'perusahaan',
-            'Toko'                      => 'toko',
-            'Branch'                    => 'branch',
-            'Kode Toko'                 => 'kode_toko',
-            'Nama Toko'                 => 'nama_toko',
-            'ID Pelanggan FO'           => 'id_pelanggan_fo',
-            'Tipe Modem GSM 1'          => 'tipe_modem_gsm_1',
-            'MSISDN Modem 1'            => 'msisdn_modem_1',
-            'ICCID Modem 1'             => 'iccid_modem_1',
-            'Tipe Modem GSM 2'          => 'tipe_modem_gsm_2',
-            'MSISDN Modem 2'            => 'msisdn_modem_2',
-            'ICCID Modem 2'             => 'iccid_modem_2',
-            'Foto SN Fortigate'         => 'foto_sn_fortigate',
-            'SN ONT FO'                 => 'sn_ont_fo',
-            'Foto IMEI Modem 1'         => 'foto_imei_modem_1',
-            'Foto IMEI Modem 2'         => 'foto_imei_modem_2',
-            'Sharelock / Tikor / Alamat' => 'sharelock_tikor_alamat',
-        ];
-        $docFields = ['foto_sn_fortigate', 'sn_ont_fo', 'foto_imei_modem_1', 'foto_imei_modem_2'];
+        // judul kolom => [nama kolom, lebar]
+        $kolom = ['No' => [null, 6], 'Tanggal' => ['tanggal', 12], 'Nama Pengisi' => ['nama_pengisi', 20],
+            'Perusahaan' => ['perusahaan', 28], 'Toko' => ['toko', 9], 'Branch' => ['branch', 14],
+            'Kode Toko' => ['kode_toko', 12], 'Nama Toko' => ['nama_toko', 26]];
+        foreach (RekapDataTokoModel::kolomIsian($bagian) as $k) {
+            $kolom[RekapDataTokoModel::ISIAN[$k][3]] = [$k, $k === 'sharelock_tikor_alamat' ? 40 : 22];
+        }
+        foreach (RekapDataTokoModel::kolomLain($bagian) as $k) {
+            if (array_filter(array_column($rows, $k), static fn ($v) => trim((string) $v) !== '')) {
+                $kolom[RekapDataTokoModel::ISIAN[$k][3] . ' (data lama)'] = [$k, 22];
+            }
+        }
+        $docFields = RekapDataTokoModel::kolomDok();
         $imgExt    = ['jpg', 'jpeg', 'png', 'gif'];
 
         $book  = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $book->getActiveSheet();
-        $sheet->setTitle('Rekap Data Toko');
+        $sheet->setTitle(RekapDataTokoModel::BAGIAN[$bagian]['nama']);
         $C = static fn (int $i) => \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i);
         $last = $C(count($kolom));
 
         // Judul + header (seperti export Excel sebelumnya)
-        $sheet->setCellValue('A1', 'Rekap Data Toko');
+        $sheet->setCellValue('A1', $judulFile);
         $sheet->mergeCells('A1:' . $last . '1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
@@ -508,7 +584,7 @@ class RekapDataMidi extends BaseController
         foreach ($rows as $no => $row) {
             $adaGambar = false;
             $c = 1;
-            foreach ($kolom as $field) {
+            foreach ($kolom as [$field]) {
                 $cell = $C($c) . $r;
                 $c++;
                 if ($field === null) {
@@ -566,8 +642,7 @@ class RekapDataMidi extends BaseController
         }
 
         // lebar kolom
-        $lebar = [6, 12, 20, 28, 9, 14, 12, 26, 18, 18, 16, 22, 18, 16, 22, 22, 22, 22, 22, 40];
-        foreach ($lebar as $i => $w) {
+        foreach (array_values($kolom) as $i => [, $w]) {
             $sheet->getColumnDimension($C($i + 1))->setWidth($w);
         }
         $sheet->getStyle('A3:' . $last . max(3, $r - 1))->getAlignment()->setVertical('top')->setWrapText(true);
@@ -582,7 +657,7 @@ class RekapDataMidi extends BaseController
 
         return $this->response
             ->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            ->setHeader('Content-Disposition', 'attachment; filename="Rekap Data Toko.xlsx"')
+            ->setHeader('Content-Disposition', 'attachment; filename="' . $judulFile . '.xlsx"')
             ->setHeader('Cache-Control', 'max-age=0')
             ->setBody($isi);
     }
@@ -591,33 +666,6 @@ class RekapDataMidi extends BaseController
     {
         return $this->response->setStatusCode(422)
             ->setJSON(['status' => 'error', 'message' => $message]);
-    }
-
-    private function getValidationRules(): array
-    {
-        return [
-            'nama_pengisi'           => 'required|max_length[100]',
-            'perusahaan'             => 'required|in_list[PT Genezis Mitra Technology,PT Rtiga Global Media]',
-            'tanggal'                => 'required|valid_date',
-            'toko'                   => 'required|in_list[Lawson,Midi]',
-            'branch'                 => 'required',
-            'kode_toko'              => 'required|max_length[50]',
-            'nama_toko'              => 'required|max_length[150]',
-            'link_foto_sn_fortigate' => 'permit_empty|max_length[255]',
-            'link_sn_ont_fo'         => 'permit_empty|max_length[255]',
-            'link_foto_imei_modem_1' => 'permit_empty|max_length[255]',
-            'link_foto_imei_modem_2' => 'permit_empty|max_length[255]',
-            'foto_sn_fortigate'      => 'permit_empty|max_size[foto_sn_fortigate,5120]|ext_in[foto_sn_fortigate,jpg,jpeg,png,doc,docx,pdf]',
-            'sn_ont_fo'              => 'permit_empty|max_size[sn_ont_fo,5120]|ext_in[sn_ont_fo,jpg,jpeg,png,doc,docx,pdf]',
-            'tipe_modem_gsm_1'       => 'required',
-            'foto_imei_modem_1'      => 'permit_empty|max_size[foto_imei_modem_1,5120]|ext_in[foto_imei_modem_1,jpg,jpeg,png,doc,docx,pdf]',
-            'foto_imei_modem_2'      => 'permit_empty|max_size[foto_imei_modem_2,5120]|ext_in[foto_imei_modem_2,jpg,jpeg,png,doc,docx,pdf]',
-            'msisdn_modem_1'         => 'permit_empty|max_length[150]',
-            'iccid_modem_1'          => 'permit_empty|max_length[150]',
-            'msisdn_modem_2'         => 'permit_empty|max_length[150]',
-            'iccid_modem_2'          => 'permit_empty|max_length[150]',
-            'sharelock_tikor_alamat' => 'required',
-        ];
     }
 
     private function handleUpload($file, string $prefix, ?string $oldFile = null): ?string
@@ -630,7 +678,7 @@ class RekapDataMidi extends BaseController
                 mkdir(FCPATH . $this->uploadPath, 0775, true);
             }
 
-            $newName = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $prefix) . '.' . $file->getExtension();
+            $newName = time() . '_' . preg_replace('/[^A-Za-z0-9\-]/', '', $prefix) . '.' . strtolower($file->getExtension());
             $file->move(FCPATH . $this->uploadPath, $newName);
 
             return $this->uploadPath . $newName;
