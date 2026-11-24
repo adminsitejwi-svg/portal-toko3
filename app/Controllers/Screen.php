@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\NmsDetik;
 use App\Models\DeviceMonitoringModel;
 use App\Models\DeviceTrafficModel;
 
@@ -48,6 +49,47 @@ class Screen extends BaseController
         return $hasil;
     }
 
+    /** Daftar id interface dari query string; null = kosong / melebihi batas. */
+    private function ids(): ?array
+    {
+        $mentah = $this->request->getGet('ids');
+        $ids    = array_values(array_unique(array_filter(
+            array_map('intval', explode(',', is_string($mentah) ? $mentah : '')),
+            static fn ($id) => $id > 0
+        )));
+
+        return ! $ids || count($ids) > self::MAKS_GRAFIK ? null : $ids;
+    }
+
+    // Grafik 10 Menit per detik (GET Screen/detik?ids=1,2&sejak=ms1,ms2), dipanggil tiap 1 detik selama rentang itu tampil
+    public function detik()
+    {
+        if (! $this->tabelSiap()) {
+            return $this->response->setStatusCode(503)->setJSON(['ok' => false, 'pesan' => 'Tabel belum ada.']);
+        }
+        session_write_close(); // request lain tidak menunggu balasan perangkat
+
+        $ids = $this->ids();
+        if ($ids === null) {
+            return $this->response->setStatusCode(400)->setJSON(['ok' => false, 'pesan' => 'Pilih antara 1 sampai ' . self::MAKS_GRAFIK . ' interface.']);
+        }
+        $mentah = $this->request->getGet('sejak');
+        $waktu  = array_map('intval', explode(',', is_string($mentah) ? $mentah : ''));
+        $sejak  = [];
+        foreach ($ids as $n => $id) {
+            $sejak[$id] = max(0, $waktu[$n] ?? 0);
+        }
+
+        $hasil = NmsDetik::ambilBanyak((new DeviceTrafficModel())->whereIn('id', $ids)->findAll(), $sejak);
+
+        return $this->response->setHeader('Cache-Control', 'no-store')->setJSON([
+            'ok'       => true,
+            'sekarang' => $hasil['sekarang'],
+            'traffic'  => (object) $hasil['traffic'],
+            'pesan'    => (object) $hasil['pesan'],
+        ]);
+    }
+
     // Halaman utama (view Screen/index.php)
     public function index()
     {
@@ -60,7 +102,7 @@ class Screen extends BaseController
         ]);
     }
 
-    // Data grafik (GET Screen/data?ids=1,2,3&jam=1|6|24&poll=1): poll=1 -> device yang sudah waktunya di-poll dulu
+    // Data grafik (GET Screen/data?ids=1,2,3&jam=10m|1|6|24&poll=1): poll=1 -> device yang sudah waktunya di-poll dulu
     public function data()
     {
         if (! $this->tabelSiap()) {
@@ -68,15 +110,12 @@ class Screen extends BaseController
         }
         session_write_close(); // request lain (pindah halaman) tidak menunggu polling selesai
 
-        $mentah = $this->request->getGet('ids');
-        $ids    = array_values(array_unique(array_filter(
-            array_map('intval', explode(',', is_string($mentah) ? $mentah : '')),
-            static fn ($id) => $id > 0
-        )));
-        if (! $ids || count($ids) > self::MAKS_GRAFIK) {
+        $ids = $this->ids();
+        if ($ids === null) {
             return $this->response->setStatusCode(400)->setJSON(['ok' => false, 'pesan' => 'Pilih antara 1 sampai ' . self::MAKS_GRAFIK . ' interface.']);
         }
-        $rentang = self::JAM[(int) $this->request->getGet('jam')] ?? '1h';
+        $jam     = $this->request->getGet('jam');
+        $rentang = $jam === '10m' ? '10m' : (self::JAM[(int) $jam] ?? '1h');
 
         if ($this->request->getGet('poll') === '1') {
             (new DeviceMonitoringModel())->pollJatuhTempo(8.0);

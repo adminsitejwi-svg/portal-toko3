@@ -29,6 +29,7 @@
     <!-- Chart.js (grafik traffic) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="<?= base_url('assets/theme/nms-grafik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-grafik.js') ?>"></script>
+    <script src="<?= base_url('assets/theme/nms-detik.js') ?>?v=<?= @filemtime(FCPATH . 'assets/theme/nms-detik.js') ?>"></script>
 
     <script>
         tailwind.config = {
@@ -514,7 +515,8 @@
                         <label class="rfo-field">
                             <i class="ti ti-clock" style="color:#f59e0b"></i>
                             <select id="swJam" class="sw-select" title="Rentang grafik">
-                                <option value="1">1 Jam terakhir</option>
+                                <option value="10m">10 Menit terakhir (per detik)</option>
+                                <option value="1" selected>1 Jam terakhir</option>
                                 <option value="6">6 Jam terakhir</option>
                                 <option value="24">24 Jam terakhir</option>
                             </select>
@@ -523,7 +525,7 @@
                         <button type="button" id="swSimpan" class="rfo-ghost-btn"><i class="ti ti-device-floppy"></i> Save Layout</button>
                         <button type="button" id="swReset" class="rfo-ghost-btn"><i class="ti ti-refresh"></i> Reset</button>
                     </div>
-                    <p class="sw-hint"><i class="ti ti-info-circle"></i> Pilih interface dari perangkat mana pun, maksimal <?= (int) $maks ?> grafik (mengikuti layout yang dipilih). Layout tersimpan di browser ini. Data diperbarui tiap 60 detik; tekan Esc untuk keluar dari fullscreen.</p>
+                    <p class="sw-hint"><i class="ti ti-info-circle"></i> Pilih interface dari perangkat mana pun, maksimal <?= (int) $maks ?> grafik (mengikuti layout yang dipilih). Layout tersimpan di browser ini. Data diperbarui tiap 60 detik (rentang 10 Menit: tiap detik); tekan Esc untuk keluar dari fullscreen.</p>
                 </div>
 
                 <!-- GRAFIK -->
@@ -583,9 +585,12 @@
     <script>
         (function() {
             const URL_DATA = '<?= site_url('Screen/data') ?>';
+            const URL_DETIK = '<?= site_url('Screen/detik') ?>';
             const INTERFACE = <?= json_encode($interface, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE) ?>;
             const KAPASITAS = { '1x1': 1, '2x2': 4, '2x3': 6, '3x3': 9, '4x4': 16 };
             const KEY = 'portal_screen_layout';
+            const KEY_JAM = 'portal_screen_jam'; // rentang terakhir, tetap saat halaman dimuat ulang
+            const RENTANG = ['10m', '1', '6', '24'];
 
             const $ = id => document.getElementById(id);
             const halaman = $('screenPage'), grid = $('swGrid'), selLayout = $('swLayout'), selJam = $('swJam'), selIf = $('swInterface');
@@ -660,7 +665,32 @@
                 grafik.set(id, { chart, kartu });
             }
 
+            // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js): satu permintaan untuk semua grafik ======
+            const detik = window.NmsDetik && window.NmsGrafik ? NmsDetik.buatBanyak({
+                ids: () => pilih,
+                url: (ids, sejak) => URL_DETIK + '?' + new URLSearchParams({ ids: ids, sejak: sejak }),
+                terima: (id, label, rx, tx, galat) => {
+                    const g = grafik.get(id);
+                    if (!g || !g.chart) return;
+                    const kosong = g.kartu.querySelector('.sw-kosong-data');
+                    kosong.hidden = NmsDetik.isi(g.chart, label, [rx, tx]);
+                    kosong.textContent = galat || 'Menunggu sampel per detik...';
+                },
+                status: teks => { $('swUpdate').textContent = teks; }
+            }) : null;
+            const perDetik = () => !!detik && selJam.value === '10m';
+
+            function aturRentang() {
+                if (perDetik()) {
+                    detik.nyala();
+                } else if (detik) {
+                    detik.mati();
+                }
+                muat(false);
+            }
+
             // poll = true: server sekalian mem-poll device yang sudah waktunya
+            // rentang 10 Menit: hanya status perangkat yang diambil dari sini, grafiknya diisi per detik
             async function muat(poll) {
                 if (!pilih.length) return;
                 const n = ++nomor;
@@ -674,6 +704,9 @@
                     pilih.forEach(id => {
                         const g = grafik.get(id), d = res.grafik[id];
                         if (!g || !g.chart) return;
+                        if (d) status(g.kartu, d.status);
+                        if (perDetik()) return;
+                        NmsGrafik.modeDetik(g.chart, false);
                         const label = d ? d.label : [];
                         g.chart.data.labels = label;
                         g.chart.data.datasets[0].data = d ? d.rx : [];
@@ -682,11 +715,10 @@
                         const kosong = g.kartu.querySelector('.sw-kosong-data');
                         kosong.textContent = 'Belum ada data traffic pada rentang ini.';
                         kosong.hidden = label.length > 0;
-                        if (d) status(g.kartu, d.status);
                     });
-                    $('swUpdate').textContent = 'Diperbarui: ' + res.jam;
+                    if (!perDetik()) $('swUpdate').textContent = 'Diperbarui: ' + res.jam;
                 } catch (e) {
-                    if (n === nomor) $('swUpdate').textContent = 'Gagal memperbarui data';
+                    if (n === nomor && !perDetik()) $('swUpdate').textContent = 'Gagal memperbarui data';
                 }
             }
 
@@ -711,9 +743,13 @@
 
             $('swReset').addEventListener('click', () => {
                 [...pilih].forEach(hapus);
-                try { localStorage.removeItem(KEY); } catch (e) { }
+                try {
+                    localStorage.removeItem(KEY);
+                    localStorage.removeItem(KEY_JAM);
+                } catch (e) { }
                 selLayout.value = '2x2';
                 selJam.value = '1';
+                aturRentang();
                 terapkanLayout();
                 tampilKosong();
             });
@@ -723,7 +759,10 @@
                 // layout lebih kecil: grafik yang melebihi kapasitas dilepas dari belakang
                 while (pilih.length > maks()) hapus(pilih[pilih.length - 1]);
             });
-            selJam.addEventListener('change', () => muat(false));
+            selJam.addEventListener('change', () => {
+                try { localStorage.setItem(KEY_JAM, selJam.value); } catch (e) { }
+                aturRentang();
+            });
 
             // ====== FULLSCREEN ======
             if (halaman.requestFullscreen) {
@@ -741,11 +780,15 @@
             let simpan = null;
             try { simpan = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { }
             if (simpan && KAPASITAS[simpan.layout]) selLayout.value = simpan.layout;
-            if (simpan && ['1', '6', '24'].includes(String(simpan.jam))) selJam.value = simpan.jam;
+            if (simpan && RENTANG.includes(String(simpan.jam))) selJam.value = simpan.jam;
+            try {
+                const j = localStorage.getItem(KEY_JAM);
+                if (RENTANG.includes(j)) selJam.value = j;
+            } catch (e) { }
             terapkanLayout();
             (simpan && Array.isArray(simpan.ids) ? simpan.ids : []).forEach(id => tambah(Number(id)));
             tampilKosong();
-            muat(false);
+            aturRentang();
             setInterval(() => muat(true), 60000); // tetap jalan di fullscreen layar NOC
         })();
     </script>

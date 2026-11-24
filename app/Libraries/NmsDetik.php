@@ -7,7 +7,7 @@ use App\Models\DeviceNmsModel;
 use App\Models\DeviceTrafficModel;
 
 /**
- * Grafik "10 Menit" per detik (Traffic Monitoring & NMS Management: Live + History).
+ * Grafik "10 Menit" per detik (Traffic Monitoring, NMS Management: Live + History, Screen).
  *
  * Selama halaman dengan rentang 10 Menit terbuka, browser memanggil endpoint .../detik tiap 1 detik. Tiap panggilan:
  *   - satu SNMP GET kecil: counter octets interface + OID CPU/RAM (OID-nya dicari sekali lalu disimpan di cache),
@@ -62,6 +62,118 @@ class NmsDetik
             'sumber'   => $isiMetrik['sumber'] ?? null,
             'pesan'    => $pesan,
         ];
+    }
+
+    /** Perangkat yang tidak membalas dicoba lagi setelah sekian detik (halaman Screen: jangan menahan grafik perangkat lain). */
+    private const TUNDA_GAGAL = 5;
+
+    /** Batas waktu satu putaran pembacaan banyak perangkat (detik). */
+    private const BATAS_PUTARAN = 3.0;
+
+    /**
+     * Traffic banyak interface dari banyak perangkat sekaligus (halaman Screen). Satu SNMP GET per perangkat.
+     *
+     * @param list<array>     $daftar baris d_device_interface
+     * @param array<int, int> $sejak  id interface => waktu titik terakhir yang sudah dimiliki browser (ms)
+     *
+     * @return array{sekarang: int, traffic: array<int, list<array>>, pesan: array<int, string>} pesan per id interface
+     */
+    public static function ambilBanyak(array $daftar, array $sejak): array
+    {
+        $pesan = [];
+        $kelompok = [];
+        foreach ($daftar as $i) {
+            $kelompok[(int) $i['device_id']][(int) $i['id']] = $i;
+        }
+
+        $device = $kelompok
+            ? array_column((new DeviceMonitoringModel())->whereIn('id', array_keys($kelompok))->findAll(), null, 'id')
+            : [];
+        if (self::siapkanFolder()) {
+            // perangkat yang paling lama belum dibaca didahulukan
+            uasort($kelompok, static function ($a, $b) {
+                $lama = static fn (array $x) => min(array_map(static fn ($id) => (int) (self::baca('if', $id)['diambil'] ?? 0), array_keys($x)));
+
+                return $lama($a) <=> $lama($b);
+            });
+            $mulai = microtime(true);
+            foreach ($kelompok as $deviceId => $isi) {
+                $d     = $device[$deviceId] ?? null;
+                $tidak = ! $d || ! (int) $d['monitoring_enabled'] || ! DeviceMonitoringModel::bisaPoll($d);
+                $info  = $tidak ? 'Monitoring / SNMP v2c device ini tidak aktif.' : null;
+                if (! $tidak && microtime(true) - $mulai < self::BATAS_PUTARAN) {
+                    $info = self::sampelBanyak($d, $isi);
+                }
+                if ($info !== null) {
+                    $pesan += array_fill_keys(array_keys($isi), $info);
+                }
+            }
+        }
+
+        $traffic = [];
+        foreach ($daftar as $i) {
+            $id           = (int) $i['id'];
+            $s            = (int) ($sejak[$id] ?? 0);
+            $traffic[$id] = self::titik(self::baca('if', $id), $s, $s > 0 ? [] : self::awalTraffic($id));
+        }
+
+        return ['sekarang' => self::ms(), 'traffic' => $traffic, 'pesan' => $pesan];
+    }
+
+    /** Baca counter beberapa interface satu perangkat dengan satu SNMP GET; kembalikan pesan kalau tidak membalas. */
+    private static function sampelBanyak(array $d, array $daftar): ?string
+    {
+        $kunci = $isi = $oid = [];
+
+        try {
+            foreach ($daftar as $id => $i) {
+                $k = self::kunci('if', $id);
+                if (! $k) {
+                    continue; // sedang dibaca pengguna lain
+                }
+                $kunci[$id] = $k;
+                $x          = self::baca('if', $id);
+                if (! empty($x['gagal']) && self::ms() - (int) $x['gagal'] < self::TUNDA_GAGAL * 1000) {
+                    $tunda = true;
+
+                    continue;
+                }
+                if (self::ms() - (int) ($x['diambil'] ?? 0) < self::JEDA * 1000) {
+                    continue;
+                }
+                $isi[$id] = $x;
+                foreach ((int) $i['counter_bit'] === 32 ? DeviceTrafficModel::OID_32 : DeviceTrafficModel::OID_HC as $arah => $o) {
+                    $oid[$arah . '_' . $id] = $o . '.' . (int) $i['if_index'];
+                }
+            }
+            if (! $isi) {
+                return isset($tunda) ? 'Perangkat tidak membalas SNMP.' : null;
+            }
+
+            $klien = new SnmpKlien($d['ip_address'], DeviceMonitoringModel::dekripsi($d['snmp_community']), (int) $d['snmp_port'], self::TIMEOUT, 0);
+            $mulai = microtime(true);
+            $snmp  = $klien->get($oid);
+            $t     = (int) round(($mulai + microtime(true)) / 2 * 1000);
+
+            foreach ($isi as $id => $x) {
+                $x['diambil'] = (int) round($mulai * 1000);
+                unset($x['gagal']);
+                if ($snmp['ok']) {
+                    $nilai = ['in' => $snmp['nilai']['in_' . $id] ?? null, 'out' => $snmp['nilai']['out_' . $id] ?? null];
+                    $x     = self::hitungTraffic($x, $nilai, (int) $daftar[$id]['counter_bit'] === 32 ? 32 : 64, $t, (int) $daftar[$id]['speed_mbps']);
+                } else {
+                    $x['gagal'] = self::ms();
+                }
+                self::tulis('if', $id, $x);
+            }
+
+            return $snmp['ok'] ? null : 'Perangkat tidak membalas SNMP.';
+        } finally {
+            foreach ($kunci as $k) {
+                flock($k, LOCK_UN);
+                fclose($k);
+            }
+        }
     }
 
     /** Baca perangkat sekali; kembalikan pesan kalau perangkat tidak membalas SNMP. */

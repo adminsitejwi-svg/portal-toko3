@@ -414,6 +414,7 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     // grafik traffic live banyak interface dalam satu layar (fullscreen untuk layar NOC)
     $routes->get('Screen', 'Screen::index');
     $routes->get('Screen/data', 'Screen::data');
+    $routes->get('Screen/detik', 'Screen::detik'); // grafik 10 Menit per detik
 
     // Surat Tugas (menu Activation): tampilan & fitur seperti RFO (tanpa kirim email),
     // struktur dari 17 SPK NCIX KARET_OCT.pdf
