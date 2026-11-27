@@ -18,6 +18,7 @@ class DeviceNmsModel extends \CodeIgniter\Model
 
     /** Pilihan periode history: kode => [label, detik]. */
     public const PERIODE = [
+        '5m'  => ['5 Menit', 300],  // per detik
         '10m' => ['10 Menit', 600], // per detik, lihat App\Libraries\NmsDetik
         '1h'  => ['1 Jam', 3600],
         '6h'  => ['6 Jam', 21600],

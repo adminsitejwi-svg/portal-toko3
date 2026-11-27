@@ -7,7 +7,7 @@ use App\Models\DeviceNmsModel;
 use App\Models\DeviceTrafficModel;
 
 /**
- * Grafik "10 Menit" per detik (Traffic Monitoring, NMS Management: Live + History, Screen).
+ * Grafik "5 Menit" & "10 Menit" per detik (Traffic Monitoring, NMS Management: Live + History, Screen).
  *
  * Selama halaman dengan rentang 10 Menit terbuka, browser memanggil endpoint .../detik tiap 1 detik. Tiap panggilan:
  *   - satu SNMP GET kecil: counter octets interface + OID CPU/RAM (OID-nya dicari sekali lalu disimpan di cache),
@@ -343,12 +343,18 @@ class NmsDetik
         return [$c, $m === null ? null : round(max(0, min(100, $m)), 2)];
     }
 
-    // ===================== RIWAYAT 10 MENIT (Export PDF) =====================
+    // ===================== RIWAYAT 5 / 10 MENIT (Export PDF) =====================
+
+    /** Rentang (detik) ini memakai data per detik: 5 Menit & 10 Menit. */
+    public static function perDetik(int $detik): bool
+    {
+        return $detik > 0 && $detik <= self::JENDELA;
+    }
 
     /** Bentuknya sama dengan DeviceNmsModel::history(). */
-    public static function historyDevice(int $deviceId): array
+    public static function historyDevice(int $deviceId, int $jendela = self::JENDELA): array
     {
-        $p     = self::titik(self::baca('dev', $deviceId), 0, self::awalMetrik($deviceId));
+        $p     = self::titik(self::baca('dev', $deviceId), 0, self::awalMetrik($deviceId), $jendela);
         $kolom = static fn (int $k) => array_map(static fn ($x) => $x[$k] === null ? null : (float) $x[$k], $p);
         $ada   = static fn (array $x) => array_filter($x, static fn ($v) => $v !== null);
         $rata  = static fn (array $x, int $n) => ($x = $ada($x)) ? round(array_sum($x) / count($x), $n) : null;
@@ -378,9 +384,9 @@ class NmsDetik
     }
 
     /** Bentuknya sama dengan DeviceNmsModel::historyTraffic() / DeviceTrafficModel::grafik(). */
-    public static function historyTraffic(int $interfaceId): array
+    public static function historyTraffic(int $interfaceId, int $jendela = self::JENDELA): array
     {
-        $p    = self::titik(self::baca('if', $interfaceId), 0, self::awalTraffic($interfaceId));
+        $p    = self::titik(self::baca('if', $interfaceId), 0, self::awalTraffic($interfaceId), $jendela);
         $rx   = array_map(static fn ($x) => (int) $x[1], $p);
         $tx   = array_map(static fn ($x) => (int) $x[2], $p);
         $rata = static fn (array $x) => DeviceTrafficModel::formatBps($x ? round(array_sum($x) / count($x)) : null);
@@ -422,9 +428,9 @@ class NmsDetik
     }
 
     /** Titik dalam jendela & lebih baru dari $sejak; $awal dipakai hanya di waktu yang belum punya sampel per detik. */
-    private static function titik(array $isi, int $sejak, array $awal): array
+    private static function titik(array $isi, int $sejak, array $awal, int $jendela = self::JENDELA): array
     {
-        $batas = max($sejak, self::ms() - self::JENDELA * 1000);
+        $batas = max($sejak, self::ms() - min($jendela, self::JENDELA) * 1000);
         $detik = array_values(array_filter($isi['d'] ?? [], static fn ($x) => $x[0] > $batas));
         if (! $awal) {
             return $detik;

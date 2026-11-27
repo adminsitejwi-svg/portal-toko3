@@ -37,6 +37,7 @@ class Screen extends BaseController
             }
             $hasil[(int) $i['id']] = [
                 'id'       => (int) $i['id'],
+                'device'   => (int) $i['device_id'],
                 'hostname' => $i['hostname'],
                 'ip'       => $i['ip_address'],
                 'nama'     => $i['if_name'],
@@ -102,7 +103,7 @@ class Screen extends BaseController
         ]);
     }
 
-    // Data grafik (GET Screen/data?ids=1,2,3&jam=10m|1|6|24&poll=1): poll=1 -> device yang sudah waktunya di-poll dulu
+    // Data grafik (GET Screen/data?ids=1,2,3&jam=5m|10m|1|6|24&poll=1): poll=1 -> device yang sudah waktunya di-poll dulu
     public function data()
     {
         if (! $this->tabelSiap()) {
@@ -115,7 +116,7 @@ class Screen extends BaseController
             return $this->response->setStatusCode(400)->setJSON(['ok' => false, 'pesan' => 'Pilih antara 1 sampai ' . self::MAKS_GRAFIK . ' interface.']);
         }
         $jam     = $this->request->getGet('jam');
-        $rentang = $jam === '10m' ? '10m' : (self::JAM[(int) $jam] ?? '1h');
+        $rentang = in_array($jam, ['5m', '10m'], true) ? $jam : (self::JAM[(int) $jam] ?? '1h');
 
         if ($this->request->getGet('poll') === '1') {
             (new DeviceMonitoringModel())->pollJatuhTempo(8.0);

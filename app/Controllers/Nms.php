@@ -211,11 +211,11 @@ class Nms extends BaseController
 
     private function grafikHistory(array $p): array
     {
-        if ($p['detik'] === NmsDetik::JENDELA) { // periode 10 Menit: data per detik
+        if (NmsDetik::perDetik((int) $p['detik'])) { // periode 5 / 10 Menit: data per detik
             return [
                 'label_rentang' => $p['label'],
-                'device'        => NmsDetik::historyDevice((int) $p['device']['id']),
-                'traffic'       => $p['interface'] ? NmsDetik::historyTraffic((int) $p['interface']['id']) : null,
+                'device'        => NmsDetik::historyDevice((int) $p['device']['id'], (int) $p['detik']),
+                'traffic'       => $p['interface'] ? NmsDetik::historyTraffic((int) $p['interface']['id'], (int) $p['detik']) : null,
             ];
         }
 

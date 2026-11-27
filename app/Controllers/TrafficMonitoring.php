@@ -109,7 +109,7 @@ class TrafficMonitoring extends BaseController
         ]);
     }
 
-    // Data grafik satu interface (GET TrafficMonitoring/grafik/{id}?rentang=10m|1h|6h|24h|7d)
+    // Data grafik satu interface (GET TrafficMonitoring/grafik/{id}?rentang=5m|10m|1h|6h|24h|7d)
     public function grafik($id)
     {
         if (! $this->tabelSiap()) {

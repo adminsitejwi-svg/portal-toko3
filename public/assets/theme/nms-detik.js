@@ -1,5 +1,6 @@
-/* Grafik "10 Menit" per detik (Traffic Monitoring, NMS Management Live & History, Screen).
+/* Grafik "5 Menit" & "10 Menit" per detik (Traffic Monitoring, NMS Management Live & History, Screen).
    Meminta titik baru tiap 1 detik ke endpoint .../detik (App\Libraries\NmsDetik) dan menyusun jendela 600 detik.
+   o.jendela = () => lebar grafik dalam detik (300 = 5 Menit, default 600); penyangga tetap 600 detik agar ganti 5 <-> 10 Menit tidak mengulang.
    const d = NmsDetik.buat({
        url: sejak => alamat endpoint (sejak = waktu titik terakhir, ms),
        terima: D => ...,      // D.label[600], D.traffic [rx, tx], D.metrik [latency, loss, cpu, ram], D.akhir, D.ringkas
@@ -12,6 +13,8 @@
     const JEDA = 1000;            // ms antar permintaan
     const BATAS_TUNGGU = 10000;   // ms, permintaan macet dibatalkan
     const WIB = 7 * 3600 * 1000;  // jam selalu WIB, sama dengan server
+
+    const lebarDari = o => Math.max(60, Math.min(JENDELA, (o.jendela && +o.jendela()) || JENDELA));
 
     const jam = detik => new Date(detik * 1000 + WIB).toISOString().substr(11, 8);
 
@@ -101,13 +104,14 @@
 
     function buat(o) {
         let traffic = new Map(), metrik = new Map(); // detik -> nilai
-        let akhirT = 0, akhirM = 0, terakhir = null;
+        let akhirT = 0, akhirM = 0, terakhir = null, sekarangTerakhir = null;
 
         function kosongkan() {
             traffic = new Map();
             metrik = new Map();
             akhirT = akhirM = 0;
             terakhir = null;
+            sekarangTerakhir = null;
         }
 
         // titik terbaru yang sudah dimiliki; deret yang masih kosong tidak ikut dihitung
@@ -118,8 +122,8 @@
 
         function susun(res) {
             const ujung = Math.floor(res.sekarang / 1000);
-            const awal = ujung - JENDELA + 1;
-            [traffic, metrik].forEach(m => m.forEach((v, k) => { if (k < awal) m.delete(k); }));
+            const simpanDari = ujung - JENDELA + 1, awal = ujung - lebarDari(o) + 1;
+            [traffic, metrik].forEach(m => m.forEach((v, k) => { if (k < simpanDari) m.delete(k); }));
 
             const label = [], rx = [], tx = [], kolom = [[], [], [], []];
             let sampel = 0, balas = 0;
@@ -160,12 +164,22 @@
                 if (x[0] > akhirM) akhirM = x[0];
             });
             terakhir = susun(res);
+            sekarangTerakhir = res;
             o.terima(terakhir);
             if (o.status) o.status(res.pesan || 'Diperbarui tiap detik', !!res.pesan);
         }
 
         const p = putaran({ url: () => o.url(sejak()), terima: terima, kosongkan: kosongkan, status: o.status, gagal: o.gagal });
-        return Object.assign(p, { data: () => terakhir });
+        return Object.assign(p, {
+            data: () => terakhir,
+            // lebar jendela berubah (5 <-> 10 Menit): susun ulang dari penyangga tanpa menunggu detik berikutnya
+            susunUlang() {
+                if (!sekarangTerakhir) return null;
+                terakhir = susun(sekarangTerakhir);
+                o.terima(terakhir);
+                return terakhir;
+            }
+        });
     }
 
     // banyak interface sekaligus: o.ids() = daftar id, o.url(ids, sejak), o.terima(id, label, rx, tx, pesan)
@@ -177,7 +191,7 @@
         };
 
         function terima(res) {
-            const ujung = Math.floor(res.sekarang / 1000), awal = ujung - JENDELA + 1;
+            const ujung = Math.floor(res.sekarang / 1000), awal = ujung - lebarDari(o) + 1, simpanDari = ujung - JENDELA + 1;
             const label = [];
             for (let s = awal; s <= ujung; s++) label.push(jam(s));
             const ids = o.ids();
@@ -189,7 +203,7 @@
                     d.titik.set(Math.floor(x[0] / 1000), [x[1], x[2]]);
                     if (x[0] > d.akhir) d.akhir = x[0];
                 });
-                d.titik.forEach((v, k) => { if (k < awal) d.titik.delete(k); });
+                d.titik.forEach((v, k) => { if (k < simpanDari) d.titik.delete(k); });
                 const rx = [], tx = [];
                 for (let s = awal; s <= ujung; s++) {
                     const t = d.titik.get(s);
@@ -212,7 +226,7 @@
         });
     }
 
-    // isi grafik NmsGrafik dengan jendela 600 detik; true kalau ada titik
+    // isi grafik NmsGrafik dengan jendela 300 / 600 detik; true kalau ada titik
     function isi(g, label, data) {
         if (!g) return false;
         const n = data.map(d => d.reduce((x, v) => x + (v !== null ? 1 : 0), 0));

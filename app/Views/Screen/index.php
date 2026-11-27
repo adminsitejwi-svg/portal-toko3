@@ -493,13 +493,27 @@
                 <!-- PENGATURAN -->
                 <div class="rfo-panel mb-6 sw-atur">
                     <div class="sw-baris">
+                        <?php
+                        $daftarDevice = [];
+                        foreach ($interface as $i) {
+                            $daftarDevice[$i['device']] ??= $i['hostname'] . ' (' . $i['ip'] . ')';
+                        }
+                        ?>
+                        <label class="rfo-field">
+                            <i class="ti ti-router" style="color:#2f6bff"></i>
+                            <select id="swDevice" class="sw-select sw-device" title="Pilih Device" <?= $daftarDevice ? '' : 'disabled' ?>>
+                                <?php if (! $daftarDevice) : ?>
+                                    <option value="">Belum ada device</option>
+                                <?php endif; ?>
+                                <?php foreach ($daftarDevice as $idDevice => $namaDevice) : ?>
+                                    <option value="<?= (int) $idDevice ?>"><?= esc($namaDevice) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
                         <label class="rfo-field">
                             <i class="ti ti-plug-connected" style="color:#6d5dfc"></i>
-                            <select id="swInterface" class="sw-select sw-lebar" title="Pilih device / interface">
-                                <option value="">Pilih device / interface...</option>
-                                <?php foreach ($interface as $i) : ?>
-                                    <option value="<?= $i['id'] ?>"><?= esc($i['hostname'] . ' (' . $i['ip'] . ') - ' . $i['nama'] . ($i['alias'] ? ' (' . $i['alias'] . ')' : '')) ?></option>
-                                <?php endforeach; ?>
+                            <select id="swInterface" class="sw-select sw-lebar" title="Pilih Interface" disabled>
+                                <option value="">Belum ada interface</option>
                             </select>
                         </label>
                         <label class="rfo-field">
@@ -515,6 +529,7 @@
                         <label class="rfo-field">
                             <i class="ti ti-clock" style="color:#f59e0b"></i>
                             <select id="swJam" class="sw-select" title="Rentang grafik">
+                                <option value="5m">5 Menit terakhir (per detik)</option>
                                 <option value="10m">10 Menit terakhir (per detik)</option>
                                 <option value="1" selected>1 Jam terakhir</option>
                                 <option value="6">6 Jam terakhir</option>
@@ -525,7 +540,7 @@
                         <button type="button" id="swSimpan" class="rfo-ghost-btn"><i class="ti ti-device-floppy"></i> Save Layout</button>
                         <button type="button" id="swReset" class="rfo-ghost-btn"><i class="ti ti-refresh"></i> Reset</button>
                     </div>
-                    <p class="sw-hint"><i class="ti ti-info-circle"></i> Pilih interface dari perangkat mana pun, maksimal <?= (int) $maks ?> grafik (mengikuti layout yang dipilih). Layout tersimpan di browser ini. Data diperbarui tiap 60 detik (rentang 10 Menit: tiap detik); tekan Esc untuk keluar dari fullscreen.</p>
+                    <p class="sw-hint"><i class="ti ti-info-circle"></i> Pilih interface dari perangkat mana pun, maksimal <?= (int) $maks ?> grafik (mengikuti layout yang dipilih). Layout tersimpan di browser ini. Data diperbarui tiap 60 detik (rentang 5 &amp; 10 Menit: tiap detik); tekan Esc untuk keluar dari fullscreen.</p>
                 </div>
 
                 <!-- GRAFIK -->
@@ -544,7 +559,24 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: right 14px center;
         }
-        .rfo-field .sw-lebar { width: 360px; }
+        /* dropdown dengan pencarian otomatis (Device & Interface): select asli disembunyikan, nilainya tetap dipakai */
+        .sw-cari { position: relative; }
+        .sw-cari > select { position: absolute; opacity: 0; pointer-events: none; width: 1px !important; height: 1px; padding: 0; border: 0; }
+        .rfo-field .sw-cari-tombol { display: flex; align-items: center; text-align: left; white-space: nowrap; overflow: hidden; }
+        .sw-cari-tombol span { overflow: hidden; text-overflow: ellipsis; }
+        .sw-cari-tombol:disabled { opacity: .6; cursor: not-allowed; }
+        .sw-cari-panel { position: absolute; top: calc(100% + 6px); left: 0; z-index: 60; width: max(100%, 300px); max-width: calc(100vw - 32px); background: var(--rf-card); border: 1px solid var(--rf-border); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,.18); padding: 8px; }
+        .sw-cari-panel[hidden] { display: none; }
+        .sw-cari-input { width: 100%; height: 36px; border: 1px solid var(--rf-border); border-radius: 8px; padding: 0 10px 0 32px; font-size: 13px; color: var(--rf-text); background: var(--rf-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a869a' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 10px center; outline: none; }
+        .sw-cari-input:focus { border-color: #2f6bff; }
+        .sw-cari-list { max-height: 280px; overflow-y: auto; margin-top: 6px; }
+        .sw-cari-item { padding: 8px 10px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--rf-text); cursor: pointer; }
+        .sw-cari-item:hover, .sw-cari-item.is-fokus { background: rgba(47,107,255,.12); }
+        .sw-cari-item.is-pilih { color: #2f6bff; font-weight: 700; }
+        .sw-cari-item mark { background: rgba(245,158,11,.35); color: inherit; border-radius: 3px; }
+        .sw-cari-nihil { padding: 10px; font-size: 12.5px; color: var(--rf-muted); text-align: center; }
+        .rfo-field .sw-device { width: 260px; }
+        .rfo-field .sw-lebar { width: 320px; }
         .sw-tombol { height: 42px; padding: 0 18px; font-size: 13px; }
         .sw-hint { margin-top: 12px; font-size: 12.5px; color: var(--rf-muted); }
         /* panel grafik gelap di mode terang & gelap, sama dengan halaman NMS */
@@ -590,10 +622,12 @@
             const KAPASITAS = { '1x1': 1, '2x2': 4, '2x3': 6, '3x3': 9, '4x4': 16 };
             const KEY = 'portal_screen_layout';
             const KEY_JAM = 'portal_screen_jam'; // rentang terakhir, tetap saat halaman dimuat ulang
-            const RENTANG = ['10m', '1', '6', '24'];
+            const RENTANG = ['5m', '10m', '1', '6', '24'];
+            const LEBAR_DETIK = { '5m': 300, '10m': 600 }; // rentang yang diisi per detik: lebar jendela (detik)
 
             const $ = id => document.getElementById(id);
-            const halaman = $('screenPage'), grid = $('swGrid'), selLayout = $('swLayout'), selJam = $('swJam'), selIf = $('swInterface');
+            const halaman = $('screenPage'), grid = $('swGrid'), selLayout = $('swLayout'), selJam = $('swJam'), selIf = $('swInterface'), selDev = $('swDevice');
+            const KEY_DEVICE = 'portal_screen_device'; // device terakhir di dropdown
             const grafik = new Map(); // id -> { chart, kartu }
             let pilih = [];           // id interface sesuai urutan tampil
             let nomor = 0, tunda = 0;
@@ -610,6 +644,113 @@
                 }
                 return Math.round(v) + ' bps';
             }
+
+            // ====== DROPDOWN DENGAN PENCARIAN OTOMATIS ======
+            // select asli tetap menyimpan nilai & memicu 'change'; daftar disusun ulang tiap isi select berubah
+            function cariSelect(sel, teksCari) {
+                const wadah = sel.closest('.rfo-field');
+                wadah.classList.add('sw-cari');
+                const tombol = document.createElement('button');
+                tombol.type = 'button';
+                tombol.className = sel.className + ' sw-cari-tombol';
+                tombol.title = sel.title;
+                tombol.innerHTML = '<span></span>';
+                const panel = document.createElement('div');
+                panel.className = 'sw-cari-panel';
+                panel.hidden = true;
+                panel.innerHTML = '<input type="search" class="sw-cari-input" autocomplete="off" placeholder="' + esc(teksCari) + '"><div class="sw-cari-list"></div>';
+                sel.after(tombol, panel);
+                const input = panel.firstElementChild, list = panel.lastElementChild;
+                let fokus = -1;
+
+                const sinkron = () => {
+                    const o = sel.selectedOptions[0];
+                    tombol.firstElementChild.textContent = o ? o.textContent : '';
+                    tombol.disabled = sel.disabled;
+                };
+                const tandai = (teks, q) => {
+                    const k = q ? teks.toLowerCase().indexOf(q) : -1;
+                    return k < 0 ? esc(teks) : esc(teks.slice(0, k)) + '<mark>' + esc(teks.slice(k, k + q.length)) + '</mark>' + esc(teks.slice(k + q.length));
+                };
+                function gerak(n) {
+                    const item = list.querySelectorAll('.sw-cari-item');
+                    if (!item.length) return;
+                    fokus = Math.max(0, Math.min(item.length - 1, fokus + n));
+                    item.forEach((x, k) => x.classList.toggle('is-fokus', k === fokus));
+                    item[fokus].scrollIntoView({ block: 'nearest' });
+                }
+                // disaring otomatis tiap ketikan (nama, alias, hostname, IP)
+                function saring() {
+                    const q = input.value.trim().toLowerCase();
+                    const cocok = [...sel.options].filter(o => o.value && o.textContent.toLowerCase().includes(q));
+                    list.innerHTML = cocok.length
+                        ? cocok.map(o => '<div class="sw-cari-item' + (o.value === sel.value ? ' is-pilih' : '') + '" data-v="' + esc(o.value) + '">' + tandai(o.textContent, q) + '</div>').join('')
+                        : '<div class="sw-cari-nihil">Tidak ditemukan</div>';
+                    const k = cocok.findIndex(o => o.value === sel.value);
+                    fokus = q || k < 0 ? 0 : k;
+                    gerak(0);
+                }
+                function buka() {
+                    if (sel.disabled) return;
+                    document.querySelectorAll('.sw-cari-panel').forEach(x => { if (x !== panel) x.hidden = true; });
+                    panel.hidden = false;
+                    input.value = '';
+                    saring();
+                    input.focus();
+                }
+                const tutup = () => { panel.hidden = true; };
+                function pilihNilai(v) {
+                    tutup();
+                    tombol.focus();
+                    if (v === sel.value) return;
+                    sel.value = v;
+                    sinkron();
+                    sel.dispatchEvent(new Event('change'));
+                }
+
+                tombol.addEventListener('click', () => panel.hidden ? buka() : tutup());
+                input.addEventListener('input', saring);
+                input.addEventListener('keydown', e => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        gerak(e.key === 'ArrowDown' ? 1 : -1);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const x = list.querySelectorAll('.sw-cari-item')[fokus];
+                        if (x) pilihNilai(x.dataset.v);
+                    } else if (e.key === 'Escape') {
+                        e.stopPropagation();
+                        tutup();
+                        tombol.focus();
+                    }
+                });
+                list.addEventListener('mousedown', e => {
+                    const x = e.target.closest('.sw-cari-item');
+                    if (x) {
+                        e.preventDefault();
+                        pilihNilai(x.dataset.v);
+                    }
+                });
+                document.addEventListener('mousedown', e => { if (!wadah.contains(e.target)) tutup(); });
+                new MutationObserver(() => { sinkron(); if (!panel.hidden) saring(); }).observe(sel, { childList: true, subtree: true, attributes: true });
+                sel.addEventListener('change', sinkron);
+                sinkron();
+                return { sinkron: sinkron };
+            }
+
+            // dropdown Interface hanya berisi interface milik device terpilih (seperti halaman Traffic Monitoring)
+            function isiInterface() {
+                const dev = parseInt(selDev.value, 10) || 0, lama = parseInt(selIf.value, 10) || 0;
+                const daftar = INTERFACE.filter(i => i.device === dev);
+                selIf.innerHTML = daftar.length
+                    ? daftar.map(i => '<option value="' + i.id + '"' + (i.id === lama ? ' selected' : '') + '>' + esc(i.nama + (i.alias ? ' (' + i.alias + ')' : '')) + (pilih.includes(i.id) ? ' ✓' : '') + '</option>').join('')
+                    : '<option value="">Belum ada interface</option>';
+                selIf.disabled = !daftar.length;
+            }
+            selDev.addEventListener('change', () => {
+                try { localStorage.setItem(KEY_DEVICE, selDev.value); } catch (e) { }
+                isiInterface();
+            });
 
             function terapkanLayout() {
                 const [brs, kol] = selLayout.value.split('x');
@@ -638,6 +779,7 @@
                 }
                 grafik.delete(id);
                 pilih = pilih.filter(x => x !== id);
+                isiInterface();
                 tampilKosong();
             }
 
@@ -645,6 +787,7 @@
                 const i = info(id);
                 if (!i || pilih.includes(id) || pilih.length >= maks()) return;
                 pilih.push(id);
+                isiInterface();
 
                 const kartu = document.createElement('div');
                 kartu.className = 'sw-card';
@@ -665,9 +808,10 @@
                 grafik.set(id, { chart, kartu });
             }
 
-            // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js): satu permintaan untuk semua grafik ======
+            // ====== RENTANG 5 / 10 MENIT PER DETIK (assets/theme/nms-detik.js): satu permintaan untuk semua grafik ======
             const detik = window.NmsDetik && window.NmsGrafik ? NmsDetik.buatBanyak({
                 ids: () => pilih,
+                jendela: () => LEBAR_DETIK[selJam.value] || 600,
                 url: (ids, sejak) => URL_DETIK + '?' + new URLSearchParams({ ids: ids, sejak: sejak }),
                 terima: (id, label, rx, tx, galat) => {
                     const g = grafik.get(id);
@@ -678,7 +822,7 @@
                 },
                 status: teks => { $('swUpdate').textContent = teks; }
             }) : null;
-            const perDetik = () => !!detik && selJam.value === '10m';
+            const perDetik = () => !!detik && !!LEBAR_DETIK[selJam.value];
 
             function aturRentang() {
                 if (perDetik()) {
@@ -690,7 +834,7 @@
             }
 
             // poll = true: server sekalian mem-poll device yang sudah waktunya
-            // rentang 10 Menit: hanya status perangkat yang diambil dari sini, grafiknya diisi per detik
+            // rentang 5 / 10 Menit: hanya status perangkat yang diambil dari sini, grafiknya diisi per detik
             async function muat(poll) {
                 if (!pilih.length) return;
                 const n = ++nomor;
@@ -724,7 +868,7 @@
 
             $('swTambah').addEventListener('click', () => {
                 const id = parseInt(selIf.value, 10);
-                if (!id) return pesan('info', 'Pilih interface', 'Pilih device / interface terlebih dahulu.');
+                if (!id) return pesan('info', 'Pilih interface', 'Pilih device lalu interface terlebih dahulu.');
                 if (pilih.includes(id)) return pesan('info', 'Sudah ada', 'Interface ini sudah ditampilkan.');
                 if (pilih.length >= maks()) return pesan('warning', 'Layout penuh', 'Layout ini maksimal ' + maks() + ' grafik.');
                 tambah(id);
@@ -785,6 +929,13 @@
                 const j = localStorage.getItem(KEY_JAM);
                 if (RENTANG.includes(j)) selJam.value = j;
             } catch (e) { }
+            try {
+                const dv = localStorage.getItem(KEY_DEVICE);
+                if (dv && [...selDev.options].some(o => o.value === dv)) selDev.value = dv;
+            } catch (e) { }
+            isiInterface();
+            cariSelect(selDev, 'Cari hostname / IP...');
+            cariSelect(selIf, 'Cari interface / alias...');
             terapkanLayout();
             (simpan && Array.isArray(simpan.ids) ? simpan.ids : []).forEach(id => tambah(Number(id)));
             tampilKosong();

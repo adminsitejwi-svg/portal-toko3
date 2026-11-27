@@ -292,6 +292,7 @@ class DeviceTrafficModel extends \CodeIgniter\Model
 
     /** Pilihan rentang grafik: kode => [label, detik]. */
     public const RENTANG = [
+        '5m'  => ['5 Menit', 300],  // per detik
         '10m' => ['10 Menit', 600], // per detik, lihat App\Libraries\NmsDetik
         '1h'  => ['1 Jam', 3600],
         '6h'  => ['6 Jam', 21600],
@@ -306,8 +307,8 @@ class DeviceTrafficModel extends \CodeIgniter\Model
      */
     public function grafik(int $interfaceId, string $rentang): array
     {
-        if ($rentang === '10m') {
-            return NmsDetik::historyTraffic($interfaceId);
+        if ($rentang === '5m' || $rentang === '10m') {
+            return NmsDetik::historyTraffic($interfaceId, self::RENTANG[$rentang][1]);
         }
         $detik  = (self::RENTANG[$rentang] ?? self::RENTANG['1h'])[1];
         $bucket = max(60, (int) ceil($detik / 360));

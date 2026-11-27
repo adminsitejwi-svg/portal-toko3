@@ -899,7 +899,8 @@
 
         let nomorMuat = 0;
 
-        // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+        // ====== RENTANG 5 / 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+        const LEBAR_DETIK = { '5m': 300, '10m': 600 }; // rentang yang diisi per detik: lebar jendela (detik)
         let detik = null;
 
         function sekarangDetik(D) {
@@ -919,7 +920,7 @@
             document.getElementById('avgTx').innerHTML = '<i class="ti ti-arrow-up"></i> ' + formatBps(r.tx.rata);
             document.getElementById('maxRx').innerHTML = '<i class="ti ti-arrow-down"></i> ' + formatBps(r.rx.maks);
             document.getElementById('maxTx').innerHTML = '<i class="ti ti-arrow-up"></i> ' + formatBps(r.tx.maks);
-            document.querySelectorAll('.tm-label-rentang').forEach(el => el.textContent = LABEL_RENTANG['10m'] + ' terakhir (' + r.rx.n + ' sampel)');
+            document.querySelectorAll('.tm-label-rentang').forEach(el => el.textContent = LABEL_RENTANG[rentang] + ' terakhir (' + r.rx.n + ' sampel)');
         }
 
         function tampilDetik(ya) {
@@ -933,6 +934,7 @@
             if (!grafik || !window.NmsDetik) return;
             detik = NmsDetik.buat({
                 url: sejak => URL_DETIK + pilihId + '?sejak=' + sejak,
+                jendela: () => LEBAR_DETIK[rentang] || 600,
                 terima: terimaDetik,
                 gagal: () => {
                     document.getElementById('panelGrafik').classList.remove('is-muat');
@@ -954,7 +956,7 @@
             if (!grafik || !pilihId) return;
             const nomor = ++nomorMuat;
             const panel = document.getElementById('panelGrafik');
-            const perDetik = !!detik && rentang === '10m';
+            const perDetik = !!detik && !!LEBAR_DETIK[rentang];
             if (perDetik && diam) return; // sudah diperbarui tiap detik
             if (!diam) panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
             tampilDetik(perDetik);
@@ -997,9 +999,12 @@
         }
 
         document.querySelectorAll('.tm-rentang button').forEach(btn => btn.addEventListener('click', function() {
+            const lama = rentang;
             rentang = this.dataset.rentang;
             try { localStorage.setItem(KUNCI_RENTANG, rentang); } catch (e) {}
             tandaiRentang();
+            // 5 <-> 10 Menit: data per detik yang sudah terkumpul dipakai lagi, tidak mulai dari awal
+            if (detik && detik.aktif() && LEBAR_DETIK[lama] && LEBAR_DETIK[rentang] && detik.susunUlang()) return;
             muatGrafik();
         }));
 

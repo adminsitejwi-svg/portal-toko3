@@ -621,6 +621,7 @@
                                         <select id="nmsIface" class="nms-select nms-select-lebar" title="Pilih Interface"></select>
                                     </label>
                                     <div class="nms-seg" id="lMode" role="group" aria-label="Rentang grafik">
+                                        <button type="button" data-mode="5m" title="5 menit terakhir, diperbarui tiap detik">5 Menit</button>
                                         <button type="button" data-mode="10m" title="10 menit terakhir, diperbarui tiap detik">10 Menit</button>
                                         <button type="button" data-mode="1h" class="is-active" title="1 jam terakhir, sesuai polling interval device">1 Jam</button>
                                     </div>
@@ -1018,15 +1019,20 @@
                 $(idKosong).hidden = label.length > 0;
             }
 
-            // ====== RENTANG 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+            // ====== RENTANG 5 / 10 MENIT PER DETIK (assets/theme/nms-detik.js) ======
+            const LEBAR_DETIK = { '5m': 300, '10m': 600 }; // rentang yang diisi per detik: lebar jendela (detik)
+            const LABEL_DETIK = { '5m': '5 Menit', '10m': '10 Menit' };
+
             function isiGrafikDetik(g, idKosong, label, data) {
                 if (g) $(idKosong).hidden = NmsDetik.isi(g, label, data);
             }
 
-            function buatDetik(terima, gagal) {
+            // jendela = () => lebar grafik (detik)
+            function buatDetik(terima, gagal, jendela) {
                 if (!window.NmsDetik || !window.NmsGrafik) return null;
                 return NmsDetik.buat({
                     url: sejak => URL_DETIK + '?device=' + S.device + '&interface=' + (S.interface || 0) + '&sejak=' + sejak,
+                    jendela: jendela,
                     terima: terima,
                     gagal: gagal,
                     status: (teks, galat) => {
@@ -1109,10 +1115,10 @@
                 const gLive = buatGrafik('cLive', [setRx, setTx], formatBps, { maks: 1000 });
                 let halIf = 1;
 
-                // rentang grafik Live: 1h = sesuai polling, 10m = per detik (pilihan diingat di browser)
+                // rentang grafik Live: 1h = sesuai polling, 5m / 10m = per detik (pilihan diingat di browser)
                 const KUNCI_MODE = 'nms.live.mode';
                 let modeLive = '1h';
-                const detik = buatDetik(terapkanDetik);
+                const detik = buatDetik(terapkanDetik, null, () => LEBAR_DETIK[modeLive] || 600);
 
                 // KPI, kartu RX/TX & grafik dari sampel per detik (menimpa nilai polling)
                 function terapkanDetik(D) {
@@ -1124,7 +1130,7 @@
                         $('kLatSub').textContent = sumber + ' · per detik';
                         $('kLoss').textContent = fmt(D.ringkas.loss.rata, 2, '%');
                         $('kLoss').style.color = D.ringkas.loss.rata > 0 ? '#ef4444' : '';
-                        $('kLossSub').textContent = sumber + ' · rata-rata 10 menit';
+                        $('kLossSub').textContent = sumber + ' · rata-rata ' + (LABEL_DETIK[modeLive] || '10 Menit').toLowerCase();
                         [['kCpu', m[2], d && d.cpu], ['kMem', m[3], d && d.mem]].forEach(([id, baru, lama]) => {
                             const v = baru === null ? lama : baru; // sampel tanpa CPU/RAM: nilai polling tetap tampil
                             $(id).textContent = fmt(v, 1, '%');
@@ -1143,16 +1149,19 @@
                 }
 
                 function aturMode(mode) {
-                    modeLive = detik && mode === '10m' ? '10m' : '1h';
-                    const ya = modeLive === '10m';
+                    const lama = modeLive;
+                    modeLive = detik && LEBAR_DETIK[mode] ? mode : '1h';
+                    const ya = !!LEBAR_DETIK[modeLive];
                     $('lMode').querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b.dataset.mode === modeLive));
                     $('lWaktuSub').textContent = ya ? 'Diperbarui tiap detik' : 'Sesuai polling interval device';
-                    $('cLiveKosongTeks').textContent = 'Menunggu sampel traffic interface ini (' + (ya ? '10 menit' : '1 jam') + ' terakhir).';
+                    $('cLiveKosongTeks').textContent = 'Menunggu sampel traffic interface ini (' + (ya ? LABEL_DETIK[modeLive].toLowerCase() : '1 jam') + ' terakhir).';
+                    try { localStorage.setItem(KUNCI_MODE, modeLive); } catch (e) {}
+                    // 5 <-> 10 Menit: data per detik yang sudah terkumpul dipakai lagi
+                    if (ya && LEBAR_DETIK[lama] && detik.aktif() && detik.susunUlang()) return;
                     tampilDetik(ya);
                     if (ya) detik.nyala(); else if (detik) detik.mati();
                     renderKpi();
                     renderLive();
-                    try { localStorage.setItem(KUNCI_MODE, modeLive); } catch (e) {}
                 }
 
                 $('lMode').addEventListener('click', e => {
@@ -1190,7 +1199,7 @@
                     $('lUtil').textContent = i && i.util !== null ? fmt(i.util, 1, '%') : '-';
                     $('lSpeed').textContent = 'Speed ' + (i ? i.speed : '-');
                     $('lWaktu').textContent = (i && i.waktu) || '-';
-                    if (modeLive !== '10m') {
+                    if (!LEBAR_DETIK[modeLive]) {
                         isiGrafik(gLive, 'cLiveKosong', S.live.label, [S.live.rx, S.live.tx]);
                     } else if (detik.data()) {
                         terapkanDetik(detik.data());
@@ -1289,7 +1298,7 @@
                     S.interface = parseInt(id, 10) || 0;
                     urlState();
                     const n = ++nomorPilih;
-                    if (modeLive === '10m') detik.ulang();
+                    if (LEBAR_DETIK[modeLive]) detik.ulang();
                     const panel = $('panelLive');
                     panel.classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan), seperti History Monitoring
                     renderLive();
@@ -1349,7 +1358,7 @@
 
                 renderSemua();
                 urlState();
-                try { if (localStorage.getItem(KUNCI_MODE) === '10m') aturMode('10m'); } catch (e) {}
+                try { const m = localStorage.getItem(KUNCI_MODE); if (LEBAR_DETIK[m]) aturMode(m); } catch (e) {}
                 muat(false);
                 setInterval(() => { if (!document.hidden) muat(false); }, 15000);
             } else {
@@ -1402,11 +1411,11 @@
                     return p;
                 }
 
-                // periode 10 Menit: semua grafik & ringkasan diperbarui tiap detik
+                // periode 5 / 10 Menit: semua grafik & ringkasan diperbarui tiap detik
                 const detik = buatDetik(D => {
                     const r = D.ringkas;
                     $('hGrafik').classList.remove('is-muat');
-                    $('hLabel').textContent = 'Rentang: 10 Menit terakhir (per detik)';
+                    $('hLabel').textContent = 'Rentang: ' + (LABEL_DETIK[periode] || '10 Menit') + ' terakhir (per detik)';
                     $('hAvail').textContent = fmt(r.uptime, 2, '%');
                     $('hSampel').textContent = r.sampel + ' sampel';
                     $('hLat').textContent = fmt(r.latency.rata, 2, ' ms') + ' / ' + fmt(r.latency.maks, 2, ' ms');
@@ -1426,7 +1435,7 @@
                     [[gLat, 'cLatKosong'], [gLoss, 'cLossKosong'], [gCpu, 'cCpuKosong'], [gMem, 'cMemKosong']].forEach(([g, id]) => isiGrafikDetik(g, id, [], [[]]));
                     isiGrafikDetik(gTraf, 'cTrafKosong', [], [[], []]);
                     ['hAvail', 'hSampel', 'hLat', 'hCpu', 'hMem'].forEach(id => $(id).textContent = '-');
-                });
+                }, () => LEBAR_DETIK[periode] || 600);
 
                 let nomor = 0;
 
@@ -1437,7 +1446,7 @@
                     urlState({ periode: p.periode || null, mulai: p.mulai || null, akhir: p.akhir || null });
                     const n = ++nomor;
                     $('hGrafik').classList.add('is-muat'); // tanda sedang memuat (grafik diredupkan)
-                    const perDetik = !!detik && p.periode === '10m';
+                    const perDetik = !!detik && !!LEBAR_DETIK[p.periode];
                     tampilDetik(perDetik);
                     if (perDetik) {
                         if (detik.aktif()) detik.ulang(); else detik.nyala();
